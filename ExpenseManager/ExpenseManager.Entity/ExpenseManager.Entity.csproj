@@ -49,10 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccessRight.cs" />
+    <Compile Include="BudgetAccessRight.cs" />
     <Compile Include="Budget.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="Currency.cs" />
+    <Compile Include="IEntity.cs" />
+    <Compile Include="RepeatableTransaction.cs" />
     <Compile Include="Transaction.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

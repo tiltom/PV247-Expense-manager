@@ -1,9 +1,8 @@
-﻿using System.Data.Entity;
-using System.Web;
+﻿using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using ExpenseManager.Web.DatabaseContext;
+using ExpenseManager.BusinessLogic.DatabaseContext;
 
 namespace ExpenseManager.Web
 {
@@ -16,9 +15,7 @@ namespace ExpenseManager.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            Database.SetInitializer(new CreateDatabaseIfNotExists<ExpenseManagerContext>());
-            var c = new ExpenseManagerContext();
-            c.Database.Initialize(true);
+            DatabaseInitializer.Initialize();
         }
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpenseManager.Entity
 {
-    public class AccessRight
+    public class BudgetAccessRight : IEntity
     {
         public enum PermissionEnum
         {

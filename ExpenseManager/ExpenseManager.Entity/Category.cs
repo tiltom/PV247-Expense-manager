@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpenseManager.Entity
 {
-    public class Category
+    public class Category : IEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,7 +12,7 @@ namespace ExpenseManager.Entity
 
         public string Name { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<Wallet> Wallets { get; set; }
+        public string Icon { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

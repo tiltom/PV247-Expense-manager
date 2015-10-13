@@ -2,7 +2,7 @@
 using System.Data.Entity.ModelConfiguration.Conventions;
 using ExpenseManager.Entity;
 
-namespace ExpenseManager.Web.DatabaseContext
+namespace ExpenseManager.BusinessLogic.DatabaseContext
 {
     public class ExpenseManagerContext : DbContext
     {
@@ -11,7 +11,7 @@ namespace ExpenseManager.Web.DatabaseContext
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<AccessRight> AccessRights { get; set; }
+        public DbSet<BudgetAccessRight> AccessRights { get; set; }
         public DbSet<Budget> Budgets { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Currency> Currencies { get; set; }

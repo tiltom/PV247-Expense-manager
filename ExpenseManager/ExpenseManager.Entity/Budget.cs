@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpenseManager.Entity
 {
-    public class Budget
+    public class Budget : IEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -13,11 +13,17 @@ namespace ExpenseManager.Entity
 
         public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime StartDay { get; set; }
-        public int Duration { get; set; }
-        public float Limit { get; set; }
-        public int WalletId { get; set; }
-        public virtual Wallet Wallet { get; set; }
-        public virtual ICollection<AccessRight> AccessRights { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public decimal Limit { get; set; }
+
+        public int CreatorId { get; set; }
+        public virtual User Creator { get; set; }
+
+        public int CurrencyId { get; set; }
+        public Currency Currency { get; set; }
+
+        public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<BudgetAccessRight> AccessRights { get; set; }
     }
 }
