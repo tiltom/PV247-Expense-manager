@@ -7,13 +7,13 @@ namespace ExpenseManager.Web.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class InitialMigration : IMigrationMetadata
+    public sealed partial class ChangeUser : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialMigration));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ChangeUser));
         
         string IMigrationMetadata.Id
         {
-            get { return "201510151236322_InitialMigration"; }
+            get { return "201510151939540_ChangeUser"; }
         }
         
         string IMigrationMetadata.Source

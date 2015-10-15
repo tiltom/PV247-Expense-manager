@@ -14,7 +14,6 @@ namespace ExpenseManager.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-
             DatabaseInitializer.Initialize();
         }
     }

@@ -3,7 +3,7 @@ namespace ExpenseManager.Web.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialMigration : DbMigration
+    public partial class ChangeUser : DbMigration
     {
         public override void Up()
         {
@@ -14,13 +14,13 @@ namespace ExpenseManager.Web.Migrations
                         Guid = c.Guid(nullable: false, identity: true),
                         Permission = c.Int(nullable: false),
                         Budget_Guid = c.Guid(nullable: false),
-                        User_Guid = c.Guid(nullable: false),
+                        User_Id = c.String(nullable: false, maxLength: 128),
                     })
                 .PrimaryKey(t => t.Guid)
                 .ForeignKey("dbo.Budget", t => t.Budget_Guid)
-                .ForeignKey("dbo.User", t => t.User_Guid)
+                .ForeignKey("dbo.AspNetUsers", t => t.User_Id)
                 .Index(t => t.Budget_Guid)
-                .Index(t => t.User_Guid);
+                .Index(t => t.User_Id);
             
             CreateTable(
                 "dbo.Budget",
@@ -32,26 +32,60 @@ namespace ExpenseManager.Web.Migrations
                         StartDate = c.DateTime(nullable: false),
                         EndDate = c.DateTime(nullable: false),
                         Limit = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        Creator_Guid = c.Guid(nullable: false),
+                        Creator_Id = c.String(nullable: false, maxLength: 128),
                         Currency_Guid = c.Guid(nullable: false),
                     })
                 .PrimaryKey(t => t.Guid)
-                .ForeignKey("dbo.User", t => t.Creator_Guid)
+                .ForeignKey("dbo.AspNetUsers", t => t.Creator_Id)
                 .ForeignKey("dbo.Currency", t => t.Currency_Guid)
-                .Index(t => t.Creator_Guid)
+                .Index(t => t.Creator_Id)
                 .Index(t => t.Currency_Guid);
             
             CreateTable(
-                "dbo.User",
+                "dbo.AspNetUsers",
                 c => new
                     {
-                        Guid = c.Guid(nullable: false, identity: true),
-                        UserName = c.String(),
-                        Email = c.String(),
-                        Password = c.String(),
+                        Id = c.String(nullable: false, maxLength: 128),
                         CreationDate = c.DateTime(nullable: false),
+                        Email = c.String(maxLength: 256),
+                        EmailConfirmed = c.Boolean(nullable: false),
+                        PasswordHash = c.String(),
+                        SecurityStamp = c.String(),
+                        PhoneNumber = c.String(),
+                        PhoneNumberConfirmed = c.Boolean(nullable: false),
+                        TwoFactorEnabled = c.Boolean(nullable: false),
+                        LockoutEndDateUtc = c.DateTime(),
+                        LockoutEnabled = c.Boolean(nullable: false),
+                        AccessFailedCount = c.Int(nullable: false),
+                        UserName = c.String(nullable: false, maxLength: 256),
                     })
-                .PrimaryKey(t => t.Guid);
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.UserName, unique: true, name: "UserNameIndex");
+            
+            CreateTable(
+                "dbo.AspNetUserClaims",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        UserId = c.String(nullable: false, maxLength: 128),
+                        ClaimType = c.String(),
+                        ClaimValue = c.String(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.AspNetUsers", t => t.UserId)
+                .Index(t => t.UserId);
+            
+            CreateTable(
+                "dbo.AspNetUserLogins",
+                c => new
+                    {
+                        LoginProvider = c.String(nullable: false, maxLength: 128),
+                        ProviderKey = c.String(nullable: false, maxLength: 128),
+                        UserId = c.String(nullable: false, maxLength: 128),
+                    })
+                .PrimaryKey(t => new { t.LoginProvider, t.ProviderKey, t.UserId })
+                .ForeignKey("dbo.AspNetUsers", t => t.UserId)
+                .Index(t => t.UserId);
             
             CreateTable(
                 "dbo.Wallet",
@@ -60,12 +94,13 @@ namespace ExpenseManager.Web.Migrations
                         Guid = c.Guid(nullable: false, identity: true),
                         Name = c.String(),
                         Currency_Guid = c.Guid(nullable: false),
+                        Owner_Id = c.String(nullable: false, maxLength: 128),
                     })
                 .PrimaryKey(t => t.Guid)
                 .ForeignKey("dbo.Currency", t => t.Currency_Guid)
-                .ForeignKey("dbo.User", t => t.Guid)
-                .Index(t => t.Guid)
-                .Index(t => t.Currency_Guid);
+                .ForeignKey("dbo.AspNetUsers", t => t.Owner_Id)
+                .Index(t => t.Currency_Guid)
+                .Index(t => t.Owner_Id);
             
             CreateTable(
                 "dbo.Currency",
@@ -118,13 +153,26 @@ namespace ExpenseManager.Web.Migrations
                         Guid = c.Guid(nullable: false, identity: true),
                         Permission = c.Int(nullable: false),
                         Budget_Guid = c.Guid(),
-                        User_Guid = c.Guid(),
+                        User_Id = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.Guid)
                 .ForeignKey("dbo.Wallet", t => t.Budget_Guid)
-                .ForeignKey("dbo.User", t => t.User_Guid)
+                .ForeignKey("dbo.AspNetUsers", t => t.User_Id)
                 .Index(t => t.Budget_Guid)
-                .Index(t => t.User_Guid);
+                .Index(t => t.User_Id);
+            
+            CreateTable(
+                "dbo.AspNetUserRoles",
+                c => new
+                    {
+                        UserId = c.String(nullable: false, maxLength: 128),
+                        RoleId = c.String(nullable: false, maxLength: 128),
+                    })
+                .PrimaryKey(t => new { t.UserId, t.RoleId })
+                .ForeignKey("dbo.AspNetUsers", t => t.UserId)
+                .ForeignKey("dbo.AspNetRoles", t => t.RoleId)
+                .Index(t => t.UserId)
+                .Index(t => t.RoleId);
             
             CreateTable(
                 "dbo.RepeatableTransaction",
@@ -139,43 +187,67 @@ namespace ExpenseManager.Web.Migrations
                 .ForeignKey("dbo.Transaction", t => t.FirstTransaction_Guid)
                 .Index(t => t.FirstTransaction_Guid);
             
+            CreateTable(
+                "dbo.AspNetRoles",
+                c => new
+                    {
+                        Id = c.String(nullable: false, maxLength: 128),
+                        Name = c.String(nullable: false, maxLength: 256),
+                    })
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Name, unique: true, name: "RoleNameIndex");
+            
         }
         
         public override void Down()
         {
+            DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
             DropForeignKey("dbo.RepeatableTransaction", "FirstTransaction_Guid", "dbo.Transaction");
-            DropForeignKey("dbo.BudgetAccessRight", "User_Guid", "dbo.User");
+            DropForeignKey("dbo.BudgetAccessRight", "User_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.BudgetAccessRight", "Budget_Guid", "dbo.Budget");
             DropForeignKey("dbo.Budget", "Currency_Guid", "dbo.Currency");
-            DropForeignKey("dbo.Budget", "Creator_Guid", "dbo.User");
-            DropForeignKey("dbo.WalletAccessRight", "User_Guid", "dbo.User");
+            DropForeignKey("dbo.Budget", "Creator_Id", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.WalletAccessRight", "User_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.WalletAccessRight", "Budget_Guid", "dbo.Wallet");
             DropForeignKey("dbo.Transaction", "Wallet_Guid", "dbo.Wallet");
             DropForeignKey("dbo.Transaction", "Currency_Guid", "dbo.Currency");
             DropForeignKey("dbo.Transaction", "Category_Guid", "dbo.Category");
             DropForeignKey("dbo.Transaction", "Budget_Guid", "dbo.Budget");
-            DropForeignKey("dbo.Wallet", "Guid", "dbo.User");
+            DropForeignKey("dbo.Wallet", "Owner_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.Wallet", "Currency_Guid", "dbo.Currency");
+            DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
+            DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.RepeatableTransaction", new[] { "FirstTransaction_Guid" });
-            DropIndex("dbo.WalletAccessRight", new[] { "User_Guid" });
+            DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
+            DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
+            DropIndex("dbo.WalletAccessRight", new[] { "User_Id" });
             DropIndex("dbo.WalletAccessRight", new[] { "Budget_Guid" });
             DropIndex("dbo.Transaction", new[] { "Wallet_Guid" });
             DropIndex("dbo.Transaction", new[] { "Currency_Guid" });
             DropIndex("dbo.Transaction", new[] { "Category_Guid" });
             DropIndex("dbo.Transaction", new[] { "Budget_Guid" });
+            DropIndex("dbo.Wallet", new[] { "Owner_Id" });
             DropIndex("dbo.Wallet", new[] { "Currency_Guid" });
-            DropIndex("dbo.Wallet", new[] { "Guid" });
+            DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
+            DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
+            DropIndex("dbo.AspNetUsers", "UserNameIndex");
             DropIndex("dbo.Budget", new[] { "Currency_Guid" });
-            DropIndex("dbo.Budget", new[] { "Creator_Guid" });
-            DropIndex("dbo.BudgetAccessRight", new[] { "User_Guid" });
+            DropIndex("dbo.Budget", new[] { "Creator_Id" });
+            DropIndex("dbo.BudgetAccessRight", new[] { "User_Id" });
             DropIndex("dbo.BudgetAccessRight", new[] { "Budget_Guid" });
+            DropTable("dbo.AspNetRoles");
             DropTable("dbo.RepeatableTransaction");
+            DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.WalletAccessRight");
             DropTable("dbo.Category");
             DropTable("dbo.Transaction");
             DropTable("dbo.Currency");
             DropTable("dbo.Wallet");
-            DropTable("dbo.User");
+            DropTable("dbo.AspNetUserLogins");
+            DropTable("dbo.AspNetUserClaims");
+            DropTable("dbo.AspNetUsers");
             DropTable("dbo.Budget");
             DropTable("dbo.BudgetAccessRight");
         }

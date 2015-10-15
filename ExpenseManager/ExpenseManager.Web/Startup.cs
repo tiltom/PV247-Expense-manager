@@ -1,18 +1,14 @@
-﻿using ExpenseManager.Web;
-using ExpenseManager.Web.DatabaseContexts;
-using Microsoft.Owin;
+﻿using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartup(typeof (Startup))]
-
+[assembly: OwinStartupAttribute(typeof(ExpenseManager.Web.Startup))]
 namespace ExpenseManager.Web
 {
-    public class Startup
+    public partial class Startup
     {
         public void Configuration(IAppBuilder app)
         {
-            //ConfigureAuth(app);            
-            DatabaseInitializer.Initialize();
+            ConfigureAuth(app);
         }
     }
 }

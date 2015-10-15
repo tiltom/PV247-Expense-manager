@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using ExpenseManager.Web.Models.User;
 
 namespace ExpenseManager.Web.DatabaseContexts
 {
@@ -6,8 +7,8 @@ namespace ExpenseManager.Web.DatabaseContexts
     {
         public static void Initialize()
         {
-            Database.SetInitializer(new ExpenseManagerInitializater());
-            var context = new ExpenseManagerContext();
+            Database.SetInitializer(new ApplicationDbInitializer());
+            var context = new ApplicationDbContext();
             context.Database.Initialize(true);
         }
     }
