@@ -1,20 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpenseManager.Entity
 {
-    public class Wallet : IEntity
+    public class Wallet : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
         public string Name { get; set; }
-        public int CurrencyId { get; set; }
+
+        [Required]
         public virtual Currency Currency { get; set; }
+
+        [Required]
         public virtual User Owner { get; set; }
-        public virtual ICollection<User> UsersWithReadAccess { get; set; }
+
+        public virtual ICollection<WalletAccessRight> WalletAccessRights { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

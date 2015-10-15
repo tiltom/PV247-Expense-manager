@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using ExpenseManager.Entity;
 
-namespace ExpenseManager.BusinessLogic.DatabaseContext
+namespace ExpenseManager.Web.DatabaseContexts
 {
-    public class ExpenseManagerInitializater : DropCreateDatabaseAlways<ExpenseManagerContext>
+    public class ExpenseManagerInitializater :
+        DropCreateDatabaseIfModelChanges<ExpenseManagerContext>
     {
         protected override void Seed(ExpenseManagerContext context)
         {
-            InitializeUsers(context);
             InitializeCurrency(context);
             InitializeCategories(context);
 
@@ -24,19 +23,19 @@ namespace ExpenseManager.BusinessLogic.DatabaseContext
                 {
                     Name = "Other",
                     Description = "Category for non-classifiable transactions",
-                    Icon = "glyphicons-circle-question-mark"
+                    IconPath = "glyphicons-circle-question-mark"
                 },
                 new Category
                 {
                     Name = "Food & Drinks",
                     Description = "Category for comsumables",
-                    Icon = "glyphicons-fast-food"
+                    IconPath = "glyphicons-fast-food"
                 },
                 new Category
                 {
                     Name = "Travel",
                     Description = "Category for transportation and related stuff",
-                    Icon = "glyphicons-transport"
+                    IconPath = "glyphicons-transport"
                 }
             };
             context.Categories.AddRange(categories);
@@ -64,24 +63,6 @@ namespace ExpenseManager.BusinessLogic.DatabaseContext
             };
 
             context.Currencies.AddRange(currencies);
-        }
-
-        private static void InitializeUsers(ExpenseManagerContext context)
-        {
-            var users = new List<User>
-            {
-                new User
-                {
-                    //AccessRights = null,
-                    CreateTime = DateTime.Now,
-                    Email = "test@test.com",
-                    Password = "test",
-                    UserName = "test"
-                    //Wallets = null
-                }
-            };
-
-            context.Users.AddRange(users);
         }
     }
 }

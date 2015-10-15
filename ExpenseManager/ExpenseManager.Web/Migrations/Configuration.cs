@@ -1,16 +1,18 @@
-using System.Data.Entity.Migrations;
-using ExpenseManager.BusinessLogic.DatabaseContext;
-
-namespace ExpenseManager.BusinessLogic.Migrations
+namespace ExpenseManager.Web.Migrations
 {
-    internal sealed class Configuration : DbMigrationsConfiguration<ExpenseManagerContext>
+    using System;
+    using System.Data.Entity;
+    using System.Data.Entity.Migrations;
+    using System.Linq;
+
+    internal sealed class Configuration : DbMigrationsConfiguration<ExpenseManager.Web.DatabaseContexts.ExpenseManagerContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(ExpenseManagerContext context)
+        protected override void Seed(ExpenseManager.Web.DatabaseContexts.ExpenseManagerContext context)
         {
             //  This method will be called after migrating to the latest version.
 

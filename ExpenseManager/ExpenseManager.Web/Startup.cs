@@ -1,7 +1,5 @@
-﻿using System;
-using ExpenseManager.BusinessLogic.DataTransferObjects;
-using ExpenseManager.BusinessLogic.Services;
-using ExpenseManager.Web;
+﻿using ExpenseManager.Web;
+using ExpenseManager.Web.DatabaseContexts;
 using Microsoft.Owin;
 using Owin;
 
@@ -14,16 +12,7 @@ namespace ExpenseManager.Web
         public void Configuration(IAppBuilder app)
         {
             //ConfigureAuth(app);            
-            var service = new UserService();
-            var dto = new UserDTO
-            {
-                UserName = "Slavo",
-                Email = "slavo@slavo.krupa",
-                Password = "slavo.krupa",
-                CreateTime = DateTime.Now
-            };
-
-            service.CreateUser(dto);
+            DatabaseInitializer.Initialize();
         }
     }
 }

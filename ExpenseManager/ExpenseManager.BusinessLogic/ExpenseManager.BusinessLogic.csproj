@@ -50,29 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters\AbstractConverter.cs" />
-    <Compile Include="Converters\UserConverter.cs" />
-    <Compile Include="DataAccessObjects\API\IRepository.cs" />
-    <Compile Include="DataAccessObjects\Repository.cs" />
-    <Compile Include="DataAccessObjects\UserDAO.cs" />
-    <Compile Include="DatabaseContext\DatabaseInitializer.cs" />
-    <Compile Include="DatabaseContext\ExpenseManagerContext.cs" />
-    <Compile Include="DatabaseContext\ExpenseManagerInitializer.cs" />
-    <Compile Include="DataTransferObjects\BudgetAccessRightDTO.cs" />
-    <Compile Include="DataTransferObjects\BudgetDTO.cs" />
-    <Compile Include="DataTransferObjects\UserDTO.cs" />
-    <Compile Include="DataTransferObjects\WalletDTO.cs" />
-    <Compile Include="Migrations\201510131822142_InitialProjectStructure.cs" />
-    <Compile Include="Migrations\201510131822142_InitialProjectStructure.Designer.cs">
-      <DependentUpon>201510131822142_InitialProjectStructure.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510131847335_ChangedNullableColumns.cs" />
-    <Compile Include="Migrations\201510131847335_ChangedNullableColumns.Designer.cs">
-      <DependentUpon>201510131847335_ChangedNullableColumns.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExpenseManager.Entity\ExpenseManager.Entity.csproj">
@@ -83,14 +61,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201510131822142_InitialProjectStructure.resx">
-      <DependentUpon>201510131822142_InitialProjectStructure.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510131847335_ChangedNullableColumns.resx">
-      <DependentUpon>201510131847335_ChangedNullableColumns.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

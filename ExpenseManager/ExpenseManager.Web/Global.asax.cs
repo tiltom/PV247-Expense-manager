@@ -2,7 +2,7 @@
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using ExpenseManager.BusinessLogic.DatabaseContext;
+using ExpenseManager.Web.DatabaseContexts;
 
 namespace ExpenseManager.Web
 {

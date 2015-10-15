@@ -2,21 +2,20 @@
 using System.Data.Entity.ModelConfiguration.Conventions;
 using ExpenseManager.Entity;
 
-namespace ExpenseManager.BusinessLogic.DatabaseContext
+namespace ExpenseManager.Web.DatabaseContexts
 {
-    public class ExpenseManagerContext : DbContext
+    public class UserDbContext : DbContext
     {
-        public ExpenseManagerContext() : base("DefaultConnection")
+        public UserDbContext() : base("DefaultConnection")
         {
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<BudgetAccessRight> AccessRights { get; set; }
         public DbSet<Budget> Budgets { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Currency> Currencies { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<BudgetAccessRight> BudgetAccessRights { get; set; }
+        public DbSet<WalletAccessRight> WalletAccessRights { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

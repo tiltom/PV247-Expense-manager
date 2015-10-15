@@ -44,6 +44,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
@@ -160,9 +168,21 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="DatabaseContexts\DatabaseInitializer.cs" />
+    <Compile Include="DatabaseContexts\ExpenseManagerContext.cs" />
+    <Compile Include="DatabaseContexts\ExpenseManagerInitializer.cs" />
+    <Compile Include="DatabaseContexts\TransactionDbContext.cs" />
+    <Compile Include="DatabaseContexts\TransactionInitializater.cs" />
+    <Compile Include="DatabaseContexts\UserDbContext.cs" />
+    <Compile Include="DatabaseContexts\UserInitializater.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201510151236322_InitialMigration.cs" />
+    <Compile Include="Migrations\201510151236322_InitialMigration.Designer.cs">
+      <DependentUpon>201510151236322_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -217,6 +237,15 @@
       <Project>{8047c791-c961-4624-9e5e-e8c13901bd28}</Project>
       <Name>ExpenseManager.BusinessLogic</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExpenseManager.Entity\ExpenseManager.Entity.csproj">
+      <Project>{73A4FAB0-96F1-4DC9-92A8-2CC73B4EF776}</Project>
+      <Name>ExpenseManager.Entity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201510151236322_InitialMigration.resx">
+      <DependentUpon>201510151236322_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
