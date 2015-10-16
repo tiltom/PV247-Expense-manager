@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Google;
 using Owin;
 
 namespace ExpenseManager.Web
@@ -59,11 +60,11 @@ namespace ExpenseManager.Web
             //   appId: "",
             //   appSecret: "");
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
+            {
+                ClientId = "94841318474-msivfam006v86qdjhpa9t81u179mmtuv.apps.googleusercontent.com",
+                ClientSecret = "DcOhw5qOQcDO0lGKMsrFVT04"
+            });
         }
     }
 }

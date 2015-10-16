@@ -14,6 +14,7 @@ namespace ExpenseManager.Web.Controllers
     [Authorize]
     public class AccountController : Controller
     {
+        private ApplicationRoleManager _roleManager;
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -21,10 +22,12 @@ namespace ExpenseManager.Web.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager,
+            ApplicationRoleManager roleManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            RoleManager = roleManager;
         }
 
         public ApplicationSignInManager SignInManager
@@ -37,6 +40,12 @@ namespace ExpenseManager.Web.Controllers
         {
             get { return this._userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>(); }
             private set { this._userManager = value; }
+        }
+
+        public ApplicationRoleManager RoleManager
+        {
+            get { return this._roleManager ?? HttpContext.GetOwinContext().Get<ApplicationRoleManager>(); }
+            private set { this._roleManager = value; }
         }
 
         //
@@ -140,42 +149,37 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return this.View(model);
+            var user = new User
             {
-                var user = new User
+                UserName = model.Email,
+                Email = model.Email,
+                CreationDate = DateTime.Now,
+                PersonalWallet = new Wallet
                 {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    CreationDate = DateTime.Now,
-                    PersonalWallet = new Wallet
+                    Name = "Default Wallet",
+                    Currency = new Currency
                     {
-                        Name = "Default Wallet",
-                        Currency = new Currency
-                        {
-                            Name = "Česká koruna",
-                            Symbol = "Kč"
-                        }
+                        Name = "Česká koruna",
+                        Symbol = "Kč"
                     }
-                };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    await SignInManager.SignInAsync(user, false, false);
-
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-                    return this.RedirectToAction("Index", "Home");
                 }
-                this.AddErrors(result);
+            };
+            var result = await UserManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                await SignInManager.SignInAsync(user, false, false);
+                var userRole = await RoleManager.FindByNameAsync("User");
+                await UserManager.AddToRoleAsync(user.Id, userRole.Name);
+
+                return this.RedirectToAction("Index", "Home");
             }
+            this.AddErrors(result);
 
             // If we got this far, something failed, redisplay form
             return this.View(model);
         }
+
 
         //
         // GET: /Account/ConfirmEmail
@@ -383,7 +387,7 @@ namespace ExpenseManager.Web.Controllers
                 {
                     return this.View("ExternalLoginFailure");
                 }
-                var user = new User {UserName = model.Email, Email = model.Email};
+                var user = new User {UserName = model.Email, Email = model.Email, CreationDate = DateTime.Now};
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -433,6 +437,12 @@ namespace ExpenseManager.Web.Controllers
                 {
                     this._signInManager.Dispose();
                     this._signInManager = null;
+                }
+
+                if (this._roleManager != null)
+                {
+                    this._roleManager.Dispose();
+                    this._roleManager = null;
                 }
             }
 

@@ -76,15 +76,13 @@ namespace ExpenseManager.Web.DatabaseContexts
             var roleManager = new ApplicationRoleManager(new RoleStore<IdentityRole>(context));
             const string name = "admin@example.com";
             const string password = "password1";
-            const string roleName = "Admin";
+            const string adminRoleName = "Admin";
+            const string userRoleName = "User";
+
 
             //Create Role Admin if it does not exist
-            var role = roleManager.FindByName(roleName);
-            if (role == null)
-            {
-                role = new IdentityRole(roleName);
-                var roleresult = roleManager.Create(role);
-            }
+            CreateRole(roleManager, adminRoleName);
+            CreateRole(roleManager, userRoleName);
 
             var user = userManager.FindByName(name);
             if (user == null)
@@ -110,10 +108,19 @@ namespace ExpenseManager.Web.DatabaseContexts
 
             // Add user admin to Role Admin if not already added
             var rolesForUser = userManager.GetRoles(user.Id);
+            var role = roleManager.FindByName(adminRoleName);
             if (!rolesForUser.Contains(role.Name))
             {
                 var result = userManager.AddToRole(user.Id, role.Name);
             }
+        }
+
+        private static void CreateRole(ApplicationRoleManager roleManager, string adminRoleName)
+        {
+            var role = roleManager.FindByName(adminRoleName);
+            if (role != null) return;
+            role = new IdentityRole(adminRoleName);
+            var roleresult = roleManager.Create(role);
         }
     }
 }
