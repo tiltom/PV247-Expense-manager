@@ -391,6 +391,9 @@ namespace ExpenseManager.Web.Controllers
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
+                    var userRole = await RoleManager.FindByNameAsync("User");
+                    await UserManager.AddToRoleAsync(user.Id, userRole.Name);
+
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
                     if (result.Succeeded)
                     {
