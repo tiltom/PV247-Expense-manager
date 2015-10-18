@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
 using ExpenseManager.Web.Models.User;
+using Facebook;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -355,10 +356,18 @@ namespace ExpenseManager.Web.Controllers
                 case SignInStatus.LockedOut:
                     return this.View("Lockout");
                 case SignInStatus.RequiresVerification:
-                    return this.RedirectToAction("SendCode", new {ReturnUrl = returnUrl, RememberMe = false});
+                    return this.RedirectToAction("SendCode", new {ReturnUrl = returnUrl});
                 case SignInStatus.Failure:
                 default:
                     // If the user does not have an account, then prompt the user to create an account
+                    if (loginInfo.Login.LoginProvider == "Facebook")
+                    {
+                        var identity = AuthenticationManager.GetExternalIdentity(DefaultAuthenticationTypes.ExternalCookie);
+                        var access_token = identity.FindFirstValue("FacebookAccessToken");
+                        var fb = new FacebookClient(access_token);
+                        dynamic myInfo = fb.Get("/me?fields=email"); // specify the email field
+                        loginInfo.Email = myInfo.email;
+                    }
                     ViewBag.ReturnUrl = returnUrl;
                     ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
                     return this.View("ExternalLoginConfirmation",
