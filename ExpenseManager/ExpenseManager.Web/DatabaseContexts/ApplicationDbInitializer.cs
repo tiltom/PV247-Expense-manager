@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using ExpenseManager.Entity;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
@@ -12,9 +13,9 @@ namespace ExpenseManager.Web.DatabaseContexts
     {
         protected override void Seed(ApplicationDbContext context)
         {
-            InitializeIdentityForEf(context);
             InitializeCurrency(context);
             InitializeCategories(context);
+            InitializeIdentityForEf(context);
             base.Seed(context);
             context.SaveChanges();
         }
@@ -87,6 +88,7 @@ namespace ExpenseManager.Web.DatabaseContexts
             var user = userManager.FindByName(name);
             if (user == null)
             {
+                var currency = context.Currencies.FirstOrDefault(c => c.Symbol == "Kč");
                 user = new User
                 {
                     UserName = name,
@@ -95,11 +97,7 @@ namespace ExpenseManager.Web.DatabaseContexts
                     PersonalWallet = new Wallet
                     {
                         Name = "Default Wallet",
-                        Currency = new Currency
-                        {
-                            Name = "Česká koruna",
-                            Symbol = "Kč"
-                        }
+                        Currency = currency
                     }
                 };
                 var result = userManager.Create(user, password);
