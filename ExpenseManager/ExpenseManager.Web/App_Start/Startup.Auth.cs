@@ -74,8 +74,6 @@ namespace ExpenseManager.Web
                 }
             });
 
-            //app.UseFacebookAuthentication("104450119915739", "367af36f461b5b9d330d48b33d2ce509");
-
             app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
             {
                 ClientId = "94841318474-msivfam006v86qdjhpa9t81u179mmtuv.apps.googleusercontent.com",

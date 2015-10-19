@@ -362,7 +362,8 @@ namespace ExpenseManager.Web.Controllers
                     // If the user does not have an account, then prompt the user to create an account
                     if (loginInfo.Login.LoginProvider == "Facebook")
                     {
-                        var identity = AuthenticationManager.GetExternalIdentity(DefaultAuthenticationTypes.ExternalCookie);
+                        var identity =
+                            AuthenticationManager.GetExternalIdentity(DefaultAuthenticationTypes.ExternalCookie);
                         var access_token = identity.FindFirstValue("FacebookAccessToken");
                         var fb = new FacebookClient(access_token);
                         dynamic myInfo = fb.Get("/me?fields=email"); // specify the email field
@@ -396,7 +397,21 @@ namespace ExpenseManager.Web.Controllers
                 {
                     return this.View("ExternalLoginFailure");
                 }
-                var user = new User {UserName = model.Email, Email = model.Email, CreationDate = DateTime.Now};
+                var user = new User
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    CreationDate = DateTime.Now,
+                    PersonalWallet = new Wallet
+                    {
+                        Name = "Default Wallet",
+                        Currency = new Currency
+                        {
+                            Name = "Česká koruna",
+                            Symbol = "Kč"
+                        }
+                    }
+                };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
