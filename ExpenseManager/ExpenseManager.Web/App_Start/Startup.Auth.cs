@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using ExpenseManager.Entity;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Facebook;
 using Microsoft.Owin.Security.Google;
 using Owin;
 
@@ -56,9 +59,20 @@ namespace ExpenseManager.Web
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            app.UseFacebookAuthentication(new FacebookAuthenticationOptions
+            {
+                AppId = "104450119915739",
+                AppSecret = "367af36f461b5b9d330d48b33d2ce509",
+                Scope = {"email"},
+                Provider = new FacebookAuthenticationProvider
+                {
+                    OnAuthenticated = context =>
+                    {
+                        context.Identity.AddClaim(new Claim("FacebookAccessToken", context.AccessToken));
+                        return Task.FromResult(true);
+                    }
+                }
+            });
 
             app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
             {

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
 using ExpenseManager.Web.Models.User;
+using Facebook;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -158,11 +159,7 @@ namespace ExpenseManager.Web.Controllers
                 PersonalWallet = new Wallet
                 {
                     Name = "Default Wallet",
-                    Currency = new Currency
-                    {
-                        Name = "Česká koruna",
-                        Symbol = "Kč"
-                    }
+                    Currency = this.GetDefaultCurrency()
                 }
             };
             var result = await UserManager.CreateAsync(user, model.Password);
@@ -178,6 +175,13 @@ namespace ExpenseManager.Web.Controllers
 
             // If we got this far, something failed, redisplay form
             return this.View(model);
+        }
+
+        private Currency GetDefaultCurrency()
+        {
+            var context = HttpContext.GetOwinContext().Get<ApplicationDbContext>();
+            var currency = context.Currencies.FirstOrDefault(c => c.Symbol == "Kč");
+            return currency;
         }
 
 
@@ -355,10 +359,19 @@ namespace ExpenseManager.Web.Controllers
                 case SignInStatus.LockedOut:
                     return this.View("Lockout");
                 case SignInStatus.RequiresVerification:
-                    return this.RedirectToAction("SendCode", new {ReturnUrl = returnUrl, RememberMe = false});
+                    return this.RedirectToAction("SendCode", new {ReturnUrl = returnUrl});
                 case SignInStatus.Failure:
                 default:
                     // If the user does not have an account, then prompt the user to create an account
+                    if (loginInfo.Login.LoginProvider == "Facebook")
+                    {
+                        var identity =
+                            AuthenticationManager.GetExternalIdentity(DefaultAuthenticationTypes.ExternalCookie);
+                        var access_token = identity.FindFirstValue("FacebookAccessToken");
+                        var fb = new FacebookClient(access_token);
+                        dynamic myInfo = fb.Get("/me?fields=email"); // specify the email field
+                        loginInfo.Email = myInfo.email;
+                    }
                     ViewBag.ReturnUrl = returnUrl;
                     ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
                     return this.View("ExternalLoginConfirmation",
@@ -387,7 +400,18 @@ namespace ExpenseManager.Web.Controllers
                 {
                     return this.View("ExternalLoginFailure");
                 }
-                var user = new User {UserName = model.Email, Email = model.Email, CreationDate = DateTime.Now};
+
+                var user = new User
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    CreationDate = DateTime.Now,
+                    PersonalWallet = new Wallet
+                    {
+                        Name = "Default Wallet",
+                        Currency = this.GetDefaultCurrency()
+                    }
+                };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

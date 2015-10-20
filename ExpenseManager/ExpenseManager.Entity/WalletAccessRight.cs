@@ -8,6 +8,6 @@ namespace ExpenseManager.Entity
         public PermissionEnum Permission { get; set; }
 
         public virtual User User { get; set; }
-        public virtual Wallet Budget { get; set; }
+        public virtual Wallet Wallet { get; set; }
     }
 }

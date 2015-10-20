@@ -13,17 +13,16 @@ namespace ExpenseManager.Web.DatabaseContexts
     {
         protected override void Seed(ApplicationDbContext context)
         {
-            InitializeIdentityForEf(context);
             InitializeCurrency(context);
             InitializeCategories(context);
-            /*InitializeWallets(context);
+            InitializeWallets(context);
             InitializeTransactions(context);
             InitializeRepeatableTransactions(context);
             InitializeWalletAccessRights(context);
 
             InitializeBudgets(context);
-            InitializeBudgetAccessRights(context);*/
-
+            InitializeBudgetAccessRights(context);
+            InitializeIdentityForEf(context);
             base.Seed(context);
             context.SaveChanges();
         }
@@ -36,19 +35,19 @@ namespace ExpenseManager.Web.DatabaseContexts
                 {
                     Name = "Other",
                     Description = "Category for non-classifiable transactions",
-                    IconPath = "glyphicon-question-sign"
+                    IconPath = "glyphicons-circle-question-mark"
                 },
                 new Category
                 {
                     Name = "Food & Drinks",
-                    Description = "Category for consumables",
-                    IconPath = "glyphicons-drink"
+                    Description = "Category for comsumables",
+                    IconPath = "glyphicons-fast-food"
                 },
                 new Category
                 {
                     Name = "Travel",
                     Description = "Category for transportation and related stuff",
-                    IconPath = "glyphicons-road"
+                    IconPath = "glyphicons-transport"
                 }
             };
             context.Categories.AddRange(categories);
@@ -99,7 +98,7 @@ namespace ExpenseManager.Web.DatabaseContexts
             {
                 new WalletAccessRight
                 {
-                    Budget = context.Wallets.FirstOrDefault(),
+                    Wallet = context.Wallets.FirstOrDefault(),
                     Permission = PermissionEnum.Owner,
                     User = context.Users.FirstOrDefault()
                 }
@@ -227,6 +226,7 @@ namespace ExpenseManager.Web.DatabaseContexts
             var user = userManager.FindByName(name);
             if (user == null)
             {
+                var currency = context.Currencies.FirstOrDefault(c => c.Symbol == "Kč");
                 user = new User
                 {
                     UserName = name,
@@ -235,11 +235,7 @@ namespace ExpenseManager.Web.DatabaseContexts
                     PersonalWallet = new Wallet
                     {
                         Name = "Default Wallet",
-                        Currency = new Currency
-                        {
-                            Name = "Česká koruna",
-                            Symbol = "Kč"
-                        }
+                        Currency = currency
                     }
                 };
                 var result = userManager.Create(user, password);
