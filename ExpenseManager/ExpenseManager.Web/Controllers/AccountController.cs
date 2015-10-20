@@ -159,11 +159,7 @@ namespace ExpenseManager.Web.Controllers
                 PersonalWallet = new Wallet
                 {
                     Name = "Default Wallet",
-                    Currency = new Currency
-                    {
-                        Name = "Česká koruna",
-                        Symbol = "Kč"
-                    }
+                    Currency = this.GetDefaultCurrency()
                 }
             };
             var result = await UserManager.CreateAsync(user, model.Password);
@@ -179,6 +175,13 @@ namespace ExpenseManager.Web.Controllers
 
             // If we got this far, something failed, redisplay form
             return this.View(model);
+        }
+
+        private Currency GetDefaultCurrency()
+        {
+            var context = HttpContext.GetOwinContext().Get<ApplicationDbContext>();
+            var currency = context.Currencies.FirstOrDefault(c => c.Symbol == "Kč");
+            return currency;
         }
 
 
@@ -397,6 +400,7 @@ namespace ExpenseManager.Web.Controllers
                 {
                     return this.View("ExternalLoginFailure");
                 }
+
                 var user = new User
                 {
                     UserName = model.Email,
@@ -405,11 +409,7 @@ namespace ExpenseManager.Web.Controllers
                     PersonalWallet = new Wallet
                     {
                         Name = "Default Wallet",
-                        Currency = new Currency
-                        {
-                            Name = "Česká koruna",
-                            Symbol = "Kč"
-                        }
+                        Currency = this.GetDefaultCurrency()
                     }
                 };
                 var result = await UserManager.CreateAsync(user);
