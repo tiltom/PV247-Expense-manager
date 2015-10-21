@@ -1,4 +1,4 @@
-﻿@model ExpenseManager.Entity.Transaction
+﻿@model ExpenseManager.Web.Models.Transaction.TransactionModel
 
 @{
     ViewBag.Title = "Delete";
@@ -33,6 +33,22 @@
 
         <dd>
             @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CategoryName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CategoryName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CurrencySymbol)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CurrencySymbol)
         </dd>
 
     </dl>
