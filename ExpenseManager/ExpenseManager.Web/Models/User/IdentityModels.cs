@@ -22,9 +22,9 @@ namespace ExpenseManager.Web.Models.User
         {
         }
 
-        public DbSet<BudgetAccessRight> BudgetAccessRights { get; set; }
+        public DbSet<Entity.BudgetAccessRight> BudgetAccessRights { get; set; }
         public DbSet<WalletAccessRight> WalletAccessRights { get; set; }
-        public DbSet<Budget> Budgets { get; set; }
+        public DbSet<Entity.Budget> Budgets { get; set; }
         public DbSet<Entity.Wallet> Wallets { get; set; }
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<RepeatableTransaction> RepeatableTransactions { get; set; }

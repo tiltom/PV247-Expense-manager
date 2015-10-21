@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace ExpenseManager.Entity
 {
@@ -12,10 +11,7 @@ namespace ExpenseManager.Entity
         public DateTime EndDate { get; set; }
         public decimal Limit { get; set; }
 
-        [Required]
         public virtual User Creator { get; set; }
-
-        [Required]
         public virtual Currency Currency { get; set; }
 
         public virtual ICollection<Transaction> Transactions { get; set; }

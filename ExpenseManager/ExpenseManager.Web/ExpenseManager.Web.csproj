@@ -172,6 +172,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BudgetAccessRightController.cs" />
+    <Compile Include="Controllers\BudgetController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\RolesAdminController.cs" />
@@ -191,8 +193,18 @@
     <Compile Include="Migrations\201510181807338_walletRightColumnName.Designer.cs">
       <DependentUpon>201510181807338_walletRightColumnName.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201510201634209_BudgetUpdate.cs" />
+    <Compile Include="Migrations\201510201634209_BudgetUpdate.Designer.cs">
+      <DependentUpon>201510201634209_BudgetUpdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DatabaseContexts\ApplicationDbInitializer.cs" />
+    <Compile Include="Models\BudgetAccessRight\CreateBudgetAccessRightModel.cs" />
+    <Compile Include="Models\BudgetAccessRight\EditBudgetAccessRightModel.cs" />
+    <Compile Include="Models\BudgetAccessRight\ShowBudgetAccessRightModel.cs" />
+    <Compile Include="Models\Budget\BudgetShowModel.cs" />
+    <Compile Include="Models\Budget\EditBudgetModel.cs" />
+    <Compile Include="Models\Budget\NewBudgetModel.cs" />
     <Compile Include="Models\Transaction\TransactionModel.cs" />
     <Compile Include="Models\User\AccountViewModels.cs" />
     <Compile Include="Models\User\EditUserViewModel.cs" />
@@ -355,6 +367,12 @@
     <Content Include="Views\Transactions\Edit.cshtml" />
     <Content Include="Views\Transactions\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
+    <Content Include="Views\Budget\Index.cshtml" />
+    <Content Include="Views\Budget\Create.cshtml" />
+    <Content Include="Views\Budget\Edit.cshtml" />
+    <Content Include="Views\BudgetAccessRight\Index.cshtml" />
+    <Content Include="Views\BudgetAccessRight\Create.cshtml" />
+    <Content Include="Views\BudgetAccessRight\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -379,6 +397,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201510181807338_walletRightColumnName.resx">
       <DependentUpon>201510181807338_walletRightColumnName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510201634209_BudgetUpdate.resx">
+      <DependentUpon>201510201634209_BudgetUpdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

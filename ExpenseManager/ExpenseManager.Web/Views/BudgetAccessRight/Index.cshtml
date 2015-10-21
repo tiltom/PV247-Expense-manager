@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ExpenseManager.Web.Models.BudgetAccessRight.ShowBudgetAccessRightModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create", new {id = Model.ElementAt(0).BudgetId})
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Permission)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AssignedUserName)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Permission)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AssignedUserName)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id, budgetId = item.BudgetId }, new {onclick = "return confirm('Are you sure you wish to delete this permission?');" })
+            </td>
+        </tr>
+    }
+
+</table>
+

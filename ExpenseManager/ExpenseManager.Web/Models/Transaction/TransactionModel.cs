@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using ExpenseManager.Entity;
 
 namespace ExpenseManager.Web.Models.Transaction
 {
@@ -26,7 +25,7 @@ namespace ExpenseManager.Web.Models.Transaction
         [Required]
         public Guid WalletId { get; set; }
 
-        public virtual Budget Budget { get; set; }
+        public virtual Entity.Budget Budget { get; set; }
 
         [Required]
         public string CurrencyId { get; set; }
