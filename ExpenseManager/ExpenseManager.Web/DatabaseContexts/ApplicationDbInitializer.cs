@@ -15,6 +15,13 @@ namespace ExpenseManager.Web.DatabaseContexts
         {
             InitializeCurrency(context);
             InitializeCategories(context);
+            InitializeWallets(context);
+            InitializeTransactions(context);
+            InitializeRepeatableTransactions(context);
+            InitializeWalletAccessRights(context);
+
+            InitializeBudgets(context);
+            InitializeBudgetAccessRights(context);
             InitializeIdentityForEf(context);
             base.Seed(context);
             context.SaveChanges();
@@ -68,6 +75,137 @@ namespace ExpenseManager.Web.DatabaseContexts
             };
 
             context.Currencies.AddRange(currencies);
+        }
+
+        private static void InitializeBudgetAccessRights(ApplicationDbContext context)
+        {
+            var budgetAccessRights = new List<BudgetAccessRight>
+            {
+                new BudgetAccessRight
+                {
+                    Budget = context.Budgets.FirstOrDefault(),
+                    Permission = PermissionEnum.Owner,
+                    User = context.Users.FirstOrDefault()
+                }
+            };
+
+            context.BudgetAccessRights.AddRange(budgetAccessRights);
+        }
+
+        private static void InitializeWalletAccessRights(ApplicationDbContext context)
+        {
+            var walletAccessRights = new List<WalletAccessRight>
+            {
+                new WalletAccessRight
+                {
+                    Wallet = context.Wallets.FirstOrDefault(),
+                    Permission = PermissionEnum.Owner,
+                    User = context.Users.FirstOrDefault()
+                }
+            };
+
+            context.WalletAccessRights.AddRange(walletAccessRights);
+        }
+
+        private static void InitializeBudgets(ApplicationDbContext context)
+        {
+            var budgets = new List<Budget>
+            {
+                new Budget
+                {
+                    Currency = context.Currencies.FirstOrDefault(),
+                    StartDate = new DateTime(2015, 10, 15),
+                    EndDate = new DateTime(2015, 10, 25),
+                    Name = "Spain Holiday",
+                    Description = "Budget for holiday in Spain",
+                    Limit = 400,
+                    Transactions = context.Transactions.Where(x => x.Description.Contains("Spain")).ToList(),
+                    Creator = context.Users.FirstOrDefault(),
+                    AccessRights = context.BudgetAccessRights.ToList()
+                }
+            };
+
+            context.Budgets.AddRange(budgets);
+        }
+
+        private static void InitializeWallets(ApplicationDbContext context)
+        {
+            var wallets = new List<Wallet>
+            {
+                new Wallet
+                {
+                    Currency = context.Currencies.FirstOrDefault(),
+                    Name = "My Wallet"
+                },
+                new Wallet
+                {
+                    Currency = context.Currencies.FirstOrDefault(),
+                    Name = "My wife's Wallet"
+                },
+                new Wallet
+                {
+                    Currency = context.Currencies.FirstOrDefault(),
+                    Name = "My brother's Wallet"
+                }
+            };
+
+            context.Wallets.AddRange(wallets);
+        }
+
+        private static void InitializeTransactions(ApplicationDbContext context)
+        {
+            var transactions = new List<Transaction>
+            {
+                new Transaction
+                {
+                    Currency = context.Currencies.FirstOrDefault(),
+                    Amount = 20,
+                    Date = new DateTime(2015, 10, 17),
+                    Category = context.Categories.FirstOrDefault(),
+                    Description = "Found 20 euro on the ground"
+                },
+                new Transaction
+                {
+                    Currency = context.Currencies.FirstOrDefault(),
+                    Amount = -10,
+                    Date = new DateTime(2015, 10, 17),
+                    Category = context.Categories.FirstOrDefault(),
+                    Description = "Bought a ticket to the cinema"
+                },
+                new Transaction
+                {
+                    Currency = context.Currencies.FirstOrDefault(),
+                    Amount = -5,
+                    Date = new DateTime(2015, 10, 17),
+                    Category = context.Categories.FirstOrDefault(),
+                    Description = "Bet on a Chicago Blackhawks"
+                },
+                new Transaction
+                {
+                    Currency = context.Currencies.FirstOrDefault(),
+                    Amount = -50,
+                    Date = new DateTime(2015, 10, 16),
+                    Category = context.Categories.Where(x => x.Description.Contains("transportation")).FirstOrDefault(),
+                    Description = "Bought a ticket to Madrid"
+                }
+            };
+
+            context.Transactions.AddRange(transactions);
+        }
+
+        private static void InitializeRepeatableTransactions(ApplicationDbContext context)
+        {
+            var repeatableTransactions = new List<RepeatableTransaction>
+            {
+                new RepeatableTransaction
+                {
+                    FirstTransaction = context.Transactions.Where(x => x.Description.Contains("Bet")).FirstOrDefault(),
+                    Frequency = new TimeSpan(2, 0, 0),
+                    LastOccurence = new DateTime(2015, 10, 17)
+                }
+            };
+
+            context.RepeatableTransactions.AddRange(repeatableTransactions);
         }
 
         //Create User=Admin@Admin.com with password=Admin@123456 in the Admin role        

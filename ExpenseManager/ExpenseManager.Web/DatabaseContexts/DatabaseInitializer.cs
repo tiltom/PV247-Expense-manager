@@ -8,8 +8,10 @@ namespace ExpenseManager.Web.DatabaseContexts
         public static void Initialize()
         {
             Database.SetInitializer(new ApplicationDbInitializer());
-            var context = new ApplicationDbContext();
-            context.Database.Initialize(true);
+            using (ApplicationDbContext context = new ApplicationDbContext())
+            {
+                context.Database.Initialize(true);
+            }
         }
     }
 }

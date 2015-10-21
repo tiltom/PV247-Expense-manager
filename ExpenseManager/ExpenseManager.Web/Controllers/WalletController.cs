@@ -53,6 +53,7 @@ namespace ExpenseManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 var walletEntity = this.db.Wallets.Find(wallet.Guid);
+                walletEntity.Owner = walletEntity.Owner;
                 walletEntity.Currency = this.db.Currencies.Find(wallet.CurrencyId);
                 walletEntity.Name = wallet.Name;
                 await this.db.SaveChangesAsync();
