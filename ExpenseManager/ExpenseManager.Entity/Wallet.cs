@@ -5,6 +5,12 @@ namespace ExpenseManager.Entity
 {
     public class Wallet : BaseEntity
     {
+        public Wallet()
+        {
+            WalletAccessRights = new List<WalletAccessRight>();
+            Transactions = new List<Transaction>();
+        }
+
         public string Name { get; set; }
 
         [Required]

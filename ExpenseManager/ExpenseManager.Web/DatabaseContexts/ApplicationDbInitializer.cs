@@ -15,16 +15,11 @@ namespace ExpenseManager.Web.DatabaseContexts
         {
             InitializeCurrency(context);
             InitializeCategories(context);
-            InitializeWallets(context);
+            InitializeIdentity(context);
             InitializeTransactions(context);
             InitializeRepeatableTransactions(context);
-            InitializeWalletAccessRights(context);
-
             InitializeBudgets(context);
             InitializeBudgetAccessRights(context);
-            InitializeIdentityForEf(context);
-            base.Seed(context);
-            context.SaveChanges();
         }
 
         private static void InitializeCategories(ApplicationDbContext context)
@@ -51,6 +46,7 @@ namespace ExpenseManager.Web.DatabaseContexts
                 }
             };
             context.Categories.AddRange(categories);
+            context.SaveChanges();
         }
 
         private static void InitializeCurrency(ApplicationDbContext context)
@@ -75,36 +71,25 @@ namespace ExpenseManager.Web.DatabaseContexts
             };
 
             context.Currencies.AddRange(currencies);
+            context.SaveChanges();
         }
 
         private static void InitializeBudgetAccessRights(ApplicationDbContext context)
         {
+            var budget = context.Budgets.FirstOrDefault();
+
             var budgetAccessRights = new List<BudgetAccessRight>
             {
                 new BudgetAccessRight
                 {
-                    Budget = context.Budgets.FirstOrDefault(),
+                    Budget = budget,
                     Permission = PermissionEnum.Owner,
                     User = context.Users.FirstOrDefault()
                 }
             };
 
             context.BudgetAccessRights.AddRange(budgetAccessRights);
-        }
-
-        private static void InitializeWalletAccessRights(ApplicationDbContext context)
-        {
-            var walletAccessRights = new List<WalletAccessRight>
-            {
-                new WalletAccessRight
-                {
-                    Wallet = context.Wallets.FirstOrDefault(),
-                    Permission = PermissionEnum.Owner,
-                    User = context.Users.FirstOrDefault()
-                }
-            };
-
-            context.WalletAccessRights.AddRange(walletAccessRights);
+            context.SaveChanges();
         }
 
         private static void InitializeBudgets(ApplicationDbContext context)
@@ -126,38 +111,18 @@ namespace ExpenseManager.Web.DatabaseContexts
             };
 
             context.Budgets.AddRange(budgets);
-        }
-
-        private static void InitializeWallets(ApplicationDbContext context)
-        {
-            var wallets = new List<Wallet>
-            {
-                new Wallet
-                {
-                    Currency = context.Currencies.FirstOrDefault(),
-                    Name = "My Wallet"
-                },
-                new Wallet
-                {
-                    Currency = context.Currencies.FirstOrDefault(),
-                    Name = "My wife's Wallet"
-                },
-                new Wallet
-                {
-                    Currency = context.Currencies.FirstOrDefault(),
-                    Name = "My brother's Wallet"
-                }
-            };
-
-            context.Wallets.AddRange(wallets);
+            context.SaveChanges();
         }
 
         private static void InitializeTransactions(ApplicationDbContext context)
         {
+            var wallet = context.Wallets.FirstOrDefault();
+
             var transactions = new List<Transaction>
             {
                 new Transaction
                 {
+                    Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(),
                     Amount = 20,
                     Date = new DateTime(2015, 10, 17),
@@ -166,6 +131,7 @@ namespace ExpenseManager.Web.DatabaseContexts
                 },
                 new Transaction
                 {
+                    Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(),
                     Amount = -10,
                     Date = new DateTime(2015, 10, 17),
@@ -174,6 +140,7 @@ namespace ExpenseManager.Web.DatabaseContexts
                 },
                 new Transaction
                 {
+                    Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(),
                     Amount = -5,
                     Date = new DateTime(2015, 10, 17),
@@ -182,34 +149,39 @@ namespace ExpenseManager.Web.DatabaseContexts
                 },
                 new Transaction
                 {
+                    Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(),
                     Amount = -50,
                     Date = new DateTime(2015, 10, 16),
-                    Category = context.Categories.Where(x => x.Description.Contains("transportation")).FirstOrDefault(),
+                    Category = context.Categories.FirstOrDefault(x => x.Description.Contains("transportation")),
                     Description = "Bought a ticket to Madrid"
                 }
             };
 
             context.Transactions.AddRange(transactions);
+            context.SaveChanges();
         }
 
         private static void InitializeRepeatableTransactions(ApplicationDbContext context)
         {
+            var firstTransaction = context.Transactions.FirstOrDefault();
+
             var repeatableTransactions = new List<RepeatableTransaction>
             {
                 new RepeatableTransaction
                 {
-                    FirstTransaction = context.Transactions.Where(x => x.Description.Contains("Bet")).FirstOrDefault(),
+                    FirstTransaction = firstTransaction,
                     Frequency = new TimeSpan(2, 0, 0),
                     LastOccurence = new DateTime(2015, 10, 17)
                 }
             };
 
             context.RepeatableTransactions.AddRange(repeatableTransactions);
+            context.SaveChanges();
         }
 
         //Create User=Admin@Admin.com with password=Admin@123456 in the Admin role        
-        private static void InitializeIdentityForEf(ApplicationDbContext context)
+        private static void InitializeIdentity(ApplicationDbContext context)
         {
             var userManager = new ApplicationUserManager(new UserStore<User>(context));
             var roleManager = new ApplicationRoleManager(new RoleStore<IdentityRole>(context));
@@ -238,8 +210,14 @@ namespace ExpenseManager.Web.DatabaseContexts
                         Currency = currency
                     }
                 };
-                var result = userManager.Create(user, password);
-                result = userManager.SetLockoutEnabled(user.Id, false);
+
+                user.WalletAccessRights = new List<WalletAccessRight>
+                {
+                    new WalletAccessRight {Permission = PermissionEnum.Owner, User = user}
+                };
+
+                userManager.Create(user, password);
+                userManager.SetLockoutEnabled(user.Id, false);
             }
 
             // Add user admin to Role Admin if not already added

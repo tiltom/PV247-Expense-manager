@@ -5,6 +5,12 @@ namespace ExpenseManager.Entity
 {
     public class Budget : BaseEntity
     {
+        public Budget()
+        {
+            Transactions = new List<Transaction>();
+            AccessRights = new List<BudgetAccessRight>();
+        }
+
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
