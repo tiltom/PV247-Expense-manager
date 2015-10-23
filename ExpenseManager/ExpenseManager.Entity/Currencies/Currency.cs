@@ -1,4 +1,4 @@
-﻿namespace ExpenseManager.Entity
+﻿namespace ExpenseManager.Entity.Currencies
 {
     public class Currency : BaseEntity
     {

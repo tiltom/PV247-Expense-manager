@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace ExpenseManager.Entity
+namespace ExpenseManager.Entity.Transactions
 {
     public class RepeatableTransaction : BaseEntity
     {

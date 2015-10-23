@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
+using ExpenseManager.Entity.Budgets;
+using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Web.Models.Budget;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;

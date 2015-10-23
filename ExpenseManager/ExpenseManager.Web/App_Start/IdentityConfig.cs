@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using ExpenseManager.Entity;
+using ExpenseManager.Entity.Users;
 using ExpenseManager.Web.Models;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;

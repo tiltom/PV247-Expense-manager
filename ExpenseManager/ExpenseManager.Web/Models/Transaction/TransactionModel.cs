@@ -25,7 +25,7 @@ namespace ExpenseManager.Web.Models.Transaction
         [Required]
         public Guid WalletId { get; set; }
 
-        public virtual Entity.Budget Budget { get; set; }
+        public virtual Entity.Budgets.Budget Budget { get; set; }
 
         [Required]
         public string CurrencyId { get; set; }

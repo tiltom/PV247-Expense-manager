@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using ExpenseManager.Entity;
+using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Web.Models.Transaction;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;

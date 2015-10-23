@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using ExpenseManager.Entity;
+using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Models.User;
 using ExpenseManager.Web.Models.WalletAcessRight;
 using Microsoft.AspNet.Identity;

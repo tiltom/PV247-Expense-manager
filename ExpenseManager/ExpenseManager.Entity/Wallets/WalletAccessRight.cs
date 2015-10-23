@@ -1,16 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ExpenseManager.Entity.Users;
 
-namespace ExpenseManager.Entity
+namespace ExpenseManager.Entity.Wallets
 {
-    public class BudgetAccessRight : BaseEntity
+    public class WalletAccessRight : BaseEntity
     {
         [EnumDataType(typeof (PermissionEnum))]
         public PermissionEnum Permission { get; set; }
 
-        [Required]
         public virtual User User { get; set; }
-
-        [Required]
-        public virtual Budget Budget { get; set; }
+        public virtual Wallet Wallet { get; set; }
     }
 }

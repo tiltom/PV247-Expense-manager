@@ -1,6 +1,9 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
-using ExpenseManager.Entity;
+using ExpenseManager.Entity.Categories;
+using ExpenseManager.Entity.Currencies;
+using ExpenseManager.Entity.Transactions;
+using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.DatabaseContexts;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -8,7 +11,7 @@ namespace ExpenseManager.Web.Models.User
 {
     // You can add profile data for the user by adding more properties to your User class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
 
-    public class ApplicationDbContext : IdentityDbContext<Entity.User>
+    public class ApplicationDbContext : IdentityDbContext<Entity.Users.User>
     {
         static ApplicationDbContext()
         {
@@ -22,13 +25,13 @@ namespace ExpenseManager.Web.Models.User
         {
         }
 
-        public DbSet<Entity.BudgetAccessRight> BudgetAccessRights { get; set; }
+        public DbSet<Entity.Budgets.BudgetAccessRight> BudgetAccessRights { get; set; }
         public DbSet<WalletAccessRight> WalletAccessRights { get; set; }
-        public DbSet<Entity.Budget> Budgets { get; set; }
-        public DbSet<Entity.Wallet> Wallets { get; set; }
+        public DbSet<Entity.Budgets.Budget> Budgets { get; set; }
+        public DbSet<Entity.Wallets.Wallet> Wallets { get; set; }
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<RepeatableTransaction> RepeatableTransactions { get; set; }
-        public DbSet<Entity.Transaction> Transactions { get; set; }
+        public DbSet<Entity.Transactions.Transaction> Transactions { get; set; }
         public DbSet<Category> Categories { get; set; }
 
         public static ApplicationDbContext Create()

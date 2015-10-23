@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ExpenseManager.Entity.Budgets;
+using ExpenseManager.Entity.Wallets;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace ExpenseManager.Entity
+namespace ExpenseManager.Entity.Users
 {
     public class User : IdentityUser
     {

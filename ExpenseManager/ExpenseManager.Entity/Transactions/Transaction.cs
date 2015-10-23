@@ -1,7 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using ExpenseManager.Entity.Budgets;
+using ExpenseManager.Entity.Categories;
+using ExpenseManager.Entity.Currencies;
+using ExpenseManager.Entity.Wallets;
 
-namespace ExpenseManager.Entity
+namespace ExpenseManager.Entity.Transactions
 {
     public class Transaction : BaseEntity
     {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using ExpenseManager.Entity.Transactions;
 
-namespace ExpenseManager.Entity
+namespace ExpenseManager.Entity.Categories
 {
     public class Category : BaseEntity
     {

@@ -5,7 +5,9 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using ExpenseManager.Entity;
+using ExpenseManager.Entity.Currencies;
+using ExpenseManager.Entity.Users;
+using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity.Owin;
 

@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using ExpenseManager.Entity.Currencies;
+using ExpenseManager.Entity.Transactions;
+using ExpenseManager.Entity.Users;
 
-namespace ExpenseManager.Entity
+namespace ExpenseManager.Entity.Wallets
 {
     public class Wallet : BaseEntity
     {
