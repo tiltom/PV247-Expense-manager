@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using ExpenseManager.Entity;
 using ExpenseManager.Entity.Users;
-using ExpenseManager.Web.Models;
-using ExpenseManager.Web.Models.User;
+using ExpenseManager.Web.DatabaseContexts;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -13,25 +11,10 @@ using Microsoft.Owin.Security;
 
 namespace ExpenseManager.Web
 {
-    public class EmailService : IIdentityMessageService
-    {
-        public Task SendAsync(IdentityMessage message)
-        {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
-        }
-    }
-
-    public class SmsService : IIdentityMessageService
-    {
-        public Task SendAsync(IdentityMessage message)
-        {
-            // Plug in your SMS service here to send a text message.
-            return Task.FromResult(0);
-        }
-    }
-
-    // Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
+    /// <summary>
+    ///     Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is
+    ///     used by the application.
+    /// </summary>
     public class ApplicationUserManager : UserManager<User>
     {
         public ApplicationUserManager(IUserStore<User> store)
@@ -76,8 +59,6 @@ namespace ExpenseManager.Web
                 Subject = "Security Code",
                 BodyFormat = "Your security code is {0}"
             });
-            manager.EmailService = new EmailService();
-            manager.SmsService = new SmsService();
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
@@ -88,7 +69,9 @@ namespace ExpenseManager.Web
         }
     }
 
-    // Configure the application sign-in manager which is used in this application.
+    /// <summary>
+    ///     Configure the application sign-in manager which is used in this application.
+    /// </summary>
     public class ApplicationSignInManager : SignInManager<User, string>
     {
         public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)

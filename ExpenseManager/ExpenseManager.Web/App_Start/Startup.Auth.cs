@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web.Configuration;
 using ExpenseManager.Entity.Users;
+using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -50,19 +52,10 @@ namespace ExpenseManager.Web
             // This is similar to the RememberMe option when you log in.
             app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
 
-            // Uncomment the following lines to enable logging in with third party login providers
-            //app.UseMicrosoftAccountAuthentication(
-            //    clientId: "",
-            //    clientSecret: "");
-
-            //app.UseTwitterAuthentication(
-            //   consumerKey: "",
-            //   consumerSecret: "");
-
             app.UseFacebookAuthentication(new FacebookAuthenticationOptions
             {
-                AppId = "104450119915739",
-                AppSecret = "367af36f461b5b9d330d48b33d2ce509",
+                AppId = WebConfigurationManager.AppSettings["FBClientID"],
+                AppSecret = WebConfigurationManager.AppSettings["FBClientSecret"],
                 Scope = {"email"},
                 Provider = new FacebookAuthenticationProvider
                 {
@@ -74,10 +67,12 @@ namespace ExpenseManager.Web
                 }
             });
 
+            ;
+
             app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
             {
-                ClientId = "94841318474-msivfam006v86qdjhpa9t81u179mmtuv.apps.googleusercontent.com",
-                ClientSecret = "DcOhw5qOQcDO0lGKMsrFVT04"
+                ClientId = WebConfigurationManager.AppSettings["GoogleClientID"],
+                ClientSecret = WebConfigurationManager.AppSettings["GoogleClientSecret"]
             });
         }
     }

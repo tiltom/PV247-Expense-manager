@@ -1,4 +1,5 @@
 using System.Data.Entity.Migrations;
+using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.User;
 
 namespace ExpenseManager.Web.Migrations

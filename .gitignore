@@ -213,3 +213,4 @@ ModelManifest.xml
 
 # Webconfig
 Web.config
+AppSettingsSecrets.config

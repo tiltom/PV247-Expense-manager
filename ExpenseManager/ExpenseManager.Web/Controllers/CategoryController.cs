@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
-using ExpenseManager.Entity;
-using ExpenseManager.Web.Models.User;
+using ExpenseManager.Entity.Categories;
+using ExpenseManager.Web.DatabaseContexts;
 
 namespace ExpenseManager.Web.Controllers
 {

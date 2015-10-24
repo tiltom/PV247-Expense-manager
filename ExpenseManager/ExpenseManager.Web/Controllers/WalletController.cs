@@ -3,7 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using ExpenseManager.Web.Models.User;
+using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Wallet;
 using Microsoft.AspNet.Identity;
 

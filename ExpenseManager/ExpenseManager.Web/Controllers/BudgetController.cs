@@ -7,8 +7,8 @@ using System.Web.Mvc;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Currencies;
+using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Budget;
-using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 
 namespace ExpenseManager.Web.Controllers

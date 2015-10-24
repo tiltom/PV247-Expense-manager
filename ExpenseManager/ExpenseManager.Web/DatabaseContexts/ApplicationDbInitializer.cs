@@ -15,7 +15,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace ExpenseManager.Web.DatabaseContexts
 {
-    public class ApplicationDbInitializer : DropCreateDatabaseIfModelChanges<ApplicationDbContext>
+    public class ApplicationDbInitializer : DropCreateDatabaseAlways<ApplicationDbContext>
     {
         protected override void Seed(ApplicationDbContext context)
         {
@@ -41,7 +41,7 @@ namespace ExpenseManager.Web.DatabaseContexts
                 new Category
                 {
                     Name = "Food & Drinks",
-                    Description = "Category for comsumables",
+                    Description = "Category for consumables",
                     IconPath = "glyphicons-fast-food"
                 },
                 new Category
@@ -186,16 +186,15 @@ namespace ExpenseManager.Web.DatabaseContexts
             context.SaveChanges();
         }
 
-        //Create User=Admin@Admin.com with password=Admin@123456 in the Admin role        
         private static void InitializeIdentity(ApplicationDbContext context)
         {
-            var userManager = new ApplicationUserManager(new UserStore<User>(context));
-            var roleManager = new ApplicationRoleManager(new RoleStore<IdentityRole>(context));
             const string name = "admin@example.com";
             const string password = "password1";
             const string adminRoleName = "Admin";
             const string userRoleName = "User";
 
+            var userManager = new ApplicationUserManager(new UserStore<User>(context));
+            var roleManager = new ApplicationRoleManager(new RoleStore<IdentityRole>(context));
 
             //Create Role Admin if it does not exist
             CreateRole(roleManager, adminRoleName);
@@ -236,7 +235,7 @@ namespace ExpenseManager.Web.DatabaseContexts
             var role = roleManager.FindByName(adminRoleName);
             if (!rolesForUser.Contains(role.Name))
             {
-                var result = userManager.AddToRole(user.Id, role.Name);
+                userManager.AddToRole(user.Id, role.Name);
             }
         }
 
@@ -245,7 +244,7 @@ namespace ExpenseManager.Web.DatabaseContexts
             var role = roleManager.FindByName(adminRoleName);
             if (role != null) return;
             role = new IdentityRole(adminRoleName);
-            var roleresult = roleManager.Create(role);
+            roleManager.Create(role);
         }
     }
 }
