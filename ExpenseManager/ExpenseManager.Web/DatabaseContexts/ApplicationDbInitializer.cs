@@ -219,7 +219,12 @@ namespace ExpenseManager.Web.DatabaseContexts
 
                 user.WalletAccessRights = new List<WalletAccessRight>
                 {
-                    new WalletAccessRight {Permission = PermissionEnum.Owner, User = user}
+                    new WalletAccessRight
+                    {
+                        Permission = PermissionEnum.Owner,
+                        User = user,
+                        Wallet = user.PersonalWallet
+                    }
                 };
 
                 userManager.Create(user, password);
