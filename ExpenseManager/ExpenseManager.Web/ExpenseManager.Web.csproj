@@ -197,9 +197,9 @@
     <Compile Include="Migrations\201510201634209_BudgetUpdate.Designer.cs">
       <DependentUpon>201510201634209_BudgetUpdate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201510240830500_AddedMissingRequiredFields.cs" />
-    <Compile Include="Migrations\201510240830500_AddedMissingRequiredFields.Designer.cs">
-      <DependentUpon>201510240830500_AddedMissingRequiredFields.cs</DependentUpon>
+    <Compile Include="Migrations\201510240906199_AddedMissingRequiredFields.cs" />
+    <Compile Include="Migrations\201510240906199_AddedMissingRequiredFields.Designer.cs">
+      <DependentUpon>201510240906199_AddedMissingRequiredFields.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DatabaseContexts\ApplicationDbInitializer.cs" />
@@ -405,8 +405,8 @@
     <EmbeddedResource Include="Migrations\201510201634209_BudgetUpdate.resx">
       <DependentUpon>201510201634209_BudgetUpdate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510240830500_AddedMissingRequiredFields.resx">
-      <DependentUpon>201510240830500_AddedMissingRequiredFields.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201510240906199_AddedMissingRequiredFields.resx">
+      <DependentUpon>201510240906199_AddedMissingRequiredFields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
