@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Configuration;
 using ExpenseManager.Web.Common;
 using ExpenseManager.Web.DatabaseContexts;
+using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;

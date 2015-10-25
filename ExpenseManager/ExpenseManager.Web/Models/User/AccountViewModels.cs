@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace ExpenseManager.Web.Models.User
 {
@@ -40,7 +42,7 @@ namespace ExpenseManager.Web.Models.User
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password",
+        [System.ComponentModel.DataAnnotations.Compare("Password",
             ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
@@ -53,5 +55,9 @@ namespace ExpenseManager.Web.Models.User
         [Display(Name = "Last name")]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
         public string LastName { get; set; }
+
+        public List<SelectListItem> RolesList { get; set; }
+
+        public IEnumerable<string> SelectedRoles { get; set; }
     }
 }

@@ -45,6 +45,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, PublicKeyToken=58cb4f2111d1e6de, processorArchitecture=MSIL">
       <HintPath>..\packages\Facebook.7.0.6\lib\net45\Facebook.dll</HintPath>
       <Private>True</Private>
@@ -118,12 +126,6 @@
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -205,12 +207,14 @@
     <Compile Include="Models\Transaction\NewTransactionModel.cs" />
     <Compile Include="Models\Transaction\EditTransactionModel.cs" />
     <Compile Include="Models\Transaction\TransactionShowModel.cs" />
+    <Compile Include="Models\Role\RoleDetailViewModel.cs" />
     <Compile Include="Models\User\AccountViewModels.cs" />
-    <Compile Include="Models\User\EditUserViewModel.cs" />
-    <Compile Include="Models\User\ApplicationRoleManager.cs" />
+    <Compile Include="Models\User\UserDetailViewModel.cs" />
+    <Compile Include="Models\User\UserEditViewModel.cs" />
+    <Compile Include="Helpers\ApplicationRoleManager.cs" />
     <Compile Include="DatabaseContexts\ApplicationDbContext.cs" />
     <Compile Include="Models\User\ManageViewModels.cs" />
-    <Compile Include="Models\User\RoleViewModel.cs" />
+    <Compile Include="Models\Role\RoleViewModel.cs" />
     <Compile Include="Models\WalletAcessRight\WalletAcessRightModel.cs" />
     <Compile Include="Models\Wallet\WalletEditModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

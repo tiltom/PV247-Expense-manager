@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -8,8 +9,10 @@ using System.Web.Mvc;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Common;
+using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity.Owin;
+using WebGrease.Css.Extensions;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -32,25 +35,38 @@ namespace ExpenseManager.Web.Controllers
 
         public ApplicationUserManager UserManager
         {
-            get { return this._userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>(); }
+            get
+            {
+                return this._userManager ??
+                       (this._userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>());
+            }
             private set { this._userManager = value; }
         }
 
         public ApplicationRoleManager RoleManager
         {
-            get { return this._roleManager ?? HttpContext.GetOwinContext().Get<ApplicationRoleManager>(); }
+            get
+            {
+                return this._roleManager ??
+                       (this._roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>());
+            }
             private set { this._roleManager = value; }
         }
 
-        //
-        // GET: /Users/
-        public async Task<ActionResult> Index()
+        /// <summary>
+        ///     Display all user accounts
+        /// </summary>
+        /// <returns>View</returns>
+        public ActionResult Index()
         {
-            return this.View(await UserManager.Users.ToListAsync());
+            return this.View(UserManager.Users);
         }
 
-        //
-        // GET: /Users/Details/5
+        /// <summary>
+        ///     Display user detail for selected user
+        /// </summary>
+        /// <param name="id">id of selected user</param>
+        /// <returns>View</returns>
         public async Task<ActionResult> Details(string id)
         {
             if (id == null)
@@ -58,72 +74,89 @@ namespace ExpenseManager.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var user = await UserManager.FindByIdAsync(id);
+            var roleNames = await UserManager.GetRolesAsync(user.Id);
 
-            ViewBag.RoleNames = await UserManager.GetRolesAsync(user.Id);
-
-            return this.View(user);
+            return this.View(new UserDetailViewModel {UserName = user.UserName, RolesList = roleNames});
         }
 
-        //
-        // GET: /Users/Create
+        /// <summary>
+        ///     Display create user form
+        /// </summary>
+        /// <returns>View</returns>
         public async Task<ActionResult> Create()
         {
-            //Get the list of Roles
-            ViewBag.RoleId = new SelectList(await RoleManager.Roles.ToListAsync(), "Name", "Name");
-            return this.View();
-        }
-
-        //
-        // POST: /Users/Create
-        [HttpPost]
-        public async Task<ActionResult> Create(RegisterViewModel userViewModel, params string[] selectedRoles)
-        {
-            if (ModelState.IsValid)
+            //Get the list of SelectedRoles
+            return this.View(new RegisterViewModel
             {
-                var user = new UserIdentity
-                {
-                    UserName = userViewModel.Email,
-                    Email = userViewModel.Email,
-                    CreationDate = DateTime.Now,
-                    Profile = new UserProfile
-                    {
-                        PersonalWallet = new Wallet
-                        {
-                            Name = "Default Wallet",
-                            Currency = await this.GetDefaultCurrency()
-                        }
-                    }
-                };
-                var adminresult = await UserManager.CreateAsync(user, userViewModel.Password);
-
-                //Add UserProfile to the selected Roles 
-                if (adminresult.Succeeded)
-                {
-                    if (selectedRoles != null)
-                    {
-                        var result = await UserManager.AddToRolesAsync(user.Id, selectedRoles);
-                        if (!result.Succeeded)
-                        {
-                            ModelState.AddModelError("", result.Errors.First());
-                            ViewBag.RoleId = new SelectList(await RoleManager.Roles.ToListAsync(), "Name", "Name");
-                            return this.View();
-                        }
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("", adminresult.Errors.First());
-                    ViewBag.RoleId = new SelectList(RoleManager.Roles, "Name", "Name");
-                    return this.View();
-                }
-                return this.RedirectToAction("Index");
-            }
-            ViewBag.RoleId = new SelectList(RoleManager.Roles, "Name", "Name");
-            return this.View();
+                RolesList = await this.GetAllRolesAsync()
+            });
         }
 
-        //
-        // GET: /Users/Edit/1
+        private Task<List<SelectListItem>> GetAllRolesAsync()
+        {
+            return RoleManager.Roles.Select(
+                r => new SelectListItem {Value = r.Id, Text = r.Name})
+                .ToListAsync();
+        }
+
+        /// <summary>
+        ///     Create user
+        /// </summary>
+        /// <param name="userViewModel">RegisterViewModel instance</param>
+        /// <returns>View</returns>
+        [HttpPost]
+        public async Task<ActionResult> Create(RegisterViewModel userViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return this.View(userViewModel);
+            }
+            var user = new UserIdentity
+            {
+                UserName = userViewModel.Email,
+                Email = userViewModel.Email,
+                CreationDate = DateTime.Now,
+                Profile = new UserProfile
+                {
+                    FirstName = userViewModel.FirstName,
+                    LastName = userViewModel.LastName,
+                    PersonalWallet = new Wallet
+                    {
+                        Name = "Default Wallet",
+                        Currency = await this.GetDefaultCurrency()
+                    }
+                }
+            };
+            var adminresult = await UserManager.CreateAsync(user, userViewModel.Password);
+
+
+            //Add User to the selected SelectedRoles 
+            if (adminresult.Succeeded)
+            {
+                if (userViewModel.SelectedRoles == null) return this.RedirectToAction("Index");
+
+                var result = await UserManager.AddToRolesAsync(user.Id, userViewModel.SelectedRoles.ToArray());
+                if (!result.Succeeded)
+                {
+                    result.Errors.ForEach(e => ModelState.AddModelError("", e));
+                    userViewModel.RolesList = await this.GetAllRolesAsync();
+                    return this.View(userViewModel);
+                }
+            }
+            else
+            {
+                adminresult.Errors.ForEach(e => ModelState.AddModelError("", e));
+                userViewModel.RolesList = await this.GetAllRolesAsync();
+                return this.View(userViewModel);
+            }
+            return this.RedirectToAction("Index");
+        }
+
+        /// <summary>
+        ///     Display edit form for selected user
+        /// </summary>
+        /// <param name="id">id of selected user</param>
+        /// <returns>View</returns>
         public async Task<ActionResult> Edit(string id)
         {
             if (id == null)
@@ -138,7 +171,7 @@ namespace ExpenseManager.Web.Controllers
 
             var userRoles = await UserManager.GetRolesAsync(user.Id);
 
-            return this.View(new EditUserViewModel
+            return this.View(new UserEditViewModel
             {
                 Id = user.Id,
                 Email = user.Email,
@@ -151,50 +184,54 @@ namespace ExpenseManager.Web.Controllers
             });
         }
 
-        //
-        // POST: /Users/Edit/5
+        /// <summary>
+        ///     Edit selected user
+        /// </summary>
+        /// <param name="editUser">EditUserViewModel instance</param>
+        /// <returns>View</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Email,Id")] EditUserViewModel editUser,
-            params string[] selectedRole)
+        public async Task<ActionResult> Edit(UserEditViewModel editUser)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = await UserManager.FindByIdAsync(editUser.Id);
-                if (user == null)
-                {
-                    return this.HttpNotFound();
-                }
-
-                user.UserName = editUser.Email;
-                user.Email = editUser.Email;
-
-                var userRoles = await UserManager.GetRolesAsync(user.Id);
-
-                selectedRole = selectedRole ?? new string[] {};
-
-                var result = await UserManager.AddToRolesAsync(user.Id, selectedRole.Except(userRoles).ToArray());
-
-                if (!result.Succeeded)
-                {
-                    ModelState.AddModelError("", result.Errors.First());
-                    return this.View();
-                }
-                result = await UserManager.RemoveFromRolesAsync(user.Id, userRoles.Except(selectedRole).ToArray());
-
-                if (!result.Succeeded)
-                {
-                    ModelState.AddModelError("", result.Errors.First());
-                    return this.View();
-                }
-                return this.RedirectToAction("Index");
+                ModelState.AddModelError("", "Something failed.");
+                return this.View();
             }
-            ModelState.AddModelError("", "Something failed.");
-            return this.View();
+
+            var user = await UserManager.FindByIdAsync(editUser.Id);
+            if (user == null)
+            {
+                return this.HttpNotFound();
+            }
+
+            user.UserName = editUser.Email;
+            user.Email = editUser.Email;
+
+            var userRoles = await UserManager.GetRolesAsync(user.Id);
+            var selectedRoles = editUser.SelectedRoles?.ToArray() ?? new string[] {};
+            var result = await UserManager.AddToRolesAsync(user.Id, selectedRoles.Except(userRoles).ToArray());
+
+            if (!result.Succeeded)
+            {
+                result.Errors.ForEach(e => ModelState.AddModelError("", e));
+                return this.View();
+            }
+            result = await UserManager.RemoveFromRolesAsync(user.Id, userRoles.Except(selectedRoles).ToArray());
+
+            if (!result.Succeeded)
+            {
+                result.Errors.ForEach(e => ModelState.AddModelError("", e));
+                return this.View();
+            }
+            return this.RedirectToAction("Index");
         }
 
-        //
-        // GET: /Users/Delete/5
+        /// <summary>
+        ///     Display delete view for selected user
+        /// </summary>
+        /// <param name="id">id of selected user</param>
+        /// <returns>View</returns>
         public async Task<ActionResult> Delete(string id)
         {
             if (id == null)
@@ -209,33 +246,34 @@ namespace ExpenseManager.Web.Controllers
             return this.View(user);
         }
 
-        //
-        // POST: /Users/Delete/5
+        /// <summary>
+        ///     Delete selected user
+        /// </summary>
+        /// <param name="id">id of selected user</param>
+        /// <returns>View</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(string id)
         {
-            if (ModelState.IsValid)
-            {
-                if (id == null)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
+            if (!ModelState.IsValid) return this.View();
 
-                var user = await UserManager.FindByIdAsync(id);
-                if (user == null)
-                {
-                    return this.HttpNotFound();
-                }
-                var result = await UserManager.DeleteAsync(user);
-                if (!result.Succeeded)
-                {
-                    ModelState.AddModelError("", result.Errors.First());
-                    return this.View();
-                }
-                return this.RedirectToAction("Index");
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            return this.View();
+
+            var user = await UserManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return this.HttpNotFound();
+            }
+            var result = await UserManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                result.Errors.ForEach(e => ModelState.AddModelError("", e));
+                return this.View();
+            }
+            return this.RedirectToAction("Index");
         }
     }
 }

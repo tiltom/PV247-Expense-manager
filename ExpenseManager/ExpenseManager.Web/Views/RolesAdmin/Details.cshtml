@@ -1,4 +1,4 @@
-﻿@model Microsoft.AspNet.Identity.EntityFramework.IdentityRole
+﻿@model ExpenseManager.Web.Models.Role.RoleDetailViewModel
 
 @{
     ViewBag.Title = "Details";
@@ -7,7 +7,7 @@
 <h2>Details.</h2>
 
 <div>
-    <h4>Roles.</h4>
+    <h4>SelectedRoles.</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -19,7 +19,7 @@
     </dl>
 </div>
 <h4>List of users in this role</h4>
-@if (ViewBag.UserCount == 0)
+@if (Model.Users.Count == 0)
 {
     <hr />
     <p>No users found in this role.</p>
@@ -27,7 +27,7 @@
 
 <table class="table">
 
-    @foreach (var item in ViewBag.Users)
+    @foreach (var item in Model.Users)
     {
         <tr>
             <td>

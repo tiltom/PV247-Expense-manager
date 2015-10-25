@@ -1,4 +1,4 @@
-﻿@model ExpenseManager.Web.Common.UserIdentity
+﻿@model ExpenseManager.Web.Models.User.UserDetailViewModel
 
 @{
     ViewBag.Title = "Details";
@@ -18,8 +18,8 @@
         </dd>
     </dl>
 </div>
-<h4>List of roles for this UserProfile</h4>
-@if (ViewBag.RoleNames.Count == 0)
+<h4>List of roles for this user</h4>
+@if (!Model.RolesList.Any())
 {
     <hr />
     <p>No roles found for this UserProfile.</p>
@@ -27,7 +27,7 @@
 
 <table class="table">
 
-    @foreach (var item in ViewBag.RoleNames)
+    @foreach (var item in Model.RolesList)
     {
         <tr>
             <td>

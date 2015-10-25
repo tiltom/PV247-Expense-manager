@@ -10,6 +10,7 @@ using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Common;
 using ExpenseManager.Web.DatabaseContexts;
+using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Facebook;
 using Microsoft.AspNet.Identity;

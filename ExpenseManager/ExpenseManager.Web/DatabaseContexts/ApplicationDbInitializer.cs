@@ -10,7 +10,7 @@ using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Common;
-using ExpenseManager.Web.Models.User;
+using ExpenseManager.Web.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -192,7 +192,7 @@ namespace ExpenseManager.Web.DatabaseContexts
             const string name = "admin@example.com";
             const string password = "password1";
             const string adminRoleName = "Admin";
-            const string userRoleName = "UserProfile";
+            const string userRoleName = "User";
             const string firstName = "admin";
             const string lastName = "admin";
 

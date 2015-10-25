@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using ExpenseManager.Web.Common;
-using ExpenseManager.Web.Models.User;
+using ExpenseManager.Web.Helpers;
+using ExpenseManager.Web.Models.Role;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using WebGrease.Css.Extensions;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -32,25 +34,38 @@ namespace ExpenseManager.Web.Controllers
 
         public ApplicationUserManager UserManager
         {
-            get { return this._userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>(); }
-            set { this._userManager = value; }
+            get
+            {
+                return this._userManager ??
+                       (this._userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>());
+            }
+            private set { this._userManager = value; }
         }
 
         public ApplicationRoleManager RoleManager
         {
-            get { return this._roleManager ?? HttpContext.GetOwinContext().Get<ApplicationRoleManager>(); }
+            get
+            {
+                return this._roleManager ??
+                       (this._roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>());
+            }
             private set { this._roleManager = value; }
         }
 
-        //
-        // GET: /Roles/
+        /// <summary>
+        ///     Display list of available roles
+        /// </summary>
+        /// <returns>View</returns>
         public ActionResult Index()
         {
             return this.View(RoleManager.Roles);
         }
 
-        //
-        // GET: /Roles/Details/5
+        /// <summary>
+        ///     Show details for selected role
+        /// </summary>
+        /// <param name="id">Guid of selected role which will be looked in database</param>
+        /// <returns></returns>
         public async Task<ActionResult> Details(string id)
         {
             if (id == null)
@@ -70,20 +85,23 @@ namespace ExpenseManager.Web.Controllers
                 }
             }
 
-            ViewBag.Users = users;
-            ViewBag.UserCount = users.Count();
-            return this.View(role);
+            return this.View(new RoleDetailViewModel {Name = role.Name, Users = users});
         }
 
-        //
-        // GET: /Roles/Create
+        /// <summary>
+        ///     Display create form for new role
+        /// </summary>
+        /// <returns>View</returns>
         public ActionResult Create()
         {
             return this.View();
         }
 
-        //
-        // POST: /Roles/Create
+        /// <summary>
+        ///     Create new role
+        /// </summary>
+        /// <param name="roleViewModel">RoleViewModel instance</param>
+        /// <returns>View</returns>
         [HttpPost]
         public async Task<ActionResult> Create(RoleViewModel roleViewModel)
         {
@@ -91,18 +109,20 @@ namespace ExpenseManager.Web.Controllers
             {
                 var role = new IdentityRole(roleViewModel.Name);
                 var roleresult = await RoleManager.CreateAsync(role);
-                if (!roleresult.Succeeded)
-                {
-                    ModelState.AddModelError("", roleresult.Errors.First());
-                    return this.View();
-                }
-                return this.RedirectToAction("Index");
+
+                if (roleresult.Succeeded) return this.RedirectToAction("Index");
+
+                roleresult.Errors.ForEach(e => ModelState.AddModelError("", e));
+                return this.View();
             }
             return this.View();
         }
 
-        //
-        // GET: /Roles/Edit/Admin
+        /// <summary>
+        ///     Display edit form for selected role
+        /// </summary>
+        /// <param name="id">id of selected role</param>
+        /// <returns></returns>
         public async Task<ActionResult> Edit(string id)
         {
             if (id == null)
@@ -118,8 +138,11 @@ namespace ExpenseManager.Web.Controllers
             return this.View(roleModel);
         }
 
-        //
-        // POST: /Roles/Edit/5
+        /// <summary>
+        ///     Edit selected role
+        /// </summary>
+        /// <param name="roleModel">RoleViewModel instance</param>
+        /// <returns>View</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "Name,Id")] RoleViewModel roleModel)
@@ -134,8 +157,11 @@ namespace ExpenseManager.Web.Controllers
             return this.View();
         }
 
-        //
-        // GET: /Roles/Delete/5
+        /// <summary>
+        ///     Display delete dialog for selected role
+        /// </summary>
+        /// <param name="id">id of selected role</param>
+        /// <returns>View</returns>
         public async Task<ActionResult> Delete(string id)
         {
             if (id == null)
@@ -150,11 +176,14 @@ namespace ExpenseManager.Web.Controllers
             return this.View(role);
         }
 
-        //
-        // POST: /Roles/Delete/5
+        /// <summary>
+        ///     Delete selected role
+        /// </summary>
+        /// <param name="id">id of selected role</param>
+        /// <returns></returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(string id, string deleteUser)
+        public async Task<ActionResult> DeleteConfirmed(string id)
         {
             if (ModelState.IsValid)
             {
@@ -167,18 +196,19 @@ namespace ExpenseManager.Web.Controllers
                 {
                     return this.HttpNotFound();
                 }
-                IdentityResult result;
-                if (deleteUser != null)
+
+                var usersInRole = UserManager.Users.Where(u => u.Roles.Select(r => r.RoleId).Contains(role.Id)).ToList();
+
+                foreach (var user in usersInRole)
                 {
-                    result = await RoleManager.DeleteAsync(role);
+                    UserManager.RemoveFromRoles(user.Id, role.Name);
                 }
-                else
-                {
-                    result = await RoleManager.DeleteAsync(role);
-                }
+
+                var result = await RoleManager.DeleteAsync(role);
+
                 if (!result.Succeeded)
                 {
-                    ModelState.AddModelError("", result.Errors.First());
+                    result.Errors.ForEach(e => ModelState.AddModelError("", e));
                     return this.View();
                 }
                 return this.RedirectToAction("Index");
