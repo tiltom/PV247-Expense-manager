@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ExpenseManager.Web.Models.WalletAcessRight.WalletAcessRightModel>
+﻿@using ExpenseManager.Entity
+@model IEnumerable<ExpenseManager.Web.Models.WalletAcessRight.WalletAcessRightModel>
 
 @{
     ViewBag.Title = "Index";
@@ -30,9 +31,12 @@
             @Html.DisplayFor(modelItem => item.AssignedUserName)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @if (!PermissionEnum.Owner.ToString().Equals(item.Permission))
+            {
+            @Html.ActionLink("Edit", "Edit", new {id = item.Id})
+            @:|
+            @Html.ActionLink("Delete", "Delete", new {id = item.Id})
+            }
         </td>
     </tr>
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using ExpenseManager.Entity;
 
 namespace ExpenseManager.Web.Models.WalletAcessRight
 {
@@ -14,6 +13,7 @@ namespace ExpenseManager.Web.Models.WalletAcessRight
         [Required]
         public string AssignedUserId { get; set; }
 
+        [Display(Name = "Assigned User")]
         public string AssignedUserName { get; set; }
 
         [Required]
@@ -21,8 +21,10 @@ namespace ExpenseManager.Web.Models.WalletAcessRight
 
         [Display(Name = "Assigned permission")]
         [Required]
-        public PermissionEnum Permission { get; set; }
+        public string Permission { get; set; }
 
         public List<SelectListItem> Users { get; set; }
+
+        public List<SelectListItem> Permissions { get; set; }
     }
 }

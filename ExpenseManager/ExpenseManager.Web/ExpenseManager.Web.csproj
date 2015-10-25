@@ -181,7 +181,7 @@
     <Compile Include="Controllers\RolesAdminController.cs" />
     <Compile Include="Controllers\TransactionController.cs" />
     <Compile Include="Controllers\UserAdminController.cs" />
-    <Compile Include="Controllers\WalletAcessRightsController.cs" />
+    <Compile Include="Controllers\WalletAcessRightController.cs" />
     <Compile Include="Controllers\WalletController.cs" />
     <Compile Include="DatabaseContexts\DatabaseInitializer.cs" />
     <Compile Include="Global.asax.cs">
@@ -358,10 +358,10 @@
     <Content Include="Views\UsersAdmin\Edit.cshtml" />
     <Content Include="Views\UsersAdmin\Index.cshtml" />
     <Content Include="Views\Wallet\Edit.cshtml" />
-    <Content Include="Views\WalletAcessRights\Create.cshtml" />
-    <Content Include="Views\WalletAcessRights\Delete.cshtml" />
-    <Content Include="Views\WalletAcessRights\Edit.cshtml" />
-    <Content Include="Views\WalletAcessRights\Index.cshtml" />
+    <Content Include="Views\WalletAcessRight\Create.cshtml" />
+    <Content Include="Views\WalletAcessRight\Delete.cshtml" />
+    <Content Include="Views\WalletAcessRight\Edit.cshtml" />
+    <Content Include="Views\WalletAcessRight\Index.cshtml" />
     <Content Include="Views\Transaction\Create.cshtml" />
     <Content Include="Views\Transaction\Edit.cshtml" />
     <Content Include="Views\Transaction\Index.cshtml" />

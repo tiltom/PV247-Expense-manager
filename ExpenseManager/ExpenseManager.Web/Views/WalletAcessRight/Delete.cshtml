@@ -1,4 +1,5 @@
-﻿@model ExpenseManager.Entity.Wallets.WalletAccessRight
+﻿@using ExpenseManager.Entity
+@model ExpenseManager.Web.Models.WalletAcessRight.WalletAcessRightModel
 
 @{
     ViewBag.Title = "Delete";
@@ -19,6 +20,13 @@
         <dd>
             @Html.DisplayFor(model => model.Permission)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AssignedUserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AssignedUserName)
+        </dd>
 
     </dl>
 
@@ -26,7 +34,11 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @if (!PermissionEnum.Owner.ToString().Equals(Model.Permission))
+            {
+                <input type="submit" value="Delete" class="btn btn-default" />  @:|
+            }
+            
             @Html.ActionLink("Back to List", "Index")
         </div>
     }

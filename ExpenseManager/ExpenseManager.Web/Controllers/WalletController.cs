@@ -14,10 +14,14 @@ namespace ExpenseManager.Web.Controllers
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext();
 
-
-        // GET: Wallets/Edit
+        /// <summary>
+        ///     Address: GET: Wallets/Edit
+        ///     Show edit wallet page for current user
+        /// </summary>
+        /// <returns> page for currently logged user or HttpNotFound if no wallet was created</returns>
         public async Task<ActionResult> Edit()
         {
+            // get user and his wallet from context
             var id = HttpContext.User.Identity.GetUserId();
             var wallet = await this.db.Wallets.Where(u => u.Owner.Id == id).FirstOrDefaultAsync();
             if (wallet == null)
@@ -33,19 +37,12 @@ namespace ExpenseManager.Web.Controllers
             });
         }
 
-        private async Task<List<SelectListItem>> GetCurrencies()
-        {
-            var currencies = await this.db.Currencies.Select(currency => new SelectListItem
-            {
-                Text = currency.Name,
-                Value = currency.Guid.ToString()
-            }).ToListAsync();
-            return currencies;
-        }
-
-        // POST: Wallets/Edit
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        ///     Address: POST: Wallets/Edit
+        ///     Edit existing wallet
+        /// </summary>
+        /// <param name="wallet"> model of wallet posted from user</param>
+        /// <returns>In case of everything filled correctly - redirect to user management, otherwise - same page</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(WalletEditModel wallet)
@@ -59,9 +56,11 @@ namespace ExpenseManager.Web.Controllers
                 await this.db.SaveChangesAsync();
                 return this.RedirectToAction("Index", "Manage");
             }
+            wallet.Currencies = await this.GetCurrencies();
             return this.View(wallet);
         }
 
+        #region protected
 
         protected override void Dispose(bool disposing)
         {
@@ -71,5 +70,21 @@ namespace ExpenseManager.Web.Controllers
             }
             base.Dispose(disposing);
         }
+
+        #endregion
+
+        #region private
+
+        private async Task<List<SelectListItem>> GetCurrencies()
+        {
+            var currencies = await this.db.Currencies.Select(currency => new SelectListItem
+            {
+                Text = currency.Name,
+                Value = currency.Guid.ToString()
+            }).ToListAsync();
+            return currencies;
+        }
+
+        #endregion
     }
 }
