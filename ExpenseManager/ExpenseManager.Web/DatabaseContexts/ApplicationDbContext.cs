@@ -6,19 +6,21 @@ using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
+using ExpenseManager.Web.Common;
 using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace ExpenseManager.Web.DatabaseContexts
 {
-    // You can add profile data for the user by adding more properties to your User class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
+    // You can add profile data for the UserProfile by adding more properties to your UserProfile class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
 
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : IdentityDbContext<UserIdentity>
     {
         public ApplicationDbContext()
             : base("DefaultConnection", false)
         {
         }
 
+        public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<BudgetAccessRight> BudgetAccessRights { get; set; }
         public DbSet<WalletAccessRight> WalletAccessRights { get; set; }
         public DbSet<Budget> Budgets { get; set; }

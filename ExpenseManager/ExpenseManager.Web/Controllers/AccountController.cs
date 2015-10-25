@@ -8,6 +8,7 @@ using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
+using ExpenseManager.Web.Common;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.User;
 using Facebook;
@@ -79,7 +80,7 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Log in user to application
+        ///     Log in UserProfile to application
         /// </summary>
         /// <param name="model">LoginViewModel instance</param>
         /// <param name="returnUrl">Return url used to redirection after successful login</param>
@@ -121,7 +122,7 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Register user and create default wallet for him
+        ///     Register UserProfile and create default wallet for him
         /// </summary>
         /// <param name="model">RegisterViewModel instance</param>
         /// <returns>View</returns>
@@ -137,7 +138,7 @@ namespace ExpenseManager.Web.Controllers
             if (result.Succeeded)
             {
                 await SignInManager.SignInAsync(user, false, false);
-                var userRole = await RoleManager.FindByNameAsync("User");
+                var userRole = await RoleManager.FindByNameAsync("UserProfile");
                 await UserManager.AddToRoleAsync(user.Id, userRole.Name);
 
                 return this.RedirectToAction("Index", "Home");
@@ -157,9 +158,9 @@ namespace ExpenseManager.Web.Controllers
 
 
         /// <summary>
-        ///     Confirm user email
+        ///     Confirm UserProfile email
         /// </summary>
-        /// <param name="userId">id of user</param>
+        /// <param name="userId">id of UserProfile</param>
         /// <param name="code">verification code</param>
         /// <returns>View</returns>
         [AllowAnonymous]
@@ -203,7 +204,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.RedirectToAction("Login");
             }
 
-            // Sign in the user with this external login provider if the user already has a login
+            // Sign in the UserProfile with this external login provider if the UserProfile already has a login
             var result = await SignInManager.ExternalSignInAsync(loginInfo, false);
             switch (result)
             {
@@ -213,7 +214,7 @@ namespace ExpenseManager.Web.Controllers
                     return this.View("Lockout");
                 case SignInStatus.Failure:
                 default:
-                    // If the user does not have an account, then prompt the user to create an account
+                    // If the UserProfile does not have an account, then prompt the UserProfile to create an account
                     if (loginInfo.Login.LoginProvider == "Facebook")
                     {
                         var identity =
@@ -249,7 +250,7 @@ namespace ExpenseManager.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                // Get the information about the user from the external login provider
+                // Get the information about the UserProfile from the external login provider
                 var info = await AuthenticationManager.GetExternalLoginInfoAsync();
                 if (info == null)
                 {
@@ -261,7 +262,7 @@ namespace ExpenseManager.Web.Controllers
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
-                    var userRole = await RoleManager.FindByNameAsync("User");
+                    var userRole = await RoleManager.FindByNameAsync("UserProfile");
                     await UserManager.AddToRoleAsync(user.Id, userRole.Name);
 
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
@@ -278,27 +279,30 @@ namespace ExpenseManager.Web.Controllers
             return this.View(model);
         }
 
-        private User CreateUser(string email)
+        private UserIdentity CreateUser(string email)
         {
-            var user = new User
+            var user = new UserIdentity
             {
                 UserName = email,
                 Email = email,
                 CreationDate = DateTime.Now,
-                PersonalWallet = new Wallet
+                Profile = new UserProfile
                 {
-                    Name = "Default Wallet",
-                    Currency = this.GetDefaultCurrency()
+                    PersonalWallet = new Wallet
+                    {
+                        Name = "Default Wallet",
+                        Currency = this.GetDefaultCurrency()
+                    }
                 }
             };
 
-            user.WalletAccessRights = new List<WalletAccessRight>
+            user.Profile.WalletAccessRights = new List<WalletAccessRight>
             {
                 new WalletAccessRight
                 {
                     Permission = PermissionEnum.Owner,
-                    User = user,
-                    Wallet = user.PersonalWallet
+                    UserProfile = user.Profile,
+                    Wallet = user.Profile.PersonalWallet
                 }
             };
             return user;

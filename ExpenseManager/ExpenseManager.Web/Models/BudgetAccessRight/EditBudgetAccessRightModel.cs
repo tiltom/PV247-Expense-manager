@@ -8,9 +8,9 @@ namespace ExpenseManager.Web.Models.BudgetAccessRight
     {
         public Guid Id { get; set; }
 
-        [Display(Name = "User")]
+        [Display(Name = "UserProfile")]
         [Required]
-        public string AssignedUserId { get; set; }
+        public Guid AssignedUserId { get; set; }
 
         public string AssignedUserName { get; set; }
 

@@ -46,7 +46,7 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Display user management view
+        ///     Display UserProfile management view
         /// </summary>
         /// <param name="message">message about changes in account settings</param>
         /// <returns></returns>
@@ -120,7 +120,7 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Change user password
+        ///     Change UserProfile password
         /// </summary>
         /// <param name="model">ChangePasswordViewModel model</param>
         /// <returns>View</returns>
@@ -148,7 +148,7 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Display set user password form
+        ///     Display set UserProfile password form
         /// </summary>
         /// <returns>View</returns>
         public ActionResult SetPassword()
@@ -157,7 +157,7 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Set new password for logged in user
+        ///     Set new password for logged in UserProfile
         /// </summary>
         /// <param name="model">SetPasswordViewModel</param>
         /// <returns>View</returns>
@@ -216,7 +216,7 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Link external login with current user account
+        ///     Link external login with current UserProfile account
         /// </summary>
         /// <param name="provider">external login provider</param>
         /// <returns>View</returns>
@@ -224,7 +224,7 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LinkLogin(string provider)
         {
-            // Request a redirect to the external login provider to link a login for the current user
+            // Request a redirect to the external login provider to link a login for the current UserProfile
             return new AccountController.ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"),
                 User.Identity.GetUserId());
         }

@@ -22,7 +22,7 @@ namespace ExpenseManager.Entity.Budgets
         public decimal Limit { get; set; }
 
         [Required]
-        public virtual User Creator { get; set; }
+        public virtual UserProfile Creator { get; set; }
 
         [Required]
         public virtual Currency Currency { get; set; }

@@ -4,7 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using ExpenseManager.Entity.Users;
+using ExpenseManager.Web.Common;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -59,7 +59,7 @@ namespace ExpenseManager.Web.Controllers
             }
             var role = await RoleManager.FindByIdAsync(id);
             // Get the list of Users in this Role
-            var users = new List<User>();
+            var users = new List<UserIdentity>();
 
             // Get the list of Users in this Role
             foreach (var user in UserManager.Users.ToList())

@@ -9,6 +9,7 @@ using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
+using ExpenseManager.Web.Common;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -90,7 +91,7 @@ namespace ExpenseManager.Web.DatabaseContexts
                 {
                     Budget = budget,
                     Permission = PermissionEnum.Owner,
-                    User = context.Users.FirstOrDefault()
+                    UserProfile = context.UserProfiles.FirstOrDefault()
                 }
             };
 
@@ -111,7 +112,7 @@ namespace ExpenseManager.Web.DatabaseContexts
                     Description = "Budget for holiday in Spain",
                     Limit = 400,
                     Transactions = context.Transactions.Where(x => x.Description.Contains("Spain")).ToList(),
-                    Creator = context.Users.FirstOrDefault(),
+                    Creator = context.UserProfiles.FirstOrDefault(),
                     AccessRights = context.BudgetAccessRights.ToList()
                 }
             };
@@ -191,9 +192,9 @@ namespace ExpenseManager.Web.DatabaseContexts
             const string name = "admin@example.com";
             const string password = "password1";
             const string adminRoleName = "Admin";
-            const string userRoleName = "User";
+            const string userRoleName = "UserProfile";
 
-            var userManager = new ApplicationUserManager(new UserStore<User>(context));
+            var userManager = new ApplicationUserManager(new UserStore<UserIdentity>(context));
             var roleManager = new ApplicationRoleManager(new RoleStore<IdentityRole>(context));
 
             //Create Role Admin if it does not exist
@@ -204,39 +205,44 @@ namespace ExpenseManager.Web.DatabaseContexts
             if (user == null)
             {
                 var currency = context.Currencies.FirstOrDefault(c => c.Symbol == "Kč");
-                user = new User
+                var profile = new UserProfile
                 {
-                    UserName = name,
-                    Email = name,
-                    CreationDate = DateTime.Now,
                     PersonalWallet = new Wallet
                     {
                         Name = "Default Wallet",
                         Currency = currency
                     }
                 };
-
-                user.WalletAccessRights = new List<WalletAccessRight>
+                profile.WalletAccessRights = new List<WalletAccessRight>
                 {
                     new WalletAccessRight
                     {
                         Permission = PermissionEnum.Owner,
-                        User = user,
-                        Wallet = user.PersonalWallet
+                        UserProfile = profile,
+                        Wallet = profile.PersonalWallet
                     }
                 };
-
+                profile = context.UserProfiles.Add(profile);
+                context.SaveChanges();
+                user = new UserIdentity
+                {
+                    UserName = name,
+                    Email = name,
+                    CreationDate = DateTime.Now,
+                    Profile = profile
+                };
                 userManager.Create(user, password);
                 userManager.SetLockoutEnabled(user.Id, false);
             }
 
-            // Add user admin to Role Admin if not already added
+            // Add UserProfile admin to Role Admin if not already added
             var rolesForUser = userManager.GetRoles(user.Id);
             var role = roleManager.FindByName(adminRoleName);
             if (!rolesForUser.Contains(role.Name))
             {
                 userManager.AddToRole(user.Id, role.Name);
             }
+            context.SaveChanges();
         }
 
         private static void CreateRole(ApplicationRoleManager roleManager, string adminRoleName)

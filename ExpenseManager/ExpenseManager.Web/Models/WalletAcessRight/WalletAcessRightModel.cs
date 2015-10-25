@@ -9,11 +9,11 @@ namespace ExpenseManager.Web.Models.WalletAcessRight
     {
         public Guid Id { get; set; }
 
-        [Display(Name = "User")]
+        [Display(Name = "UserProfile")]
         [Required]
-        public string AssignedUserId { get; set; }
+        public Guid AssignedUserId { get; set; }
 
-        [Display(Name = "Assigned User")]
+        [Display(Name = "Assigned UserProfile")]
         public string AssignedUserName { get; set; }
 
         [Required]

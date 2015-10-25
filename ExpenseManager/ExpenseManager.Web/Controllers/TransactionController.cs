@@ -9,12 +9,11 @@ using ExpenseManager.Entity;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Transaction;
-using Microsoft.AspNet.Identity;
 
 namespace ExpenseManager.Web.Controllers
 {
     [Authorize]
-    public class TransactionController : Controller
+    public class TransactionController : AbstractController
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext(); // instance of DB context
 
@@ -24,9 +23,10 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View with transaction</returns>
         public async Task<ActionResult> Index()
         {
-            var id = HttpContext.User.Identity.GetUserId(); // get Id of currently logged user from HttpContext
-            var list = await this._db.Transactions.Where(user => user.Wallet.Owner.Id == id).ToListAsync();
-            //list of all transactions from user's wallet
+            // get Id of currently logged UserProfile from HttpContext
+            var id = await this.CurrentProfileId();
+            var list = await this._db.Transactions.Where(user => user.Wallet.Owner.Guid == id).ToListAsync();
+            //list of all transactions from UserProfile's wallet
 
             return this.View(list.Select(this.ConvertEntityToTransactionShowModel));
         }
@@ -37,9 +37,10 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View with model</returns>
         public async Task<ActionResult> Create()
         {
-            var walletId = await this.GetUserWalletId(); //get wallet Id for currently logged user
-            var currency = await this._db.Wallets.FindAsync(walletId); //get default currency for wallet
-
+            //get wallet Id for currently logged UserProfile
+            var walletId = await this.GetUserWalletId();
+            //get default currency for wallet
+            var currency = await this._db.Wallets.FindAsync(walletId);
             return
                 this.View(new NewTransactionModel //fill NewTransaction model with needed informations
                 {
@@ -262,7 +263,7 @@ namespace ExpenseManager.Web.Controllers
         {
             var repeatableTransaction =
                 this._db.RepeatableTransactions.FirstOrDefault(a => a.FirstTransaction.Guid == entity.Guid);
-                //get if transaction is repeatable
+            //get if transaction is repeatable
             string budgetId = null;
             if (entity.Budget != null)
                 budgetId = entity.Budget.Guid.ToString();
@@ -300,7 +301,7 @@ namespace ExpenseManager.Web.Controllers
                 budgetName = entity.Budget.Name;
             var repeatableTransaction =
                 this._db.RepeatableTransactions.FirstOrDefault(a => a.FirstTransaction.Guid == entity.Guid);
-                //get if transaction is repeatable
+            //get if transaction is repeatable
             var transactionModel = new TransactionShowModel //fill model info from entity
             {
                 Id = entity.Guid,
@@ -321,17 +322,17 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Provides selectable list of Budgets avaliable to user
+        ///     Provides selectable list of Budgets avaliable to UserProfile
         /// </summary>
         /// <returns>List of SelectListItem for Budgets</returns>
         private async Task<List<SelectListItem>> GetBudgets()
         {
-            var id = HttpContext.User.Identity.GetUserId();
+            var id = await this.CurrentProfileId();
             return
                 await
                     this._db.BudgetAccessRights.Where(
                         access =>
-                            access.User.Id == id &&
+                            access.UserProfile.Guid == id &&
                             access.Permission >= PermissionEnum.Write)
                         .Select(
                             budget =>
@@ -367,17 +368,6 @@ namespace ExpenseManager.Web.Controllers
                     this._db.Categories.Select(
                         category => new SelectListItem {Value = category.Guid.ToString(), Text = category.Name})
                         .ToListAsync();
-        }
-
-        /// <summary>
-        ///     Gets id of Wallet for currently logged user
-        /// </summary>
-        /// <returns>WalletId</returns>
-        private async Task<Guid> GetUserWalletId()
-        {
-            var id = HttpContext.User.Identity.GetUserId();
-            var walletEntity = await this._db.Wallets.Where(wallet => wallet.Owner.Id == id).FirstOrDefaultAsync();
-            return walletEntity.Guid;
         }
     }
 }

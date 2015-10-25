@@ -7,7 +7,6 @@ using System.Web.Mvc;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.BudgetAccessRight;
-using ExpenseManager.Web.Models.User;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -58,7 +57,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(model);
 
             var budget = await this._db.Budgets.FindAsync(model.BudgetId); // find budget by its Id
-            var assignedUser = this._db.Users.Where(user => user.Id == model.AssignedUserId).FirstOrDefault();
+            var assignedUser = this._db.Users.Where(user => user.Id == model.AssignedUserId).FirstOrDefault().Profile;
             // finding creator by his ID
 
             // creating new budget access right
@@ -66,7 +65,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 Budget = budget,
                 Permission = model.Permission,
-                User = assignedUser
+                UserProfile = assignedUser
             });
 
             await this._db.SaveChangesAsync();
@@ -107,7 +106,7 @@ namespace ExpenseManager.Web.Controllers
             // editing editable properties
             budgetAccessRight.Permission = model.Permission;
             budgetAccessRight.Budget = budgetAccessRight.Budget;
-            budgetAccessRight.User = budgetAccessRight.User;
+            budgetAccessRight.UserProfile = budgetAccessRight.UserProfile;
             await this._db.SaveChangesAsync();
 
             return this.RedirectToAction("Index", new {id = model.BudgetId});
@@ -145,7 +144,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 list.Add(new ShowBudgetAccessRightModel
                 {
-                    AssignedUserName = item.User.UserName,
+                    AssignedUserName = item.UserProfile.FirstName,
                     BudgetId = BudgetId,
                     Id = item.Guid,
                     Permission = item.Permission
@@ -165,8 +164,8 @@ namespace ExpenseManager.Web.Controllers
             // mapping properties from BudgetAccessRight DB entity to EditBudgetAccessRightModel
             return new EditBudgetAccessRightModel
             {
-                AssignedUserId = entity.User.Id,
-                AssignedUserName = entity.User.UserName,
+                AssignedUserId = entity.UserProfile.Guid,
+                AssignedUserName = entity.UserProfile.FirstName,
                 Permission = entity.Permission,
                 BudgetId = entity.Budget.Guid,
                 Id = entity.Guid

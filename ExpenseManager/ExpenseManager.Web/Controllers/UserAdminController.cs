@@ -5,16 +5,16 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
+using ExpenseManager.Web.Common;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity.Owin;
 
 namespace ExpenseManager.Web.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class UsersAdminController : Controller
+    public class UsersAdminController : AbstractController
     {
         private ApplicationRoleManager _roleManager;
 
@@ -80,24 +80,23 @@ namespace ExpenseManager.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User
+                var user = new UserIdentity
                 {
                     UserName = userViewModel.Email,
                     Email = userViewModel.Email,
                     CreationDate = DateTime.Now,
-                    PersonalWallet = new Wallet
+                    Profile = new UserProfile
                     {
-                        Name = "Default Wallet",
-                        Currency = new Currency
+                        PersonalWallet = new Wallet
                         {
-                            Name = "Česká koruna",
-                            Symbol = "Kč"
+                            Name = "Default Wallet",
+                            Currency = await this.GetDefaultCurrency()
                         }
                     }
                 };
                 var adminresult = await UserManager.CreateAsync(user, userViewModel.Password);
 
-                //Add User to the selected Roles 
+                //Add UserProfile to the selected Roles 
                 if (adminresult.Succeeded)
                 {
                     if (selectedRoles != null)

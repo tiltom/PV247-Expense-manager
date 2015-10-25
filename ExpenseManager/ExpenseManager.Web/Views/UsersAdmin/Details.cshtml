@@ -1,4 +1,4 @@
-﻿@model ExpenseManager.Entity.Users.User
+﻿@model ExpenseManager.Web.Common.UserIdentity
 
 @{
     ViewBag.Title = "Details";
@@ -7,7 +7,7 @@
 <h2>Details.</h2>
 
 <div>
-    <h4>User</h4>
+    <h4>UserProfile</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -18,11 +18,11 @@
         </dd>
     </dl>
 </div>
-<h4>List of roles for this user</h4>
+<h4>List of roles for this UserProfile</h4>
 @if (ViewBag.RoleNames.Count == 0)
 {
     <hr />
-    <p>No roles found for this user.</p>
+    <p>No roles found for this UserProfile.</p>
 }
 
 <table class="table">

@@ -9,25 +9,25 @@ using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Budget;
-using Microsoft.AspNet.Identity;
 
 namespace ExpenseManager.Web.Controllers
 {
     [Authorize]
-    public class BudgetController : Controller
+    public class BudgetController : AbstractController
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext(); // instance of DB context
 
         /// <summary>
-        ///     Shows all budgets for the current user.
+        ///     Shows all budgets for the current UserProfile.
         /// </summary>
         /// <returns>View with model</returns>
         public async Task<ActionResult> Index()
         {
-            var userId = HttpContext.User.Identity.GetUserId(); // get Id of current logged user from HttpContext
+            // get Id of current logged UserProfile from HttpContext
+            var userId = await this.CurrentProfileId();
 
-            // get list of all user's budgets
-            var budgetList = await this._db.Budgets.Where(user => user.Creator.Id == userId).ToListAsync();
+            // get list of all UserProfile's budgets
+            var budgetList = await this._db.Budgets.Where(user => user.Creator.Guid == userId).ToListAsync();
 
             return this.View(this.ConvertEntityToBudgetShowModel(budgetList));
         }
@@ -56,9 +56,11 @@ namespace ExpenseManager.Web.Controllers
             {
                 return this.View(model); // TODO: add error message to layout and display it here
             }
-            var userId = HttpContext.User.Identity.GetUserId(); // get Id of current logged user from HttpContext
+            // get Id of current logged UserProfile from HttpContext
+            var userId = await this.CurrentProfileId();
+            // finding creator by his ID
+            var creator = await this._db.UserProfiles.FirstOrDefaultAsync(user => user.Guid == userId);
 
-            var creator = this._db.Users.Where(user => user.Id == userId).FirstOrDefault(); // finding creator by his ID
 
             // creating new Budget by filling it from model
             this._db.Budgets.Add(new Budget
@@ -77,7 +79,7 @@ namespace ExpenseManager.Web.Controllers
                         new BudgetAccessRight
                         {
                             Permission = PermissionEnum.Owner,
-                            User = creator
+                            UserProfile = creator
                         }
                     }
             });

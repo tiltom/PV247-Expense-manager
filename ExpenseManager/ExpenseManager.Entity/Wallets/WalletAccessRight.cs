@@ -9,7 +9,7 @@ namespace ExpenseManager.Entity.Wallets
         public PermissionEnum Permission { get; set; }
 
         [Required]
-        public virtual User User { get; set; }
+        public virtual UserProfile UserProfile { get; set; }
 
         [Required]
         public virtual Wallet Wallet { get; set; }

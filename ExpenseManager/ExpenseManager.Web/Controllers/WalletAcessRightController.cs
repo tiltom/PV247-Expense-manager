@@ -10,11 +10,10 @@ using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.WalletAcessRight;
-using Microsoft.AspNet.Identity;
 
 namespace ExpenseManager.Web.Controllers
 {
-    public class WalletAcessRightController : Controller
+    public class WalletAcessRightController : AbstractController
     {
         private static readonly List<PermissionEnum> AllowedPermissions = new List<PermissionEnum>
         {
@@ -34,8 +33,8 @@ namespace ExpenseManager.Web.Controllers
         // GET: WalletAcessRights
         public async Task<ActionResult> Index()
         {
-            var id = HttpContext.User.Identity.GetUserId();
-            var list = await this.db.WalletAccessRights.Where(right => right.Wallet.Owner.Id == id).ToListAsync();
+            var id = await this.CurrentProfileId();
+            var list = await this.db.WalletAccessRights.Where(right => right.Wallet.Owner.Guid == id).ToListAsync();
             return this.View(list.Select(ConvertEntityToModel));
         }
 
@@ -53,7 +52,7 @@ namespace ExpenseManager.Web.Controllers
                     {
                         Guid = await this.GetUserWalletId()
                     },
-                    User = new User()
+                    UserProfile = new UserProfile()
                 }));
         }
 
@@ -117,7 +116,7 @@ namespace ExpenseManager.Web.Controllers
                 await this.db.SaveChangesAsync();
                 return this.RedirectToAction("Index");
             }
-            walletAccessRight.Users = await this.GetUsers(walletAccessRightEntity.User.Id);
+            walletAccessRight.Users = await this.GetUsers(walletAccessRightEntity.UserProfile.Guid);
             return this.View(walletAccessRight);
         }
 
@@ -181,7 +180,7 @@ namespace ExpenseManager.Web.Controllers
             var defaultPermission = PermissionEnum.Read;
             Enum.TryParse(model.Permission, out defaultPermission);
             entity.Wallet = await this.db.Wallets.FindAsync(model.WalletId);
-            entity.User = await this.db.Users.FirstOrDefaultAsync(u => u.Id == model.AssignedUserId);
+            entity.UserProfile = await this.db.UserProfiles.FirstOrDefaultAsync(u => u.Guid == model.AssignedUserId);
             entity.Permission = defaultPermission;
             return entity;
         }
@@ -192,8 +191,8 @@ namespace ExpenseManager.Web.Controllers
             {
                 Id = entity.Guid,
                 Permission = entity.Permission.ToString(),
-                AssignedUserId = entity.User.Id,
-                AssignedUserName = entity.User.UserName,
+                AssignedUserId = entity.UserProfile.Guid,
+                AssignedUserName = entity.UserProfile.FirstName + " " + entity.UserProfile.LastName,
                 WalletId = entity.Wallet.Guid
             };
         }
@@ -201,42 +200,30 @@ namespace ExpenseManager.Web.Controllers
         private async Task<WalletAcessRightModel> ConvertEntityToModelWithComboOptions(WalletAccessRight entity)
         {
             var model = ConvertEntityToModel(entity);
-            model.Users = await this.GetUsers(entity.User.Id);
+            model.Users = await this.GetUsers(entity.UserProfile.Guid);
             model.Permissions = this.GetPermissions();
             return model;
-        }
-
-        private async Task<Guid> GetUserWalletId()
-        {
-            var currrentUserId = this.CurrentUserId();
-            var walletEntity =
-                await this.db.Wallets.FirstOrDefaultAsync(wallet => wallet.Owner.Id == currrentUserId);
-            return walletEntity.Guid;
         }
 
         /// <summary>
         ///     get users id from context
         /// </summary>
         /// <returns>string with id</returns>
-        private string CurrentUserId()
-        {
-            return HttpContext.User.Identity.GetUserId();
-        }
-
         /// <summary>
-        ///     get users without rights created to user wallet
+        ///     get users without rights created to UserProfile wallet
         /// </summary>
         /// <returns>list of users</returns>
-        private async Task<List<SelectListItem>> GetUsers(string userId)
+        private async Task<List<SelectListItem>> GetUsers(Guid? userId)
         {
-            var currrentUserId = this.CurrentUserId();
+            var currrentUserId = await this.CurrentProfileId();
             return
                 await
-                    this.db.Users
+                    this.db.UserProfiles
                         .Where(
                             u =>
-                                u.WalletAccessRights.All(war => war.Wallet.Owner.Id != currrentUserId) || u.Id == userId)
-                        .Select(user => new SelectListItem {Value = user.Id, Text = user.UserName})
+                                u.WalletAccessRights.All(war => war.Wallet.Owner.Guid != currrentUserId) ||
+                                u.Guid == userId)
+                        .Select(user => new SelectListItem {Value = user.Guid.ToString(), Text = user.FirstName})
                         .ToListAsync();
         }
 

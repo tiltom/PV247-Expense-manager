@@ -172,6 +172,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Binders\DecimalModelBinder.cs" />
+    <Compile Include="Common\UserIdentity.cs" />
+    <Compile Include="Controllers\AbstractController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BudgetAccessRightController.cs" />
     <Compile Include="Controllers\BudgetController.cs" />
@@ -187,24 +189,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201510151939540_ChangeUser.cs" />
-    <Compile Include="Migrations\201510151939540_ChangeUser.Designer.cs">
-      <DependentUpon>201510151939540_ChangeUser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510181807338_walletRightColumnName.cs" />
-    <Compile Include="Migrations\201510181807338_walletRightColumnName.Designer.cs">
-      <DependentUpon>201510181807338_walletRightColumnName.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510201634209_BudgetUpdate.cs" />
-    <Compile Include="Migrations\201510201634209_BudgetUpdate.Designer.cs">
-      <DependentUpon>201510201634209_BudgetUpdate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510240906199_AddedMissingRequiredFields.cs" />
-    <Compile Include="Migrations\201510240906199_AddedMissingRequiredFields.Designer.cs">
-      <DependentUpon>201510240906199_AddedMissingRequiredFields.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DatabaseContexts\ApplicationDbInitializer.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BudgetAccessRight\CreateBudgetAccessRightModel.cs" />
     <Compile Include="Models\BudgetAccessRight\EditBudgetAccessRightModel.cs" />
     <Compile Include="Models\BudgetAccessRight\ShowBudgetAccessRightModel.cs" />
@@ -392,20 +378,6 @@
       <Project>{73A4FAB0-96F1-4DC9-92A8-2CC73B4EF776}</Project>
       <Name>ExpenseManager.Entity</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201510151939540_ChangeUser.resx">
-      <DependentUpon>201510151939540_ChangeUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510181807338_walletRightColumnName.resx">
-      <DependentUpon>201510181807338_walletRightColumnName.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510201634209_BudgetUpdate.resx">
-      <DependentUpon>201510201634209_BudgetUpdate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510240906199_AddedMissingRequiredFields.resx">
-      <DependentUpon>201510240906199_AddedMissingRequiredFields.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

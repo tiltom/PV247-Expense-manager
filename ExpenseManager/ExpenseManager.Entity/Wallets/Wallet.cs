@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Transactions;
@@ -6,7 +7,7 @@ using ExpenseManager.Entity.Users;
 
 namespace ExpenseManager.Entity.Wallets
 {
-    public class Wallet : BaseEntity
+    public class Wallet
     {
         public Wallet()
         {
@@ -14,13 +15,16 @@ namespace ExpenseManager.Entity.Wallets
             Transactions = new List<Transaction>();
         }
 
+        [Key]
+        public Guid Guid { get; set; }
+
         public string Name { get; set; }
 
         [Required]
         public virtual Currency Currency { get; set; }
 
         [Required]
-        public virtual User Owner { get; set; }
+        public virtual UserProfile Owner { get; set; }
 
         public virtual ICollection<WalletAccessRight> WalletAccessRights { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }

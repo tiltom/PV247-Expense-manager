@@ -33,7 +33,7 @@
     /// </signature>
   },
   'boxModel': function() {
-    /// <summary>Deprecated in jQuery 1.3 (see jQuery.support). States if the current page, in the user's browser, is being rendered using the W3C CSS Box Model.</summary>
+    /// <summary>Deprecated in jQuery 1.3 (see jQuery.support). States if the current page, in the UserProfile's browser, is being rendered using the W3C CSS Box Model.</summary>
     /// <returns type="Boolean" />
   },
   'browser': function() {
@@ -41,7 +41,7 @@
     /// <returns type="PlainObject" />
   },
   'browser.version': function() {
-    /// <summary>The version number of the rendering engine for the user's browser.</summary>
+    /// <summary>The version number of the rendering engine for the UserProfile's browser.</summary>
     /// <returns type="String" />
   },
   'Callbacks': function() {

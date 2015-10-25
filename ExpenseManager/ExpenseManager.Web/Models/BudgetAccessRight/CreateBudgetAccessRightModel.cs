@@ -8,7 +8,7 @@ namespace ExpenseManager.Web.Models.BudgetAccessRight
 {
     public class CreateBudgetAccessRightModel
     {
-        [Display(Name = "User")]
+        [Display(Name = "UserProfile")]
         [Required]
         public string AssignedUserId { get; set; }
 

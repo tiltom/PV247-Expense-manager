@@ -5,25 +5,24 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Wallet;
-using Microsoft.AspNet.Identity;
 
 namespace ExpenseManager.Web.Controllers
 {
     [Authorize]
-    public class WalletController : Controller
+    public class WalletController : AbstractController
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext();
 
         /// <summary>
         ///     Address: GET: Wallets/Edit
-        ///     Show edit wallet page for current user
+        ///     Show edit wallet page for current UserProfile
         /// </summary>
-        /// <returns> page for currently logged user or HttpNotFound if no wallet was created</returns>
+        /// <returns> page for currently logged UserProfile or HttpNotFound if no wallet was created</returns>
         public async Task<ActionResult> Edit()
         {
-            // get user and his wallet from context
-            var id = HttpContext.User.Identity.GetUserId();
-            var wallet = await this.db.Wallets.Where(u => u.Owner.Id == id).FirstOrDefaultAsync();
+            // get UserProfile and his wallet from context
+            var id = await this.CurrentProfileId();
+            var wallet = await this.db.Wallets.Where(u => u.Owner.Guid == id).FirstOrDefaultAsync();
             if (wallet == null)
             {
                 return this.HttpNotFound();
@@ -41,8 +40,8 @@ namespace ExpenseManager.Web.Controllers
         ///     Address: POST: Wallets/Edit
         ///     Edit existing wallet
         /// </summary>
-        /// <param name="wallet"> model of wallet posted from user</param>
-        /// <returns>In case of everything filled correctly - redirect to user management, otherwise - same page</returns>
+        /// <param name="wallet"> model of wallet posted from UserProfile</param>
+        /// <returns>In case of everything filled correctly - redirect to UserProfile management, otherwise - same page</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(WalletEditModel wallet)
