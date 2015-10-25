@@ -30,7 +30,9 @@ namespace ExpenseManager.Web.Controllers
 
         private TransactionModel ConvertEntityToModel(Transaction entity)
         {
-            return new TransactionModel
+            var repeatableTransaction =
+                this._db.RepeatableTransactions.FirstOrDefault(a => a.FirstTransaction.Guid == entity.Guid);
+            var transactionModel = new TransactionModel
             {
                 Id = entity.Guid,
                 Amount = entity.Amount,
@@ -42,6 +44,15 @@ namespace ExpenseManager.Web.Controllers
                 CategoryId = entity.Category.Guid.ToString(),
                 CategoryName = entity.Category.Name
             };
+
+            if (repeatableTransaction != null)
+            {
+                transactionModel.IsRepeatable = true;
+                transactionModel.Frequency = repeatableTransaction.Frequency;
+                transactionModel.LastOccurence = repeatableTransaction.LastOccurence;
+            }
+
+            return transactionModel;
         }
 
         // GET: Transactions
@@ -116,8 +127,20 @@ namespace ExpenseManager.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                this._db.Transactions.Add(
-                    await this.ConvertModelToEntity(transaction, new Transaction {Guid = Guid.NewGuid()}));
+                var transactionEntity =
+                    await this.ConvertModelToEntity(transaction, new Transaction {Guid = Guid.NewGuid()});
+                this._db.Transactions.Add(transactionEntity);
+                if (transaction.IsRepeatable)
+                {
+                    var repeatableTransaction = new RepeatableTransaction
+                    {
+                        FirstTransaction = transactionEntity,
+                        Frequency = transaction.Frequency,
+                        LastOccurence = transaction.LastOccurence.GetValueOrDefault(),
+                        Guid = Guid.NewGuid()
+                    };
+                    this._db.RepeatableTransactions.Add(repeatableTransaction);
+                }
                 await this._db.SaveChangesAsync();
                 return this.RedirectToAction("Index");
             }
@@ -155,6 +178,38 @@ namespace ExpenseManager.Web.Controllers
             {
                 var transactionEntity = await this._db.Transactions.FindAsync(transaction.Id);
                 await this.ConvertModelToEntity(transaction, transactionEntity);
+                var repeatableTransaction =
+                    await
+                        this._db.RepeatableTransactions.FirstOrDefaultAsync(
+                            a => a.FirstTransaction.Guid == transaction.Id);
+                if (transaction.IsRepeatable)
+                {
+                    if (repeatableTransaction != null)
+                    {
+                        repeatableTransaction.Frequency = transaction.Frequency;
+                        repeatableTransaction.LastOccurence = transaction.LastOccurence.GetValueOrDefault();
+                        this._db.RepeatableTransactions.Attach(repeatableTransaction);
+                        this._db.Entry(repeatableTransaction).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        repeatableTransaction = new RepeatableTransaction
+                        {
+                            FirstTransaction = transactionEntity,
+                            Frequency = transaction.Frequency,
+                            LastOccurence = transaction.LastOccurence.GetValueOrDefault(),
+                            Guid = Guid.NewGuid()
+                        };
+                        this._db.RepeatableTransactions.Add(repeatableTransaction);
+                    }
+                }
+                else
+                {
+                    if (repeatableTransaction != null)
+                    {
+                        this._db.RepeatableTransactions.Remove(repeatableTransaction);
+                    }
+                }
                 await this._db.SaveChangesAsync();
                 return this.RedirectToAction("Index");
             }
@@ -175,7 +230,10 @@ namespace ExpenseManager.Web.Controllers
             {
                 return this.HttpNotFound();
             }
-            return this.View(transaction);
+            var model = this.ConvertEntityToModel(transaction);
+            model.Currencies = await this.GetCurrencies();
+            model.Categories = await this.GetCategories();
+            return this.View(model);
         }
 
         // POST: Transactions/Delete/5
@@ -184,6 +242,12 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
             var transaction = await this._db.Transactions.FindAsync(id);
+            var repeatableTransaction =
+                await this._db.RepeatableTransactions.FirstOrDefaultAsync(a => a.FirstTransaction.Guid == id);
+            if (repeatableTransaction != null)
+            {
+                this._db.RepeatableTransactions.Remove(repeatableTransaction);
+            }
             this._db.Transactions.Remove(transaction);
             await this._db.SaveChangesAsync();
             return this.RedirectToAction("Index");

@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using ExpenseManager.Web.Binders;
 using ExpenseManager.Web.DatabaseContexts;
 
 namespace ExpenseManager.Web
@@ -15,6 +16,7 @@ namespace ExpenseManager.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             DatabaseInitializer.Initialize();
+            ModelBinders.Binders.Add(typeof (decimal), new DecimalModelBinder());
         }
     }
 }
