@@ -1,7 +1,7 @@
-﻿@model ExpenseManager.Entity.Category
+﻿@model ExpenseManager.Web.Models.Category.CategoryShowModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit category";
 }
 
 <h2>Edit</h2>
@@ -33,10 +33,10 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.IconPath, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Icon, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.IconPath, Model.IconPath, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.IconPath, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Icon, Model.Icon, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Icon, "", new { @class = "text-danger" })
             </div>
         </div>
 
