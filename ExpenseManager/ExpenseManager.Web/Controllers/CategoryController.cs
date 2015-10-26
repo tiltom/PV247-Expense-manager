@@ -10,7 +10,7 @@ using ExpenseManager.Web.Models.Category;
 
 namespace ExpenseManager.Web.Controllers
 {
-    public class CategoryController : Controller
+    public class CategoryController : AbstractController
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
@@ -122,9 +122,11 @@ namespace ExpenseManager.Web.Controllers
             // find category to delete by its Id
             var categoryToDelete = await this._db.Categories.FindAsync(guid);
 
+            // get the default currency
+            var defaultCategory = await this.GetDefaultCategory();
             // delete connections to this category in Transactions table and set the category to Default
             categoryToDelete.Transactions.ToList()
-                .ForEach(t => t.Category = this._db.Categories.FirstOrDefaultAsync().Result);
+                .ForEach(t => t.Category = defaultCategory);
 
             // delete the category
             this._db.Categories.Remove(categoryToDelete);

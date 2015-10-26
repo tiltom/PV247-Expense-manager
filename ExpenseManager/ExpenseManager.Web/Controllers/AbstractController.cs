@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
+using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Web.DatabaseContexts;
@@ -38,10 +39,10 @@ namespace ExpenseManager.Web.Controllers
             return await this.db.Users.Where(u => u.Id == userId).Select(u => u.Profile).FirstOrDefaultAsync();
         }
 
-        /// </summary>
-        /// Gets id of Wallet for currently logged UserProfile
         /// <summary>
-        ///     <returns>WalletId</returns>
+        ///     Gets id of Wallet for currently logged UserProfile
+        /// </summary>
+        /// <returns>WalletId</returns>
         protected async Task<Guid> GetUserWalletId()
         {
             var userId = HttpContext.User.Identity.GetUserId();
@@ -52,11 +53,26 @@ namespace ExpenseManager.Web.Controllers
                         .FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        ///     Gets the default currency
+        /// </summary>
+        /// <returns>Default currency</returns>
         protected async Task<Currency> GetDefaultCurrency()
         {
             return
                 await
                     this.db.Currencies.FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        ///     Gets the default category
+        /// </summary>
+        /// <returns>Default category</returns>
+        protected async Task<Category> GetDefaultCategory()
+        {
+            return
+                await
+                    this.db.Categories.FirstOrDefaultAsync();
         }
 
         protected List<SelectListItem> GetPermissions()
