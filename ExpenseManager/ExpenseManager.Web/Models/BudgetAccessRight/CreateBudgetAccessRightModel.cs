@@ -22,5 +22,7 @@ namespace ExpenseManager.Web.Models.BudgetAccessRight
         public Guid BudgetId { get; set; }
 
         public List<SelectListItem> Users { get; set; }
+
+        public List<SelectListItem> Permissions { get; set; }
     }
 }

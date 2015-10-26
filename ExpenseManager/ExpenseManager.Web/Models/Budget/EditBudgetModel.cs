@@ -23,6 +23,7 @@ namespace ExpenseManager.Web.Models.Budget
 
         [Required]
         [Display(Name = "Limit")]
+        [Range(typeof (decimal), "0", "9999999999999999999999")]
         public decimal Limit { get; set; }
 
         [Display(Name = "Description")]

@@ -23,7 +23,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Permission, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.Permission, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.Permission, Model.Permissions, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Permission, "", new { @class = "text-danger" })
             </div>
         </div>

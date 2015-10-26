@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
-using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Budget;
 
@@ -52,27 +51,36 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(NewBudgetModel model)
         {
-            if (!ModelState.IsValid) // check if model is valid
+            // check if model is valid
+            if (!ModelState.IsValid)
             {
-                return this.View(model); // TODO: add error message to layout and display it here
+                // TODO: add error message to layout and display it here
+                return this.View(model);
             }
+
+            // check if model is valid
+            if (!this.ValidateModel(model.StartDate, model.EndDate))
+            {
+                // TODO: add error message to layout and display it here
+                return this.View(model);
+            }
+
             // get Id of current logged UserProfile from HttpContext
             var userId = await this.CurrentProfileId();
+
             // finding creator by his ID
             var creator = await this._db.UserProfiles.FirstOrDefaultAsync(user => user.Guid == userId);
-
 
             // creating new Budget by filling it from model
             this._db.Budgets.Add(new Budget
             {
-                //Guid = Guid.NewGuid(),
                 Name = model.Name,
                 StartDate = model.StartDate,
                 EndDate = model.EndDate,
                 Limit = model.Limit,
                 Description = model.Description ?? string.Empty,
                 Creator = creator,
-                Currency = new Currency {Name = "Česká koruna", Symbol = "Kč"},
+                Currency = await this.GetDefaultCurrency(),
                 AccessRights =
                     new List<BudgetAccessRight>
                     {
@@ -96,12 +104,14 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View with model</returns>
         public async Task<ActionResult> Edit(Guid? id)
         {
-            if (id == null) // check if Id is not null - it can happen by calling this action without /Guid
+            // check if Id is not null - it can happen by calling this action without /Guid
+            if (id == null)
             {
                 return this.RedirectToAction("Index"); // TODO add error message
             }
 
-            var budget = await this._db.Budgets.FindAsync(id); // find budget by its Id
+            // find budget by its Id
+            var budget = await this._db.Budgets.FindAsync(id);
 
             // filling model from DB entity
             var model = new EditBudgetModel
@@ -126,24 +136,36 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(EditBudgetModel model)
         {
-            if (!ModelState.IsValid) // check if model is valid, if not, return View with it (and error message later)
+            // check if model is valid, if not, return View with it (and error message later)
+            if (!ModelState.IsValid)
             {
                 return this.View(model);
             }
 
-            var budget = await this._db.Budgets.FindAsync(model.Guid); // find budget by its Id from model
+            // check if model is valid
+            if (!this.ValidateModel(model.StartDate, model.EndDate))
+            {
+                // TODO: add error message to layout and display it here
+                return this.View(model);
+            }
 
-            // editing editable properties
+            // find budget by its Id from model
+            var budget = await this._db.Budgets.FindAsync(model.Guid);
+
+            // editing editable properties, TODO: refactor it
             budget.Name = model.Name;
             budget.StartDate = model.StartDate;
             budget.EndDate = model.EndDate;
             budget.Description = model.Description;
             budget.Limit = model.Limit;
-
+            budget.Creator = budget.Creator;
+            budget.AccessRights = budget.AccessRights;
+            budget.Currency = budget.Currency;
 
             await this._db.SaveChangesAsync();
 
-            return this.RedirectToAction("Index"); // Add OK message
+            // Add OK message
+            return this.RedirectToAction("Index");
         }
 
         /// <summary>
@@ -155,15 +177,18 @@ namespace ExpenseManager.Web.Controllers
         {
             if (id == null)
             {
-                return this.RedirectToAction("Index"); // TODO add error message
+                // TODO add error message
+                return this.RedirectToAction("Index");
             }
 
-            var budget = await this._db.Budgets.FindAsync(id); // find budget to delete by its Id
+            // find budget to delete by its Id
+            var budget = await this._db.Budgets.FindAsync(id);
 
-            budget.AccessRights.ToList().ForEach(r => this._db.BudgetAccessRights.Remove(r));
             // delete connections to this budget in BudgetAccessRight table
+            budget.AccessRights.ToList().ForEach(r => this._db.BudgetAccessRights.Remove(r));
 
-            this._db.Budgets.Remove(budget); // removing budget
+            // removing budget
+            this._db.Budgets.Remove(budget);
             await this._db.SaveChangesAsync();
 
             return this.RedirectToAction("Index");
@@ -209,6 +234,20 @@ namespace ExpenseManager.Web.Controllers
             }
 
             return budgetShowModelList;
+        }
+
+        /// <summary>
+        ///     Additional validation for model
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        private bool ValidateModel(DateTime startDate, DateTime endDate)
+        {
+            if (startDate > endDate)
+                return false;
+
+            return true;
         }
 
         #endregion

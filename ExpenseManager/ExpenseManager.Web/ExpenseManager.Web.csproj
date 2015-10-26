@@ -190,6 +190,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="DatabaseContexts\ApplicationDbInitializer.cs" />
+    <Compile Include="Migrations\201510261559241_UserInterface.cs" />
+    <Compile Include="Migrations\201510261559241_UserInterface.Designer.cs">
+      <DependentUpon>201510261559241_UserInterface.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BudgetAccessRight\CreateBudgetAccessRightModel.cs" />
     <Compile Include="Models\BudgetAccessRight\EditBudgetAccessRightModel.cs" />
@@ -378,6 +382,11 @@
       <Project>{73A4FAB0-96F1-4DC9-92A8-2CC73B4EF776}</Project>
       <Name>ExpenseManager.Entity</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201510261559241_UserInterface.resx">
+      <DependentUpon>201510261559241_UserInterface.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -193,6 +193,8 @@ namespace ExpenseManager.Web.DatabaseContexts
             const string password = "password1";
             const string adminRoleName = "Admin";
             const string userRoleName = "UserProfile";
+            const string firstName = "admin";
+            const string lastName = "admin";
 
             var userManager = new ApplicationUserManager(new UserStore<UserIdentity>(context));
             var roleManager = new ApplicationRoleManager(new RoleStore<IdentityRole>(context));
@@ -211,7 +213,9 @@ namespace ExpenseManager.Web.DatabaseContexts
                     {
                         Name = "Default Wallet",
                         Currency = currency
-                    }
+                    },
+                    FirstName = firstName,
+                    LastName = lastName
                 };
                 profile.WalletAccessRights = new List<WalletAccessRight>
                 {

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Web.DatabaseContexts;
@@ -12,6 +14,16 @@ namespace ExpenseManager.Web.Controllers
 {
     public class AbstractController : Controller
     {
+        protected static readonly List<PermissionEnum> AllowedPermissions = new List<PermissionEnum>
+        {
+            PermissionEnum.Read,
+            PermissionEnum.Write
+        };
+
+        protected static readonly List<SelectListItem> PermissionSelectList = AllowedPermissions
+            .Select(permission => new SelectListItem {Value = permission.ToString(), Text = permission.ToString()})
+            .ToList();
+
         private readonly ApplicationDbContext db = new ApplicationDbContext();
 
         protected async Task<Guid> CurrentProfileId()
@@ -45,6 +57,11 @@ namespace ExpenseManager.Web.Controllers
             return
                 await
                     this.db.Currencies.FirstOrDefaultAsync();
+        }
+
+        protected List<SelectListItem> GetPermissions()
+        {
+            return PermissionSelectList;
         }
     }
 }

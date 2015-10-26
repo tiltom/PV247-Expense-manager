@@ -133,7 +133,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid) return this.View(model);
 
-            var user = this.CreateUser(model.Email);
+            var user = this.CreateUser(model.Email, model.FirstName, model.LastName);
             var result = await UserManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -257,7 +257,7 @@ namespace ExpenseManager.Web.Controllers
                     return this.View("ExternalLoginFailure");
                 }
 
-                var user = this.CreateUser(model.Email);
+                var user = this.CreateUser(model.Email, "external", "registration"); // TODO: add first and last name
 
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
@@ -279,7 +279,7 @@ namespace ExpenseManager.Web.Controllers
             return this.View(model);
         }
 
-        private UserIdentity CreateUser(string email)
+        private UserIdentity CreateUser(string email, string firstName, string lastName)
         {
             var user = new UserIdentity
             {
@@ -292,7 +292,9 @@ namespace ExpenseManager.Web.Controllers
                     {
                         Name = "Default Wallet",
                         Currency = this.GetDefaultCurrency()
-                    }
+                    },
+                    FirstName = firstName,
+                    LastName = lastName
                 }
             };
 

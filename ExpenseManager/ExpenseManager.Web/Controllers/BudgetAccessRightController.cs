@@ -4,13 +4,14 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.BudgetAccessRight;
 
 namespace ExpenseManager.Web.Controllers
 {
-    public class BudgetAccessRightController : Controller
+    public class BudgetAccessRightController : AbstractController
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
@@ -34,11 +35,22 @@ namespace ExpenseManager.Web.Controllers
         /// <returns></returns>
         public async Task<ActionResult> Create(Guid id)
         {
+            // find access rights to the budget
+            var budgetAccessRight = this._db.Budgets.FindAsync(id).Result.AccessRights;
+
+            // save Guids of users with access rights to the List
+            var usersList = new List<Guid>();
+            foreach (var item in budgetAccessRight)
+            {
+                usersList.Add(item.UserProfile.Guid);
+            }
+
             // creating new CreateBudgetAccessRightModel instance
             var model = new CreateBudgetAccessRightModel
             {
                 BudgetId = id,
-                Users = await this.GetUsers()
+                Permissions = this.GetPermissions(),
+                Users = await this.GetUsers(usersList)
             };
 
             return this.View(model);
@@ -53,12 +65,16 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CreateBudgetAccessRightModel model)
         {
-            if (!ModelState.IsValid) // checking if model is valid
+            // checking if model is valid
+            if (!ModelState.IsValid)
                 return this.View(model);
 
-            var budget = await this._db.Budgets.FindAsync(model.BudgetId); // find budget by its Id
-            var assignedUser = this._db.Users.Where(user => user.Id == model.AssignedUserId).FirstOrDefault().Profile;
+            // find budget by its Id
+            var budget = await this._db.Budgets.FindAsync(model.BudgetId);
+
             // finding creator by his ID
+            var assignedUser =
+                this._db.UserProfiles.FirstOrDefault(user => user.Guid.ToString() == model.AssignedUserId);
 
             // creating new budget access right
             this._db.BudgetAccessRights.Add(new BudgetAccessRight
@@ -80,10 +96,11 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View with model</returns>
         public async Task<ActionResult> Edit(Guid id)
         {
-            var budgetAccessRight = await this._db.BudgetAccessRights.FindAsync(id); // find BudgetAccessRight by its Id
+            // find BudgetAccessRight by its Id
+            var budgetAccessRight = await this._db.BudgetAccessRights.FindAsync(id);
 
-            var model = this.ConvertEntityToEditModel(budgetAccessRight);
             // creating EditBudgetAccessRight model instance from BudgetAccessRight DB entity
+            var model = this.ConvertEntityToEditModel(budgetAccessRight);
 
             return this.View(model);
         }
@@ -100,8 +117,8 @@ namespace ExpenseManager.Web.Controllers
             if (!ModelState.IsValid) // checking if model is valid
                 return this.View(model);
 
-            var budgetAccessRight = await this._db.BudgetAccessRights.FindAsync(model.Id);
             // find BudgetAccessRight by its Id
+            var budgetAccessRight = await this._db.BudgetAccessRights.FindAsync(model.Id);
 
             // editing editable properties
             budgetAccessRight.Permission = model.Permission;
@@ -120,8 +137,15 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>Redirect to Index</returns>
         public async Task<ActionResult> Delete(Guid id, Guid budgetId)
         {
-            var budgetAccessRight = await this._db.BudgetAccessRights.FindAsync(id); // find BudgetAccessRight by its Id
-            this._db.BudgetAccessRights.Remove(budgetAccessRight); // remove it from DB
+            // find BudgetAccessRight by its Id
+            var budgetAccessRight = await this._db.BudgetAccessRights.FindAsync(id);
+            if (budgetAccessRight.Permission.Equals(PermissionEnum.Owner))
+            {
+                return this.RedirectToAction("Index", new {id = budgetId});
+            }
+
+            // remove it from DB
+            this._db.BudgetAccessRights.Remove(budgetAccessRight);
             await this._db.SaveChangesAsync();
 
             return this.RedirectToAction("Index", new {id = budgetId});
@@ -144,7 +168,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 list.Add(new ShowBudgetAccessRightModel
                 {
-                    AssignedUserName = item.UserProfile.FirstName,
+                    AssignedUserName = item.UserProfile.FirstName + ' ' + item.UserProfile.LastName,
                     BudgetId = BudgetId,
                     Id = item.Guid,
                     Permission = item.Permission
@@ -168,19 +192,29 @@ namespace ExpenseManager.Web.Controllers
                 AssignedUserName = entity.UserProfile.FirstName,
                 Permission = entity.Permission,
                 BudgetId = entity.Budget.Guid,
-                Id = entity.Guid
+                Id = entity.Guid,
+                Permissions = this.GetPermissions()
             };
         }
 
         /// <summary>
-        ///     Get all users from DB
+        ///     Get list of users which don't have permissions to the budget yet.
         /// </summary>
-        /// <returns>List of all users</returns>
-        private async Task<List<SelectListItem>> GetUsers()
+        /// <param name="users">List of Guids of users with permission</param>
+        /// <returns></returns>
+        private async Task<List<SelectListItem>> GetUsers(List<Guid> users)
         {
+            // Id of current user
+            var currrentUserId = await this.CurrentProfileId();
             return
-                await this._db.Users.Select(user => new SelectListItem {Value = user.Id, Text = user.UserName})
-                    .ToListAsync();
+                await
+                    this._db.UserProfiles
+                        .Where(
+                            u => // filtering users which don't have owner permission or other permissions
+                                u.BudgetAccessRights.All(war => war.Budget.Creator.Guid != currrentUserId) ||
+                                !users.Contains(u.Guid))
+                        .Select(user => new SelectListItem {Value = user.Guid.ToString(), Text = user.FirstName})
+                        .ToListAsync();
         }
 
         #endregion

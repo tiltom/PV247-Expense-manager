@@ -15,16 +15,6 @@ namespace ExpenseManager.Web.Controllers
 {
     public class WalletAcessRightController : AbstractController
     {
-        private static readonly List<PermissionEnum> AllowedPermissions = new List<PermissionEnum>
-        {
-            PermissionEnum.Read,
-            PermissionEnum.Write
-        };
-
-        private static readonly List<SelectListItem> PermissionSelectList = AllowedPermissions
-            .Select(permission => new SelectListItem {Value = permission.ToString(), Text = permission.ToString()})
-            .ToList();
-
         private readonly ApplicationDbContext db = new ApplicationDbContext();
 
         /// <summary>
@@ -225,11 +215,6 @@ namespace ExpenseManager.Web.Controllers
                                 u.Guid == userId)
                         .Select(user => new SelectListItem {Value = user.Guid.ToString(), Text = user.FirstName})
                         .ToListAsync();
-        }
-
-        private List<SelectListItem> GetPermissions()
-        {
-            return PermissionSelectList;
         }
 
         #endregion
