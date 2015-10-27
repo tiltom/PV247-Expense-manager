@@ -213,7 +213,13 @@ namespace ExpenseManager.Web.Controllers
                             u =>
                                 u.WalletAccessRights.All(war => war.Wallet.Owner.Guid != currrentUserId) ||
                                 u.Guid == userId)
-                        .Select(user => new SelectListItem {Value = user.Guid.ToString(), Text = user.FirstName})
+                        .Select(
+                            user =>
+                                new SelectListItem
+                                {
+                                    Value = user.Guid.ToString(),
+                                    Text = user.FirstName + " " + user.LastName
+                                })
                         .ToListAsync();
         }
 

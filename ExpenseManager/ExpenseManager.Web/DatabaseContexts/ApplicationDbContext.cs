@@ -11,8 +11,6 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace ExpenseManager.Web.DatabaseContexts
 {
-    // You can add profile data for the UserProfile by adding more properties to your UserProfile class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
-
     public class ApplicationDbContext : IdentityDbContext<UserIdentity>
     {
         public ApplicationDbContext()
