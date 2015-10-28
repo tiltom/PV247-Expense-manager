@@ -162,6 +162,24 @@ namespace ExpenseManager.Web.DatabaseContexts
                     Date = new DateTime(2015, 10, 16),
                     Category = context.Categories.FirstOrDefault(x => x.Description.Contains("transportation")),
                     Description = "Bought a ticket to Madrid"
+                },
+                new Transaction
+                {
+                    Wallet = context.Wallets.FirstOrDefault(u => u.Name.Contains("Read")),
+                    Currency = context.Currencies.FirstOrDefault(),
+                    Amount = -5,
+                    Date = new DateTime(2015, 10, 17),
+                    Category = context.Categories.FirstOrDefault(),
+                    Description = "Read transaction"
+                },
+                new Transaction
+                {
+                    Wallet = context.Wallets.FirstOrDefault(u => u.Name.Contains("Write")),
+                    Currency = context.Currencies.FirstOrDefault(),
+                    Amount = -50,
+                    Date = new DateTime(2015, 10, 16),
+                    Category = context.Categories.FirstOrDefault(x => x.Description.Contains("transportation")),
+                    Description = "Write transaction"
                 }
             };
 
@@ -195,6 +213,12 @@ namespace ExpenseManager.Web.DatabaseContexts
             const string userRoleName = "User";
             const string firstName = "admin";
             const string lastName = "admin";
+
+            const string nameUserRead = "userread@example.com";
+            const string nameUserWrite = "userwrite@example.com";
+            const string firstNameUserRead = "userRead";
+            const string firstNameUserWrite = "userWrite";
+            const string lastNameUser = "user";
 
             var userManager = new ApplicationUserManager(new UserStore<UserIdentity>(context));
             var roleManager = new ApplicationRoleManager(new RoleStore<IdentityRole>(context));
@@ -247,7 +271,139 @@ namespace ExpenseManager.Web.DatabaseContexts
                 userManager.AddToRole(user.Id, role.Name);
             }
             context.SaveChanges();
+
+            var adminProfile = context.UserProfiles.FirstOrDefault(u => u.FirstName == firstName);
+            user = userManager.FindByName(nameUserRead);
+            if (user == null)
+            {
+                var currency = context.Currencies.FirstOrDefault(c => c.Symbol == "Kč");
+                var profile = new UserProfile
+                {
+                    PersonalWallet = new Wallet
+                    {
+                        Name = "Read Wallet",
+                        Currency = currency
+                    },
+                    FirstName = firstNameUserRead,
+                    LastName = lastNameUser
+                };
+
+                profile.WalletAccessRights = new List<WalletAccessRight>
+                {
+                    new WalletAccessRight
+                    {
+                        Permission = PermissionEnum.Owner,
+                        UserProfile = profile,
+                        Wallet = profile.PersonalWallet
+                    } /* //What to change to make it work?
+                    new WalletAccessRight
+                    {
+                        Permission = PermissionEnum.Read,
+                        UserProfile = adminProfile,
+                        Wallet = profile.PersonalWallet
+                    }*/
+                };
+                profile = context.UserProfiles.Add(profile);
+                context.SaveChanges();
+                user = new UserIdentity
+                {
+                    UserName = nameUserRead,
+                    Email = nameUserRead,
+                    CreationDate = DateTime.Now,
+                    Profile = profile
+                };
+                userManager.Create(user, password);
+                userManager.SetLockoutEnabled(user.Id, false);
+            }
+
+
+            // Add UserProfile admin to Role User if not already added
+            rolesForUser = userManager.GetRoles(user.Id);
+            role = roleManager.FindByName(userRoleName);
+            if (!rolesForUser.Contains(role.Name))
+            {
+                userManager.AddToRole(user.Id, role.Name);
+            }
+            context.SaveChanges();
+
+            //TODO Remove
+            var userReadAcess = new WalletAccessRight
+            {
+                Guid = Guid.NewGuid(),
+                Permission = PermissionEnum.Read,
+                UserProfile = context.UserProfiles.FirstOrDefault(u => u.FirstName == firstName),
+                Wallet = context.Wallets.FirstOrDefault(w => w.Owner.FirstName == firstNameUserRead)
+            };
+            context.WalletAccessRights.Add(userReadAcess);
+            context.SaveChanges();
+            //TODO End Remove
+
+            user = userManager.FindByName(nameUserWrite);
+            if (user == null)
+            {
+                var currency = context.Currencies.FirstOrDefault(c => c.Symbol == "Kč");
+                var profile = new UserProfile
+                {
+                    PersonalWallet = new Wallet
+                    {
+                        Name = "Write Wallet",
+                        Currency = currency
+                    },
+                    FirstName = firstNameUserWrite,
+                    LastName = lastNameUser
+                };
+
+                profile.WalletAccessRights = new List<WalletAccessRight>
+                {
+                    new WalletAccessRight
+                    {
+                        Permission = PermissionEnum.Owner,
+                        UserProfile = profile,
+                        Wallet = profile.PersonalWallet
+                    } /* What to change to make it work?
+                    new WalletAccessRight
+                    {
+                        Permission = PermissionEnum.Write,
+                        UserProfile = adminProfile,
+                        Wallet = profile.PersonalWallet
+                    }*/
+                };
+                profile = context.UserProfiles.Add(profile);
+                context.SaveChanges();
+                user = new UserIdentity
+                {
+                    UserName = nameUserWrite,
+                    Email = nameUserWrite,
+                    CreationDate = DateTime.Now,
+                    Profile = profile
+                };
+                userManager.Create(user, password);
+                userManager.SetLockoutEnabled(user.Id, false);
+            }
+
+
+            // Add UserProfile admin to Role User if not already added
+            rolesForUser = userManager.GetRoles(user.Id);
+            role = roleManager.FindByName(userRoleName);
+            if (!rolesForUser.Contains(role.Name))
+            {
+                userManager.AddToRole(user.Id, role.Name);
+            }
+            context.SaveChanges();
+
+            //TODO Remove
+            var userWriteAcess = new WalletAccessRight
+            {
+                Guid = Guid.NewGuid(),
+                Permission = PermissionEnum.Write,
+                UserProfile = context.UserProfiles.FirstOrDefault(u => u.FirstName == firstName),
+                Wallet = context.Wallets.FirstOrDefault(w => w.Owner.FirstName == firstNameUserWrite)
+            };
+            context.WalletAccessRights.Add(userWriteAcess);
+            context.SaveChanges();
+            //TODO End Remove
         }
+
 
         private static void CreateRole(ApplicationRoleManager roleManager, string adminRoleName)
         {

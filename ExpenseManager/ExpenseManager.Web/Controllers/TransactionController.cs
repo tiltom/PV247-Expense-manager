@@ -15,19 +15,46 @@ namespace ExpenseManager.Web.Controllers
     [Authorize]
     public class TransactionController : AbstractController
     {
+        private static string _walletId;
         private readonly ApplicationDbContext _db = new ApplicationDbContext(); // instance of DB context
+
 
         /// <summary>
         ///     Shows transactions for users Wallet
         /// </summary>
         /// <returns>View with transaction</returns>
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string walletId)
         {
             // get Id of currently logged UserProfile from HttpContext
             var id = await this.CurrentProfileId();
-            var list = await this._db.Transactions.Where(user => user.Wallet.Owner.Guid == id).ToListAsync();
-            //list of all transactions from UserProfile's wallet
 
+            // get all Wallets user has access to
+            ViewBag.WalletList = await this.GetViewableWallets();
+
+            // if walletId was selected remember it
+            if (!string.IsNullOrEmpty(walletId))
+            {
+                _walletId = walletId;
+            }
+            var selectedWalletId = await this.GetCurrentWallet();
+            // get all Transactions in selected wallet
+            var list =
+                await this._db.Transactions.Where(user => user.Wallet.Guid == new Guid(selectedWalletId)).ToListAsync();
+
+            // get user permision for selected wallet
+            var permission =
+                await
+                    this._db.WalletAccessRights
+                        .FirstOrDefaultAsync(
+                            r =>
+                                r.UserProfile.Guid == id && r.Wallet.Guid.ToString() == selectedWalletId);
+            // when user does't have permision to manipulate with transaction show view without edit and delete
+            if (permission != null && permission.Permission == PermissionEnum.Read)
+            {
+                return this.View("IndexRead", list.Select(this.ConvertEntityToTransactionShowModel));
+            }
+
+            //list of all transactions from UserProfile's wallet
             return this.View(list.Select(this.ConvertEntityToTransactionShowModel));
         }
 
@@ -37,12 +64,13 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View with model</returns>
         public async Task<ActionResult> Create()
         {
-            //get wallet Id for currently logged UserProfile
-            var walletId = await this.GetUserWalletId();
+            //get wallet Id for currently selected wallet
+            var walletId = new Guid(await this.GetCurrentWallet());
             //get default currency for wallet
             var currency = await this._db.Wallets.FindAsync(walletId);
+            //fill NewTransaction model with needed informations
             return
-                this.View(new NewTransactionModel //fill NewTransaction model with needed informations
+                this.View(new NewTransactionModel
                 {
                     WalletId = walletId,
                     CurrencyId = currency.Currency.Guid.ToString(),
@@ -61,16 +89,19 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(NewTransactionModel transaction)
         {
-            if (ModelState.IsValid) //check if model is valid
+            //check if model is valid
+            if (ModelState.IsValid)
             {
+                //create new Transaction entity and fill it from model
                 var transactionEntity =
                     await this.ConvertNewModelToEntity(transaction, new Transaction {Guid = Guid.NewGuid()});
-                //create new Transaction entity and fill it from model
+                //check if transaction should be repeatable
                 this._db.Transactions.Add(transactionEntity);
-                if (transaction.IsRepeatable) //check if transaction should be repeatable
+                if (transaction.IsRepeatable)
                 {
+                    //create new repeatable transaction entity and fill from model
                     var repeatableTransaction = new RepeatableTransaction
-                        //create new repeatable transaction entity and fill from model
+
                     {
                         FirstTransaction = transactionEntity,
                         Frequency = transaction.Frequency,
@@ -96,16 +127,25 @@ namespace ExpenseManager.Web.Controllers
         // GET: Transactions/Edit/5
         public async Task<ActionResult> Edit(Guid? id)
         {
-            if (id == null) //check if Id is not null
+            //check if Id is not null
+            if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var transaction = await this._db.Transactions.FindAsync(id); //find transaction by it's Id
+            //find transaction by it's Id
+            var transaction = await this._db.Transactions.FindAsync(id);
             if (transaction == null)
             {
                 return this.HttpNotFound();
             }
-            var model = this.ConvertEntityToTransactionEditModel(transaction); //fill model from DB entity
+            // if user doesn't have permision to modify transaction show error
+            if (!await this.HasWritePermission(transaction))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
+                    "You don't have permision to edit this transaction");
+            }
+            //fill model from DB entity
+            var model = this.ConvertEntityToTransactionEditModel(transaction);
             model.Currencies = await this.GetCurrencies();
             model.Categories = await this.GetCategories();
             model.Budgets = await this.GetBudgets();
@@ -124,21 +164,26 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(EditTransactionModel transaction)
         {
-            if (ModelState.IsValid) //check if model is valid
+            //check if model is valid
+            if (ModelState.IsValid)
             {
-                var transactionEntity = await this._db.Transactions.FindAsync(transaction.Id); //find transaction by Id
-                await this.ConvertEditModelToEntity(transaction, transactionEntity);
+                //find transaction by Id
+                var transactionEntity = await this._db.Transactions.FindAsync(transaction.Id);
                 //update entity properties from model
+                await this.ConvertEditModelToEntity(transaction, transactionEntity);
+                //find if transaction is repeatable in DB
                 var repeatableTransaction =
                     await
                         this._db.RepeatableTransactions.FirstOrDefaultAsync(
-                            a => a.FirstTransaction.Guid == transaction.Id); //find if transaction is repeatable in DB
-                if (transaction.IsRepeatable) //check if transaction was set as repeatable in model
+                            a => a.FirstTransaction.Guid == transaction.Id);
+                //check if transaction was set as repeatable in model
+                if (transaction.IsRepeatable)
                 {
-                    if (repeatableTransaction == null) //check if transaction was also set repeatable in model
+                    //check if transaction was also set repeatable in model
+                    if (repeatableTransaction == null)
                     {
+                        //if not create new repeatable transaction entity
                         repeatableTransaction = new RepeatableTransaction
-                            //if not create new repeatable transaction entity
                         {
                             FirstTransaction = transactionEntity,
                             Frequency = transaction.Frequency,
@@ -147,15 +192,18 @@ namespace ExpenseManager.Web.Controllers
                         };
                         this._db.RepeatableTransactions.Add(repeatableTransaction);
                     }
-                    else // if transaction exists in repeatable transactions in DB update it
+                    // if transaction exists in repeatable transactions in DB update it
+                    else
                     {
                         repeatableTransaction.Frequency = transaction.Frequency;
                         repeatableTransaction.LastOccurence = transaction.LastOccurence.GetValueOrDefault();
                     }
                 }
-                else // if transaction was set as not repeatable in model
+                // if transaction was set as not repeatable in model
+                else
                 {
-                    if (repeatableTransaction != null) //if exists in DB in repeatable transactions delete it
+                    //if exists in DB in repeatable transactions delete it
+                    if (repeatableTransaction != null)
                     {
                         this._db.RepeatableTransactions.Remove(repeatableTransaction);
                     }
@@ -177,20 +225,29 @@ namespace ExpenseManager.Web.Controllers
         // POST: Transactions/Delete/5
         public async Task<ActionResult> Delete(Guid? id)
         {
-            if (id == null) //check if id is not null
+            //check if id is not null
+            if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var transaction = await this._db.Transactions.FindAsync(id); //find transaction by its Id
+            //find transaction by its Id
+            var transaction = await this._db.Transactions.FindAsync(id);
+            if (!await this.HasWritePermission(transaction))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
+                    "You don't have permision to delete this transaction");
+            }
+            //get if transaction is also in repeatable transactions
             var repeatableTransaction =
                 await this._db.RepeatableTransactions.FirstOrDefaultAsync(a => a.FirstTransaction.Guid == id);
-            //get if transaction is also in repeatable transactions
+
             if (repeatableTransaction != null) //check if transaction was not repeatable
             {
-                this._db.RepeatableTransactions.Remove(repeatableTransaction);
                 //if true remove it from repeatable transactions first
+                this._db.RepeatableTransactions.Remove(repeatableTransaction);
             }
-            this._db.Transactions.Remove(transaction); //removing transaction from DB
+            //removing transaction from DB
+            this._db.Transactions.Remove(transaction);
             await this._db.SaveChangesAsync();
             return this.RedirectToAction("Index");
         }
@@ -217,7 +274,8 @@ namespace ExpenseManager.Web.Controllers
             entity.Date = model.Date;
             entity.Description = model.Description;
             entity.Wallet = await this._db.Wallets.FindAsync(model.WalletId);
-            if (model.BudgetId != null) //check if budget was set to cattegory in model
+            //check if budget was set to cattegory in model
+            if (model.BudgetId != null)
             {
                 entity.Budget = await this._db.Budgets.FindAsync(new Guid(model.BudgetId));
             }
@@ -240,9 +298,11 @@ namespace ExpenseManager.Web.Controllers
             entity.Date = model.Date;
             entity.Description = model.Description;
             entity.Wallet = await this._db.Wallets.FindAsync(model.WalletId);
-            if (model.BudgetId == null) //check if budget was set in model
+            //check if budget was set in model
+            if (model.BudgetId == null)
             {
-                entity.Budget?.Transactions.Remove(entity); //remove transaction from Budget if it exists
+                //remove transaction from Budget if it exists
+                entity.Budget?.Transactions.Remove(entity);
                 entity.Budget = null;
             }
             else
@@ -261,13 +321,15 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>EditTransactionModel</returns>
         private EditTransactionModel ConvertEntityToTransactionEditModel(Transaction entity)
         {
+            //get if transaction is repeatable
             var repeatableTransaction =
                 this._db.RepeatableTransactions.FirstOrDefault(a => a.FirstTransaction.Guid == entity.Guid);
-            //get if transaction is repeatable
+
             string budgetId = null;
             if (entity.Budget != null)
                 budgetId = entity.Budget.Guid.ToString();
-            var transactionModel = new EditTransactionModel //fill model info from entity
+            //fill model info from entity
+            var transactionModel = new EditTransactionModel
             {
                 Id = entity.Guid,
                 Amount = entity.Amount,
@@ -278,8 +340,8 @@ namespace ExpenseManager.Web.Controllers
                 CurrencyId = entity.Currency.Guid.ToString(),
                 CategoryId = entity.Category.Guid.ToString()
             };
-
-            if (repeatableTransaction != null) //check if transaction is repeatable and fill it
+            //check if transaction is repeatable and fill it
+            if (repeatableTransaction != null)
             {
                 transactionModel.IsRepeatable = true;
                 transactionModel.Frequency = repeatableTransaction.Frequency;
@@ -299,10 +361,11 @@ namespace ExpenseManager.Web.Controllers
             string budgetName = null;
             if (entity.Budget != null)
                 budgetName = entity.Budget.Name;
+            //get if transaction is repeatable
             var repeatableTransaction =
                 this._db.RepeatableTransactions.FirstOrDefault(a => a.FirstTransaction.Guid == entity.Guid);
-            //get if transaction is repeatable
-            var transactionModel = new TransactionShowModel //fill model info from entity
+            //fill model info from entity
+            var transactionModel = new TransactionShowModel
             {
                 Id = entity.Guid,
                 Amount = entity.Amount,
@@ -312,8 +375,8 @@ namespace ExpenseManager.Web.Controllers
                 CurrencySymbol = entity.Currency.Symbol,
                 CategoryName = entity.Category.Name
             };
-
-            if (repeatableTransaction != null) //check if transaction is repeatable and fill it
+            //check if transaction is repeatable and fill it
+            if (repeatableTransaction != null)
             {
                 transactionModel.IsRepeatable = true;
             }
@@ -368,6 +431,47 @@ namespace ExpenseManager.Web.Controllers
                     this._db.Categories.Select(
                         category => new SelectListItem {Value = category.Guid.ToString(), Text = category.Name})
                         .ToListAsync();
+        }
+
+        /// <summary>
+        ///     Provides selectable list of Wallets user has at least permission to read
+        /// </summary>
+        /// <returns></returns>
+        private async Task<List<SelectListItem>> GetViewableWallets()
+        {
+            var id = await this.CurrentProfileId();
+            return
+                await this._db.WalletAccessRights.Where(
+                    user => user.Permission >= PermissionEnum.Read && user.UserProfile.Guid == id)
+                    .Select(
+                        wallet => new SelectListItem {Value = wallet.Wallet.Guid.ToString(), Text = wallet.Wallet.Name})
+                    .ToListAsync();
+        }
+
+        /// <summary>
+        ///     Checks if user has permission to write to Wallet
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
+        private async Task<bool> HasWritePermission(Transaction transaction)
+        {
+            var id = await this.CurrentProfileId();
+            //TODO When i change FirstOrDefault to FirstOrDefaultAsync there is an exception: A second operation started on this context before a previous asynchronous operation completed. Use 'await' to ensure that any asynchronous operations have completed before calling another method on this context. Any instance members are not guaranteed to be thread safe.
+            var permission = this._db.WalletAccessRights
+                .FirstOrDefault(
+                    r =>
+                        r.Wallet.Guid == transaction.Wallet.Guid &&
+                        r.UserProfile.Guid == id);
+            return permission != null && permission.Permission != PermissionEnum.Read;
+        }
+
+        /// <summary>
+        ///     Gets id of currently selected Wallet, if none is selected returns id of User's default Wallet and saves it
+        /// </summary>
+        /// <returns></returns>
+        private async Task<string> GetCurrentWallet()
+        {
+            return _walletId ?? (_walletId = (await this.GetUserWalletId()).ToString());
         }
     }
 }

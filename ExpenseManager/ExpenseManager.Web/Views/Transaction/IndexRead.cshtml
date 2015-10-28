@@ -7,9 +7,6 @@
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<p>
     @using (Html.BeginForm("Index", "Transaction", FormMethod.Get))
     {
         <text>Wallet</text>@Html.DropDownList("walletId", new SelectList(ViewBag.WalletList, "Value", "Text"))
@@ -65,10 +62,6 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.IsRepeatable)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { onclick = "return confirm('Are you sure you wish to delete this transaction?');" })
         </td>
     </tr>
 }
