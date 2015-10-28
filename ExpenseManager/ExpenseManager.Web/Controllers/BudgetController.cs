@@ -216,24 +216,20 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>
         ///     List of BudgetShowModel
         /// </returns>
-        private List<BudgetShowModel> ConvertEntityToBudgetShowModel(List<Budget> entities)
+        private IEnumerable<BudgetShowModel> ConvertEntityToBudgetShowModel(List<Budget> entities)
         {
-            var budgetShowModelList = new List<BudgetShowModel>();
-
-            // iterating over all Budget entities and mapping them to the BudgetShowModel
             foreach (var item in entities)
             {
-                budgetShowModelList.Add(new BudgetShowModel
-                {
-                    Guid = item.Guid,
-                    Name = item.Name,
-                    StartDate = item.StartDate,
-                    EndDate = item.EndDate,
-                    Limit = item.Limit
-                });
+                yield return
+                    new BudgetShowModel
+                    {
+                        Guid = item.Guid,
+                        Name = item.Name,
+                        StartDate = item.StartDate,
+                        EndDate = item.EndDate,
+                        Limit = item.Limit
+                    };
             }
-
-            return budgetShowModelList;
         }
 
         /// <summary>
