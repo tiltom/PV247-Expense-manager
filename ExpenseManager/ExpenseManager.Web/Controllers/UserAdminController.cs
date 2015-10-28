@@ -59,7 +59,13 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View</returns>
         public ActionResult Index()
         {
-            return this.View(UserManager.Users);
+            return this.View(UserManager.Users.Select(u => new UserViewModel
+            {
+                Id = u.Id,
+                Email = u.Email,
+                FirstName = u.Profile.FirstName,
+                LastName = u.Profile.LastName
+            }));
         }
 
         /// <summary>
@@ -76,7 +82,13 @@ namespace ExpenseManager.Web.Controllers
             var user = await UserManager.FindByIdAsync(id);
             var roleNames = await UserManager.GetRolesAsync(user.Id);
 
-            return this.View(new UserDetailViewModel {UserName = user.UserName, RolesList = roleNames});
+            return this.View(new UserDetailViewModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.Profile.FirstName + " " + user.Profile.LastName,
+                RolesList = roleNames
+            });
         }
 
         /// <summary>
@@ -111,6 +123,14 @@ namespace ExpenseManager.Web.Controllers
             {
                 return this.View(userViewModel);
             }
+
+            if (userViewModel.SelectedRoles == null)
+            {
+                ModelState.AddModelError("", "At least one role has to be selected.");
+                userViewModel.RolesList = await this.GetAllRolesAsync();
+                return this.View(userViewModel);
+            }
+
             var user = new UserIdentity
             {
                 UserName = userViewModel.Email,
@@ -175,6 +195,8 @@ namespace ExpenseManager.Web.Controllers
             {
                 Id = user.Id,
                 Email = user.Email,
+                FirstName = user.Profile.FirstName,
+                LastName = user.Profile.LastName,
                 RolesList = RoleManager.Roles.ToList().Select(x => new SelectListItem
                 {
                     Selected = userRoles.Contains(x.Name),
@@ -199,6 +221,13 @@ namespace ExpenseManager.Web.Controllers
                 return this.View();
             }
 
+            if (editUser.SelectedRoles == null)
+            {
+                ModelState.AddModelError("", "At least one role has to be selected.");
+                editUser.RolesList = await this.GetAllRolesAsync();
+                return this.View(editUser);
+            }
+
             var user = await UserManager.FindByIdAsync(editUser.Id);
             if (user == null)
             {
@@ -207,6 +236,8 @@ namespace ExpenseManager.Web.Controllers
 
             user.UserName = editUser.Email;
             user.Email = editUser.Email;
+            user.Profile.FirstName = editUser.FirstName;
+            user.Profile.LastName = editUser.LastName;
 
             var userRoles = await UserManager.GetRolesAsync(user.Id);
             var selectedRoles = editUser.SelectedRoles?.ToArray() ?? new string[] {};
@@ -215,14 +246,14 @@ namespace ExpenseManager.Web.Controllers
             if (!result.Succeeded)
             {
                 result.Errors.ForEach(e => ModelState.AddModelError("", e));
-                return this.View();
+                return this.View(editUser);
             }
             result = await UserManager.RemoveFromRolesAsync(user.Id, userRoles.Except(selectedRoles).ToArray());
 
             if (!result.Succeeded)
             {
                 result.Errors.ForEach(e => ModelState.AddModelError("", e));
-                return this.View();
+                return this.View(editUser);
             }
             return this.RedirectToAction("Index");
         }

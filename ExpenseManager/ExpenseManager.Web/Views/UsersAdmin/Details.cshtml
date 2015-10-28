@@ -7,8 +7,16 @@
 <h2>Details.</h2>
 
 <div>
-    <h4>UserProfile</h4>
+    <h4>User</h4>
     <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+    </dl>
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.UserName)
@@ -22,7 +30,7 @@
 @if (!Model.RolesList.Any())
 {
     <hr />
-    <p>No roles found for this UserProfile.</p>
+    <p>No roles found for this User.</p>
 }
 
 <table class="table">

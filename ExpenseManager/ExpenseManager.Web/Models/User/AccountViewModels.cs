@@ -7,7 +7,14 @@ namespace ExpenseManager.Web.Models.User
     public class ExternalLoginConfirmationViewModel
     {
         [Required]
+        [EmailAddress]
         public string Email { get; set; }
+
+        [Required(AllowEmptyStrings = false)]
+        public string FirstName { get; set; }
+
+        [Required(AllowEmptyStrings = false)]
+        public string LastName { get; set; }
     }
 
     public class ExternalLoginListViewModel

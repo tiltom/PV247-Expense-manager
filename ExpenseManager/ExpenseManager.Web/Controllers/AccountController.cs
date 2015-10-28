@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
-using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Common;
-using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Facebook;
@@ -20,7 +17,7 @@ using Microsoft.Owin.Security;
 namespace ExpenseManager.Web.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : AbstractController
     {
         private ApplicationRoleManager _roleManager;
         private ApplicationSignInManager _signInManager;
@@ -134,12 +131,12 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid) return this.View(model);
 
-            var user = this.CreateUser(model.Email, model.FirstName, model.LastName);
+            var user = await this.CreateUser(model.Email, model.FirstName, model.LastName);
             var result = await UserManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
                 await SignInManager.SignInAsync(user, false, false);
-                var userRole = await RoleManager.FindByNameAsync("UserProfile");
+                var userRole = await RoleManager.FindByNameAsync("User");
                 await UserManager.AddToRoleAsync(user.Id, userRole.Name);
 
                 return this.RedirectToAction("Index", "Home");
@@ -149,14 +146,6 @@ namespace ExpenseManager.Web.Controllers
             // If we got this far, something failed, redisplay form
             return this.View(model);
         }
-
-        private Currency GetDefaultCurrency()
-        {
-            var context = HttpContext.GetOwinContext().Get<ApplicationDbContext>();
-            var currency = context.Currencies.FirstOrDefault(c => c.Symbol == "Kč");
-            return currency;
-        }
-
 
         /// <summary>
         ///     Confirm UserProfile email
@@ -258,12 +247,13 @@ namespace ExpenseManager.Web.Controllers
                     return this.View("ExternalLoginFailure");
                 }
 
-                var user = this.CreateUser(model.Email, "external", "registration"); // TODO: add first and last name
+                var user = await this.CreateUser(model.Email, model.FirstName, model.LastName);
+                // TODO: add first and last name
 
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
-                    var userRole = await RoleManager.FindByNameAsync("UserProfile");
+                    var userRole = await RoleManager.FindByNameAsync("User");
                     await UserManager.AddToRoleAsync(user.Id, userRole.Name);
 
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
@@ -280,7 +270,7 @@ namespace ExpenseManager.Web.Controllers
             return this.View(model);
         }
 
-        private UserIdentity CreateUser(string email, string firstName, string lastName)
+        private async Task<UserIdentity> CreateUser(string email, string firstName, string lastName)
         {
             var user = new UserIdentity
             {
@@ -292,7 +282,7 @@ namespace ExpenseManager.Web.Controllers
                     PersonalWallet = new Wallet
                     {
                         Name = "Default Wallet",
-                        Currency = this.GetDefaultCurrency()
+                        Currency = await this.GetDefaultCurrency()
                     },
                     FirstName = firstName,
                     LastName = lastName
