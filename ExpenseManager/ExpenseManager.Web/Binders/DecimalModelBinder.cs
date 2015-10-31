@@ -11,12 +11,6 @@ namespace ExpenseManager.Web.Binders
         {
             object result = null;
 
-            // Don't do this here!
-            // It might do bindingContext.ModelState.AddModelError
-            // and there is no RemoveModelError!
-            // 
-            // result = base.BindModel(controllerContext, bindingContext);
-
             var modelName = bindingContext.ModelName;
             var attemptedValue =
                 bindingContext.ValueProvider.GetValue(modelName).AttemptedValue;
@@ -45,6 +39,7 @@ namespace ExpenseManager.Web.Binders
             }
             catch (FormatException e)
             {
+                result = base.BindModel(controllerContext, bindingContext);
                 bindingContext.ModelState.AddModelError(modelName, e);
             }
 

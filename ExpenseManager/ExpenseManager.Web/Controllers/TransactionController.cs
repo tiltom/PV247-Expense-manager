@@ -41,14 +41,14 @@ namespace ExpenseManager.Web.Controllers
             var list =
                 await this._db.Transactions.Where(user => user.Wallet.Guid == new Guid(selectedWalletId)).ToListAsync();
 
-            // get user permision for selected wallet
+            // get user permission for selected wallet
             var permission =
                 await
                     this._db.WalletAccessRights
                         .FirstOrDefaultAsync(
                             r =>
                                 r.UserProfile.Guid == id && r.Wallet.Guid.ToString() == selectedWalletId);
-            // when user does't have permision to manipulate with transaction show view without edit and delete
+            // when user doesn't have permission to manipulate with transaction show view without edit and delete
             if (permission != null && permission.Permission == PermissionEnum.Read)
             {
                 return this.View("IndexRead", list.Select(this.ConvertEntityToTransactionShowModel));
@@ -89,7 +89,15 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(NewTransactionModel transaction)
         {
-            //check if model is valid
+            //If transaction is repeatable date of last Occurrence must be set
+            if (transaction.IsRepeatable)
+            {
+                if (transaction.LastOccurrence == null)
+                {
+                    ModelState.AddModelError("LastOccurrence", "Date of last occurrence must be set");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 //create new Transaction entity and fill it from model
@@ -105,7 +113,7 @@ namespace ExpenseManager.Web.Controllers
                     {
                         FirstTransaction = transactionEntity,
                         Frequency = transaction.Frequency,
-                        LastOccurence = transaction.LastOccurence.GetValueOrDefault(),
+                        LastOccurence = transaction.LastOccurrence.GetValueOrDefault(),
                         Guid = Guid.NewGuid()
                     };
                     this._db.RepeatableTransactions.Add(repeatableTransaction);
@@ -138,11 +146,11 @@ namespace ExpenseManager.Web.Controllers
             {
                 return this.HttpNotFound();
             }
-            // if user doesn't have permision to modify transaction show error
+            // if user doesn't have permission to modify transaction show error
             if (!await this.HasWritePermission(transaction))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
-                    "You don't have permision to edit this transaction");
+                    "You don't have permission to edit this transaction");
             }
             //fill model from DB entity
             var model = this.ConvertEntityToTransactionEditModel(transaction);
@@ -164,6 +172,14 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(EditTransactionModel transaction)
         {
+            if (transaction.IsRepeatable)
+            {
+                if (transaction.LastOccurrence == null)
+                {
+                    ModelState.AddModelError("LastOccurrence", "Date of last occurrence must be set");
+                }
+            }
+
             //check if model is valid
             if (ModelState.IsValid)
             {
@@ -187,7 +203,7 @@ namespace ExpenseManager.Web.Controllers
                         {
                             FirstTransaction = transactionEntity,
                             Frequency = transaction.Frequency,
-                            LastOccurence = transaction.LastOccurence.GetValueOrDefault(),
+                            LastOccurence = transaction.LastOccurrence.GetValueOrDefault(),
                             Guid = Guid.NewGuid()
                         };
                         this._db.RepeatableTransactions.Add(repeatableTransaction);
@@ -196,7 +212,7 @@ namespace ExpenseManager.Web.Controllers
                     else
                     {
                         repeatableTransaction.Frequency = transaction.Frequency;
-                        repeatableTransaction.LastOccurence = transaction.LastOccurence.GetValueOrDefault();
+                        repeatableTransaction.LastOccurence = transaction.LastOccurrence.GetValueOrDefault();
                     }
                 }
                 // if transaction was set as not repeatable in model
@@ -235,7 +251,7 @@ namespace ExpenseManager.Web.Controllers
             if (!await this.HasWritePermission(transaction))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
-                    "You don't have permision to delete this transaction");
+                    "You don't have permission to delete this transaction");
             }
             //get if transaction is also in repeatable transactions
             var repeatableTransaction =
@@ -274,7 +290,7 @@ namespace ExpenseManager.Web.Controllers
             entity.Date = model.Date;
             entity.Description = model.Description;
             entity.Wallet = await this._db.Wallets.FindAsync(model.WalletId);
-            //check if budget was set to cattegory in model
+            //check if budget was set to category in model
             if (model.BudgetId != null)
             {
                 entity.Budget = await this._db.Budgets.FindAsync(new Guid(model.BudgetId));
@@ -345,7 +361,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 transactionModel.IsRepeatable = true;
                 transactionModel.Frequency = repeatableTransaction.Frequency;
-                transactionModel.LastOccurence = repeatableTransaction.LastOccurence;
+                transactionModel.LastOccurrence = repeatableTransaction.LastOccurence;
             }
 
             return transactionModel;
@@ -385,7 +401,7 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Provides selectable list of Budgets avaliable to UserProfile
+        ///     Provides selectable list of Budgets available to UserProfile
         /// </summary>
         /// <returns>List of SelectListItem for Budgets</returns>
         private async Task<List<SelectListItem>> GetBudgets()
@@ -408,7 +424,7 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Provides selectable list of Currencies which are avaliable
+        ///     Provides selectable list of Currencies which are available
         /// </summary>
         /// <returns>List of SelectListItem for Currencies</returns>
         private async Task<List<SelectListItem>> GetCurrencies()
@@ -421,7 +437,7 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Provides selectable list of Categories which are avaliable
+        ///     Provides selectable list of Categories which are available
         /// </summary>
         /// <returns>List of SelectListItem for Categories</returns>
         private async Task<List<SelectListItem>> GetCategories()

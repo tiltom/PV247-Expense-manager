@@ -31,12 +31,6 @@ namespace ExpenseManager.Web.Models.Transaction
         [Required]
         public string CategoryId { get; set; }
 
-        public List<SelectListItem> Categories { get; set; }
-
-        public List<SelectListItem> Currencies { get; set; }
-
-        public List<SelectListItem> Budgets { get; set; }
-
         [Display(Name = "Repeat transaction?")]
         public bool IsRepeatable { get; set; }
 
@@ -45,7 +39,13 @@ namespace ExpenseManager.Web.Models.Transaction
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Last Ocurence")]
-        public DateTime? LastOccurence { get; set; }
+        [Display(Name = "Last Occurrence")]
+        public DateTime? LastOccurrence { get; set; }
+
+        public List<SelectListItem> Categories { get; set; }
+
+        public List<SelectListItem> Currencies { get; set; }
+
+        public List<SelectListItem> Budgets { get; set; }
     }
 }

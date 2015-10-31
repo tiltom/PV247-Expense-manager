@@ -1,17 +1,17 @@
-﻿@model Nullable<DateTime>
+﻿@model DateTime?
 
 @{
 
-    DateTime dt = DateTime.Now;
+    DateTime dateTime = DateTime.Now;
 
     if (Model != null)
 
     {
 
-        dt = (System.DateTime)Model;
+        dateTime = (System.DateTime)Model;
 
     }
 
-    @Html.TextBox("", String.Format("{0:d}", dt.ToShortDateString()), new { @class = "form-control datecontrol", type = "date" })
+    @Html.TextBox("", String.Format("{0:d}", dateTime.ToShortDateString()), new { @class = "form-control datecontrol", type = "date" })
 
 }
