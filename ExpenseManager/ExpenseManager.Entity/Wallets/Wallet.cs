@@ -7,16 +7,13 @@ using ExpenseManager.Entity.Users;
 
 namespace ExpenseManager.Entity.Wallets
 {
-    public class Wallet
+    public class Wallet : BaseEntity
     {
         public Wallet()
         {
             WalletAccessRights = new List<WalletAccessRight>();
             Transactions = new List<Transaction>();
         }
-
-        [Key]
-        public Guid Guid { get; set; }
 
         public string Name { get; set; }
 

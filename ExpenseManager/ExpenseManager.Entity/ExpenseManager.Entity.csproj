@@ -51,10 +51,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
+    <Compile Include="Providers\Factory\EmptyBudgetsProvider.cs" />
+    <Compile Include="Providers\Factory\EmptyCategoriesProvider.cs" />
+    <Compile Include="Providers\Factory\EmptyUserProfileProvider.cs" />
+    <Compile Include="Providers\Factory\EmptyWalletsProvider.cs" />
+    <Compile Include="Providers\Factory\ProvidersFactory.cs" />
     <Compile Include="Providers\IBudgetAccessRightsProvider.cs" />
     <Compile Include="Providers\IBudgetsProvider.cs" />
     <Compile Include="Providers\ICategoriesProvider.cs" />
     <Compile Include="Providers\ICurrenciesProvider.cs" />
+    <Compile Include="Providers\Infrastructure\DeletedEntity.cs" />
+    <Compile Include="Providers\Infrastructure\IAddOrUpdateDeleteEntityProvider.cs" />
     <Compile Include="Providers\IRepeatableTransactionsProvider.cs" />
     <Compile Include="Providers\ITransactionsProvider.cs" />
     <Compile Include="Providers\IUserProfilesProvider.cs" />
