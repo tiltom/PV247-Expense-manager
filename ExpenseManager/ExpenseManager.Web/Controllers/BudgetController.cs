@@ -8,13 +8,16 @@ using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Budget;
+using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Entity.Providers;
 
 namespace ExpenseManager.Web.Controllers
 {
     [Authorize]
     public class BudgetController : AbstractController
     {
-        private readonly ApplicationDbContext _db = new ApplicationDbContext(); // instance of DB context
+
+        private readonly IBudgetsProvider _db = ProvidersFactory.GetNewBudgetsProviders();
 
         /// <summary>
         ///     Shows all budgets for the current UserProfile.
@@ -72,7 +75,7 @@ namespace ExpenseManager.Web.Controllers
             var creator = await this._db.UserProfiles.FirstOrDefaultAsync(user => user.Guid == userId);
 
             // creating new Budget by filling it from model
-            this._db.Budgets.Add(new Budget
+            this._db.AddOrUpdateAsync(new Budget
             {
                 Name = model.Name,
                 StartDate = model.StartDate,
@@ -92,8 +95,6 @@ namespace ExpenseManager.Web.Controllers
                     }
             });
 
-            await this._db.SaveChangesAsync();
-
             return this.RedirectToAction("Index");
         }
 
@@ -111,7 +112,8 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // find budget by its Id
-            var budget = await this._db.Budgets.FindAsync(id);
+            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstAsync();
+            
 
             // filling model from DB entity
             var model = new EditBudgetModel
@@ -150,7 +152,8 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // find budget by its Id from model
-            var budget = await this._db.Budgets.FindAsync(model.Guid);
+            //var budget = await this._db.Budgets.FindAsync(model.Guid);
+            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(model.Guid)).FirstAsync();
 
             // editing editable properties, TODO: refactor it
             budget.Name = model.Name;
@@ -162,7 +165,7 @@ namespace ExpenseManager.Web.Controllers
             budget.AccessRights = budget.AccessRights;
             budget.Currency = budget.Currency;
 
-            await this._db.SaveChangesAsync();
+            await this._db.AddOrUpdateAsync(budget);
 
             // Add OK message
             return this.RedirectToAction("Index");
@@ -182,14 +185,13 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // find budget to delete by its Id
-            var budget = await this._db.Budgets.FindAsync(id);
+            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstAsync();
 
             // delete connections to this budget in BudgetAccessRight table
-            budget.AccessRights.ToList().ForEach(r => this._db.BudgetAccessRights.Remove(r));
+            budget.AccessRights.ToList().ForEach(r => this._db.DeteleAsync(r));
 
             // removing budget
-            this._db.Budgets.Remove(budget);
-            await this._db.SaveChangesAsync();
+            await this._db.DeteleAsync(budget);
 
             return this.RedirectToAction("Index");
         }

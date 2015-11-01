@@ -3,10 +3,16 @@ using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Transactions;
+using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.infrastructure;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Data.Entity.Migrations;
 
 namespace ExpenseManager.Database.Contexts
 {
-    internal class BudgetContext : DbContext, IBudgetContext
+    internal class BudgetContext : DbContext, IBudgetContext, IBudgetsProvider
     {
         public BudgetContext()
             : base("DefaultConnection")
@@ -20,5 +26,114 @@ namespace ExpenseManager.Database.Contexts
 
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+
+        IQueryable<Budget> IBudgetsProvider.Budgets
+        {
+            get
+            {
+                return Budgets;
+            }
+        }
+
+        IQueryable<Transaction> ITransactionsProvider.Transactions
+        {
+            get
+            {
+                return Transactions;
+            }
+        }
+
+        IQueryable<BudgetAccessRight> IBudgetAccessRightsProvider.BudgetAccessRights
+        {
+            get
+            {
+                return BudgetAccessRights
+                    .Include(budgetAccessRight => budgetAccessRight.Budget)
+                    .Include(BudgetAccessRight => BudgetAccessRight.Permission)
+                    .Include(BudgetAccessRight => BudgetAccessRight.UserProfile);
+            }
+        }
+
+        public async Task<bool> AddOrUpdateAsync(Budget entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            var existingBudget = entity.Guid == Guid.Empty
+                ? null
+                : await Budgets.FindAsync(entity.Guid);
+
+            Budgets.AddOrUpdate(x => x.Guid, entity);
+
+            return existingBudget == null;
+        }
+
+        public async Task<DeletedEntity<Budget>> DeteleAsync(Budget entity)
+        {
+            var budgetToDelete = entity.Guid == Guid.Empty
+                ? null
+                : await Budgets.FindAsync(entity.Guid);
+
+            budgetToDelete.Transactions.Clear();
+            var deletedBudget = budgetToDelete == null
+                ? null
+                : Budgets.Remove(budgetToDelete);
+
+            return new DeletedEntity<Budget>(deletedBudget);
+        }
+
+        public async Task<bool> AddOrUpdateAsync(Transaction entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            var existingTransaction = entity.Guid == Guid.Empty
+                ? null
+                : await Transactions.FindAsync(entity.Guid);
+
+            Transactions.AddOrUpdate(x => x.Guid, entity);
+
+            return existingTransaction == null;
+        }
+
+        public async Task<DeletedEntity<Transaction>> DeteleAsync(Transaction entity)
+        {
+            var transactionToDelete = entity.Guid == Guid.Empty
+                ? null
+                : await Transactions.FindAsync(entity.Guid);
+            
+            var deletedTransaction = transactionToDelete == null
+                ? null
+                : Transactions.Remove(transactionToDelete);
+
+            return new DeletedEntity<Transaction>(deletedTransaction);
+        }
+
+        public async Task<bool> AddOrUpdateAsync(BudgetAccessRight entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            var existingBudgetAccessRight = entity.Guid == Guid.Empty
+                ? null
+                : await BudgetAccessRights.FindAsync(entity.Guid);
+
+            BudgetAccessRights.AddOrUpdate(x => x.Guid, entity);
+
+            return existingBudgetAccessRight == null;
+        }
+
+        public async Task<DeletedEntity<BudgetAccessRight>> DeteleAsync(BudgetAccessRight entity)
+        {
+            var budgetAccessRightToDelete = entity.Guid == Guid.Empty
+                ? null
+                : await BudgetAccessRights.FindAsync(entity.Guid);
+            
+            var deletedBudgetAccessRight = budgetAccessRightToDelete == null
+                ? null
+                : BudgetAccessRights.Remove(budgetAccessRightToDelete);
+
+            return new DeletedEntity<BudgetAccessRight>(deletedBudgetAccessRight);
+        }
     }
 }
