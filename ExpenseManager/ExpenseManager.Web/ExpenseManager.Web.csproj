@@ -383,6 +383,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ExpenseManager.Database\ExpenseManager.Database.csproj">
+      <Project>{472955cb-2479-4304-bc65-a0a375d44b2d}</Project>
+      <Name>ExpenseManager.Database</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExpenseManager.Entity\ExpenseManager.Entity.csproj">
       <Project>{73A4FAB0-96F1-4DC9-92A8-2CC73B4EF776}</Project>
       <Name>ExpenseManager.Entity</Name>

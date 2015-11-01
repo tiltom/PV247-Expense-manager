@@ -1,0 +1,20 @@
+﻿using ExpenseManager.Entity.Currencies;
+using ExpenseManager.Entity.Users;
+using ExpenseManager.Entity.Wallets;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ExpenseManager.Database.Contexts
+{
+    internal interface IWalletContext
+    {
+        DbSet<Wallet> Wallets { get; set; }
+        DbSet<WalletAccessRight> WalletAccessRights { get; set; }
+        DbSet<UserProfile> UserProfiles { get; set; }
+        DbSet<Currency> Currencies { get; set; }
+    }
+}

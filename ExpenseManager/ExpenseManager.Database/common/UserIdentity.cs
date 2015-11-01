@@ -1,13 +1,15 @@
-﻿using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using ExpenseManager.Entity.Users;
+﻿using ExpenseManager.Entity.Users;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ExpenseManager.Web.Common
+namespace ExpenseManager.Database.common
 {
-    // tODO REMOVE THIS. JUST TEMPORARY UNTIL CONTEXTS ARE SPLIT
     public class UserIdentity : IdentityUser
     {
         public virtual UserProfile Profile { get; set; }
