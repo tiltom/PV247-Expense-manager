@@ -10,6 +10,6 @@ namespace ExpenseManager.Entity.Providers
 {
     public interface IWalletAccessRightsProvider : IAddOrUpdateDeleteEntityProvider<WalletAccessRight>
     {
-        IQueryable<WalletAccessRight> WalletAccessRight { get; }
+        IQueryable<WalletAccessRight> WalletAccessRights { get; }
     }
 }
