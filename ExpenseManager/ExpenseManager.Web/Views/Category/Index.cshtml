@@ -1,4 +1,4 @@
-﻿@model IEnumerable< ExpenseManager.Web.Models.Category.CategoryShowModel>
+﻿@model IEnumerable<ExpenseManager.Web.Models.Category.CategoryShowModel>
 
 @{
     ViewBag.Title = "Categories";
@@ -14,25 +14,25 @@
     <table>
         <tr>
             <td style="width:200px">
-                <h4 class="title">Name</h4>
+                @Html.DisplayNameFor(model => model.Name)
             </td>
             <td style="width: 400px">
-                <h4 class="title">Description</h4>
+                @Html.DisplayNameFor(model => model.Description)
             </td>
             <td style="width: 100px">
-                <h4 class="title">Icon</h4>
+                @Html.DisplayNameFor(model => model.Icon)
             </td>
-            <td style="width: 100px"></td>
+            <td style="width:100px"></td>
             <td style="width:100px"></td>
         </tr>
         @foreach (var category in Model)
         {
             <tr>
-                <td style="width:200px">
-                    <h4 class="title">@category.Name</h4>
+                <td style="width: 200px">
+                    @Html.DisplayFor(m => category.Name)
                 </td>
                 <td style="width: 400px">
-                    <h4 class="title">@category.Description</h4>
+                    @Html.DisplayFor(m => category.Description)
                 </td>
                 <td style="width: 100px">
                     <span class="glyphicon @category.Icon"></span>

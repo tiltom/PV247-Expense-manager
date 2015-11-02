@@ -49,6 +49,8 @@ namespace ExpenseManager.Web.Controllers
             {
                 var newCategory = this.CreateCategoryFromCategoryShowModel(category);
 
+                this._db.Categories.Add(newCategory);
+
                 await this._db.SaveChangesAsync();
 
                 return this.RedirectToAction("Index");
