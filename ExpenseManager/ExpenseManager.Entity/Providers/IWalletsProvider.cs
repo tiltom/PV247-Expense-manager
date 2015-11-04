@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 
 namespace ExpenseManager.Entity.Providers
 {
-    public interface IWalletsProvider : IAddOrUpdateDeleteEntityProvider<Wallet>, IWalletAccessRightsProvider, 
-        ITransactionsProvider
+    public interface IWalletsProvider : IAddOrUpdateDeleteEntityProvider<Wallet>, IWalletAccessRightsProvider
     {
         IQueryable<Wallet> Wallets { get; }
     }

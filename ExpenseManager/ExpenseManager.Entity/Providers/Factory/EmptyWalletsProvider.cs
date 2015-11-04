@@ -36,7 +36,7 @@ namespace ExpenseManager.Entity.Providers.Factory
             }
         }
 
-        public IQueryable<WalletAccessRight> WalletAccessRight
+        public IQueryable<WalletAccessRight> WalletAccessRights
         {
             get
             {

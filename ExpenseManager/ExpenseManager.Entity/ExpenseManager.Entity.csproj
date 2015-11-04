@@ -80,7 +80,7 @@
     <Compile Include="Wallets\Wallet.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Wallets\App.config" />
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
