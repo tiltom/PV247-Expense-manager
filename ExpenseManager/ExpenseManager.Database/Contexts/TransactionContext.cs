@@ -1,6 +1,7 @@
 ﻿using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Currencies;
+using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Wallets;
 using System;
@@ -9,10 +10,12 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ExpenseManager.Entity.Providers.infrastructure;
+using System.Data.Entity.Migrations;
 
 namespace ExpenseManager.Database.Contexts
 {
-    internal class TransactionContext : DbContext, ITransactionContext
+    internal class TransactionContext : DbContext, ITransactionContext, ITransactionsProvider
     {
         public TransactionContext()
             : base("DefaultConnection")
@@ -24,5 +27,40 @@ namespace ExpenseManager.Database.Contexts
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<RepeatableTransaction> RepeatableTransactions { get; set; }
+
+        IQueryable<Transaction> ITransactionsProvider.Transactions
+        {
+            get
+            {
+                return Transactions;
+            }
+        }
+
+        public async Task<bool> AddOrUpdateAsync(Transaction entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            var existingTransaction = entity.Guid == Guid.Empty
+                ? null
+                : await Transactions.FindAsync(entity.Guid);
+
+            Transactions.AddOrUpdate(x => x.Guid, entity);
+
+            return existingTransaction == null;
+        }
+
+        public async Task<DeletedEntity<Transaction>> DeteleAsync(Transaction entity)
+        {
+            var transactionToDelete = entity.Guid == Guid.Empty
+                ? null
+                : await Transactions.FindAsync(entity.Guid);
+
+            var deletedTransaction = transactionToDelete == null
+                ? null
+                : Transactions.Remove(transactionToDelete);
+
+            return new DeletedEntity<Transaction>(deletedTransaction);
+        }
     }
 }

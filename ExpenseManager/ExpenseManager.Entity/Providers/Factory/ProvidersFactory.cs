@@ -9,7 +9,7 @@ namespace ExpenseManager.Entity.Providers.Factory
     public static class ProvidersFactory
     {
         private static Func<IBudgetsProvider> budgetsProviderCreator;
-        private static Func<ICategoriesProvider> categoriesProviderCreator;
+        private static Func<ITransactionsProvider> transactionsProviderCreator;
         private static Func<IUserProfilesProvider> userProfilesProviderCreator;
         private static Func<IWalletsProvider> walletsProviderCreator;
 
@@ -19,10 +19,10 @@ namespace ExpenseManager.Entity.Providers.Factory
             budgetsProviderCreator = () => new TProvider();
         }
 
-        public static void RegisterCategoriesProvider<TProvider>()
-            where TProvider : ICategoriesProvider, new()
+        public static void RegisterTrancastionsProvider<TProvider>()
+            where TProvider : ITransactionsProvider, new()
         {
-            categoriesProviderCreator = () => new TProvider();
+            transactionsProviderCreator = () => new TProvider();
         }
 
         public static void UserProfilesProvider<TProvider>()
@@ -44,12 +44,12 @@ namespace ExpenseManager.Entity.Providers.Factory
             return budgetsProviderCreator();
         }
 
-        public static ICategoriesProvider GetNewSelectionsProviders()
+        public static ITransactionsProvider GetNewTransactionsProviders()
         {
-            if (categoriesProviderCreator == null)
-                return new EmptyCategoriesProvider();
+            if (transactionsProviderCreator == null)
+                return new EmptyTransactionsProvider();
 
-            return categoriesProviderCreator();
+            return transactionsProviderCreator();
         }
 
         public static IUserProfilesProvider GetNewUserProfileProviders()

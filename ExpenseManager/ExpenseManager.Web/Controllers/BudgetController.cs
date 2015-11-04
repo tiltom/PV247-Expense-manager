@@ -112,7 +112,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // find budget by its Id
-            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstAsync();
+            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
             
 
             // filling model from DB entity
@@ -152,8 +152,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // find budget by its Id from model
-            //var budget = await this._db.Budgets.FindAsync(model.Guid);
-            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(model.Guid)).FirstAsync();
+            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(model.Guid)).FirstOrDefaultAsync();
 
             // editing editable properties, TODO: refactor it
             budget.Name = model.Name;
@@ -185,7 +184,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // find budget to delete by its Id
-            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstAsync();
+            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
 
             // delete connections to this budget in BudgetAccessRight table
             budget.AccessRights.ToList().ForEach(r => this._db.DeteleAsync(r));
@@ -202,7 +201,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (disposing)
             {
-                this._db.Dispose();
+                //this._db.Dispose();
             }
             base.Dispose(disposing);
         }

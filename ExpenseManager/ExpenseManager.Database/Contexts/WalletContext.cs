@@ -22,6 +22,7 @@ namespace ExpenseManager.Database.Contexts
         public DbSet<WalletAccessRight> WalletAccessRights { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Currency> Currencies { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         IQueryable<Wallet> IWalletsProvider.Wallets
         {
@@ -35,7 +36,10 @@ namespace ExpenseManager.Database.Contexts
         {
             get
             {
-                return WalletAccessRights;
+                return WalletAccessRights
+                    .Include(war => war.Wallet)
+                    .Include(war => war.Permission)
+                    .Include(war => war.UserProfile);
             }
         }
 
@@ -86,7 +90,6 @@ namespace ExpenseManager.Database.Contexts
             var walletAccessRightToDelete = entity.Guid == Guid.Empty
                 ? null
                 : await WalletAccessRights.FindAsync(entity.Guid);
-            
             var deletedWalletAccessRight = walletAccessRightToDelete == null
                 ? null
                 : WalletAccessRights.Remove(walletAccessRightToDelete);

@@ -1,4 +1,5 @@
 ﻿using ExpenseManager.Entity.Currencies;
+using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using System;
@@ -16,5 +17,6 @@ namespace ExpenseManager.Database.Contexts
         DbSet<WalletAccessRight> WalletAccessRights { get; set; }
         DbSet<UserProfile> UserProfiles { get; set; }
         DbSet<Currency> Currencies { get; set; }
+        DbSet<Transaction> Transactions { get; set; }
     }
 }

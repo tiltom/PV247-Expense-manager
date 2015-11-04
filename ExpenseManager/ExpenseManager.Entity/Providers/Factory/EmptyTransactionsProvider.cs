@@ -10,16 +10,8 @@ using ExpenseManager.Entity.Transactions;
 
 namespace ExpenseManager.Entity.Providers.Factory
 {
-    internal class EmptyCategoriesProvider : ICategoriesProvider
+    internal class EmptyTransactionsProvider : ITransactionsProvider
     {
-        public IQueryable<Category> Categories
-        {
-            get
-            {
-                return Enumerable.Empty<Category>().AsQueryable();
-            }
-        }
-
         public IQueryable<Transaction> Transactions
         {
             get
@@ -33,23 +25,11 @@ namespace ExpenseManager.Entity.Providers.Factory
             //await Task.CompletedTask;
             return false;
         }
-
-        public async Task<bool> AddOrUpdateAsync(Category entity)
-        {
-            //await Task.CompletedTask;
-            return false;
-        }
-
+        
         public async Task<DeletedEntity<Transaction>> DeteleAsync(Transaction entity)
         {
             //await Task.CompletedTask;
             return new DeletedEntity<Transaction>(null);
-        }
-
-        public async Task<DeletedEntity<Category>> DeteleAsync(Category entity)
-        {
-            //await Task.CompletedTask;
-            return new DeletedEntity<Category>(null);
         }
     }
 }

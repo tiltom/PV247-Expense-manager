@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ExpenseManager.Database.Contexts;
+using ExpenseManager.Entity.Providers.Factory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +12,8 @@ namespace ExpenseManager.Database
     {
         public static void Register()
         {
+            ProvidersFactory.RegisterBudgetsProvider<BudgetContext>();
+            ProvidersFactory.RegisterTrancastionsProvider<TransactionContext>();
             // TODO REGISTER PROVIDERS
         }
     }

@@ -123,7 +123,7 @@ namespace ExpenseManager.Web.Controllers
             var categoryToDelete = await this._db.Categories.FindAsync(guid);
 
             // get the default currency
-            var defaultCategory = await this.GetDefaultCategory();
+            var defaultCategory = await this._db.Categories.FirstOrDefaultAsync();
             // delete connections to this category in Transactions table and set the category to Default
             categoryToDelete.Transactions.ToList()
                 .ForEach(t => t.Category = defaultCategory);

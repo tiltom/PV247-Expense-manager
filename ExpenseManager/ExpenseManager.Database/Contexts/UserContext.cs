@@ -8,7 +8,7 @@ using System;
 
 namespace ExpenseManager.Database.Contexts
 {
-    internal class UserContext : IdentityDbContext<UserIdentity>, IUserContext
+    public class UserContext : IdentityDbContext<UserIdentity>, IUserContext
     {
         public UserContext()
             : base("DefaultConnection", false)
