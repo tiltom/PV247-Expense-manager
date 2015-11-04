@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ExpenseManager.Entity.Providers.infrastructure;
+using System.Data.Entity.Migrations;
 
 namespace ExpenseManager.Database.Contexts
 {
@@ -35,14 +36,31 @@ namespace ExpenseManager.Database.Contexts
             }
         }
 
-        public Task<bool> AddOrUpdateAsync(Transaction entity)
+        public async Task<bool> AddOrUpdateAsync(Transaction entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            var existingTransaction = entity.Guid == Guid.Empty
+                ? null
+                : await Transactions.FindAsync(entity.Guid);
+
+            Transactions.AddOrUpdate(x => x.Guid, entity);
+
+            return existingTransaction == null;
         }
 
-        public Task<DeletedEntity<Transaction>> DeteleAsync(Transaction entity)
+        public async Task<DeletedEntity<Transaction>> DeteleAsync(Transaction entity)
         {
-            throw new NotImplementedException();
+            var transactionToDelete = entity.Guid == Guid.Empty
+                ? null
+                : await Transactions.FindAsync(entity.Guid);
+
+            var deletedTransaction = transactionToDelete == null
+                ? null
+                : Transactions.Remove(transactionToDelete);
+
+            return new DeletedEntity<Transaction>(deletedTransaction);
         }
     }
 }
