@@ -250,8 +250,6 @@ namespace ExpenseManager.Web.DatabaseContexts
                         Wallet = profile.PersonalWallet
                     }
                 };
-                profile = context.UserProfiles.Add(profile);
-                context.SaveChanges();
                 user = new UserIdentity
                 {
                     UserName = name,
@@ -303,8 +301,6 @@ namespace ExpenseManager.Web.DatabaseContexts
                         Wallet = profile.PersonalWallet
                     }*/
                 };
-                profile = context.UserProfiles.Add(profile);
-                context.SaveChanges();
                 user = new UserIdentity
                 {
                     UserName = nameUserRead,
@@ -368,8 +364,6 @@ namespace ExpenseManager.Web.DatabaseContexts
                         Wallet = profile.PersonalWallet
                     }*/
                 };
-                profile = context.UserProfiles.Add(profile);
-                context.SaveChanges();
                 user = new UserIdentity
                 {
                     UserName = nameUserWrite,

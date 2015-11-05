@@ -192,9 +192,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="DatabaseContexts\ApplicationDbInitializer.cs" />
-    <Compile Include="Migrations\201510261559241_UserInterface.cs" />
-    <Compile Include="Migrations\201510261559241_UserInterface.Designer.cs">
-      <DependentUpon>201510261559241_UserInterface.cs</DependentUpon>
+    <Compile Include="Migrations\201511051154271_UserCascadeDelete.cs" />
+    <Compile Include="Migrations\201511051154271_UserCascadeDelete.Designer.cs">
+      <DependentUpon>201511051154271_UserCascadeDelete.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BudgetAccessRight\CreateBudgetAccessRightModel.cs" />
@@ -389,8 +389,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201510261559241_UserInterface.resx">
-      <DependentUpon>201510261559241_UserInterface.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201511051154271_UserCascadeDelete.resx">
+      <DependentUpon>201511051154271_UserCascadeDelete.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

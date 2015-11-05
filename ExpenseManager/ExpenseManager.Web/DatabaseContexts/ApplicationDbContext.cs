@@ -36,6 +36,38 @@ namespace ExpenseManager.Web.DatabaseContexts
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<UserIdentity>()
+                .HasOptional(x => x.Profile)
+                .WithRequired()
+                .WillCascadeOnDelete();
+
+            modelBuilder.Entity<UserProfile>()
+                .HasOptional(x => x.PersonalWallet)
+                .WithRequired(x => x.Owner)
+                .WillCascadeOnDelete();
+
+            modelBuilder.Entity<UserProfile>()
+                .HasMany(x => x.CreatedBudgets)
+                .WithRequired(x => x.Creator)
+                .WillCascadeOnDelete();
+
+            modelBuilder.Entity<Wallet>()
+                .HasMany(x => x.WalletAccessRights)
+                .WithRequired(x => x.Wallet)
+                .WillCascadeOnDelete();
+
+            modelBuilder.Entity<Wallet>()
+                .HasMany(x => x.Transactions)
+                .WithRequired(x => x.Wallet)
+                .WillCascadeOnDelete();
+
+            modelBuilder.Entity<Budget>()
+                .HasMany(x => x.AccessRights)
+                .WithRequired(x => x.Budget)
+                .WillCascadeOnDelete();
+
+
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
         }

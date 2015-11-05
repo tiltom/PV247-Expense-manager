@@ -7,13 +7,13 @@ namespace ExpenseManager.Web.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class UserInterface : IMigrationMetadata
+    public sealed partial class UserCascadeDelete : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(UserInterface));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(UserCascadeDelete));
         
         string IMigrationMetadata.Id
         {
-            get { return "201510261559241_UserInterface"; }
+            get { return "201511051154271_UserCascadeDelete"; }
         }
         
         string IMigrationMetadata.Source

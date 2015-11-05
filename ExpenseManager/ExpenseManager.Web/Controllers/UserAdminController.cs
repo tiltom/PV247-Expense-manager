@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Common;
+using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity.Owin;
@@ -298,6 +299,9 @@ namespace ExpenseManager.Web.Controllers
             {
                 return this.HttpNotFound();
             }
+
+            var context = HttpContext.GetOwinContext().Get<ApplicationDbContext>();
+            context.UserProfiles.Remove(user.Profile);
             var result = await UserManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
