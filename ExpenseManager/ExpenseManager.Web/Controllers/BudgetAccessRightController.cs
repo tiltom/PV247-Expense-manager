@@ -8,12 +8,14 @@ using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.BudgetAccessRight;
+using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.Factory;
 
 namespace ExpenseManager.Web.Controllers
 {
     public class BudgetAccessRightController : AbstractController
     {
-        private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly IBudgetsProvider _db = ProvidersFactory.GetNewBudgetsProviders();
 
         /// <summary>
         ///     Display all budget access rights for chosen budget
@@ -36,7 +38,7 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Create(Guid id)
         {
             // find access rights to the budget
-            var budgetAccessRight = this._db.Budgets.FindAsync(id).Result.AccessRights;
+            var budgetAccessRight = this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync().Result.AccessRights;
 
             // save Guids of users with access rights to the List
             var usersList = new List<Guid>();
@@ -70,21 +72,19 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(model);
 
             // find budget by its Id
-            var budget = await this._db.Budgets.FindAsync(model.BudgetId);
+            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(model.BudgetId)).FirstOrDefaultAsync();
 
             // finding creator by his ID
             var assignedUser =
                 this._db.UserProfiles.FirstOrDefault(user => user.Guid.ToString() == model.AssignedUserId);
 
             // creating new budget access right
-            this._db.BudgetAccessRights.Add(new BudgetAccessRight
+            this._db.AddOrUpdateAsync(new BudgetAccessRight
             {
                 Budget = budget,
                 Permission = model.Permission,
                 UserProfile = assignedUser
             });
-
-            await this._db.SaveChangesAsync();
 
             return this.RedirectToAction("Index", new {id = model.BudgetId});
         }
@@ -97,7 +97,7 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             // find BudgetAccessRight by its Id
-            var budgetAccessRight = await this._db.BudgetAccessRights.FindAsync(id);
+            var budgetAccessRight = await this._db.BudgetAccessRights.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
 
             // creating EditBudgetAccessRight model instance from BudgetAccessRight DB entity
             var model = this.ConvertEntityToEditModel(budgetAccessRight);
@@ -118,13 +118,12 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(model);
 
             // find BudgetAccessRight by its Id
-            var budgetAccessRight = await this._db.BudgetAccessRights.FindAsync(model.Id);
+            var budgetAccessRight = await this._db.BudgetAccessRights.Where(b => b.Guid.Equals(model.Id)).FirstOrDefaultAsync();
 
             // editing editable properties
             budgetAccessRight.Permission = model.Permission;
             budgetAccessRight.Budget = budgetAccessRight.Budget;
             budgetAccessRight.UserProfile = budgetAccessRight.UserProfile;
-            await this._db.SaveChangesAsync();
 
             return this.RedirectToAction("Index", new {id = model.BudgetId});
         }
@@ -138,15 +137,14 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Delete(Guid id, Guid budgetId)
         {
             // find BudgetAccessRight by its Id
-            var budgetAccessRight = await this._db.BudgetAccessRights.FindAsync(id);
+            var budgetAccessRight = await this._db.BudgetAccessRights.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
             if (budgetAccessRight.Permission.Equals(PermissionEnum.Owner))
             {
                 return this.RedirectToAction("Index", new {id = budgetId});
             }
 
             // remove it from DB
-            this._db.BudgetAccessRights.Remove(budgetAccessRight);
-            await this._db.SaveChangesAsync();
+            await this._db.DeteleAsync(budgetAccessRight);
 
             return this.RedirectToAction("Index", new {id = budgetId});
         }

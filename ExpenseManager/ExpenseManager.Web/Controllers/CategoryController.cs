@@ -7,12 +7,14 @@ using System.Web.Mvc;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Category;
+using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Entity.Providers;
 
 namespace ExpenseManager.Web.Controllers
 {
     public class CategoryController : AbstractController
     {
-        private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly ITransactionsProvider _db = ProvidersFactory.GetNewTransactionsProviders();
 
         /// <summary>
         ///     Shows all existing categories.
@@ -49,7 +51,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 var newCategory = this.CreateCategoryFromCategoryShowModel(category);
 
-                await this._db.SaveChangesAsync();
+                await this._db.AddOrUpdateAsync(newCategory);
 
                 return this.RedirectToAction("Index");
             }
@@ -73,7 +75,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // find category by its Id
-            var category = await this._db.Categories.FindAsync(guid);
+            var category = await this._db.Categories.Where(c => c.Guid.Equals(guid)).FirstOrDefaultAsync();
 
             return this.View(this.CreateCategoryShowModelFromCategory(category));
         }
@@ -91,14 +93,12 @@ namespace ExpenseManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 // find category by its Id from model
-                var categoryToEdit = await this._db.Categories.FindAsync(category.Guid);
+                var categoryToEdit = await this._db.Categories.Where(c => c.Guid.Equals(category.Guid)).FirstOrDefaultAsync();
 
                 // editing editable properties, TODO: refactor it
                 categoryToEdit.Description = category.Description;
                 categoryToEdit.IconPath = category.Icon;
                 categoryToEdit.Name = categoryToEdit.Name;
-
-                await this._db.SaveChangesAsync();
 
                 return this.RedirectToAction("Index");
             }
@@ -120,7 +120,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // find category to delete by its Id
-            var categoryToDelete = await this._db.Categories.FindAsync(guid);
+            var categoryToDelete = await this._db.Categories.Where(c => c.Guid.Equals(guid)).FirstOrDefaultAsync();
 
             // get the default currency
             var defaultCategory = await this._db.Categories.FirstOrDefaultAsync();
@@ -129,8 +129,7 @@ namespace ExpenseManager.Web.Controllers
                 .ForEach(t => t.Category = defaultCategory);
 
             // delete the category
-            this._db.Categories.Remove(categoryToDelete);
-            await this._db.SaveChangesAsync();
+            await this._db.DeteleAsync(categoryToDelete);
 
             return this.RedirectToAction("Index");
         }
@@ -141,7 +140,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (disposing)
             {
-                this._db.Dispose();
+                //this._db.Dispose();
             }
             base.Dispose(disposing);
         }

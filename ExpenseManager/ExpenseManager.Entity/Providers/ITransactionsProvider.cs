@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ExpenseManager.Entity.Providers
 {
-    public interface ITransactionsProvider : IAddOrUpdateDeleteEntityProvider<Transaction>
+    public interface ITransactionsProvider : IAddOrUpdateDeleteEntityProvider<Transaction>, ICategoriesProvider
     {
         IQueryable<Transaction> Transactions { get; }
     }

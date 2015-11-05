@@ -36,6 +36,14 @@ namespace ExpenseManager.Database.Contexts
             }
         }
 
+        IQueryable<Category> ICategoriesProvider.Categories
+        {
+            get
+            {
+                return Categories;
+            }
+        }
+
         public async Task<bool> AddOrUpdateAsync(Transaction entity)
         {
             if (entity == null)
@@ -61,6 +69,34 @@ namespace ExpenseManager.Database.Contexts
                 : Transactions.Remove(transactionToDelete);
 
             return new DeletedEntity<Transaction>(deletedTransaction);
+        }
+
+        public async Task<bool> AddOrUpdateAsync(Category entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            var existingCategory = entity.Guid == Guid.Empty
+                ? null
+                : await Categories.FindAsync(entity.Guid);
+
+            Categories.AddOrUpdate(x => x.Guid, entity);
+
+            return existingCategory == null;
+        }
+
+        public async Task<DeletedEntity<Category>> DeteleAsync(Category entity)
+        {
+            var categoryToDelete = entity.Guid == Guid.Empty
+                ? null
+                : await Categories.FindAsync(entity.Guid);
+
+            categoryToDelete.Transactions.Clear();
+            var deletedCategory = categoryToDelete == null
+                ? null
+                : Categories.Remove(categoryToDelete);
+
+            return new DeletedEntity<Category>(deletedCategory);
         }
     }
 }
