@@ -9,6 +9,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data.Entity.Migrations;
+using ExpenseManager.Entity.Categories;
+using ExpenseManager.Entity.Wallets;
 
 namespace ExpenseManager.Database.Contexts
 {
@@ -51,6 +53,38 @@ namespace ExpenseManager.Database.Contexts
                     .Include(budgetAccessRight => budgetAccessRight.Budget)
                     .Include(BudgetAccessRight => BudgetAccessRight.Permission)
                     .Include(BudgetAccessRight => BudgetAccessRight.UserProfile);
+            }
+        }
+
+        public IQueryable<Category> Categories
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IQueryable<Wallet> Wallets
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IQueryable<WalletAccessRight> WalletAccessRights
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IQueryable<RepeatableTransaction> RepeatableTransactions
+        {
+            get
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -134,6 +168,46 @@ namespace ExpenseManager.Database.Contexts
                 : BudgetAccessRights.Remove(budgetAccessRightToDelete);
 
             return new DeletedEntity<BudgetAccessRight>(deletedBudgetAccessRight);
+        }
+
+        public Task<bool> AddOrUpdateAsync(Category entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DeletedEntity<Category>> DeteleAsync(Category entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> AddOrUpdateAsync(Wallet entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DeletedEntity<Wallet>> DeteleAsync(Wallet entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> AddOrUpdateAsync(WalletAccessRight entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DeletedEntity<WalletAccessRight>> DeteleAsync(WalletAccessRight entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> AddOrUpdateAsync(RepeatableTransaction entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DeletedEntity<RepeatableTransaction>> DeteleAsync(RepeatableTransaction entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

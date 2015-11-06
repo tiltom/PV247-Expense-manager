@@ -9,6 +9,8 @@ using ExpenseManager.Entity;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Transaction;
+using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Entity.Providers;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -16,7 +18,7 @@ namespace ExpenseManager.Web.Controllers
     public class TransactionController : AbstractController
     {
         private static string _walletId;
-        private readonly ApplicationDbContext _db = new ApplicationDbContext(); // instance of DB context
+        private readonly ITransactionsProvider _db = ProvidersFactory.GetNewTransactionsProviders();
 
 
         /// <summary>
@@ -44,7 +46,7 @@ namespace ExpenseManager.Web.Controllers
             // get user permission for selected wallet
             var permission =
                 await
-                    this._db.WalletAccessRights
+                    this._db.WalletAccessRights // TODO NOT IMPLEMENTED< SHOULDNT BE IMPLEMENTED FIX THIS
                         .FirstOrDefaultAsync(
                             r =>
                                 r.UserProfile.Guid == id && r.Wallet.Guid.ToString() == selectedWalletId);
@@ -67,13 +69,13 @@ namespace ExpenseManager.Web.Controllers
             //get wallet Id for currently selected wallet
             var walletId = new Guid(await this.GetCurrentWallet());
             //get default currency for wallet
-            var currency = await this._db.Wallets.FindAsync(walletId);
+            var wallet = await this._db.Wallets.Where(w => w.Guid.Equals(walletId)).FirstOrDefaultAsync();
             //fill NewTransaction model with needed informations
             return
                 this.View(new NewTransactionModel
                 {
                     WalletId = walletId,
-                    CurrencyId = currency.Currency.Guid.ToString(),
+                    CurrencyId = wallet.Currency.Guid.ToString(),
                     Categories = await this.GetCategories(),
                     Currencies = await this.GetCurrencies(),
                     Budgets = await this.GetBudgets()
