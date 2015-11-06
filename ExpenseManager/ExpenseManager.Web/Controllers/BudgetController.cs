@@ -104,12 +104,6 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View with model</returns>
         public async Task<ActionResult> Edit(Guid? id)
         {
-            // check if Id is not null - it can happen by calling this action without /Guid
-            if (id == null)
-            {
-                return this.RedirectToAction("Index"); // TODO add error message
-            }
-
             // find budget by its Id
             var budget = await this._db.Budgets.FindAsync(id);
 
@@ -175,12 +169,6 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>Redirect to Index</returns>
         public async Task<ActionResult> Delete(Guid? id)
         {
-            if (id == null)
-            {
-                // TODO add error message
-                return this.RedirectToAction("Index");
-            }
-
             // find budget to delete by its Id
             var budget = await this._db.Budgets.FindAsync(id);
 

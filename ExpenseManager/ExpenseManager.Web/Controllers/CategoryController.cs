@@ -68,12 +68,6 @@ namespace ExpenseManager.Web.Controllers
         [HttpGet]
         public async Task<ActionResult> Edit(Guid? guid)
         {
-            // check if guid is not null - it can happen by calling this action without /Guid
-            if (guid == null)
-            {
-                return this.RedirectToAction("Index"); // TODO add error message
-            }
-
             // find category by its Id
             var category = await this._db.Categories.FindAsync(guid);
 
@@ -115,12 +109,6 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>Redirect to Index</returns>
         public async Task<ActionResult> Delete(Guid? guid)
         {
-            // check if guid is not null - it can happen by calling this action without /Guid
-            if (guid == null)
-            {
-                return this.RedirectToAction("Index"); // TODO add error message
-            }
-
             // find category to delete by its Id
             var categoryToDelete = await this._db.Categories.FindAsync(guid);
 

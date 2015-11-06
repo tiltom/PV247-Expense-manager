@@ -11,7 +11,7 @@ namespace ExpenseManager.Web.Controllers
     [Authorize]
     public class WalletController : AbstractController
     {
-        private readonly ApplicationDbContext db = new ApplicationDbContext();
+        private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
         /// <summary>
         ///     Address: GET: Wallets/Edit
@@ -22,7 +22,7 @@ namespace ExpenseManager.Web.Controllers
         {
             // get UserProfile and his wallet from context
             var id = await this.CurrentProfileId();
-            var wallet = await this.db.Wallets.Where(u => u.Owner.Guid == id).FirstOrDefaultAsync();
+            var wallet = await this._db.Wallets.Where(u => u.Owner.Guid == id).FirstOrDefaultAsync();
             if (wallet == null)
             {
                 return this.HttpNotFound();
@@ -48,11 +48,11 @@ namespace ExpenseManager.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var walletEntity = this.db.Wallets.Find(wallet.Guid);
+                var walletEntity = this._db.Wallets.Find(wallet.Guid);
                 walletEntity.Owner = walletEntity.Owner;
-                walletEntity.Currency = this.db.Currencies.Find(wallet.CurrencyId);
+                walletEntity.Currency = this._db.Currencies.Find(wallet.CurrencyId);
                 walletEntity.Name = wallet.Name;
-                await this.db.SaveChangesAsync();
+                await this._db.SaveChangesAsync();
                 return this.RedirectToAction("Index", "Manage");
             }
             wallet.Currencies = await this.GetCurrencies();
@@ -65,7 +65,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (disposing)
             {
-                this.db.Dispose();
+                this._db.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -76,7 +76,7 @@ namespace ExpenseManager.Web.Controllers
 
         private async Task<List<SelectListItem>> GetCurrencies()
         {
-            var currencies = await this.db.Currencies.Select(currency => new SelectListItem
+            var currencies = await this._db.Currencies.Select(currency => new SelectListItem
             {
                 Text = currency.Name,
                 Value = currency.Guid.ToString()

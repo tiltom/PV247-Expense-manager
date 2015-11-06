@@ -135,11 +135,6 @@ namespace ExpenseManager.Web.Controllers
         // GET: Transactions/Edit/5
         public async Task<ActionResult> Edit(Guid? id)
         {
-            //check if Id is not null
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             //find transaction by it's Id
             var transaction = await this._db.Transactions.FindAsync(id);
             if (transaction == null)
@@ -241,11 +236,6 @@ namespace ExpenseManager.Web.Controllers
         // POST: Transactions/Delete/5
         public async Task<ActionResult> Delete(Guid? id)
         {
-            //check if id is not null
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             //find transaction by its Id
             var transaction = await this._db.Transactions.FindAsync(id);
             if (!await this.HasWritePermission(transaction))
