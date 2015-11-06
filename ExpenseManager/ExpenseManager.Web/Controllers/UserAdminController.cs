@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using AutoMapper;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Common;
@@ -60,13 +61,7 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View</returns>
         public ActionResult Index()
         {
-            return this.View(UserManager.Users.Select(u => new UserViewModel
-            {
-                Id = u.Id,
-                Email = u.Email,
-                FirstName = u.Profile.FirstName,
-                LastName = u.Profile.LastName
-            }));
+            return this.View(Mapper.Map<IEnumerable<UserViewModel>>(UserManager.Users));
         }
 
         /// <summary>
@@ -81,15 +76,10 @@ namespace ExpenseManager.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var user = await UserManager.FindByIdAsync(id);
-            var roleNames = await UserManager.GetRolesAsync(user.Id);
+            var userDetailViewModel = Mapper.Map<UserDetailViewModel>(user);
+            userDetailViewModel.RolesList = await UserManager.GetRolesAsync(user.Id);
 
-            return this.View(new UserDetailViewModel
-            {
-                Id = user.Id,
-                Email = user.Email,
-                UserName = user.Profile.FirstName + " " + user.Profile.LastName,
-                RolesList = roleNames
-            });
+            return this.View(userDetailViewModel);
         }
 
         /// <summary>
@@ -190,21 +180,17 @@ namespace ExpenseManager.Web.Controllers
                 return this.HttpNotFound();
             }
 
+            var userEditModel = Mapper.Map<UserEditViewModel>(user);
             var userRoles = await UserManager.GetRolesAsync(user.Id);
-
-            return this.View(new UserEditViewModel
+            userEditModel.RolesList = RoleManager.Roles.ToList().Select(x => new SelectListItem
             {
-                Id = user.Id,
-                Email = user.Email,
-                FirstName = user.Profile.FirstName,
-                LastName = user.Profile.LastName,
-                RolesList = RoleManager.Roles.ToList().Select(x => new SelectListItem
-                {
-                    Selected = userRoles.Contains(x.Name),
-                    Text = x.Name,
-                    Value = x.Name
-                })
+                Selected = userRoles.Contains(x.Name),
+                Text = x.Name,
+                Value = x.Name
             });
+
+
+            return this.View(userEditModel);
         }
 
         /// <summary>

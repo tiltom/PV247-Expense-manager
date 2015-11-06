@@ -15,6 +15,7 @@ namespace ExpenseManager.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            MappingConfig.RegisterMappings();
             DatabaseInitializer.Initialize();
             ModelBinders.Binders.Add(typeof (decimal), new DecimalModelBinder());
         }

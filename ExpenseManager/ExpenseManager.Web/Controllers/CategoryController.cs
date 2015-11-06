@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Category;
@@ -20,9 +21,9 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View with model</returns>
         public async Task<ActionResult> Index()
         {
-            var categories = await this._db.Categories.ToListAsync();
+            var categoryShowModels = await this._db.Categories.ProjectTo<CategoryShowModel>().ToListAsync();
 
-            return this.View(this.ConvertEntityListToCategoryShowModelList(categories));
+            return this.View(categoryShowModels);
         }
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace ExpenseManager.Web.Controllers
             // first, check if model is valid
             if (ModelState.IsValid)
             {
-                var newCategory = this.CreateCategoryFromCategoryShowModel(category);
+                var newCategory = Mapper.Map<Category>(category);
 
                 this._db.Categories.Add(newCategory);
 
@@ -69,9 +70,14 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Edit(Guid? guid)
         {
             // find category by its Id
-            var category = await this._db.Categories.FindAsync(guid);
+            var category = await this._db.Categories.FirstOrDefaultAsync(x => x.Guid == guid);
 
-            return this.View(this.CreateCategoryShowModelFromCategory(category));
+            if (category == null)
+            {
+                return new HttpNotFoundResult();
+            }
+
+            return this.View(Mapper.Map<CategoryShowModel>(category));
         }
 
         /// <summary>
@@ -134,70 +140,6 @@ namespace ExpenseManager.Web.Controllers
                 this._db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        #endregion
-
-        #region private
-
-        /// <summary>
-        ///     Converts list of entities of type Category into CategoryShowModel.
-        /// </summary>
-        /// <param name="categories">List of entities of type Category</param>
-        /// <returns>
-        ///     List of CategoryShowModel
-        /// </returns>
-        private List<CategoryShowModel> ConvertEntityListToCategoryShowModelList(List<Category> categories)
-        {
-            var categoryShowModelList = new List<CategoryShowModel>();
-
-            // iterating over all Category entities and mapping them to the CategoryShowModel
-            foreach (var item in categories)
-            {
-                categoryShowModelList.Add(new CategoryShowModel
-                {
-                    Guid = item.Guid,
-                    Name = item.Name,
-                    Icon = item.IconPath,
-                    Description = item.Description
-                });
-            }
-
-            return categoryShowModelList;
-        }
-
-        /// <summary>
-        ///     Converts CategoryShowModel entity into Category entity.
-        /// </summary>
-        /// <param name="showModel">CategoryShowModel entity</param>
-        /// <returns>
-        ///     Category entity
-        /// </returns>
-        private Category CreateCategoryFromCategoryShowModel(CategoryShowModel showModel)
-        {
-            return new Category
-            {
-                Name = showModel.Name,
-                IconPath = showModel.Icon,
-                Description = showModel.Description
-            };
-        }
-
-        /// <summary>
-        ///     Converts Category entity into CategoryShowModel entity.
-        /// </summary>
-        /// <param name="category">Category entity</param>
-        /// <returns>
-        ///     CategoryShowModel entity
-        /// </returns>
-        private CategoryShowModel CreateCategoryShowModelFromCategory(Category category)
-        {
-            return new CategoryShowModel
-            {
-                Name = category.Name,
-                Icon = category.IconPath,
-                Description = category.Description
-            };
         }
 
         #endregion

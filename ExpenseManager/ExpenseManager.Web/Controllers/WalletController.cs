@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AutoMapper.QueryableExtensions;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Wallet;
 
@@ -22,18 +23,17 @@ namespace ExpenseManager.Web.Controllers
         {
             // get UserProfile and his wallet from context
             var id = await this.CurrentProfileId();
-            var wallet = await this._db.Wallets.Where(u => u.Owner.Guid == id).FirstOrDefaultAsync();
-            if (wallet == null)
+            var walletEditModel =
+                await this._db.Wallets
+                    .Where(u => u.Owner.Guid == id)
+                    .ProjectTo<WalletEditModel>()
+                    .FirstOrDefaultAsync();
+            if (walletEditModel == null)
             {
                 return this.HttpNotFound();
             }
-            return this.View(new WalletEditModel
-            {
-                Guid = wallet.Guid,
-                CurrencyId = wallet.Currency.Guid,
-                Name = wallet.Name,
-                Currencies = await this.GetCurrencies()
-            });
+            walletEditModel.Currencies = await this.GetCurrencies();
+            return this.View(walletEditModel);
         }
 
         /// <summary>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AutoMapper;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Web.DatabaseContexts;
@@ -335,17 +336,9 @@ namespace ExpenseManager.Web.Controllers
             if (entity.Budget != null)
                 budgetId = entity.Budget.Guid.ToString();
             //fill model info from entity
-            var transactionModel = new EditTransactionModel
-            {
-                Id = entity.Guid,
-                Amount = entity.Amount,
-                Date = entity.Date,
-                Description = entity.Description,
-                WalletId = entity.Wallet.Guid,
-                BudgetId = budgetId,
-                CurrencyId = entity.Currency.Guid.ToString(),
-                CategoryId = entity.Category.Guid.ToString()
-            };
+            var transactionModel = Mapper.Map<EditTransactionModel>(entity);
+            transactionModel.BudgetId = budgetId;
+
             //check if transaction is repeatable and fill it
             if (repeatableTransaction != null)
             {
@@ -371,16 +364,9 @@ namespace ExpenseManager.Web.Controllers
             var repeatableTransaction =
                 this._db.RepeatableTransactions.FirstOrDefault(a => a.FirstTransaction.Guid == entity.Guid);
             //fill model info from entity
-            var transactionModel = new TransactionShowModel
-            {
-                Id = entity.Guid,
-                Amount = entity.Amount,
-                Date = entity.Date,
-                Description = entity.Description,
-                BudgetName = budgetName,
-                CurrencySymbol = entity.Currency.Symbol,
-                CategoryName = entity.Category.Name
-            };
+            var transactionModel = Mapper.Map<TransactionShowModel>(entity);
+            transactionModel.BudgetName = budgetName;
+
             //check if transaction is repeatable and fill it
             if (repeatableTransaction != null)
             {

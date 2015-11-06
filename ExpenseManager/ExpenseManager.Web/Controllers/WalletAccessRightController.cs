@@ -4,6 +4,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
@@ -12,7 +14,7 @@ using ExpenseManager.Web.Models.WalletAcessRight;
 
 namespace ExpenseManager.Web.Controllers
 {
-    public class WalletAcessRightController : AbstractController
+    public class WalletAccessRightController : AbstractController
     {
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
@@ -23,8 +25,12 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Index()
         {
             var id = await this.CurrentProfileId();
-            var list = await this._db.WalletAccessRights.Where(right => right.Wallet.Owner.Guid == id).ToListAsync();
-            return this.View(list.Select(ConvertEntityToModel));
+            var accessRightModels =
+                await
+                    this._db.WalletAccessRights.Where(right => right.Wallet.Owner.Guid == id)
+                        .ProjectTo<WalletAccessRightModel>()
+                        .ToListAsync();
+            return this.View(accessRightModels);
         }
 
         /// <summary>
@@ -52,7 +58,7 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>redirect to list with all access rights or same view with error message</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(WalletAcessRightModel walletAccessRight)
+        public async Task<ActionResult> Create(WalletAccessRightModel walletAccessRight)
         {
             if (ModelState.IsValid)
             {
@@ -92,7 +98,7 @@ namespace ExpenseManager.Web.Controllers
         // 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(WalletAcessRightModel walletAccessRight)
+        public async Task<ActionResult> Edit(WalletAccessRightModel walletAccessRight)
         {
             var walletAccessRightEntity = await this._db.WalletAccessRights.FindAsync(walletAccessRight.Id);
             if (ModelState.IsValid)
@@ -118,7 +124,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 return this.HttpNotFound();
             }
-            return this.View(ConvertEntityToModel(walletAccessRight));
+            return this.View(Mapper.Map<WalletAccessRightModel>(walletAccessRight));
         }
 
         /// <summary>
@@ -156,7 +162,8 @@ namespace ExpenseManager.Web.Controllers
 
         #region private
 
-        private async Task<WalletAccessRight> ConvertModelToEntity(WalletAcessRightModel model, WalletAccessRight entity)
+        private async Task<WalletAccessRight> ConvertModelToEntity(WalletAccessRightModel model,
+            WalletAccessRight entity)
         {
             var defaultPermission = PermissionEnum.Read;
             Enum.TryParse(model.Permission, out defaultPermission);
@@ -166,21 +173,9 @@ namespace ExpenseManager.Web.Controllers
             return entity;
         }
 
-        private static WalletAcessRightModel ConvertEntityToModel(WalletAccessRight entity)
+        private async Task<WalletAccessRightModel> ConvertEntityToModelWithComboOptions(WalletAccessRight entity)
         {
-            return new WalletAcessRightModel
-            {
-                Id = entity.Guid,
-                Permission = entity.Permission.ToString(),
-                AssignedUserId = entity.UserProfile.Guid,
-                AssignedUserName = entity.UserProfile.FirstName + " " + entity.UserProfile.LastName,
-                WalletId = entity.Wallet.Guid
-            };
-        }
-
-        private async Task<WalletAcessRightModel> ConvertEntityToModelWithComboOptions(WalletAccessRight entity)
-        {
-            var model = ConvertEntityToModel(entity);
+            var model = Mapper.Map<WalletAccessRightModel>(entity);
             model.Users = await this.GetUsers(entity.UserProfile.Guid);
             model.Permissions = this.GetPermissions();
             return model;

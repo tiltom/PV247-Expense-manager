@@ -5,7 +5,7 @@ using System.Web.Mvc;
 
 namespace ExpenseManager.Web.Models.WalletAcessRight
 {
-    public class WalletAcessRightModel
+    public class WalletAccessRightModel
     {
         public Guid Id { get; set; }
 

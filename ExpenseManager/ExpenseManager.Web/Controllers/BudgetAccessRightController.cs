@@ -4,6 +4,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Web.DatabaseContexts;
@@ -22,10 +24,15 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View with model</returns>
         public async Task<ActionResult> Index(Guid id)
         {
-            var listOfBudgetRights =
-                await this._db.BudgetAccessRights.Where(right => right.Budget.Guid == id).ToListAsync();
+            var accessRightModels =
+                await
+                    this._db.BudgetAccessRights.Where(right => right.Budget.Guid == id)
+                        .ProjectTo<ShowBudgetAccessRightModel>()
+                        .ToListAsync();
 
-            return this.View(this.ConvertEntityToShowModel(listOfBudgetRights, id));
+            accessRightModels.ForEach(model => model.BudgetId = id);
+
+            return this.View(accessRightModels);
         }
 
         /// <summary>
@@ -39,11 +46,7 @@ namespace ExpenseManager.Web.Controllers
             var budgetAccessRight = this._db.Budgets.FindAsync(id).Result.AccessRights;
 
             // save Guids of users with access rights to the List
-            var usersList = new List<Guid>();
-            foreach (var item in budgetAccessRight)
-            {
-                usersList.Add(item.UserProfile.Guid);
-            }
+            var usersList = budgetAccessRight.Select(item => item.UserProfile.Guid).ToList();
 
             // creating new CreateBudgetAccessRightModel instance
             var model = new CreateBudgetAccessRightModel
@@ -100,7 +103,8 @@ namespace ExpenseManager.Web.Controllers
             var budgetAccessRight = await this._db.BudgetAccessRights.FindAsync(id);
 
             // creating EditBudgetAccessRight model instance from BudgetAccessRight DB entity
-            var model = this.ConvertEntityToEditModel(budgetAccessRight);
+            var model = Mapper.Map<EditBudgetAccessRightModel>(budgetAccessRight);
+            model.Permissions = this.GetPermissions();
 
             return this.View(model);
         }
@@ -152,50 +156,6 @@ namespace ExpenseManager.Web.Controllers
         }
 
         #region private
-
-        /// <summary>
-        ///     Get all access rights for current budget and convert it to the list of ShowBudgetAccessRightModel instances
-        /// </summary>
-        /// <param name="entity">List of BudgeAccessRight entities</param>
-        /// <param name="BudgetId">Id of budget</param>
-        /// <returns>ShowBudgetAccessRightModel instances</returns>
-        private List<ShowBudgetAccessRightModel> ConvertEntityToShowModel(List<BudgetAccessRight> entity, Guid BudgetId)
-        {
-            var list = new List<ShowBudgetAccessRightModel>();
-
-            // iterating over all BudgetAccessRight entities and mapping them to the ShowBudgetAccessRightModel
-            foreach (var item in entity)
-            {
-                list.Add(new ShowBudgetAccessRightModel
-                {
-                    AssignedUserName = item.UserProfile.FirstName + ' ' + item.UserProfile.LastName,
-                    BudgetId = BudgetId,
-                    Id = item.Guid,
-                    Permission = item.Permission
-                });
-            }
-
-            return list;
-        }
-
-        /// <summary>
-        ///     Converts BudgetAccessRight DB entity to EditBudgetAccessRightModel
-        /// </summary>
-        /// <param name="entity">Instance of BudgetAccessRight</param>
-        /// <returns>Instance of EditBudgetAccessRightModel</returns>
-        private EditBudgetAccessRightModel ConvertEntityToEditModel(BudgetAccessRight entity)
-        {
-            // mapping properties from BudgetAccessRight DB entity to EditBudgetAccessRightModel
-            return new EditBudgetAccessRightModel
-            {
-                AssignedUserId = entity.UserProfile.Guid,
-                AssignedUserName = entity.UserProfile.FirstName,
-                Permission = entity.Permission,
-                BudgetId = entity.Budget.Guid,
-                Id = entity.Guid,
-                Permissions = this.GetPermissions()
-            };
-        }
 
         /// <summary>
         ///     Get list of users which don't have permissions to the budget yet.

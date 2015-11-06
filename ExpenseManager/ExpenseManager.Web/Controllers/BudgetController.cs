@@ -4,6 +4,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Web.DatabaseContexts;
@@ -26,9 +28,13 @@ namespace ExpenseManager.Web.Controllers
             var userId = await this.CurrentProfileId();
 
             // get list of all UserProfile's budgets
-            var budgetList = await this._db.Budgets.Where(user => user.Creator.Guid == userId).ToListAsync();
+            var budgetShowModels =
+                await
+                    this._db.Budgets.Where(user => user.Creator.Guid == userId)
+                        .ProjectTo<BudgetShowModel>()
+                        .ToListAsync();
 
-            return this.View(this.ConvertEntityToBudgetShowModel(budgetList));
+            return this.View(budgetShowModels);
         }
 
         /// <summary>
@@ -105,20 +111,14 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Edit(Guid? id)
         {
             // find budget by its Id
-            var budget = await this._db.Budgets.FindAsync(id);
+            var budget = await this._db.Budgets.FirstOrDefaultAsync(x => x.Guid == id);
 
-            // filling model from DB entity
-            var model = new EditBudgetModel
+            if (budget == null)
             {
-                Name = budget.Name,
-                StartDate = budget.StartDate,
-                EndDate = budget.EndDate,
-                Description = budget.Description,
-                Limit = budget.Limit,
-                Guid = budget.Guid
-            };
+                return new HttpNotFoundResult();
+            }
 
-            return this.View(model);
+            return this.View(Mapper.Map<EditBudgetModel>(budget));
         }
 
         /// <summary>
@@ -198,29 +198,6 @@ namespace ExpenseManager.Web.Controllers
         #region private
 
         /// <summary>
-        ///     Converts list of entities of type Budget into BudgetShowModel.
-        /// </summary>
-        /// <param name="entities">List of entities of type Budget</param>
-        /// <returns>
-        ///     List of BudgetShowModel
-        /// </returns>
-        private IEnumerable<BudgetShowModel> ConvertEntityToBudgetShowModel(List<Budget> entities)
-        {
-            foreach (var item in entities)
-            {
-                yield return
-                    new BudgetShowModel
-                    {
-                        Guid = item.Guid,
-                        Name = item.Name,
-                        StartDate = item.StartDate,
-                        EndDate = item.EndDate,
-                        Limit = item.Limit
-                    };
-            }
-        }
-
-        /// <summary>
         ///     Additional validation for model
         /// </summary>
         /// <param name="startDate"></param>
@@ -228,10 +205,7 @@ namespace ExpenseManager.Web.Controllers
         /// <returns></returns>
         private bool ValidateModel(DateTime startDate, DateTime endDate)
         {
-            if (startDate > endDate)
-                return false;
-
-            return true;
+            return startDate <= endDate;
         }
 
         #endregion
