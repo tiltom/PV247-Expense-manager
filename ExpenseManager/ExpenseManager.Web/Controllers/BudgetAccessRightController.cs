@@ -79,7 +79,7 @@ namespace ExpenseManager.Web.Controllers
                 this._db.UserProfiles.FirstOrDefault(user => user.Guid.ToString() == model.AssignedUserId);
 
             // creating new budget access right
-            this._db.AddOrUpdateAsync(new BudgetAccessRight
+            await this._db.AddOrUpdateAsync(new BudgetAccessRight
             {
                 Budget = budget,
                 Permission = model.Permission,

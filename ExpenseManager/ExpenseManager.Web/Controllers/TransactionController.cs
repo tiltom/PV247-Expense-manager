@@ -106,7 +106,7 @@ namespace ExpenseManager.Web.Controllers
                 var transactionEntity =
                     await this.ConvertNewModelToEntity(transaction, new Transaction {Guid = Guid.NewGuid()});
                 //check if transaction should be repeatable
-                this._db.Transactions.Add(transactionEntity);
+                await this._db.AddOrUpdateAsync(transactionEntity);
                 if (transaction.IsRepeatable)
                 {
                     //create new repeatable transaction entity and fill from model
@@ -118,9 +118,8 @@ namespace ExpenseManager.Web.Controllers
                         LastOccurence = transaction.LastOccurrence.GetValueOrDefault(),
                         Guid = Guid.NewGuid()
                     };
-                    this._db.RepeatableTransactions.Add(repeatableTransaction);
+                    await this._db.AddOrUpdateAsync(repeatableTransaction);
                 }
-                await this._db.SaveChangesAsync();
                 return this.RedirectToAction("Index");
             }
             transaction.Currencies = await this.GetCurrencies();
@@ -143,7 +142,7 @@ namespace ExpenseManager.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //find transaction by it's Id
-            var transaction = await this._db.Transactions.FindAsync(id);
+            var transaction = await this._db.Transactions.Where(t => t.Guid.Equals(id)).FirstOrDefaultAsync();
             if (transaction == null)
             {
                 return this.HttpNotFound();
@@ -186,7 +185,7 @@ namespace ExpenseManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 //find transaction by Id
-                var transactionEntity = await this._db.Transactions.FindAsync(transaction.Id);
+                var transactionEntity = await this._db.Transactions.Where(t => t.Guid.Equals(transaction.Id)).FirstOrDefaultAsync();
                 //update entity properties from model
                 await this.ConvertEditModelToEntity(transaction, transactionEntity);
                 //find if transaction is repeatable in DB
@@ -208,7 +207,7 @@ namespace ExpenseManager.Web.Controllers
                             LastOccurence = transaction.LastOccurrence.GetValueOrDefault(),
                             Guid = Guid.NewGuid()
                         };
-                        this._db.RepeatableTransactions.Add(repeatableTransaction);
+                        await this._db.AddOrUpdateAsync(repeatableTransaction);
                     }
                     // if transaction exists in repeatable transactions in DB update it
                     else
@@ -223,10 +222,9 @@ namespace ExpenseManager.Web.Controllers
                     //if exists in DB in repeatable transactions delete it
                     if (repeatableTransaction != null)
                     {
-                        this._db.RepeatableTransactions.Remove(repeatableTransaction);
+                        await this._db.DeteleAsync(repeatableTransaction);
                     }
                 }
-                await this._db.SaveChangesAsync();
                 return this.RedirectToAction("Index");
             }
             transaction.Currencies = await this.GetCurrencies();
@@ -249,7 +247,7 @@ namespace ExpenseManager.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //find transaction by its Id
-            var transaction = await this._db.Transactions.FindAsync(id);
+            var transaction = await this._db.Transactions.Where(t => t.Guid.Equals(id)).FirstOrDefaultAsync();
             if (!await this.HasWritePermission(transaction))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
@@ -262,11 +260,10 @@ namespace ExpenseManager.Web.Controllers
             if (repeatableTransaction != null) //check if transaction was not repeatable
             {
                 //if true remove it from repeatable transactions first
-                this._db.RepeatableTransactions.Remove(repeatableTransaction);
+                await this._db.DeteleAsync(repeatableTransaction);
             }
             //removing transaction from DB
-            this._db.Transactions.Remove(transaction);
-            await this._db.SaveChangesAsync();
+            await this._db.DeteleAsync(transaction);
             return this.RedirectToAction("Index");
         }
 
@@ -274,7 +271,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (disposing)
             {
-                this._db.Dispose();
+                //this._db.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -291,14 +288,14 @@ namespace ExpenseManager.Web.Controllers
             entity.Amount = model.Amount;
             entity.Date = model.Date;
             entity.Description = model.Description;
-            entity.Wallet = await this._db.Wallets.FindAsync(model.WalletId);
+            entity.Wallet = await this._db.Wallets.Where(w => w.Guid.Equals(model.WalletId)).FirstOrDefaultAsync();
             //check if budget was set to category in model
             if (model.BudgetId != null)
             {
-                entity.Budget = await this._db.Budgets.FindAsync(new Guid(model.BudgetId));
+                entity.Budget = await this._db.Budgets.Where(b => b.Guid.Equals(model.BudgetId)).FirstOrDefaultAsync();
             }
-            entity.Currency = await this._db.Currencies.FindAsync(new Guid(model.CurrencyId));
-            entity.Category = await this._db.Categories.FindAsync(new Guid(model.CategoryId));
+            entity.Currency = await this._db.Currencies.Where(c => c.Guid.Equals(model.CurrencyId)).FirstOrDefaultAsync();
+            entity.Category = await this._db.Categories.Where(c => c.Guid.Equals(model.CategoryId)).FirstOrDefaultAsync();
 
             return entity;
         }
@@ -315,7 +312,7 @@ namespace ExpenseManager.Web.Controllers
             entity.Amount = model.Amount;
             entity.Date = model.Date;
             entity.Description = model.Description;
-            entity.Wallet = await this._db.Wallets.FindAsync(model.WalletId);
+            entity.Wallet = await this._db.Wallets.Where(w => w.Guid.Equals(model.WalletId)).FirstOrDefaultAsync();
             //check if budget was set in model
             if (model.BudgetId == null)
             {
@@ -325,10 +322,10 @@ namespace ExpenseManager.Web.Controllers
             }
             else
             {
-                entity.Budget = await this._db.Budgets.FindAsync(new Guid(model.BudgetId));
+                entity.Budget = await this._db.Budgets.Where(b => b.Guid.Equals(model.BudgetId)).FirstOrDefaultAsync();
             }
-            entity.Currency = await this._db.Currencies.FindAsync(new Guid(model.CurrencyId));
-            entity.Category = await this._db.Categories.FindAsync(new Guid(model.CategoryId));
+            entity.Currency = await this._db.Currencies.Where(c => c.Guid.Equals(model.CurrencyId)).FirstOrDefaultAsync();
+            entity.Category = await this._db.Categories.Where(c => c.Guid.Equals(model.CategoryId)).FirstOrDefaultAsync();
             return entity;
         }
 

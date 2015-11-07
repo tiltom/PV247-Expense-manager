@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Wallet;
+using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.Factory;
 
 namespace ExpenseManager.Web.Controllers
 {
     [Authorize]
     public class WalletController : AbstractController
     {
-        private readonly ApplicationDbContext db = new ApplicationDbContext();
+        private readonly IWalletsProvider db = ProvidersFactory.GetNewWalletsProviders();
 
         /// <summary>
         ///     Address: GET: Wallets/Edit
@@ -48,11 +50,10 @@ namespace ExpenseManager.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var walletEntity = this.db.Wallets.Find(wallet.Guid);
+                var walletEntity = this.db.Wallets.Where(w => w.Guid.Equals(wallet.Guid)).FirstOrDefaultAsync().Result;
                 walletEntity.Owner = walletEntity.Owner;
-                walletEntity.Currency = this.db.Currencies.Find(wallet.CurrencyId);
+                walletEntity.Currency = this.db.Currencies.Where(w => w.Guid.Equals(wallet.CurrencyId)).FirstOrDefaultAsync().Result;
                 walletEntity.Name = wallet.Name;
-                await this.db.SaveChangesAsync();
                 return this.RedirectToAction("Index", "Manage");
             }
             wallet.Currencies = await this.GetCurrencies();
@@ -65,7 +66,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (disposing)
             {
-                this.db.Dispose();
+                //this.db.Dispose();
             }
             base.Dispose(disposing);
         }

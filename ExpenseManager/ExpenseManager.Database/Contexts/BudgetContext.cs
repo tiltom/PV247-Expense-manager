@@ -37,14 +37,6 @@ namespace ExpenseManager.Database.Contexts
             }
         }
 
-        IQueryable<Transaction> ITransactionsProvider.Transactions
-        {
-            get
-            {
-                return Transactions;
-            }
-        }
-
         IQueryable<BudgetAccessRight> IBudgetAccessRightsProvider.BudgetAccessRights
         {
             get
@@ -56,35 +48,11 @@ namespace ExpenseManager.Database.Contexts
             }
         }
 
-        public IQueryable<Category> Categories
+        IQueryable<UserProfile> IUserProfilesProvider.UserProfiles
         {
             get
             {
-                throw new NotImplementedException();
-            }
-        }
-
-        public IQueryable<Wallet> Wallets
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public IQueryable<WalletAccessRight> WalletAccessRights
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public IQueryable<RepeatableTransaction> RepeatableTransactions
-        {
-            get
-            {
-                throw new NotImplementedException();
+                return UserProfiles;
             }
         }
 
@@ -114,33 +82,6 @@ namespace ExpenseManager.Database.Contexts
                 : Budgets.Remove(budgetToDelete);
 
             return new DeletedEntity<Budget>(deletedBudget);
-        }
-
-        public async Task<bool> AddOrUpdateAsync(Transaction entity)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            var existingTransaction = entity.Guid == Guid.Empty
-                ? null
-                : await Transactions.FindAsync(entity.Guid);
-
-            Transactions.AddOrUpdate(x => x.Guid, entity);
-
-            return existingTransaction == null;
-        }
-
-        public async Task<DeletedEntity<Transaction>> DeteleAsync(Transaction entity)
-        {
-            var transactionToDelete = entity.Guid == Guid.Empty
-                ? null
-                : await Transactions.FindAsync(entity.Guid);
-            
-            var deletedTransaction = transactionToDelete == null
-                ? null
-                : Transactions.Remove(transactionToDelete);
-
-            return new DeletedEntity<Transaction>(deletedTransaction);
         }
 
         public async Task<bool> AddOrUpdateAsync(BudgetAccessRight entity)
@@ -200,14 +141,31 @@ namespace ExpenseManager.Database.Contexts
             throw new NotImplementedException();
         }
 
-        public Task<bool> AddOrUpdateAsync(RepeatableTransaction entity)
+        public async Task<bool> AddOrUpdateAsync(UserProfile entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            var existinguserProfile = entity.Guid == Guid.Empty
+                ? null
+                : await UserProfiles.FindAsync(entity.Guid);
+
+            UserProfiles.AddOrUpdate(x => x.Guid, entity);
+
+            return existinguserProfile == null;
         }
 
-        public Task<DeletedEntity<RepeatableTransaction>> DeteleAsync(RepeatableTransaction entity)
+        public async Task<DeletedEntity<UserProfile>> DeteleAsync(UserProfile entity)
         {
-            throw new NotImplementedException();
+            var userProfileToDelete = entity.Guid == Guid.Empty
+                ? null
+                : await UserProfiles.FindAsync(entity.Guid);
+
+            var deletedUserProfile = userProfileToDelete == null
+                ? null
+                : UserProfiles.Remove(userProfileToDelete);
+
+            return new DeletedEntity<UserProfile>(deletedUserProfile);
         }
     }
 }

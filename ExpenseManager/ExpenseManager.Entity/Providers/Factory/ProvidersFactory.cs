@@ -25,12 +25,12 @@ namespace ExpenseManager.Entity.Providers.Factory
             transactionsProviderCreator = () => new TProvider();
         }
 
-        public static void UserProfilesProvider<TProvider>()
+        public static void RegisterUserProfilesProvider<TProvider>()
             where TProvider : IUserProfilesProvider, new()
         {
             userProfilesProviderCreator = () => new TProvider();
         }
-        public static void WalletsProvider<TProvider>()
+        public static void RegisterWalletsProvider<TProvider>()
            where TProvider : IWalletsProvider, new()
         {
             walletsProviderCreator = () => new TProvider();
@@ -60,7 +60,7 @@ namespace ExpenseManager.Entity.Providers.Factory
             return userProfilesProviderCreator();
         }
 
-        public static IWalletsProvider GetWalletsProviders()
+        public static IWalletsProvider GetNewWalletsProviders()
         {
             if (walletsProviderCreator == null)
                 return new EmptyWalletsProvider();

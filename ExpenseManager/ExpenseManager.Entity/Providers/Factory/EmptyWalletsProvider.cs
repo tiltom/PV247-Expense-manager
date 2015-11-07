@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ExpenseManager.Entity.Budgets;
+using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers.infrastructure;
 using ExpenseManager.Entity.Transactions;
+using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 
 namespace ExpenseManager.Entity.Providers.Factory
@@ -28,11 +30,27 @@ namespace ExpenseManager.Entity.Providers.Factory
             }
         }
 
+        public IQueryable<Currency> Currencies
+        {
+            get
+            {
+                return Enumerable.Empty<Currency>().AsQueryable();
+            }
+        }
+
         public IQueryable<Transaction> Transactions
         {
             get
             {
                 return Enumerable.Empty<Transaction>().AsQueryable();
+            }
+        }
+
+        public IQueryable<UserProfile> UserProfiles
+        {
+            get
+            {
+                return Enumerable.Empty<UserProfile>().AsQueryable();
             }
         }
 
@@ -53,6 +71,18 @@ namespace ExpenseManager.Entity.Providers.Factory
         }
 
         public async Task<bool> AddOrUpdateAsync(Budget entity)
+        {
+            await Task.CompletedTask;
+            return false;
+        }
+
+        public async Task<bool> AddOrUpdateAsync(UserProfile entity)
+        {
+            await Task.CompletedTask;
+            return false;
+        }
+
+        public async Task<bool> AddOrUpdateAsync(Currency entity)
         {
             await Task.CompletedTask;
             return false;
@@ -80,6 +110,18 @@ namespace ExpenseManager.Entity.Providers.Factory
         {
             await Task.CompletedTask;
             return false;
+        }
+
+        public async Task<DeletedEntity<Currency>> DeteleAsync(Currency entity)
+        {
+            await Task.CompletedTask;
+            return new DeletedEntity<Currency>(null);
+        }
+
+        public async Task<DeletedEntity<UserProfile>> DeteleAsync(UserProfile entity)
+        {
+            await Task.CompletedTask;
+            return new DeletedEntity<UserProfile>(null);
         }
 
         public async Task<DeletedEntity<BudgetAccessRight>> DeteleAsync(BudgetAccessRight entity)

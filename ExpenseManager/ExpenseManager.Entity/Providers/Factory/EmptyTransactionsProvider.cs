@@ -5,19 +5,45 @@ using System.Text;
 using System.Threading.Tasks;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
+using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers.infrastructure;
 using ExpenseManager.Entity.Transactions;
+using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 
 namespace ExpenseManager.Entity.Providers.Factory
 {
     internal class EmptyTransactionsProvider : ITransactionsProvider
     {
+        public IQueryable<BudgetAccessRight> BudgetAccessRights
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IQueryable<Budget> Budgets
+        {
+            get
+            {
+                return Enumerable.Empty<Budget>().AsQueryable();
+            }
+        }
+
         public IQueryable<Category> Categories
         {
             get
             {
                 return Enumerable.Empty<Category>().AsQueryable();
+            }
+        }
+
+        public IQueryable<Currency> Currencies
+        {
+            get
+            {
+                return Enumerable.Empty<Currency>().AsQueryable();
             }
         }
 
@@ -34,6 +60,14 @@ namespace ExpenseManager.Entity.Providers.Factory
             get
             {
                 return Enumerable.Empty<Transaction>().AsQueryable();
+            }
+        }
+
+        public IQueryable<UserProfile> UserProfiles
+        {
+            get
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -54,6 +88,28 @@ namespace ExpenseManager.Entity.Providers.Factory
         }
 
         public async Task<bool> AddOrUpdateAsync(WalletAccessRight entity)
+        {
+            await Task.CompletedTask;
+            return false;
+        }
+
+        public Task<bool> AddOrUpdateAsync(UserProfile entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> AddOrUpdateAsync(Budget entity)
+        {
+            await Task.CompletedTask;
+            return false;
+        }
+
+        public Task<bool> AddOrUpdateAsync(BudgetAccessRight entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> AddOrUpdateAsync(Currency entity)
         {
             await Task.CompletedTask;
             return false;
@@ -81,6 +137,28 @@ namespace ExpenseManager.Entity.Providers.Factory
         {
             await Task.CompletedTask;
             return false;
+        }
+
+        public async Task<DeletedEntity<Currency>> DeteleAsync(Currency entity)
+        {
+            await Task.CompletedTask;
+            return new DeletedEntity<Currency>(null);
+        }
+
+        public Task<DeletedEntity<BudgetAccessRight>> DeteleAsync(BudgetAccessRight entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<DeletedEntity<Budget>> DeteleAsync(Budget entity)
+        {
+            await Task.CompletedTask;
+            return new DeletedEntity<Budget>(null);
+        }
+
+        public Task<DeletedEntity<UserProfile>> DeteleAsync(UserProfile entity)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<DeletedEntity<RepeatableTransaction>> DeteleAsync(RepeatableTransaction entity)

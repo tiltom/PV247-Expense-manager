@@ -7,6 +7,7 @@ using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Providers.infrastructure;
 using ExpenseManager.Entity.Transactions;
+using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 
 namespace ExpenseManager.Entity.Providers.Factory
@@ -53,6 +54,14 @@ namespace ExpenseManager.Entity.Providers.Factory
             }
         }
 
+        public IQueryable<UserProfile> UserProfiles
+        {
+            get
+            {
+                return Enumerable.Empty<UserProfile>().AsQueryable();
+            }
+        }
+
         public IQueryable<WalletAccessRight> WalletAccessRights
         {
             get
@@ -78,6 +87,12 @@ namespace ExpenseManager.Entity.Providers.Factory
         public Task<bool> AddOrUpdateAsync(WalletAccessRight entity)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> AddOrUpdateAsync(UserProfile entity)
+        {
+            await Task.CompletedTask;
+            return false;
         }
 
         public Task<bool> AddOrUpdateAsync(RepeatableTransaction entity)
@@ -111,6 +126,12 @@ namespace ExpenseManager.Entity.Providers.Factory
         public Task<DeletedEntity<RepeatableTransaction>> DeteleAsync(RepeatableTransaction entity)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<DeletedEntity<UserProfile>> DeteleAsync(UserProfile entity)
+        {
+            await Task.CompletedTask;
+            return new DeletedEntity<UserProfile>(null);
         }
 
         public Task<DeletedEntity<WalletAccessRight>> DeteleAsync(WalletAccessRight entity)

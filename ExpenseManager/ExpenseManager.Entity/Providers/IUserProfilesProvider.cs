@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 
 namespace ExpenseManager.Entity.Providers
 {
-    public interface IUserProfilesProvider : IAddOrUpdateDeleteEntityProvider<UserProfile>, IWalletAccessRightsProvider, 
-        IBudgetAccessRightsProvider, ITransactionsProvider
+    public interface IUserProfilesProvider : IAddOrUpdateDeleteEntityProvider<UserProfile>
     {
         IQueryable<UserProfile> UserProfiles { get; }
     }

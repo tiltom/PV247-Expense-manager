@@ -12,7 +12,7 @@ using System.Data.Entity.Migrations;
 
 namespace ExpenseManager.Database.Contexts
 {
-    public class WalletContext : DbContext, IWalletContext, IWalletsProvider
+    internal class WalletContext : DbContext, IWalletContext, IWalletsProvider
     {
         public WalletContext() 
             : base("DefaultConnection")
@@ -40,6 +40,22 @@ namespace ExpenseManager.Database.Contexts
                     .Include(war => war.Wallet)
                     .Include(war => war.Permission)
                     .Include(war => war.UserProfile);
+            }
+        }
+
+        IQueryable<UserProfile> IUserProfilesProvider.UserProfiles
+        {
+            get
+            {
+                return UserProfiles;
+            }
+        }
+
+        IQueryable<Currency> ICurrenciesProvider.Currencies
+        {
+            get
+            {
+                return Currencies;
             }
         }
 
@@ -95,6 +111,58 @@ namespace ExpenseManager.Database.Contexts
                 : WalletAccessRights.Remove(walletAccessRightToDelete);
 
             return new DeletedEntity<WalletAccessRight>(deletedWalletAccessRight);
+        }
+
+        public async Task<bool> AddOrUpdateAsync(UserProfile entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            var existingUserProfile = entity.Guid == Guid.Empty
+                ? null
+                : await UserProfiles.FindAsync(entity.Guid);
+
+            UserProfiles.AddOrUpdate(x => x.Guid, entity);
+
+            return existingUserProfile == null;
+        }
+
+        public async Task<DeletedEntity<UserProfile>> DeteleAsync(UserProfile entity)
+        {
+            var userProfileToDelete = entity.Guid == Guid.Empty
+                ? null
+                : await UserProfiles.FindAsync(entity.Guid);
+            var deletedUserProfile = userProfileToDelete == null
+                ? null
+                : UserProfiles.Remove(userProfileToDelete);
+
+            return new DeletedEntity<UserProfile>(deletedUserProfile);
+        }
+
+        public async Task<bool> AddOrUpdateAsync(Currency entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            var existingCurrency = entity.Guid == Guid.Empty
+                ? null
+                : await Currencies.FindAsync(entity.Guid);
+
+            Currencies.AddOrUpdate(x => x.Guid, entity);
+
+            return existingCurrency == null;
+        }
+
+        public async Task<DeletedEntity<Currency>> DeteleAsync(Currency entity)
+        {
+            var currencyToDelete = entity.Guid == Guid.Empty
+                ? null
+                : await Currencies.FindAsync(entity.Guid);
+            var deletedCurrency = currencyToDelete == null
+                ? null
+                : Currencies.Remove(currencyToDelete);
+
+            return new DeletedEntity<Currency>(deletedCurrency);
         }
     }
 }

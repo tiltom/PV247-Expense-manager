@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace ExpenseManager.Entity.Providers
 {
     public interface ITransactionsProvider : IAddOrUpdateDeleteEntityProvider<Transaction>, ICategoriesProvider, 
-        IWalletsProvider, IRepeatableTransactionsProvider
+        IWalletsProvider, IRepeatableTransactionsProvider, ICurrenciesProvider, IBudgetsProvider
     {
         IQueryable<Transaction> Transactions { get; }
     }

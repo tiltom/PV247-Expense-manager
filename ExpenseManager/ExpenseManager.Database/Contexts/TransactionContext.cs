@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ExpenseManager.Entity.Providers.infrastructure;
 using System.Data.Entity.Migrations;
+using ExpenseManager.Entity.Users;
 
 namespace ExpenseManager.Database.Contexts
 {
@@ -61,6 +62,38 @@ namespace ExpenseManager.Database.Contexts
         }
 
         public IQueryable<WalletAccessRight> WalletAccessRights
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IQueryable<UserProfile> UserProfiles
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        IQueryable<Currency> ICurrenciesProvider.Currencies
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        IQueryable<Budget> IBudgetsProvider.Budgets
+        {
+            get
+            {
+                return Budgets;
+            }
+        }
+
+        public IQueryable<BudgetAccessRight> BudgetAccessRights
         {
             get
             {
@@ -185,6 +218,64 @@ namespace ExpenseManager.Database.Contexts
         }
 
         public Task<DeletedEntity<WalletAccessRight>> DeteleAsync(WalletAccessRight entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> AddOrUpdateAsync(UserProfile entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DeletedEntity<UserProfile>> DeteleAsync(UserProfile entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> AddOrUpdateAsync(Currency entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DeletedEntity<Currency>> DeteleAsync(Currency entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> AddOrUpdateAsync(Budget entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            var existingBudget = entity.Guid == Guid.Empty
+                ? null
+                : await Budgets.FindAsync(entity.Guid);
+
+            Budgets.AddOrUpdate(x => x.Guid, entity);
+
+            return existingBudget == null;
+        }
+
+        public async Task<DeletedEntity<Budget>> DeteleAsync(Budget entity)
+        {
+            var budgetToDelete = entity.Guid == Guid.Empty
+                ? null
+                : await Budgets.FindAsync(entity.Guid);
+
+            budgetToDelete.Transactions.Clear();
+            var deletedBudget = budgetToDelete == null
+                ? null
+                : Budgets.Remove(budgetToDelete);
+
+            return new DeletedEntity<Budget>(deletedBudget);
+        }
+
+        public Task<bool> AddOrUpdateAsync(BudgetAccessRight entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DeletedEntity<BudgetAccessRight>> DeteleAsync(BudgetAccessRight entity)
         {
             throw new NotImplementedException();
         }

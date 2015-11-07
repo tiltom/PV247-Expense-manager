@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace ExpenseManager.Entity.Providers
 {
-    public interface IBudgetsProvider : IAddOrUpdateDeleteEntityProvider<Budget>, ITransactionsProvider,
-        IBudgetAccessRightsProvider
+    public interface IBudgetsProvider : IAddOrUpdateDeleteEntityProvider<Budget>,
+        IBudgetAccessRightsProvider, IUserProfilesProvider
     {
         IQueryable<Budget> Budgets { get; }
     }

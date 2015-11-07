@@ -75,7 +75,7 @@ namespace ExpenseManager.Web.Controllers
             var creator = await this._db.UserProfiles.FirstOrDefaultAsync(user => user.Guid == userId);
 
             // creating new Budget by filling it from model
-            this._db.AddOrUpdateAsync(new Budget
+            await this._db.AddOrUpdateAsync(new Budget
             {
                 Name = model.Name,
                 StartDate = model.StartDate,
