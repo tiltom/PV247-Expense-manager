@@ -13,6 +13,7 @@ using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity.Owin;
 using WebGrease.Css.Extensions;
+using ExpenseManager.Database.common;
 
 namespace ExpenseManager.Web.Controllers
 {

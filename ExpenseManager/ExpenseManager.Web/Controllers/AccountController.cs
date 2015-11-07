@@ -13,6 +13,7 @@ using Facebook;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using ExpenseManager.Database.common;
 
 namespace ExpenseManager.Web.Controllers
 {

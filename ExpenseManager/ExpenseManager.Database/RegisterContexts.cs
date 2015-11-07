@@ -14,6 +14,7 @@ namespace ExpenseManager.Database
         {
             ProvidersFactory.RegisterBudgetsProvider<BudgetContext>();
             ProvidersFactory.RegisterTrancastionsProvider<TransactionContext>();
+            ProvidersFactory.RegisterWalletsProvider<WalletContext>();
             // TODO REGISTER PROVIDERS
         }
     }

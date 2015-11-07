@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using WebGrease.Css.Extensions;
+using ExpenseManager.Database.common;
 
 namespace ExpenseManager.Web.Controllers
 {

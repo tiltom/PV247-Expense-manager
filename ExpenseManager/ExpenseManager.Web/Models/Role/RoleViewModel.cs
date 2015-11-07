@@ -1,3 +1,4 @@
+using ExpenseManager.Database.common;
 using ExpenseManager.Web.Common;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
