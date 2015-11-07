@@ -70,6 +70,7 @@ namespace ExpenseManager.Database.Contexts
 
             Wallets.AddOrUpdate(x => x.Guid, entity);
 
+            await SaveChangesAsync();
             return existingWallet == null;
         }
 
@@ -84,6 +85,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : Wallets.Remove(walletToDelete);
 
+            await SaveChangesAsync();
             return new DeletedEntity<Wallet>(deletedWallet);
         }
 
@@ -98,6 +100,7 @@ namespace ExpenseManager.Database.Contexts
 
             WalletAccessRights.AddOrUpdate(x => x.Guid, entity);
 
+            await SaveChangesAsync();
             return existingWalleAccessRightt == null;
         }
 
@@ -110,6 +113,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : WalletAccessRights.Remove(walletAccessRightToDelete);
 
+            await SaveChangesAsync();
             return new DeletedEntity<WalletAccessRight>(deletedWalletAccessRight);
         }
 
@@ -124,6 +128,7 @@ namespace ExpenseManager.Database.Contexts
 
             UserProfiles.AddOrUpdate(x => x.Guid, entity);
 
+            await SaveChangesAsync();
             return existingUserProfile == null;
         }
 
@@ -136,6 +141,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : UserProfiles.Remove(userProfileToDelete);
 
+            await SaveChangesAsync();
             return new DeletedEntity<UserProfile>(deletedUserProfile);
         }
 
@@ -150,6 +156,7 @@ namespace ExpenseManager.Database.Contexts
 
             Currencies.AddOrUpdate(x => x.Guid, entity);
 
+            await SaveChangesAsync();
             return existingCurrency == null;
         }
 
@@ -162,6 +169,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : Currencies.Remove(currencyToDelete);
 
+            await SaveChangesAsync();
             return new DeletedEntity<Currency>(deletedCurrency);
         }
     }

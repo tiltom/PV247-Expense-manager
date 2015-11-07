@@ -66,7 +66,7 @@ namespace ExpenseManager.Database.Contexts
                 : await Budgets.FindAsync(entity.Guid);
 
             Budgets.AddOrUpdate(x => x.Guid, entity);
-
+            await SaveChangesAsync();
             return existingBudget == null;
         }
 
@@ -81,6 +81,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : Budgets.Remove(budgetToDelete);
 
+            await SaveChangesAsync();
             return new DeletedEntity<Budget>(deletedBudget);
         }
 
@@ -95,6 +96,7 @@ namespace ExpenseManager.Database.Contexts
 
             BudgetAccessRights.AddOrUpdate(x => x.Guid, entity);
 
+            await SaveChangesAsync();
             return existingBudgetAccessRight == null;
         }
 
@@ -108,6 +110,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : BudgetAccessRights.Remove(budgetAccessRightToDelete);
 
+            await SaveChangesAsync();
             return new DeletedEntity<BudgetAccessRight>(deletedBudgetAccessRight);
         }
 
@@ -152,6 +155,7 @@ namespace ExpenseManager.Database.Contexts
 
             UserProfiles.AddOrUpdate(x => x.Guid, entity);
 
+            await SaveChangesAsync();
             return existinguserProfile == null;
         }
 
@@ -165,6 +169,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : UserProfiles.Remove(userProfileToDelete);
 
+            await SaveChangesAsync();
             return new DeletedEntity<UserProfile>(deletedUserProfile);
         }
     }

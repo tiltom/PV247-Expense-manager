@@ -112,6 +112,7 @@ namespace ExpenseManager.Database.Contexts
 
             Transactions.AddOrUpdate(x => x.Guid, entity);
 
+            await SaveChangesAsync();
             return existingTransaction == null;
         }
 
@@ -125,6 +126,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : Transactions.Remove(transactionToDelete);
 
+            await SaveChangesAsync();
             return new DeletedEntity<Transaction>(deletedTransaction);
         }
 
@@ -139,6 +141,7 @@ namespace ExpenseManager.Database.Contexts
 
             Categories.AddOrUpdate(x => x.Guid, entity);
 
+            await SaveChangesAsync();
             return existingCategory == null;
         }
 
@@ -153,6 +156,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : Categories.Remove(categoryToDelete);
 
+            await SaveChangesAsync();
             return new DeletedEntity<Category>(deletedCategory);
         }
 
@@ -167,6 +171,7 @@ namespace ExpenseManager.Database.Contexts
 
             Wallets.AddOrUpdate(x => x.Guid, entity);
 
+            await SaveChangesAsync();
             return existingWallet == null;
         }
 
@@ -182,6 +187,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : Wallets.Remove(walletToDelete);
 
+            await SaveChangesAsync();
             return new DeletedEntity<Wallet>(deletedWallet);
         }
 
@@ -196,6 +202,7 @@ namespace ExpenseManager.Database.Contexts
 
             RepeatableTransactions.AddOrUpdate(x => x.Guid, entity);
 
+            await SaveChangesAsync();
             return existingRepeatableTransaction == null;
         }
 
@@ -209,6 +216,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : RepeatableTransactions.Remove(RepeatableTransactionToDelete);
 
+            await SaveChangesAsync();
             return new DeletedEntity<RepeatableTransaction>(deletedRepeatableTransaction);
         }
 
@@ -253,6 +261,7 @@ namespace ExpenseManager.Database.Contexts
 
             Budgets.AddOrUpdate(x => x.Guid, entity);
 
+            await SaveChangesAsync();
             return existingBudget == null;
         }
 
@@ -267,6 +276,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : Budgets.Remove(budgetToDelete);
 
+            await SaveChangesAsync();
             return new DeletedEntity<Budget>(deletedBudget);
         }
 
