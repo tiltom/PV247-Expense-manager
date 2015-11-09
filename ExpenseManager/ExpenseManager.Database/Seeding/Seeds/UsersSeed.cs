@@ -43,27 +43,41 @@ namespace ExpenseManager.Database.Seeding.Seeds
             if (user == null)
             {
                 var currency = context.Currencies.FirstOrDefault(c => c.Symbol == "Kč");
+
+                
+
                 var profile = new UserProfile
                 {
-                    PersonalWallet = new Wallet
-                    {
-                        Name = "Default Wallet",
-                        Currency = currency
-                    },
                     FirstName = firstName,
                     LastName = lastName
                 };
-                profile.WalletAccessRights = new List<WalletAccessRight>
-                {
-                    new WalletAccessRight
-                    {
-                        Permission = PermissionEnum.Owner,
-                        UserProfile = profile,
-                        Wallet = profile.PersonalWallet
-                    }
-                };
                 profile = context.UserProfiles.Add(profile);
                 context.SaveChanges();
+
+                var wallet = new Wallet
+                {
+                    Name = "Default Wallet",
+                    Currency = currency,
+                    Owner = profile
+                };
+                wallet = context.Wallets.Add(wallet);
+                context.SaveChanges();
+
+                var personalWalletAccessRight = new WalletAccessRight
+                {
+                    Permission = PermissionEnum.Owner,
+                    UserProfile = profile,
+                    Wallet = wallet
+                };
+                var pwar = context.WalletAccessRights.Add(personalWalletAccessRight);
+                context.SaveChanges();
+
+                //profile.WalletAccessRights = new List<WalletAccessRight>
+                //{
+                //    pwar
+                //};
+                //profile = context.UserProfiles.Add(profile);
+                //context.SaveChanges();
                 user = new UserIdentity
                 {
                     UserName = name,

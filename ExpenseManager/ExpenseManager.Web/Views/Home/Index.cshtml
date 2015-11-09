@@ -1,5 +1,6 @@
 ﻿@{
     ViewBag.Title = "Home Page";
+    (new ExpenseManager.Database.Seeding.Context.SeedingContext()).Wallets.ToList();
 }
 
 <div class="jumbotron">

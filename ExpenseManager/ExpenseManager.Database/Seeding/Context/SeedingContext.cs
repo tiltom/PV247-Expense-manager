@@ -26,5 +26,25 @@ namespace ExpenseManager.Database.Seeding.Context
         public DbSet<Category> Categories { get; set; }
         public DbSet<RepeatableTransaction> RepeatableTransactions { get; set; }
         public DbSet<WalletAccessRight> WalletAccessRights { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<BudgetAccessRight>()
+                .HasRequired(right => right.UserProfile)
+                .WithMany(profile => profile.BudgetAccessRights)
+                .WillCascadeOnDelete(false);
+
+            //modelBuilder.Entity<WalletAccessRight>()
+            //    .HasRequired(right => right.UserProfile)
+            //    .WithMany(profile => profile.WalletAccessRights)
+            //    .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Transaction>()
+                .HasRequired(transaction => transaction.Wallet)
+                .WithMany(wallet => wallet.Transactions)
+                .WillCascadeOnDelete(false);
+        }
     }
 }
