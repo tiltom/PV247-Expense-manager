@@ -1,11 +1,22 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using ExpenseManager.Entity.Enums;
 
 namespace ExpenseManager.Web.Models.Category
 {
+    /// <summary>
+    ///     View model for category entity
+    /// </summary>
     public class CategoryShowModel
     {
         public Guid Guid { get; set; }
+
+        /// <summary>
+        ///     Description of the category
+        /// </summary>
+        [Required]
+        [Display(Name = "Description")]
+        public string Description { get; set; }
 
         /// <summary>
         ///     Name of the category
@@ -22,10 +33,10 @@ namespace ExpenseManager.Web.Models.Category
         public string Icon { get; set; }
 
         /// <summary>
-        ///     Description of the category
+        ///     Type of the category
         /// </summary>
         [Required]
-        [Display(Name = "Description")]
-        public string Description { get; set; }
+        [Display(Name = "Type")]
+        public CategoryType Type { get; set; }
     }
 }

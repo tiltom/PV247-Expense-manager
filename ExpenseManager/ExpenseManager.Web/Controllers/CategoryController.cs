@@ -95,10 +95,11 @@ namespace ExpenseManager.Web.Controllers
                 // find category by its Id from model
                 var categoryToEdit = await this._db.Categories.FindAsync(category.Guid);
 
-                // editing editable properties, TODO: refactor it
+                // editing editable properties, TODO: refactor this
                 categoryToEdit.Description = category.Description;
                 categoryToEdit.IconPath = category.Icon;
-                categoryToEdit.Name = categoryToEdit.Name;
+                categoryToEdit.Name = category.Name;
+                categoryToEdit.Type = category.Type;
 
                 await this._db.SaveChangesAsync();
 
@@ -118,7 +119,12 @@ namespace ExpenseManager.Web.Controllers
             // find category to delete by its Id
             var categoryToDelete = await this._db.Categories.FindAsync(guid);
 
-            // get the default currency
+            if (categoryToDelete == null)
+            {
+                return new HttpNotFoundResult();
+            }
+
+            // get the default category
             var defaultCategory = await this.GetDefaultCategory();
             // delete connections to this category in Transactions table and set the category to Default
             categoryToDelete.Transactions.ToList()

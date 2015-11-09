@@ -51,8 +51,8 @@ namespace ExpenseManager.Web
             // Once you check this option, your second step of verification during the login process will be remembered on the device where you logged in from.
             // This is similar to the RememberMe option when you log in.
             app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
-
-            app.UseFacebookAuthentication(new FacebookAuthenticationOptions
+            
+            /*app.UseFacebookAuthentication(new FacebookAuthenticationOptions
             {
                 AppId = WebConfigurationManager.AppSettings["FBClientID"],
                 AppSecret = WebConfigurationManager.AppSettings["FBClientSecret"],
@@ -65,13 +65,13 @@ namespace ExpenseManager.Web
                         return Task.FromResult(true);
                     }
                 }
-            });
+            });*/
 
-            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
+            /*app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
             {
                 ClientId = WebConfigurationManager.AppSettings["GoogleClientID"],
                 ClientSecret = WebConfigurationManager.AppSettings["GoogleClientSecret"]
-            });
+            });*/
         }
     }
 }

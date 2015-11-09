@@ -201,6 +201,10 @@
     <Compile Include="Migrations\201511051154271_UserCascadeDelete.Designer.cs">
       <DependentUpon>201511051154271_UserCascadeDelete.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511092231298_Type.cs" />
+    <Compile Include="Migrations\201511092231298_Type.Designer.cs">
+      <DependentUpon>201511092231298_Type.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BudgetAccessRight\CreateBudgetAccessRightModel.cs" />
     <Compile Include="Models\BudgetAccessRight\EditBudgetAccessRightModel.cs" />
@@ -396,6 +400,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201511051154271_UserCascadeDelete.resx">
       <DependentUpon>201511051154271_UserCascadeDelete.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511092231298_Type.resx">
+      <DependentUpon>201511092231298_Type.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

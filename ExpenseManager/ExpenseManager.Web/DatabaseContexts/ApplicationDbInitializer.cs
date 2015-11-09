@@ -6,6 +6,7 @@ using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Currencies;
+using ExpenseManager.Entity.Enums;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
@@ -37,19 +38,22 @@ namespace ExpenseManager.Web.DatabaseContexts
                 {
                     Name = "Other",
                     Description = "Category for non-classifiable transactions",
-                    IconPath = "glyphicons-circle-question-mark"
+                    IconPath = "glyphicon-question-sign",
+                    Type = CategoryType.IncomeAndExpense
                 },
                 new Category
                 {
                     Name = "Food & Drinks",
                     Description = "Category for consumables",
-                    IconPath = "glyphicons-fast-food"
+                    IconPath = "glyphicons-drink",
+                    Type = CategoryType.Expense
                 },
                 new Category
                 {
                     Name = "Travel",
                     Description = "Category for transportation and related stuff",
-                    IconPath = "glyphicons-transport"
+                    IconPath = "glyphicons-road",
+                    Type = CategoryType.Expense
                 }
             };
             context.Categories.AddRange(categories);

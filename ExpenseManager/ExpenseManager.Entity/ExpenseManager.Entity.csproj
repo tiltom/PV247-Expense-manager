@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
+    <Compile Include="Enums\CategoryType.cs" />
     <Compile Include="Wallets\WalletAccessRight.cs" />
     <Compile Include="Budgets\BudgetAccessRight.cs" />
     <Compile Include="Budgets\Budget.cs" />
