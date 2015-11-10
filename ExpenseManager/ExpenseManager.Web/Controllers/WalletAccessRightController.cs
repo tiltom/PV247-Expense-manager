@@ -10,7 +10,7 @@ using ExpenseManager.Entity;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.DatabaseContexts;
-using ExpenseManager.Web.Models.WalletAcessRight;
+using ExpenseManager.Web.Models.WalletAccessRight;
 
 namespace ExpenseManager.Web.Controllers
 {

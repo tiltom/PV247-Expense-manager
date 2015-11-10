@@ -3,6 +3,10 @@ using ExpenseManager.Entity.Users;
 
 namespace ExpenseManager.Entity.Wallets
 {
+    /// <summary>
+    ///     Entity representing access rights to user <see cref="Wallet" />.
+    ///     Owner can allow other users to access his wallet with this entity
+    /// </summary>
     public class WalletAccessRight : BaseEntity
     {
         /// <summary>

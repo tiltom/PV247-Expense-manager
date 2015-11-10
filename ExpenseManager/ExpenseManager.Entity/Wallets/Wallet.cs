@@ -9,6 +9,11 @@ namespace ExpenseManager.Entity.Wallets
 {
     public class Wallet
     {
+        /// <summary>
+        ///     Entity representing wallet.
+        ///     There is just single wallet per user and it should be created automatically with user.
+        ///     Owner can change access rights to his wallet which are represented by <see cref="WalletAccessRight" />
+        /// </summary>
         public Wallet()
         {
             WalletAccessRights = new List<WalletAccessRight>();

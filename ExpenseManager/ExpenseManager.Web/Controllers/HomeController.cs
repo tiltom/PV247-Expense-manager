@@ -3,7 +3,7 @@
 namespace ExpenseManager.Web.Controllers
 {
     [RequireHttps]
-    public class HomeController : Controller
+    public class HomeController : AbstractController
     {
         public ActionResult Index()
         {

@@ -10,7 +10,7 @@ using ExpenseManager.Web.Models.Category;
 using ExpenseManager.Web.Models.Transaction;
 using ExpenseManager.Web.Models.User;
 using ExpenseManager.Web.Models.Wallet;
-using ExpenseManager.Web.Models.WalletAcessRight;
+using ExpenseManager.Web.Models.WalletAccessRight;
 
 namespace ExpenseManager.Web
 {
