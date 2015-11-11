@@ -36,15 +36,21 @@ namespace ExpenseManager.Database.Seeding.Context
                 .WithMany(profile => profile.BudgetAccessRights)
                 .WillCascadeOnDelete(false);
 
-            //modelBuilder.Entity<WalletAccessRight>()
-            //    .HasRequired(right => right.UserProfile)
-            //    .WithMany(profile => profile.WalletAccessRights)
-            //    .WillCascadeOnDelete(false);
+            modelBuilder.Entity<WalletAccessRight>()
+                .HasRequired(right => right.Wallet)
+                .WithMany(w => w.WalletAccessRights)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Transaction>()
                 .HasRequired(transaction => transaction.Wallet)
                 .WithMany(wallet => wallet.Transactions)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Wallet>()
+                .HasRequired(w => w.Owner)
+                .WithOptional(o => o.PersonalWallet)
+                .Map(m => m.MapKey("Owner_Guid"))
+                .WillCascadeOnDelete(true);
         }
     }
 }
