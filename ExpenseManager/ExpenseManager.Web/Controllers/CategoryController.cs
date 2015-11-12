@@ -98,7 +98,9 @@ namespace ExpenseManager.Web.Controllers
                 // editing editable properties, TODO: refactor it
                 categoryToEdit.Description = category.Description;
                 categoryToEdit.IconPath = category.Icon;
-                categoryToEdit.Name = categoryToEdit.Name;
+                categoryToEdit.Name = category.Name;
+
+                await _db.AddOrUpdateAsync(categoryToEdit);
 
                 return this.RedirectToAction("Index");
             }
