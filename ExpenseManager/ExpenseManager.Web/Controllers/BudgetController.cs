@@ -112,7 +112,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // find budget by its Id
-            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
+            var budget = await this._db.Budgets.Where(b => b.Guid.Equals((Guid)id)).FirstOrDefaultAsync();
             
 
             // filling model from DB entity
@@ -182,14 +182,8 @@ namespace ExpenseManager.Web.Controllers
                 // TODO add error message
                 return this.RedirectToAction("Index");
             }
-
-            // find budget to delete by its Id
-            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
-
-            // delete connections to this budget in BudgetAccessRight table
-            budget.AccessRights.ToList().ForEach(r => this._db.DeteleAsync(r));
-
-            // removing budget
+            
+            var budget = await this._db.Budgets.Where(b => b.Guid.Equals((Guid)id)).FirstOrDefaultAsync();
             await this._db.DeteleAsync(budget);
 
             return this.RedirectToAction("Index");

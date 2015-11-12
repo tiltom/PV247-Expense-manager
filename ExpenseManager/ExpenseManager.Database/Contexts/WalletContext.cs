@@ -12,7 +12,7 @@ using System.Data.Entity.Migrations;
 
 namespace ExpenseManager.Database.Contexts
 {
-    internal class WalletContext : DbContext, IWalletContext, IWalletsProvider
+    internal class WalletContext : CurrencyContext, IWalletContext, IWalletsProvider
     {
         public WalletContext() 
             : base("DefaultConnection")
@@ -21,7 +21,6 @@ namespace ExpenseManager.Database.Contexts
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<WalletAccessRight> WalletAccessRights { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
-        public DbSet<Currency> Currencies { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
 
         IQueryable<Wallet> IWalletsProvider.Wallets
@@ -48,14 +47,6 @@ namespace ExpenseManager.Database.Contexts
             get
             {
                 return UserProfiles;
-            }
-        }
-
-        IQueryable<Currency> ICurrenciesProvider.Currencies
-        {
-            get
-            {
-                return Currencies;
             }
         }
 
@@ -143,34 +134,6 @@ namespace ExpenseManager.Database.Contexts
 
             await SaveChangesAsync();
             return new DeletedEntity<UserProfile>(deletedUserProfile);
-        }
-
-        public async Task<bool> AddOrUpdateAsync(Currency entity)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            var existingCurrency = entity.Guid == Guid.Empty
-                ? null
-                : await Currencies.FindAsync(entity.Guid);
-
-            Currencies.AddOrUpdate(x => x.Guid, entity);
-
-            await SaveChangesAsync();
-            return existingCurrency == null;
-        }
-
-        public async Task<DeletedEntity<Currency>> DeteleAsync(Currency entity)
-        {
-            var currencyToDelete = entity.Guid == Guid.Empty
-                ? null
-                : await Currencies.FindAsync(entity.Guid);
-            var deletedCurrency = currencyToDelete == null
-                ? null
-                : Currencies.Remove(currencyToDelete);
-
-            await SaveChangesAsync();
-            return new DeletedEntity<Currency>(deletedCurrency);
         }
     }
 }

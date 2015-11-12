@@ -12,12 +12,11 @@ using System.Threading.Tasks;
 
 namespace ExpenseManager.Database.Contexts
 {
-    internal interface ITransactionContext
+    internal interface ITransactionContext : ICurrencyContext
     {
         DbSet<Transaction> Transactions { get; set; }
         DbSet<Wallet> Wallets { get; set; }
         DbSet<Budget> Budgets { get; set; }
-        DbSet<Currency> Currencies { get; set; }
         DbSet<Category> Categories { get; set; }
         DbSet<RepeatableTransaction> RepeatableTransactions { get; set; }
     }

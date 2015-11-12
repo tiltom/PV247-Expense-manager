@@ -11,6 +11,8 @@ using ExpenseManager.Entity.Users;
 using ExpenseManager.Web.DatabaseContexts;
 using Microsoft.AspNet.Identity;
 using ExpenseManager.Database.Contexts;
+using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.Factory;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -50,12 +52,13 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>WalletId</returns>
         protected async Task<Guid> GetUserWalletId()
         {
-            var userId = HttpContext.User.Identity.GetUserId();
+            var profileId = await CurrentProfileId();
+            IWalletsProvider walletsProvider = ProvidersFactory.GetNewWalletsProviders();
             return
                 await
-                    this.db.Users.Where(u => u.Id == userId)
-                        .Select(u => u.Profile.PersonalWallet.Guid)
-                        .FirstOrDefaultAsync();
+                    walletsProvider.Wallets.Where(w => w.Owner.Guid == profileId)
+                    .Select(w => w.Guid)
+                    .FirstOrDefaultAsync();
         }
 
         /// <summary>

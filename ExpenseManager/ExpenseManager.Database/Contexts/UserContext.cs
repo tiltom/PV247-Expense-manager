@@ -6,6 +6,8 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
 using System;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using ExpenseManager.Entity.Transactions;
+using ExpenseManager.Entity.Budgets;
 
 namespace ExpenseManager.Database.Contexts
 {
@@ -28,8 +30,29 @@ namespace ExpenseManager.Database.Contexts
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
-            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+            //modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+            //modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+
+            modelBuilder.Entity<BudgetAccessRight>()
+                .HasRequired(right => right.UserProfile)
+                .WithMany(profile => profile.BudgetAccessRights)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<WalletAccessRight>()
+                .HasRequired(right => right.Wallet)
+                .WithMany(w => w.WalletAccessRights)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Transaction>()
+                .HasRequired(transaction => transaction.Wallet)
+                .WithMany(wallet => wallet.Transactions)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Wallet>()
+                .HasRequired(w => w.Owner)
+                .WithOptional(o => o.PersonalWallet)
+                .Map(m => m.MapKey("Owner_Guid"))
+                .WillCascadeOnDelete(true);
         }
     }
 }

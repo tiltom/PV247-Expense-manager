@@ -10,11 +10,10 @@ using System.Threading.Tasks;
 
 namespace ExpenseManager.Database.Contexts
 {
-    internal interface IUserContext
+    internal interface IUserContext : ICurrencyContext
     {
         DbSet<UserProfile> UserProfiles { get; set; }
         DbSet<Wallet> Wallets { get; set; }
-        DbSet<Currency> Currencies { get; set; }
         DbSet<WalletAccessRight> WalletAccessRights { get; set; }
     }
 }

@@ -58,6 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contexts\CurrencyContext.cs" />
+    <Compile Include="Contexts\ICurrencyContext.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="common\UserIdentity.cs" />
     <Compile Include="Contexts\BudgetContext.cs" />

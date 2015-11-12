@@ -1,6 +1,5 @@
 ﻿using System.Data.Entity;
 using ExpenseManager.Entity.Budgets;
-using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Providers;
@@ -14,7 +13,7 @@ using ExpenseManager.Entity.Wallets;
 
 namespace ExpenseManager.Database.Contexts
 {
-    internal class BudgetContext : DbContext, IBudgetContext, IBudgetsProvider
+    internal class BudgetContext : CurrencyContext, IBudgetContext, IBudgetsProvider
     {
         public BudgetContext()
             : base("DefaultConnection")
@@ -24,7 +23,7 @@ namespace ExpenseManager.Database.Contexts
 
         public DbSet<Budget> Budgets { get; set; }
 
-        public DbSet<Currency> Currencies { get; set; }
+        
 
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
@@ -41,10 +40,7 @@ namespace ExpenseManager.Database.Contexts
         {
             get
             {
-                return BudgetAccessRights
-                    .Include(budgetAccessRight => budgetAccessRight.Budget)
-                    .Include(BudgetAccessRight => BudgetAccessRight.Permission)
-                    .Include(BudgetAccessRight => BudgetAccessRight.UserProfile);
+                return BudgetAccessRights;
             }
         }
 
@@ -75,8 +71,9 @@ namespace ExpenseManager.Database.Contexts
             var budgetToDelete = entity.Guid == Guid.Empty
                 ? null
                 : await Budgets.FindAsync(entity.Guid);
+            
+            BudgetAccessRights.RemoveRange(budgetToDelete.AccessRights);
 
-            budgetToDelete.Transactions.Clear();
             var deletedBudget = budgetToDelete == null
                 ? null
                 : Budgets.Remove(budgetToDelete);

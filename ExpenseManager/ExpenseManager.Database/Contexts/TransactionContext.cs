@@ -1,14 +1,11 @@
 ﻿using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
-using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Wallets;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ExpenseManager.Entity.Providers.infrastructure;
 using System.Data.Entity.Migrations;
@@ -16,7 +13,7 @@ using ExpenseManager.Entity.Users;
 
 namespace ExpenseManager.Database.Contexts
 {
-    internal class TransactionContext : DbContext, ITransactionContext, ITransactionsProvider
+    internal class TransactionContext : CurrencyContext, ITransactionContext, ITransactionsProvider
     {
         public TransactionContext()
             : base("DefaultConnection")
@@ -25,7 +22,6 @@ namespace ExpenseManager.Database.Contexts
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Budget> Budgets { get; set; }
-        public DbSet<Currency> Currencies { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<RepeatableTransaction> RepeatableTransactions { get; set; }
 
@@ -65,19 +61,14 @@ namespace ExpenseManager.Database.Contexts
         {
             get
             {
-                throw new NotImplementedException();
+                return WalletAccessRights
+                    .Include(war => war.Wallet)
+                    .Include(war => war.Permission)
+                    .Include(war => war.UserProfile);
             }
         }
 
         public IQueryable<UserProfile> UserProfiles
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        IQueryable<Currency> ICurrenciesProvider.Currencies
         {
             get
             {
@@ -236,16 +227,6 @@ namespace ExpenseManager.Database.Contexts
         }
 
         public Task<DeletedEntity<UserProfile>> DeteleAsync(UserProfile entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> AddOrUpdateAsync(Currency entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DeletedEntity<Currency>> DeteleAsync(Currency entity)
         {
             throw new NotImplementedException();
         }

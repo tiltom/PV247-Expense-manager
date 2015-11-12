@@ -19,6 +19,7 @@ namespace ExpenseManager.Web.Controllers
     {
         private static string _walletId;
         private readonly ITransactionsProvider _db = ProvidersFactory.GetNewTransactionsProviders();
+        private readonly IWalletsProvider walletsProvider = ProvidersFactory.GetNewWalletsProviders();
 
 
         /// <summary>
@@ -456,7 +457,7 @@ namespace ExpenseManager.Web.Controllers
         {
             var id = await this.CurrentProfileId();
             return
-                await this._db.WalletAccessRights.Where(
+                await this.walletsProvider.WalletAccessRights.Where(
                     user => user.Permission >= PermissionEnum.Read && user.UserProfile.Guid == id)
                     .Select(
                         wallet => new SelectListItem {Value = wallet.Wallet.Guid.ToString(), Text = wallet.Wallet.Name})
