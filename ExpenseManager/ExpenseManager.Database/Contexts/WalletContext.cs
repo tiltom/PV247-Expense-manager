@@ -37,7 +37,6 @@ namespace ExpenseManager.Database.Contexts
             {
                 return WalletAccessRights
                     .Include(war => war.Wallet)
-                    .Include(war => war.Permission)
                     .Include(war => war.UserProfile);
             }
         }

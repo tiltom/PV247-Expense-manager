@@ -45,21 +45,6 @@ namespace ExpenseManager.Web.Controllers
             var userId = HttpContext.User.Identity.GetUserId();
             return await this.db.Users.Where(u => u.Id == userId).Select(u => u.Profile.Guid).FirstOrDefaultAsync();
         }
-        
-        /// <summary>
-        ///     Gets id of Wallet for currently logged UserProfile
-        /// </summary>
-        /// <returns>WalletId</returns>
-        protected async Task<Guid> GetUserWalletId()
-        {
-            var profileId = await CurrentProfileId();
-            IWalletsProvider walletsProvider = ProvidersFactory.GetNewWalletsProviders();
-            return
-                await
-                    walletsProvider.Wallets.Where(w => w.Owner.Guid == profileId)
-                    .Select(w => w.Guid)
-                    .FirstOrDefaultAsync();
-        }
 
         /// <summary>
         ///     Gets the default currency

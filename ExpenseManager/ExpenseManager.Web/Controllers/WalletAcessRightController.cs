@@ -37,12 +37,17 @@ namespace ExpenseManager.Web.Controllers
         /// <returns></returns>
         public async Task<ActionResult> Create()
         {
+            var profileId = await CurrentProfileId();
+            var walletId = await db.Wallets
+                .Where(w => w.Owner.Guid == profileId)
+                .Select(w => w.Guid)
+                .FirstOrDefaultAsync();
             return
                 this.View(await this.ConvertEntityToModelWithComboOptions(new WalletAccessRight
                 {
                     Wallet = new Wallet
                     {
-                        Guid = await this.GetUserWalletId()
+                        Guid = walletId
                     },
                     UserProfile = new UserProfile()
                 }));
@@ -122,7 +127,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var walletAccessRight = await this.db.WalletAccessRights.Where(war => war.Guid.Equals((Guid)id)).FirstOrDefaultAsync();
+            var walletAccessRight = await this.db.WalletAccessRights.Where(war => war.Guid.Equals(id)).FirstOrDefaultAsync();
             if (walletAccessRight == null)
             {
                 return this.HttpNotFound();
@@ -210,8 +215,8 @@ namespace ExpenseManager.Web.Controllers
                     this.db.UserProfiles
                         .Where(
                             u =>
-                                u.WalletAccessRights.All(war => !war.Wallet.Owner.Guid.Equals(currrentUserId)) ||
-                                u.Guid.Equals((Guid)userId))
+                                u.WalletAccessRights.All(war => war.Wallet.Owner.Guid != currrentUserId) ||
+                                u.Guid == userId)
                         .Select(
                             user =>
                                 new SelectListItem

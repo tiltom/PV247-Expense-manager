@@ -486,7 +486,12 @@ namespace ExpenseManager.Web.Controllers
         /// <returns></returns>
         private async Task<string> GetCurrentWallet()
         {
-            return _walletId ?? (_walletId = (await this.GetUserWalletId()).ToString());
+            var profileId = await CurrentProfileId();
+            var currentUserWallet = await
+                    walletsProvider.Wallets.Where(w => w.Owner.Guid == profileId)
+                    .Select(w => w.Guid)
+                    .FirstOrDefaultAsync();
+            return _walletId ?? (_walletId = currentUserWallet.ToString());
         }
     }
 }
