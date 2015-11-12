@@ -1,4 +1,4 @@
-﻿using ExpenseManager.Database.common;
+﻿using ExpenseManager.Database.Common;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;

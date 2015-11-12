@@ -8,8 +8,7 @@ using AutoMapper;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
-using ExpenseManager.Database.common;
-using ExpenseManager.Entity.Users;
+using ExpenseManager.Database.Common;
 using ExpenseManager.Entity.Wallets;
 
 namespace ExpenseManager.Web

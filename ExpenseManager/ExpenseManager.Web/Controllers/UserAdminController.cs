@@ -8,12 +8,11 @@ using System.Web;
 using System.Web.Mvc;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
-using ExpenseManager.Web.Common;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity.Owin;
 using WebGrease.Css.Extensions;
-using ExpenseManager.Database.common;
+using ExpenseManager.Database.Common;
 
 namespace ExpenseManager.Web.Controllers
 {

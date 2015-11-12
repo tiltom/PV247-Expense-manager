@@ -4,14 +4,13 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using ExpenseManager.Web.Common;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Role;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using WebGrease.Css.Extensions;
-using ExpenseManager.Database.common;
+using ExpenseManager.Database.Common;
 
 namespace ExpenseManager.Web.Controllers
 {

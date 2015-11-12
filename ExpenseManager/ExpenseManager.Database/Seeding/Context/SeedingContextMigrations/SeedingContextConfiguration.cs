@@ -1,4 +1,4 @@
-﻿using ExpenseManager.Database.common;
+﻿using ExpenseManager.Database.Common;
 using ExpenseManager.Database.Seeding.Seeds;
 using System;
 using System.Collections.Generic;

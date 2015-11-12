@@ -1,4 +1,4 @@
-﻿using ExpenseManager.Database.common;
+﻿using ExpenseManager.Database.Common;
 using ExpenseManager.Database.Contexts;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Users;

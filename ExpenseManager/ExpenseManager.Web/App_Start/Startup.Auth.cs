@@ -13,7 +13,7 @@ using Microsoft.Owin.Security.Facebook;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using ExpenseManager.Database.Contexts;
-using ExpenseManager.Database.common;
+using ExpenseManager.Database.Common;
 
 namespace ExpenseManager.Web
 {

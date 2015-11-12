@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using ExpenseManager.Web.Common;
-using ExpenseManager.Web.DatabaseContexts;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using ExpenseManager.Database.Contexts;
-using ExpenseManager.Database.common;
+using ExpenseManager.Database.Common;
 
 namespace ExpenseManager.Web
 {

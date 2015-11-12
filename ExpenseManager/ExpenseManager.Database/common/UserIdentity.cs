@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExpenseManager.Database.common
+namespace ExpenseManager.Database.Common
 {
     public class UserIdentity : IdentityUser
     {
