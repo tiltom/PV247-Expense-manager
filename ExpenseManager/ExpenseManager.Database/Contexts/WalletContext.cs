@@ -27,7 +27,7 @@ namespace ExpenseManager.Database.Contexts
         {
             get
             {
-                return Wallets;
+                return Wallets.Include(w => w.Owner);
             }
         }
 
@@ -45,7 +45,7 @@ namespace ExpenseManager.Database.Contexts
         {
             get
             {
-                return UserProfiles;
+                return UserProfiles.Include(up => up.PersonalWallet);
             }
         }
 
@@ -87,7 +87,6 @@ namespace ExpenseManager.Database.Contexts
             var existingWalleAccessRightt = entity.Guid == Guid.Empty
                 ? null
                 : await WalletAccessRights.FindAsync(entity.Guid);
-
             WalletAccessRights.AddOrUpdate(x => x.Guid, entity);
 
             await SaveChangesAsync();
