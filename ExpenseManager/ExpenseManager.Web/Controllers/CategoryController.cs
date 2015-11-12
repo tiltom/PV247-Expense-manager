@@ -75,7 +75,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // find category by its Id
-            var category = await this._db.Categories.Where(c => c.Guid.Equals(guid)).FirstOrDefaultAsync();
+            var category = await this._db.Categories.Where(c => c.Guid.Equals((Guid)guid)).FirstOrDefaultAsync();
 
             return this.View(this.CreateCategoryShowModelFromCategory(category));
         }
@@ -120,7 +120,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // find category to delete by its Id
-            var categoryToDelete = await this._db.Categories.Where(c => c.Guid.Equals(guid)).FirstOrDefaultAsync();
+            var categoryToDelete = await this._db.Categories.Where(c => c.Guid.Equals((Guid)guid)).FirstOrDefaultAsync();
 
             // get the default currency
             var defaultCategory = await this._db.Categories.FirstOrDefaultAsync();

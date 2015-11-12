@@ -122,7 +122,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var walletAccessRight = await this.db.WalletAccessRights.Where(war => war.Guid.Equals(id)).FirstOrDefaultAsync();
+            var walletAccessRight = await this.db.WalletAccessRights.Where(war => war.Guid.Equals((Guid)id)).FirstOrDefaultAsync();
             if (walletAccessRight == null)
             {
                 return this.HttpNotFound();
@@ -210,8 +210,8 @@ namespace ExpenseManager.Web.Controllers
                     this.db.UserProfiles
                         .Where(
                             u =>
-                                u.WalletAccessRights.All(war => war.Wallet.Owner.Guid != currrentUserId) ||
-                                u.Guid == userId)
+                                u.WalletAccessRights.All(war => !war.Wallet.Owner.Guid.Equals(currrentUserId)) ||
+                                u.Guid.Equals((Guid)userId))
                         .Select(
                             user =>
                                 new SelectListItem

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Transactions;
-using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Transaction;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Providers;
@@ -143,7 +142,7 @@ namespace ExpenseManager.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //find transaction by it's Id
-            var transaction = await this._db.Transactions.Where(t => t.Guid.Equals(id)).FirstOrDefaultAsync();
+            var transaction = await this._db.Transactions.Where(t => t.Guid.Equals((Guid)id)).FirstOrDefaultAsync();
             if (transaction == null)
             {
                 return this.HttpNotFound();
@@ -248,7 +247,7 @@ namespace ExpenseManager.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             //find transaction by its Id
-            var transaction = await this._db.Transactions.Where(t => t.Guid.Equals(id)).FirstOrDefaultAsync();
+            var transaction = await this._db.Transactions.Where(t => t.Guid.Equals((Guid)id)).FirstOrDefaultAsync();
             if (!await this.HasWritePermission(transaction))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
@@ -256,7 +255,7 @@ namespace ExpenseManager.Web.Controllers
             }
             //get if transaction is also in repeatable transactions
             var repeatableTransaction =
-                await this._db.RepeatableTransactions.FirstOrDefaultAsync(a => a.FirstTransaction.Guid == id);
+                await this._db.RepeatableTransactions.FirstOrDefaultAsync(a => a.FirstTransaction.Guid.Equals((Guid)id));
 
             if (repeatableTransaction != null) //check if transaction was not repeatable
             {
