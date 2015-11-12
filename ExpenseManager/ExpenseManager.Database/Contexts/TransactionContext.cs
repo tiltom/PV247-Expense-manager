@@ -142,7 +142,8 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : await Categories.FindAsync(entity.Guid);
 
-            categoryToDelete.Transactions.Clear();
+            Transactions.RemoveRange(categoryToDelete.Transactions);
+
             var deletedCategory = categoryToDelete == null
                 ? null
                 : Categories.Remove(categoryToDelete);
