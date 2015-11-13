@@ -61,9 +61,7 @@ namespace ExpenseManager.Database.Contexts
         {
             get
             {
-                return WalletAccessRights
-                    .Include(war => war.Wallet)
-                    .Include(war => war.UserProfile);
+                throw new NotImplementedException();
             }
         }
 
