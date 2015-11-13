@@ -5,11 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
-using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Currencies;
-using ExpenseManager.Entity.Users;
-using ExpenseManager.Web.DatabaseContexts;
 using Microsoft.AspNet.Identity;
+using ExpenseManager.Database.Contexts;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -31,7 +29,7 @@ namespace ExpenseManager.Web.Controllers
             .Select(permission => new SelectListItem {Value = permission.ToString(), Text = permission.ToString()})
             .ToList();
 
-        private readonly ApplicationDbContext db = new ApplicationDbContext();
+        private readonly UserContext db = new UserContext();
 
         /// <summary>
         ///     returns profile id of currenly logged user
@@ -44,30 +42,6 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Gets user profile of logged user
-        /// </summary>
-        /// <returns> return profile of logged user</returns>
-        protected async Task<UserProfile> CurrentProfile()
-        {
-            var userId = HttpContext.User.Identity.GetUserId();
-            return await this.db.Users.Where(u => u.Id == userId).Select(u => u.Profile).FirstOrDefaultAsync();
-        }
-
-        /// <summary>
-        ///     Gets id of Wallet for currently logged UserProfile
-        /// </summary>
-        /// <returns>WalletId</returns>
-        protected async Task<Guid> GetUserWalletId()
-        {
-            var userId = HttpContext.User.Identity.GetUserId();
-            return
-                await
-                    this.db.Users.Where(u => u.Id == userId)
-                        .Select(u => u.Profile.PersonalWallet.Guid)
-                        .FirstOrDefaultAsync();
-        }
-
-        /// <summary>
         ///     Gets the default currency
         /// </summary>
         /// <returns>Default currency</returns>
@@ -76,17 +50,6 @@ namespace ExpenseManager.Web.Controllers
             return
                 await
                     this.db.Currencies.FirstOrDefaultAsync();
-        }
-
-        /// <summary>
-        ///     Gets the default category
-        /// </summary>
-        /// <returns>Default category</returns>
-        protected async Task<Category> GetDefaultCategory()
-        {
-            return
-                await
-                    this.db.Categories.FirstOrDefaultAsync();
         }
 
         protected List<SelectListItem> GetPermissions()

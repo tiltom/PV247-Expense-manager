@@ -7,16 +7,17 @@ using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ExpenseManager.Entity;
+using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
-using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.WalletAccessRight;
 
 namespace ExpenseManager.Web.Controllers
 {
     public class WalletAccessRightController : AbstractController
     {
-        private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly IWalletsProvider _db = ProvidersFactory.GetNewWalletsProviders();
 
         /// <summary>
         /// </summary>
@@ -40,12 +41,17 @@ namespace ExpenseManager.Web.Controllers
         /// <returns></returns>
         public async Task<ActionResult> Create()
         {
+            var profileId = await this.CurrentProfileId();
+            var walletId = await this._db.Wallets
+                .Where(w => w.Owner.Guid == profileId)
+                .Select(w => w.Guid)
+                .FirstOrDefaultAsync();
             return
                 this.View(await this.ConvertEntityToModelWithComboOptions(new WalletAccessRight
                 {
                     Wallet = new Wallet
                     {
-                        Guid = await this.GetUserWalletId()
+                        Guid = walletId
                     },
                     UserProfile = new UserProfile()
                 }));
@@ -62,9 +68,8 @@ namespace ExpenseManager.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                this._db.WalletAccessRights.Add(
+                await this._db.AddOrUpdateAsync(
                     await this.ConvertModelToEntity(walletAccessRight, new WalletAccessRight {Guid = Guid.NewGuid()}));
-                await this._db.SaveChangesAsync();
                 return this.RedirectToAction("Index");
             }
             walletAccessRight.Users = await this.GetUsers(null);
@@ -81,7 +86,8 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>view</returns>
         public async Task<ActionResult> Edit(Guid? id)
         {
-            var walletAccessRight = await this._db.WalletAccessRights.FindAsync(id);
+            var walletAccessRight =
+                await this._db.WalletAccessRights.Where(war => war.Guid.Equals(id)).FirstOrDefaultAsync();
             if (walletAccessRight == null)
             {
                 return this.HttpNotFound();
@@ -100,11 +106,13 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(WalletAccessRightModel walletAccessRight)
         {
-            var walletAccessRightEntity = await this._db.WalletAccessRights.FindAsync(walletAccessRight.Id);
+            var walletAccessRightEntity =
+                await
+                    this._db.WalletAccessRights.Where(war => war.Guid.Equals(walletAccessRight.Id))
+                        .FirstOrDefaultAsync();
             if (ModelState.IsValid)
             {
                 await this.ConvertModelToEntity(walletAccessRight, walletAccessRightEntity);
-                await this._db.SaveChangesAsync();
                 return this.RedirectToAction("Index");
             }
             walletAccessRight.Users = await this.GetUsers(walletAccessRightEntity.UserProfile.Guid);
@@ -119,7 +127,8 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>view</returns>
         public async Task<ActionResult> Delete(Guid? id)
         {
-            var walletAccessRight = await this._db.WalletAccessRights.FindAsync(id);
+            var walletAccessRight =
+                await this._db.WalletAccessRights.Where(war => war.Guid.Equals(id)).FirstOrDefaultAsync();
             if (walletAccessRight == null)
             {
                 return this.HttpNotFound();
@@ -137,13 +146,14 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<RedirectToRouteResult> DeleteConfirmed(Guid id)
         {
-            var walletAccessRight = await this._db.WalletAccessRights.FindAsync(id);
+            var walletAccessRight =
+                await this._db.WalletAccessRights.Where(war => war.Guid.Equals(id)).FirstOrDefaultAsync();
             if (walletAccessRight.Permission.Equals(PermissionEnum.Owner))
             {
                 return this.RedirectToAction("Index");
             }
-            this._db.WalletAccessRights.Remove(walletAccessRight);
-            await this._db.SaveChangesAsync();
+
+            await this._db.DeteleAsync(walletAccessRight);
             return this.RedirectToAction("Index");
         }
 
@@ -153,7 +163,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (disposing)
             {
-                this._db.Dispose();
+                // this._db.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -167,7 +177,8 @@ namespace ExpenseManager.Web.Controllers
         {
             var defaultPermission = PermissionEnum.Read;
             Enum.TryParse(model.Permission, out defaultPermission);
-            entity.Wallet = await this._db.Wallets.FindAsync(model.WalletId);
+
+            entity.Wallet = await this._db.Wallets.Where(w => w.Guid == model.WalletId).FirstOrDefaultAsync();
             entity.UserProfile = await this._db.UserProfiles.FirstOrDefaultAsync(u => u.Guid == model.AssignedUserId);
             entity.Permission = defaultPermission;
             return entity;
@@ -191,13 +202,13 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>list of users</returns>
         private async Task<List<SelectListItem>> GetUsers(Guid? userId)
         {
-            var currrentUserId = await this.CurrentProfileId();
+            var currentUserId = await this.CurrentProfileId();
             return
                 await
                     this._db.UserProfiles
                         .Where(
                             u =>
-                                u.WalletAccessRights.All(war => war.Wallet.Owner.Guid != currrentUserId) ||
+                                u.WalletAccessRights.All(war => war.Wallet.Owner.Guid != currentUserId) ||
                                 u.Guid == userId)
                         .Select(
                             user =>

@@ -6,14 +6,15 @@ using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ExpenseManager.Entity.Categories;
-using ExpenseManager.Web.DatabaseContexts;
+using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.Category;
 
 namespace ExpenseManager.Web.Controllers
 {
     public class CategoryController : AbstractController
     {
-        private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly ITransactionsProvider _db = ProvidersFactory.GetNewTransactionsProviders();
 
         /// <summary>
         ///     Shows all existing categories.
@@ -50,9 +51,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 var newCategory = Mapper.Map<Category>(category);
 
-                this._db.Categories.Add(newCategory);
-
-                await this._db.SaveChangesAsync();
+                await this._db.AddOrUpdateAsync(newCategory);
 
                 return this.RedirectToAction("Index");
             }
@@ -93,7 +92,8 @@ namespace ExpenseManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 // find category by its Id from model
-                var categoryToEdit = await this._db.Categories.FindAsync(category.Guid);
+                var categoryToEdit =
+                    await this._db.Categories.Where(c => c.Guid.Equals(category.Guid)).FirstOrDefaultAsync();
 
                 // editing editable properties, TODO: refactor this
                 categoryToEdit.Description = category.Description;
@@ -101,7 +101,8 @@ namespace ExpenseManager.Web.Controllers
                 categoryToEdit.Name = category.Name;
                 categoryToEdit.Type = category.Type;
 
-                await this._db.SaveChangesAsync();
+
+                await this._db.AddOrUpdateAsync(categoryToEdit);
 
                 return this.RedirectToAction("Index");
             }
@@ -117,7 +118,8 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Delete(Guid? guid)
         {
             // find category to delete by its Id
-            var categoryToDelete = await this._db.Categories.FindAsync(guid);
+            var categoryToDelete =
+                await this._db.Categories.Where(c => c.Guid.Equals((Guid) guid)).FirstOrDefaultAsync();
 
             if (categoryToDelete == null)
             {
@@ -125,14 +127,14 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // get the default category
-            var defaultCategory = await this.GetDefaultCategory();
+            var defaultCategory = await this._db.Categories.FirstOrDefaultAsync();
+
             // delete connections to this category in Transactions table and set the category to Default
             categoryToDelete.Transactions.ToList()
                 .ForEach(t => t.Category = defaultCategory);
 
             // delete the category
-            this._db.Categories.Remove(categoryToDelete);
-            await this._db.SaveChangesAsync();
+            await this._db.DeteleAsync(categoryToDelete);
 
             return this.RedirectToAction("Index");
         }
@@ -143,7 +145,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (disposing)
             {
-                this._db.Dispose();
+                //this._db.Dispose();
             }
             base.Dispose(disposing);
         }

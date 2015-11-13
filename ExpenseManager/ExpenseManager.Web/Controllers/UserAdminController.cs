@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using ExpenseManager.Database.Common;
+using ExpenseManager.Database.Contexts;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
-using ExpenseManager.Web.Common;
-using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity.Owin;
@@ -286,7 +286,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.HttpNotFound();
             }
 
-            var context = HttpContext.GetOwinContext().Get<ApplicationDbContext>();
+            var context = HttpContext.GetOwinContext().Get<UserContext>();
             context.UserProfiles.Remove(user.Profile);
             var result = await UserManager.DeleteAsync(user);
             if (!result.Succeeded)

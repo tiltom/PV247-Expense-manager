@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ExpenseManager.Entity</RootNamespace>
     <AssemblyName>ExpenseManager.Entity</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -44,6 +44,22 @@
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
     <Compile Include="Enums\CategoryType.cs" />
+    <Compile Include="Providers\Factory\EmptyBudgetsProvider.cs" />
+    <Compile Include="Providers\Factory\EmptyTransactionsProvider.cs" />
+    <Compile Include="Providers\Factory\EmptyUserProfileProvider.cs" />
+    <Compile Include="Providers\Factory\EmptyWalletsProvider.cs" />
+    <Compile Include="Providers\Factory\ProvidersFactory.cs" />
+    <Compile Include="Providers\IBudgetAccessRightsProvider.cs" />
+    <Compile Include="Providers\IBudgetsProvider.cs" />
+    <Compile Include="Providers\ICategoriesProvider.cs" />
+    <Compile Include="Providers\ICurrenciesProvider.cs" />
+    <Compile Include="Providers\Infrastructure\DeletedEntity.cs" />
+    <Compile Include="Providers\Infrastructure\IAddOrUpdateDeleteEntityProvider.cs" />
+    <Compile Include="Providers\IRepeatableTransactionsProvider.cs" />
+    <Compile Include="Providers\ITransactionsProvider.cs" />
+    <Compile Include="Providers\IUserProfilesProvider.cs" />
+    <Compile Include="Providers\IWalletAccessRightsProvider.cs" />
+    <Compile Include="Providers\IWalletsProvider.cs" />
     <Compile Include="Wallets\WalletAccessRight.cs" />
     <Compile Include="Budgets\BudgetAccessRight.cs" />
     <Compile Include="Budgets\Budget.cs" />
@@ -56,9 +72,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Wallets\Wallet.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

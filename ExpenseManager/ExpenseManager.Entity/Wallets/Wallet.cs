@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Transactions;
@@ -7,7 +6,7 @@ using ExpenseManager.Entity.Users;
 
 namespace ExpenseManager.Entity.Wallets
 {
-    public class Wallet
+    public class Wallet : BaseEntity
     {
         /// <summary>
         ///     Entity representing wallet.
@@ -19,9 +18,6 @@ namespace ExpenseManager.Entity.Wallets
             WalletAccessRights = new List<WalletAccessRight>();
             Transactions = new List<Transaction>();
         }
-
-        [Key]
-        public Guid Guid { get; set; }
 
         /// <summary>
         ///     Name of wallet

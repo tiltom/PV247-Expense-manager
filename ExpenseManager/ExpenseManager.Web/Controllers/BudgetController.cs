@@ -8,7 +8,8 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
-using ExpenseManager.Web.DatabaseContexts;
+using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.Budget;
 
 namespace ExpenseManager.Web.Controllers
@@ -16,7 +17,7 @@ namespace ExpenseManager.Web.Controllers
     [Authorize]
     public class BudgetController : AbstractController
     {
-        private readonly ApplicationDbContext _db = new ApplicationDbContext(); // instance of DB context
+        private readonly IBudgetsProvider _db = ProvidersFactory.GetNewBudgetsProviders();
 
         /// <summary>
         ///     Shows all budgets for the current UserProfile.
@@ -78,7 +79,7 @@ namespace ExpenseManager.Web.Controllers
             var creator = await this._db.UserProfiles.FirstOrDefaultAsync(user => user.Guid == userId);
 
             // creating new Budget by filling it from model
-            this._db.Budgets.Add(new Budget
+            await this._db.AddOrUpdateAsync(new Budget
             {
                 Name = model.Name,
                 StartDate = model.StartDate,
@@ -98,8 +99,6 @@ namespace ExpenseManager.Web.Controllers
                     }
             });
 
-            await this._db.SaveChangesAsync();
-
             return this.RedirectToAction("Index");
         }
 
@@ -111,7 +110,9 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Edit(Guid? id)
         {
             // find budget by its Id
-            var budget = await this._db.Budgets.FirstOrDefaultAsync(x => x.Guid == id);
+
+            var budget = await this._db.Budgets.Where(b => b.Guid == id).FirstOrDefaultAsync();
+
 
             if (budget == null)
             {
@@ -144,7 +145,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // find budget by its Id from model
-            var budget = await this._db.Budgets.FindAsync(model.Guid);
+            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(model.Guid)).FirstOrDefaultAsync();
 
             // editing editable properties, TODO: refactor it
             budget.Name = model.Name;
@@ -156,7 +157,7 @@ namespace ExpenseManager.Web.Controllers
             budget.AccessRights = budget.AccessRights;
             budget.Currency = budget.Currency;
 
-            await this._db.SaveChangesAsync();
+            await this._db.AddOrUpdateAsync(budget);
 
             // Add OK message
             return this.RedirectToAction("Index");
@@ -169,15 +170,18 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>Redirect to Index</returns>
         public async Task<ActionResult> Delete(Guid? id)
         {
+            if (id == null)
+            {
+                // TODO add error message
+                return this.RedirectToAction("Index");
+            }
             // find budget to delete by its Id
-            var budget = await this._db.Budgets.FindAsync(id);
-
-            // delete connections to this budget in BudgetAccessRight table
-            budget.AccessRights.ToList().ForEach(r => this._db.BudgetAccessRights.Remove(r));
-
+            var budget = await this._db.Budgets.Where(b => b.Guid.Equals((Guid) id)).FirstOrDefaultAsync();
+            // delete connections to this budget in BudgetAccessRight table -
+            // TODO inspect if cascade won't apply
+            // budget.AccessRights.ToList().ForEach(r => this._db.BudgetAccessRights.Remove(r));
             // removing budget
-            this._db.Budgets.Remove(budget);
-            await this._db.SaveChangesAsync();
+            await this._db.DeteleAsync(budget);
 
             return this.RedirectToAction("Index");
         }
@@ -188,7 +192,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (disposing)
             {
-                this._db.Dispose();
+                //this._db.Dispose();
             }
             base.Dispose(disposing);
         }

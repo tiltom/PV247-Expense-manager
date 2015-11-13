@@ -2,8 +2,6 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Configuration;
-using ExpenseManager.Web.Common;
-using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -12,6 +10,8 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Facebook;
 using Microsoft.Owin.Security.Google;
 using Owin;
+using ExpenseManager.Database.Contexts;
+using ExpenseManager.Database.Common;
 
 namespace ExpenseManager.Web
 {
@@ -21,7 +21,7 @@ namespace ExpenseManager.Web
         public void ConfigureAuth(IAppBuilder app)
         {
             // Configure the db context, UserProfile manager and signin manager to use a single instance per request
-            app.CreatePerOwinContext(ApplicationDbContext.Create);
+            app.CreatePerOwinContext(UserContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
             app.CreatePerOwinContext<ApplicationRoleManager>(ApplicationRoleManager.Create);
             app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using ExpenseManager.Database.Common;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Wallets;
-using ExpenseManager.Web.Common;
 using ExpenseManager.Web.Models.Budget;
 using ExpenseManager.Web.Models.BudgetAccessRight;
 using ExpenseManager.Web.Models.Category;

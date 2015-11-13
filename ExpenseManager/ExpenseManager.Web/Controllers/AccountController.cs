@@ -6,13 +6,13 @@ using System.Web.Mvc;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
-using ExpenseManager.Web.Common;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Facebook;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using ExpenseManager.Database.Common;
 
 namespace ExpenseManager.Web.Controllers
 {

@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper.QueryableExtensions;
-using ExpenseManager.Web.DatabaseContexts;
+using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.Wallet;
 
 namespace ExpenseManager.Web.Controllers
@@ -12,7 +13,8 @@ namespace ExpenseManager.Web.Controllers
     [Authorize]
     public class WalletController : AbstractController
     {
-        private readonly ApplicationDbContext _db = new ApplicationDbContext();
+        private readonly IWalletsProvider _db = ProvidersFactory.GetNewWalletsProviders();
+
 
         /// <summary>
         ///     Address: GET: Wallets/Edit
@@ -48,11 +50,11 @@ namespace ExpenseManager.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var walletEntity = this._db.Wallets.Find(wallet.Guid);
+                var walletEntity = await this._db.Wallets.Where(w => w.Guid == wallet.Guid).FirstOrDefaultAsync();
                 walletEntity.Owner = walletEntity.Owner;
-                walletEntity.Currency = this._db.Currencies.Find(wallet.CurrencyId);
+                walletEntity.Currency =
+                    await this._db.Currencies.Where(c => c.Guid == wallet.CurrencyId).FirstOrDefaultAsync();
                 walletEntity.Name = wallet.Name;
-                await this._db.SaveChangesAsync();
                 return this.RedirectToAction("Index", "Manage");
             }
             wallet.Currencies = await this.GetCurrencies();
@@ -65,7 +67,8 @@ namespace ExpenseManager.Web.Controllers
         {
             if (disposing)
             {
-                this._db.Dispose();
+                // TODO commented out ? why ?
+                //this.db.Dispose();
             }
             base.Dispose(disposing);
         }
