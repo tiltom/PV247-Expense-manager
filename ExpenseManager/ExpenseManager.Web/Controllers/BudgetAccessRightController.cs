@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
-using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.BudgetAccessRight;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;

@@ -3,7 +3,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Wallet;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;

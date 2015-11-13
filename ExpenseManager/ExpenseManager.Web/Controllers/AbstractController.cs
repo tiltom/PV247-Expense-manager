@@ -5,14 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
-using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Currencies;
-using ExpenseManager.Entity.Users;
-using ExpenseManager.Web.DatabaseContexts;
 using Microsoft.AspNet.Identity;
 using ExpenseManager.Database.Contexts;
-using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Providers.Factory;
 
 namespace ExpenseManager.Web.Controllers
 {

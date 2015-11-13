@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ExpenseManager.Entity.Categories;
-using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.Category;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Providers;

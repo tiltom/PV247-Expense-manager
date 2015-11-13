@@ -8,7 +8,6 @@ using System.Web.Mvc;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
-using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Models.WalletAcessRight;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;

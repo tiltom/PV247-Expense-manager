@@ -178,7 +178,6 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Binders\DecimalModelBinder.cs" />
-    <Compile Include="Common\UserIdentity.cs" />
     <Compile Include="Controllers\AbstractController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BudgetAccessRightController.cs" />
@@ -191,16 +190,9 @@
     <Compile Include="Controllers\UserAdminController.cs" />
     <Compile Include="Controllers\WalletAcessRightController.cs" />
     <Compile Include="Controllers\WalletController.cs" />
-    <Compile Include="DatabaseContexts\DatabaseInitializer.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="DatabaseContexts\ApplicationDbInitializer.cs" />
-    <Compile Include="Migrations\201510261559241_UserInterface.cs" />
-    <Compile Include="Migrations\201510261559241_UserInterface.Designer.cs">
-      <DependentUpon>201510261559241_UserInterface.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BudgetAccessRight\CreateBudgetAccessRightModel.cs" />
     <Compile Include="Models\BudgetAccessRight\EditBudgetAccessRightModel.cs" />
     <Compile Include="Models\BudgetAccessRight\ShowBudgetAccessRightModel.cs" />
@@ -216,7 +208,6 @@
     <Compile Include="Models\User\UserDetailViewModel.cs" />
     <Compile Include="Models\User\UserEditViewModel.cs" />
     <Compile Include="Helpers\ApplicationRoleManager.cs" />
-    <Compile Include="DatabaseContexts\ApplicationDbContext.cs" />
     <Compile Include="Models\User\ManageViewModels.cs" />
     <Compile Include="Models\Role\RoleViewModel.cs" />
     <Compile Include="Models\User\UserViewModel.cs" />
@@ -395,11 +386,6 @@
       <Project>{73A4FAB0-96F1-4DC9-92A8-2CC73B4EF776}</Project>
       <Name>ExpenseManager.Entity</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201510261559241_UserInterface.resx">
-      <DependentUpon>201510261559241_UserInterface.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

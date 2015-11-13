@@ -2,8 +2,6 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Configuration;
-using ExpenseManager.Web.Common;
-using ExpenseManager.Web.DatabaseContexts;
 using ExpenseManager.Web.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
