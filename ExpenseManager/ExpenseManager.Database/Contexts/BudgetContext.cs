@@ -1,14 +1,14 @@
-﻿using System.Data.Entity;
-using ExpenseManager.Entity.Budgets;
-using ExpenseManager.Entity.Users;
-using ExpenseManager.Entity.Transactions;
-using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Providers.infrastructure;
-using System;
+﻿using System;
+using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Data.Entity.Migrations;
+using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
+using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.infrastructure;
+using ExpenseManager.Entity.Transactions;
+using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 
 namespace ExpenseManager.Database.Contexts
@@ -19,37 +19,28 @@ namespace ExpenseManager.Database.Contexts
             : base("DefaultConnection")
         {
         }
+
         public DbSet<BudgetAccessRight> BudgetAccessRights { get; set; }
 
         public DbSet<Budget> Budgets { get; set; }
 
-        
 
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
 
         IQueryable<Budget> IBudgetsProvider.Budgets
         {
-            get
-            {
-                return Budgets;
-            }
+            get { return Budgets.Include(w => w.Creator); }
         }
 
         IQueryable<BudgetAccessRight> IBudgetAccessRightsProvider.BudgetAccessRights
         {
-            get
-            {
-                return BudgetAccessRights;
-            }
+            get { return BudgetAccessRights.Include(w => w.UserProfile).Include(w => w.Budget); }
         }
 
         IQueryable<UserProfile> IUserProfilesProvider.UserProfiles
         {
-            get
-            {
-                return UserProfiles;
-            }
+            get { return UserProfiles; }
         }
 
         public async Task<bool> AddOrUpdateAsync(Budget entity)
@@ -62,7 +53,7 @@ namespace ExpenseManager.Database.Contexts
                 : await Budgets.FindAsync(entity.Guid);
 
             Budgets.AddOrUpdate(x => x.Guid, entity);
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return existingBudget == null;
         }
 
@@ -71,14 +62,14 @@ namespace ExpenseManager.Database.Contexts
             var budgetToDelete = entity.Guid == Guid.Empty
                 ? null
                 : await Budgets.FindAsync(entity.Guid);
-            
+
             BudgetAccessRights.RemoveRange(budgetToDelete.AccessRights);
 
             var deletedBudget = budgetToDelete == null
                 ? null
                 : Budgets.Remove(budgetToDelete);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return new DeletedEntity<Budget>(deletedBudget);
         }
 
@@ -93,7 +84,7 @@ namespace ExpenseManager.Database.Contexts
 
             BudgetAccessRights.AddOrUpdate(x => x.Guid, entity);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return existingBudgetAccessRight == null;
         }
 
@@ -102,13 +93,42 @@ namespace ExpenseManager.Database.Contexts
             var budgetAccessRightToDelete = entity.Guid == Guid.Empty
                 ? null
                 : await BudgetAccessRights.FindAsync(entity.Guid);
-            
+
             var deletedBudgetAccessRight = budgetAccessRightToDelete == null
                 ? null
                 : BudgetAccessRights.Remove(budgetAccessRightToDelete);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return new DeletedEntity<BudgetAccessRight>(deletedBudgetAccessRight);
+        }
+
+        public async Task<bool> AddOrUpdateAsync(UserProfile entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            var existinguserProfile = entity.Guid == Guid.Empty
+                ? null
+                : await UserProfiles.FindAsync(entity.Guid);
+
+            UserProfiles.AddOrUpdate(x => x.Guid, entity);
+
+            await this.SaveChangesAsync();
+            return existinguserProfile == null;
+        }
+
+        public async Task<DeletedEntity<UserProfile>> DeteleAsync(UserProfile entity)
+        {
+            var userProfileToDelete = entity.Guid == Guid.Empty
+                ? null
+                : await UserProfiles.FindAsync(entity.Guid);
+
+            var deletedUserProfile = userProfileToDelete == null
+                ? null
+                : UserProfiles.Remove(userProfileToDelete);
+
+            await this.SaveChangesAsync();
+            return new DeletedEntity<UserProfile>(deletedUserProfile);
         }
 
         public Task<bool> AddOrUpdateAsync(Category entity)
@@ -139,35 +159,6 @@ namespace ExpenseManager.Database.Contexts
         public Task<DeletedEntity<WalletAccessRight>> DeteleAsync(WalletAccessRight entity)
         {
             throw new NotImplementedException();
-        }
-
-        public async Task<bool> AddOrUpdateAsync(UserProfile entity)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            var existinguserProfile = entity.Guid == Guid.Empty
-                ? null
-                : await UserProfiles.FindAsync(entity.Guid);
-
-            UserProfiles.AddOrUpdate(x => x.Guid, entity);
-
-            await SaveChangesAsync();
-            return existinguserProfile == null;
-        }
-
-        public async Task<DeletedEntity<UserProfile>> DeteleAsync(UserProfile entity)
-        {
-            var userProfileToDelete = entity.Guid == Guid.Empty
-                ? null
-                : await UserProfiles.FindAsync(entity.Guid);
-
-            var deletedUserProfile = userProfileToDelete == null
-                ? null
-                : UserProfiles.Remove(userProfileToDelete);
-
-            await SaveChangesAsync();
-            return new DeletedEntity<UserProfile>(deletedUserProfile);
         }
     }
 }

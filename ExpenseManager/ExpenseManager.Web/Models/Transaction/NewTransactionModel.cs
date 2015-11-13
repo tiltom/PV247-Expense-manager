@@ -39,21 +39,21 @@ namespace ExpenseManager.Web.Models.Transaction
         ///     Id of budget where transaction belongs
         /// </summary>
         [Display(Name = "Budget")]
-        public string BudgetId { get; set; }
+        public Guid? BudgetId { get; set; }
 
         /// <summary>
         ///     Id of currency which was used for transaction
         /// </summary>
         [Display(Name = "Currency")]
         [Required]
-        public string CurrencyId { get; set; }
+        public Guid CurrencyId { get; set; }
 
         /// <summary>
         ///     Id of category where transaction belongs
         /// </summary>
         [Display(Name = "Category")]
         [Required]
-        public string CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
 
         /// <summary>
         ///     Bool representing if transaction is repeatable

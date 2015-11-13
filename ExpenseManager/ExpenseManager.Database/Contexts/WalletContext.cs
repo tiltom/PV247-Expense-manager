@@ -1,23 +1,23 @@
-﻿using System.Data.Entity;
-using ExpenseManager.Entity.Currencies;
-using ExpenseManager.Entity.Users;
-using ExpenseManager.Entity.Wallets;
+﻿using System;
+using System.Data.Entity;
+using System.Data.Entity.Migrations;
+using System.Linq;
+using System.Threading.Tasks;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.infrastructure;
 using ExpenseManager.Entity.Transactions;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data.Entity.Migrations;
+using ExpenseManager.Entity.Users;
+using ExpenseManager.Entity.Wallets;
 
 namespace ExpenseManager.Database.Contexts
 {
     internal class WalletContext : CurrencyContext, IWalletContext, IWalletsProvider
     {
-        public WalletContext() 
+        public WalletContext()
             : base("DefaultConnection")
         {
         }
+
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<WalletAccessRight> WalletAccessRights { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
@@ -25,10 +25,7 @@ namespace ExpenseManager.Database.Contexts
 
         IQueryable<Wallet> IWalletsProvider.Wallets
         {
-            get
-            {
-                return Wallets.Include(w => w.Owner);
-            }
+            get { return Wallets.Include(w => w.Owner); }
         }
 
         IQueryable<WalletAccessRight> IWalletAccessRightsProvider.WalletAccessRights
@@ -43,10 +40,7 @@ namespace ExpenseManager.Database.Contexts
 
         IQueryable<UserProfile> IUserProfilesProvider.UserProfiles
         {
-            get
-            {
-                return UserProfiles.Include(up => up.PersonalWallet);
-            }
+            get { return UserProfiles.Include(up => up.PersonalWallet); }
         }
 
         public async Task<bool> AddOrUpdateAsync(Wallet entity)
@@ -60,7 +54,7 @@ namespace ExpenseManager.Database.Contexts
 
             Wallets.AddOrUpdate(x => x.Guid, entity);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return existingWallet == null;
         }
 
@@ -75,7 +69,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : Wallets.Remove(walletToDelete);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return new DeletedEntity<Wallet>(deletedWallet);
         }
 
@@ -89,7 +83,7 @@ namespace ExpenseManager.Database.Contexts
                 : await WalletAccessRights.FindAsync(entity.Guid);
             WalletAccessRights.AddOrUpdate(x => x.Guid, entity);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return existingWalleAccessRightt == null;
         }
 
@@ -102,7 +96,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : WalletAccessRights.Remove(walletAccessRightToDelete);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return new DeletedEntity<WalletAccessRight>(deletedWalletAccessRight);
         }
 
@@ -117,7 +111,7 @@ namespace ExpenseManager.Database.Contexts
 
             UserProfiles.AddOrUpdate(x => x.Guid, entity);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return existingUserProfile == null;
         }
 
@@ -130,8 +124,25 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : UserProfiles.Remove(userProfileToDelete);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return new DeletedEntity<UserProfile>(deletedUserProfile);
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+
+            modelBuilder.Entity<WalletAccessRight>()
+                .HasRequired(right => right.Wallet)
+                .WithMany(w => w.WalletAccessRights)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Wallet>()
+                .HasRequired(w => w.Owner)
+                .WithOptional(o => o.PersonalWallet)
+                .Map(m => m.MapKey("Owner_Guid"))
+                .WillCascadeOnDelete(true);
         }
     }
 }
