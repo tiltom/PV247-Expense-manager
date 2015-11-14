@@ -103,6 +103,10 @@ namespace ExpenseManager.Web.Controllers
                 {
                     ModelState.AddModelError("LastOccurrence", "Date of last occurrence must be set");
                 }
+                if (transaction.NextRepeat <= 0)
+                {
+                    ModelState.AddModelError("NextRepeat", "Frequency must be positive number");
+                }
             }
 
             if (ModelState.IsValid)
@@ -119,8 +123,9 @@ namespace ExpenseManager.Web.Controllers
 
                     {
                         FirstTransaction = transactionEntity,
-                        Frequency = transaction.Frequency,
-                        LastOccurence = transaction.LastOccurrence.GetValueOrDefault(),
+                        NextRepeat = transaction.NextRepeat,
+                        FrequencyType = transaction.FrequencyType,
+                        LastOccurrence = transaction.LastOccurrence.GetValueOrDefault(),
                         Guid = Guid.NewGuid()
                     };
                     await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
@@ -182,6 +187,10 @@ namespace ExpenseManager.Web.Controllers
                 {
                     ModelState.AddModelError("LastOccurrence", "Date of last occurrence must be set");
                 }
+                if (transaction.NextRepeat <= 0)
+                {
+                    ModelState.AddModelError("NextRepeat", "Frequency must be positive number");
+                }
             }
 
             //check if model is valid
@@ -209,8 +218,9 @@ namespace ExpenseManager.Web.Controllers
                         repeatableTransaction = new RepeatableTransaction
                         {
                             FirstTransaction = transactionEntity,
-                            Frequency = transaction.Frequency,
-                            LastOccurence = transaction.LastOccurrence.GetValueOrDefault(),
+                            NextRepeat = transaction.NextRepeat,
+                            FrequencyType = transaction.FrequencyType,
+                            LastOccurrence = transaction.LastOccurrence.GetValueOrDefault(),
                             Guid = Guid.NewGuid()
                         };
                         await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
@@ -218,8 +228,9 @@ namespace ExpenseManager.Web.Controllers
                     // if transaction exists in repeatable transactions in DB update it
                     else
                     {
-                        repeatableTransaction.Frequency = transaction.Frequency;
-                        repeatableTransaction.LastOccurence = transaction.LastOccurrence.GetValueOrDefault();
+                        repeatableTransaction.NextRepeat = transaction.NextRepeat;
+                        repeatableTransaction.FrequencyType = transaction.FrequencyType;
+                        repeatableTransaction.LastOccurrence = transaction.LastOccurrence.GetValueOrDefault();
                         await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
                     }
                 }
@@ -302,8 +313,9 @@ namespace ExpenseManager.Web.Controllers
             //check if budget was set to category in model
             if (model.BudgetId != null)
             {
+                var budgetId = model.BudgetId.GetValueOrDefault();
                 entity.Budget =
-                    await this._transactionsProvider.Budgets.Where(b => b.Guid == model.BudgetId).FirstOrDefaultAsync();
+                    await this._transactionsProvider.Budgets.Where(b => b.Guid == budgetId).FirstOrDefaultAsync();
             }
             entity.Currency =
                 await this._transactionsProvider.Currencies.Where(c => c.Guid == model.CurrencyId).FirstOrDefaultAsync();
@@ -337,19 +349,20 @@ namespace ExpenseManager.Web.Controllers
             else
             {
                 // TODO: REMOVE THESE SUPER UGLY TOSTRINGS JUST TEST
+                var budgetId = model.BudgetId.GetValueOrDefault();
                 entity.Budget =
                     await
-                        this._transactionsProvider.Budgets.Where(b => b.Guid.ToString().Equals(model.BudgetId))
+                        this._transactionsProvider.Budgets.Where(b => b.Guid.Equals(budgetId))
                             .FirstOrDefaultAsync();
             }
             // TODO: REMOVE THESE SUPER UGLY TOSTRINGS JUST TEST
             entity.Currency =
                 await
-                    this._transactionsProvider.Currencies.Where(c => c.Guid.ToString().Equals(model.CurrencyId))
+                    this._transactionsProvider.Currencies.Where(c => c.Guid.Equals(model.CurrencyId))
                         .FirstOrDefaultAsync();
             entity.Category =
                 await
-                    this._transactionsProvider.Categories.Where(c => c.Guid.ToString().Equals(model.CategoryId))
+                    this._transactionsProvider.Categories.Where(c => c.Guid.Equals(model.CategoryId))
                         .FirstOrDefaultAsync();
             return entity;
         }
@@ -377,8 +390,9 @@ namespace ExpenseManager.Web.Controllers
             if (repeatableTransaction != null)
             {
                 transactionModel.IsRepeatable = true;
-                transactionModel.Frequency = repeatableTransaction.Frequency;
-                transactionModel.LastOccurrence = repeatableTransaction.LastOccurence;
+                transactionModel.NextRepeat = repeatableTransaction.NextRepeat;
+                transactionModel.FrequencyType = repeatableTransaction.FrequencyType;
+                transactionModel.LastOccurrence = repeatableTransaction.LastOccurrence;
             }
 
             return transactionModel;

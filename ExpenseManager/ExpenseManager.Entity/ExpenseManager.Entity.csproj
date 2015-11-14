@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
     <Compile Include="Enums\CategoryType.cs" />
+    <Compile Include="Enums\FrequencyType.cs" />
     <Compile Include="Providers\Factory\EmptyBudgetsProvider.cs" />
     <Compile Include="Providers\Factory\EmptyTransactionsProvider.cs" />
     <Compile Include="Providers\Factory\EmptyUserProfileProvider.cs" />

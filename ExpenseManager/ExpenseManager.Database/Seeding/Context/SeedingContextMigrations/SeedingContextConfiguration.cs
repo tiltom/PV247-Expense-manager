@@ -14,6 +14,12 @@ namespace ExpenseManager.Database.Seeding.Context.SeedingContextMigrations
 
         protected override void Seed(SeedingContext context)
         {
+            //Drop everything before seeding otherwise we will have duplicitous data
+            context.Database.ExecuteSqlCommand("sp_MSForEachTable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'");
+            context.Database.ExecuteSqlCommand(
+                "sp_MSForEachTable 'IF OBJECT_ID(''?'') NOT IN (ISNULL(OBJECT_ID(''[dbo].[__MigrationHistory]''),0)) DELETE FROM ?'");
+            context.Database.ExecuteSqlCommand("EXEC sp_MSForEachTable 'ALTER TABLE ? CHECK CONSTRAINT ALL'");
+
             new CurrenciesSeed<SeedingContext>().Seed(context);
             new CategoriesSeed<SeedingContext>().Seed(context);
             new UsersSeed<SeedingContext>().Seed(context);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using ExpenseManager.Entity.Enums;
 
 namespace ExpenseManager.Web.Models.Transaction
 {
@@ -64,8 +65,14 @@ namespace ExpenseManager.Web.Models.Transaction
         /// <summary>
         ///     How often should transaction repeat
         /// </summary>
-        [DisplayFormat(DataFormatString = "{0:hh\\:mm}", ApplyFormatInEditMode = true)]
-        public TimeSpan Frequency { get; set; }
+        [Display(Name = "Frequency")]
+        public int NextRepeat { get; set; }
+
+        /// <summary>
+        ///     Type of repetition
+        /// </summary>
+        [Display(Name = "Repetition")]
+        public FrequencyType FrequencyType { get; set; }
 
         /// <summary>
         ///     Date until which transaction should repeat

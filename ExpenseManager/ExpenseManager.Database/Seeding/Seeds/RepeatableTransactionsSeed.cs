@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using ExpenseManager.Database.Contexts;
+using ExpenseManager.Entity.Enums;
 using ExpenseManager.Entity.Transactions;
 
 namespace ExpenseManager.Database.Seeding.Seeds
@@ -19,8 +20,9 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 new RepeatableTransaction
                 {
                     FirstTransaction = firstTransaction,
-                    Frequency = new TimeSpan(2, 0, 0),
-                    LastOccurence = new DateTime(2015, 10, 17)
+                    NextRepeat = 2,
+                    FrequencyType = FrequencyType.Monthly,
+                    LastOccurrence = new DateTime(2015, 10, 17)
                 }
             };
 
