@@ -8,9 +8,9 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
-using ExpenseManager.Web.Models.BudgetAccessRight;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Web.Models.BudgetAccessRight;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -44,7 +44,8 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Create(Guid id)
         {
             // find access rights to the budget
-            var budgetAccessRight = this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync().Result.AccessRights;
+            var budgetAccessRight =
+                this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync().Result.AccessRights;
 
             // save Guids of users with access rights to the List
             var usersList = budgetAccessRight.Select(item => item.UserProfile.Guid).ToList();
@@ -99,7 +100,8 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             // find BudgetAccessRight by its Id
-            var budgetAccessRight = await this._db.BudgetAccessRights.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
+            var budgetAccessRight =
+                await this._db.BudgetAccessRights.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
 
             // creating EditBudgetAccessRight model instance from BudgetAccessRight DB entity
             var model = Mapper.Map<EditBudgetAccessRightModel>(budgetAccessRight);
@@ -121,7 +123,8 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(model);
 
             // find BudgetAccessRight by its Id
-            var budgetAccessRight = await this._db.BudgetAccessRights.Where(b => b.Guid.Equals(model.Id)).FirstOrDefaultAsync();
+            var budgetAccessRight =
+                await this._db.BudgetAccessRights.Where(b => b.Guid.Equals(model.Id)).FirstOrDefaultAsync();
 
             // editing editable properties
             budgetAccessRight.Permission = model.Permission;
@@ -140,7 +143,8 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Delete(Guid id, Guid budgetId)
         {
             // find BudgetAccessRight by its Id
-            var budgetAccessRight = await this._db.BudgetAccessRights.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
+            var budgetAccessRight =
+                await this._db.BudgetAccessRights.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
             if (budgetAccessRight.Permission.Equals(PermissionEnum.Owner))
             {
                 return this.RedirectToAction("Index", new {id = budgetId});
@@ -159,7 +163,7 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="users">List of Guids of users with permission</param>
         /// <returns></returns>
-        private async Task<List<SelectListItem>> GetUsers(List<Guid> users)
+        private async Task<List<SelectListItem>> GetUsers(ICollection<Guid> users)
         {
             // Id of current user
             var currrentUserId = await this.CurrentProfileId();

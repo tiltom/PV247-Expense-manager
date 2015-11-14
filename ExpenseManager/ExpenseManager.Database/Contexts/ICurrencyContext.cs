@@ -1,5 +1,5 @@
-﻿using ExpenseManager.Entity.Currencies;
-using System.Data.Entity;
+﻿using System.Data.Entity;
+using ExpenseManager.Entity.Currencies;
 
 namespace ExpenseManager.Database.Contexts
 {

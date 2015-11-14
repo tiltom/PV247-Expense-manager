@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
@@ -17,74 +15,47 @@ namespace ExpenseManager.Entity.Providers.Factory
     {
         public IQueryable<BudgetAccessRight> BudgetAccessRights
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public IQueryable<Budget> Budgets
         {
-            get
-            {
-                return Enumerable.Empty<Budget>().AsQueryable();
-            }
+            get { return Enumerable.Empty<Budget>().AsQueryable(); }
         }
 
         public IQueryable<Category> Categories
         {
-            get
-            {
-                return Enumerable.Empty<Category>().AsQueryable();
-            }
+            get { return Enumerable.Empty<Category>().AsQueryable(); }
         }
 
         public IQueryable<Currency> Currencies
         {
-            get
-            {
-                return Enumerable.Empty<Currency>().AsQueryable();
-            }
+            get { return Enumerable.Empty<Currency>().AsQueryable(); }
         }
 
         public IQueryable<RepeatableTransaction> RepeatableTransactions
         {
-            get
-            {
-                return Enumerable.Empty<RepeatableTransaction>().AsQueryable();
-            }
+            get { return Enumerable.Empty<RepeatableTransaction>().AsQueryable(); }
         }
 
         public IQueryable<Transaction> Transactions
         {
-            get
-            {
-                return Enumerable.Empty<Transaction>().AsQueryable();
-            }
+            get { return Enumerable.Empty<Transaction>().AsQueryable(); }
         }
 
         public IQueryable<UserProfile> UserProfiles
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public IQueryable<WalletAccessRight> WalletAccessRights
         {
-            get
-            {
-                return Enumerable.Empty<WalletAccessRight>().AsQueryable();
-            }
+            get { return Enumerable.Empty<WalletAccessRight>().AsQueryable(); }
         }
 
         public IQueryable<Wallet> Wallets
         {
-            get
-            {
-                return Enumerable.Empty<Wallet>().AsQueryable();
-            }
+            get { return Enumerable.Empty<Wallet>().AsQueryable(); }
         }
 
         public async Task<bool> AddOrUpdateAsync(WalletAccessRight entity)

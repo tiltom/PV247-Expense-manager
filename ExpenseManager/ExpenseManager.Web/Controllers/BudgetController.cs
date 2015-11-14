@@ -107,7 +107,7 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns>View with model</returns>
-        public async Task<ActionResult> Edit(Guid? id)
+        public async Task<ActionResult> Edit(Guid id)
         {
             // find budget by its Id
 
@@ -168,15 +168,10 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="id">Id of budget to delete</param>
         /// <returns>Redirect to Index</returns>
-        public async Task<ActionResult> Delete(Guid? id)
+        public async Task<ActionResult> Delete(Guid id)
         {
-            if (id == null)
-            {
-                // TODO add error message
-                return this.RedirectToAction("Index");
-            }
             // find budget to delete by its Id
-            var budget = await this._db.Budgets.Where(b => b.Guid.Equals((Guid) id)).FirstOrDefaultAsync();
+            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
             // delete connections to this budget in BudgetAccessRight table -
             // TODO inspect if cascade won't apply
             // budget.AccessRights.ToList().ForEach(r => this._db.BudgetAccessRights.Remove(r));

@@ -1,16 +1,14 @@
-﻿using ExpenseManager.Database.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using ExpenseManager.Database.Common;
 using ExpenseManager.Database.Contexts;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExpenseManager.Database.Seeding.Seeds
 {
@@ -44,7 +42,6 @@ namespace ExpenseManager.Database.Seeding.Seeds
             {
                 var currency = context.Currencies.FirstOrDefault(c => c.Symbol == "Kč");
 
-                
 
                 var profile = new UserProfile
                 {
@@ -229,6 +226,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
             context.SaveChanges();
             //TODO End Remove
         }
+
         private static void CreateRole(RoleManager<IdentityRole> roleManager, string adminRoleName)
         {
             var role = roleManager.FindByName(adminRoleName);

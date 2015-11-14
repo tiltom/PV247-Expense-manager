@@ -1,71 +1,68 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExpenseManager.Entity.Providers.Factory
 {
     public static class ProvidersFactory
     {
-        private static Func<IBudgetsProvider> budgetsProviderCreator;
-        private static Func<ITransactionsProvider> transactionsProviderCreator;
-        private static Func<IUserProfilesProvider> userProfilesProviderCreator;
-        private static Func<IWalletsProvider> walletsProviderCreator;
+        private static Func<IBudgetsProvider> _budgetsProviderCreator;
+        private static Func<ITransactionsProvider> _transactionsProviderCreator;
+        private static Func<IUserProfilesProvider> _userProfilesProviderCreator;
+        private static Func<IWalletsProvider> _walletsProviderCreator;
 
         public static void RegisterBudgetsProvider<TProvider>()
             where TProvider : IBudgetsProvider, new()
         {
-            budgetsProviderCreator = () => new TProvider();
+            _budgetsProviderCreator = () => new TProvider();
         }
 
         public static void RegisterTrancastionsProvider<TProvider>()
             where TProvider : ITransactionsProvider, new()
         {
-            transactionsProviderCreator = () => new TProvider();
+            _transactionsProviderCreator = () => new TProvider();
         }
 
         public static void RegisterUserProfilesProvider<TProvider>()
             where TProvider : IUserProfilesProvider, new()
         {
-            userProfilesProviderCreator = () => new TProvider();
+            _userProfilesProviderCreator = () => new TProvider();
         }
+
         public static void RegisterWalletsProvider<TProvider>()
-           where TProvider : IWalletsProvider, new()
+            where TProvider : IWalletsProvider, new()
         {
-            walletsProviderCreator = () => new TProvider();
+            _walletsProviderCreator = () => new TProvider();
         }
 
         public static IBudgetsProvider GetNewBudgetsProviders()
         {
-            if (budgetsProviderCreator == null)
+            if (_budgetsProviderCreator == null)
                 return new EmptyBudgetsProvider();
 
-            return budgetsProviderCreator();
+            return _budgetsProviderCreator();
         }
 
         public static ITransactionsProvider GetNewTransactionsProviders()
         {
-            if (transactionsProviderCreator == null)
+            if (_transactionsProviderCreator == null)
                 return new EmptyTransactionsProvider();
 
-            return transactionsProviderCreator();
+            return _transactionsProviderCreator();
         }
 
         public static IUserProfilesProvider GetNewUserProfileProviders()
         {
-            if (userProfilesProviderCreator == null)
+            if (_userProfilesProviderCreator == null)
                 return new EmptyUserProfileProvider();
 
-            return userProfilesProviderCreator();
+            return _userProfilesProviderCreator();
         }
 
         public static IWalletsProvider GetNewWalletsProviders()
         {
-            if (walletsProviderCreator == null)
+            if (_walletsProviderCreator == null)
                 return new EmptyWalletsProvider();
 
-            return walletsProviderCreator();
+            return _walletsProviderCreator();
         }
     }
 }

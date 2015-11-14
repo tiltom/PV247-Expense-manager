@@ -66,7 +66,7 @@ namespace ExpenseManager.Web.Controllers
         /// <param name="guid"></param>
         /// <returns>View with model</returns>
         [HttpGet]
-        public async Task<ActionResult> Edit(Guid? guid)
+        public async Task<ActionResult> Edit(Guid guid)
         {
             // find category by its Id
             var category = await this._db.Categories.FirstOrDefaultAsync(x => x.Guid == guid);
@@ -115,11 +115,11 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="guid">Id of category to delete</param>
         /// <returns>Redirect to Index</returns>
-        public async Task<ActionResult> Delete(Guid? guid)
+        public async Task<ActionResult> Delete(Guid guid)
         {
             // find category to delete by its Id
             var categoryToDelete =
-                await this._db.Categories.Where(c => c.Guid.Equals((Guid) guid)).FirstOrDefaultAsync();
+                await this._db.Categories.Where(c => c.Guid.Equals(guid)).FirstOrDefaultAsync();
 
             if (categoryToDelete == null)
             {

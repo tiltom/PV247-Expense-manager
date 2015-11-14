@@ -1,9 +1,9 @@
-﻿using ExpenseManager.Database.Contexts;
-using ExpenseManager.Entity.Transactions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using ExpenseManager.Database.Contexts;
+using ExpenseManager.Entity.Transactions;
 
 namespace ExpenseManager.Database.Seeding.Seeds
 {

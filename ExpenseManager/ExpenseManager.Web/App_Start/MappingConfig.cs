@@ -24,7 +24,7 @@ namespace ExpenseManager.Web
                 .ForMember(view => view.AssignedUserId, options => options.MapFrom(entity => entity.UserProfile.Guid))
                 .ForMember(view => view.AssignedUserName,
                     options =>
-                        options.MapFrom(entity => entity.UserProfile.FirstName + " " + entity.UserProfile.LastName))
+                        options.MapFrom(entity => $"{entity.UserProfile.FirstName} {entity.UserProfile.LastName}"))
                 .ForMember(view => view.WalletId, options => options.MapFrom(entity => entity.Wallet.Guid));
 
             Mapper.CreateMap<Wallet, WalletEditModel>()
@@ -42,7 +42,7 @@ namespace ExpenseManager.Web
                 .ForMember(view => view.Id, options => options.MapFrom(entity => entity.Id))
                 .ForMember(view => view.Email, options => options.MapFrom(entity => entity.Email))
                 .ForMember(view => view.UserName,
-                    options => options.MapFrom(entity => entity.Profile.FirstName + " " + entity.Profile.LastName));
+                    options => options.MapFrom(entity => $"{entity.Profile.FirstName} {entity.Profile.LastName}"));
 
             Mapper.CreateMap<UserIdentity, UserEditViewModel>()
                 .ForMember(view => view.Id, options => options.MapFrom(entity => entity.Id))
@@ -54,7 +54,7 @@ namespace ExpenseManager.Web
                 .ForMember(view => view.AssignedUserId, options => options.MapFrom(entity => entity.UserProfile.Guid))
                 .ForMember(view => view.AssignedUserName,
                     options =>
-                        options.MapFrom(entity => entity.UserProfile.FirstName + " " + entity.UserProfile.LastName))
+                        options.MapFrom(entity => $"{entity.UserProfile.FirstName} {entity.UserProfile.LastName}"))
                 .ForMember(view => view.Permission, options => options.MapFrom(entity => entity.Permission))
                 .ForMember(view => view.BudgetId, options => options.MapFrom(entity => entity.Budget.Guid))
                 .ForMember(view => view.Id, options => options.MapFrom(entity => entity.Guid));
@@ -62,7 +62,7 @@ namespace ExpenseManager.Web
             Mapper.CreateMap<BudgetAccessRight, ShowBudgetAccessRightModel>()
                 .ForMember(view => view.AssignedUserName,
                     options =>
-                        options.MapFrom(entity => entity.UserProfile.FirstName + " " + entity.UserProfile.LastName))
+                        options.MapFrom(entity => $"{entity.UserProfile.FirstName} {entity.UserProfile.LastName}"))
                 .ForMember(view => view.Id, options => options.MapFrom(entity => entity.Guid))
                 .ForMember(view => view.Permission, options => options.MapFrom(entity => entity.Permission));
 

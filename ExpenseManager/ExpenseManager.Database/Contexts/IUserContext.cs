@@ -1,12 +1,6 @@
-﻿using ExpenseManager.Entity.Currencies;
+﻿using System.Data.Entity;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExpenseManager.Database.Contexts
 {

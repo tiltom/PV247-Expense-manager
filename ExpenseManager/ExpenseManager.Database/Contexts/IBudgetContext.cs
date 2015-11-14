@@ -1,14 +1,7 @@
-﻿using ExpenseManager.Entity.Budgets;
-using ExpenseManager.Entity.Categories;
-using ExpenseManager.Entity.Currencies;
+﻿using System.Data.Entity;
+using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Users;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExpenseManager.Database.Contexts
 {

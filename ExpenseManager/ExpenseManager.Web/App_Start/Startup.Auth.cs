@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web.Configuration;
+using ExpenseManager.Database.Common;
+using ExpenseManager.Database.Contexts;
 using ExpenseManager.Web.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.Facebook;
-using Microsoft.Owin.Security.Google;
 using Owin;
-using ExpenseManager.Database.Contexts;
-using ExpenseManager.Database.Common;
 
 namespace ExpenseManager.Web
 {
@@ -51,7 +46,7 @@ namespace ExpenseManager.Web
             // Once you check this option, your second step of verification during the login process will be remembered on the device where you logged in from.
             // This is similar to the RememberMe option when you log in.
             app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
-            
+
             /*app.UseFacebookAuthentication(new FacebookAuthenticationOptions
             {
                 AppId = WebConfigurationManager.AppSettings["FBClientID"],

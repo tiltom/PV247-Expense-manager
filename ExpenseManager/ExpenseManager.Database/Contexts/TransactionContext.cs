@@ -1,15 +1,15 @@
-﻿using ExpenseManager.Entity.Budgets;
-using ExpenseManager.Entity.Categories;
-using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Transactions;
-using ExpenseManager.Entity.Wallets;
-using System;
+﻿using System;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpenseManager.Entity.Budgets;
+using ExpenseManager.Entity.Categories;
+using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.infrastructure;
-using System.Data.Entity.Migrations;
+using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Users;
+using ExpenseManager.Entity.Wallets;
 
 namespace ExpenseManager.Database.Contexts
 {
@@ -19,6 +19,7 @@ namespace ExpenseManager.Database.Contexts
             : base("DefaultConnection")
         {
         }
+
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Budget> Budgets { get; set; }
@@ -27,66 +28,42 @@ namespace ExpenseManager.Database.Contexts
 
         IQueryable<Transaction> ITransactionsProvider.Transactions
         {
-            get
-            {
-                return Transactions;
-            }
+            get { return Transactions; }
         }
 
         IQueryable<Category> ICategoriesProvider.Categories
         {
-            get
-            {
-                return Categories;
-            }
+            get { return Categories; }
         }
 
         IQueryable<Wallet> IWalletsProvider.Wallets
         {
-            get
-            {
-                return Wallets;
-            }
+            get { return Wallets; }
         }
 
         IQueryable<RepeatableTransaction> IRepeatableTransactionsProvider.RepeatableTransactions
         {
-            get
-            {
-                return RepeatableTransactions;
-            }
+            get { return RepeatableTransactions; }
         }
 
         public IQueryable<WalletAccessRight> WalletAccessRights
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public IQueryable<UserProfile> UserProfiles
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         IQueryable<Budget> IBudgetsProvider.Budgets
         {
-            get
-            {
-                return Budgets;
-            }
+            get { return Budgets; }
         }
 
         public IQueryable<BudgetAccessRight> BudgetAccessRights
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public async Task<bool> AddOrUpdateAsync(Transaction entity)
@@ -100,7 +77,7 @@ namespace ExpenseManager.Database.Contexts
 
             Transactions.AddOrUpdate(x => x.Guid, entity);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return existingTransaction == null;
         }
 
@@ -114,7 +91,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : Transactions.Remove(transactionToDelete);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return new DeletedEntity<Transaction>(deletedTransaction);
         }
 
@@ -129,7 +106,7 @@ namespace ExpenseManager.Database.Contexts
 
             Categories.AddOrUpdate(x => x.Guid, entity);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return existingCategory == null;
         }
 
@@ -145,7 +122,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : Categories.Remove(categoryToDelete);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return new DeletedEntity<Category>(deletedCategory);
         }
 
@@ -160,7 +137,7 @@ namespace ExpenseManager.Database.Contexts
 
             Wallets.AddOrUpdate(x => x.Guid, entity);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return existingWallet == null;
         }
 
@@ -176,7 +153,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : Wallets.Remove(walletToDelete);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return new DeletedEntity<Wallet>(deletedWallet);
         }
 
@@ -191,7 +168,7 @@ namespace ExpenseManager.Database.Contexts
 
             RepeatableTransactions.AddOrUpdate(x => x.Guid, entity);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return existingRepeatableTransaction == null;
         }
 
@@ -200,12 +177,12 @@ namespace ExpenseManager.Database.Contexts
             var RepeatableTransactionToDelete = entity.Guid == Guid.Empty
                 ? null
                 : await RepeatableTransactions.FindAsync(entity.Guid);
-            
+
             var deletedRepeatableTransaction = RepeatableTransactionToDelete == null
                 ? null
                 : RepeatableTransactions.Remove(RepeatableTransactionToDelete);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return new DeletedEntity<RepeatableTransaction>(deletedRepeatableTransaction);
         }
 
@@ -240,7 +217,7 @@ namespace ExpenseManager.Database.Contexts
 
             Budgets.AddOrUpdate(x => x.Guid, entity);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return existingBudget == null;
         }
 
@@ -255,7 +232,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : Budgets.Remove(budgetToDelete);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return new DeletedEntity<Budget>(deletedBudget);
         }
 

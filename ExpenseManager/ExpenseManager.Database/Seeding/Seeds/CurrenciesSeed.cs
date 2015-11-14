@@ -1,15 +1,11 @@
-﻿using ExpenseManager.Database.Contexts;
-using ExpenseManager.Entity.Currencies;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ExpenseManager.Database.Contexts;
+using ExpenseManager.Entity.Currencies;
 
 namespace ExpenseManager.Database.Seeding.Seeds
 {
-    class CurrenciesSeed<TContext> : ISeeds<TContext>
+    internal class CurrenciesSeed<TContext> : ISeeds<TContext>
         where TContext : DbContext, ITransactionContext
     {
         public void Seed(TContext context)

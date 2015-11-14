@@ -1,13 +1,11 @@
-﻿using ExpenseManager.Database.Common;
+﻿using System.Data.Entity;
+using ExpenseManager.Database.Common;
+using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Currencies;
+using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using Microsoft.AspNet.Identity.EntityFramework;
-using System.Data.Entity;
-using System;
-using System.Data.Entity.ModelConfiguration.Conventions;
-using ExpenseManager.Entity.Transactions;
-using ExpenseManager.Entity.Budgets;
 
 namespace ExpenseManager.Database.Contexts
 {
@@ -17,6 +15,7 @@ namespace ExpenseManager.Database.Contexts
             : base("DefaultConnection", false)
         {
         }
+
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Currency> Currencies { get; set; }

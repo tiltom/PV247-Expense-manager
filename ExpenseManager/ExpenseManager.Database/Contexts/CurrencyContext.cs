@@ -1,30 +1,26 @@
-﻿using ExpenseManager.Entity.Currencies;
-using ExpenseManager.Entity.Providers;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ExpenseManager.Entity.Providers.infrastructure;
 using System.Data.Entity.Migrations;
+using System.Linq;
+using System.Threading.Tasks;
+using ExpenseManager.Entity.Currencies;
+using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.infrastructure;
 
 namespace ExpenseManager.Database.Contexts
 {
     internal class CurrencyContext : DbContext, ICurrenciesProvider
     {
-        public CurrencyContext(string nameOrConnectionString) 
+        public CurrencyContext(string nameOrConnectionString)
             : base(nameOrConnectionString)
         {
         }
+
         public DbSet<Currency> Currencies { get; set; }
 
         IQueryable<Currency> ICurrenciesProvider.Currencies
         {
-            get
-            {
-                return Currencies;
-            }
+            get { return Currencies; }
         }
 
         public async Task<bool> AddOrUpdateAsync(Currency entity)
@@ -38,7 +34,7 @@ namespace ExpenseManager.Database.Contexts
 
             Currencies.AddOrUpdate(x => x.Guid, entity);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return existingCurrency == null;
         }
 
@@ -51,7 +47,7 @@ namespace ExpenseManager.Database.Contexts
                 ? null
                 : Currencies.Remove(currencyToDelete);
 
-            await SaveChangesAsync();
+            await this.SaveChangesAsync();
             return new DeletedEntity<Currency>(deletedCurrency);
         }
     }

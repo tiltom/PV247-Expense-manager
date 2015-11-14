@@ -4,10 +4,10 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using ExpenseManager.Database.Contexts;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
 using Microsoft.AspNet.Identity;
-using ExpenseManager.Database.Contexts;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -29,7 +29,7 @@ namespace ExpenseManager.Web.Controllers
             .Select(permission => new SelectListItem {Value = permission.ToString(), Text = permission.ToString()})
             .ToList();
 
-        private readonly UserContext db = new UserContext();
+        private readonly UserContext _db = new UserContext();
 
         /// <summary>
         ///     returns profile id of currenly logged user
@@ -38,7 +38,7 @@ namespace ExpenseManager.Web.Controllers
         protected async Task<Guid> CurrentProfileId()
         {
             var userId = HttpContext.User.Identity.GetUserId();
-            return await this.db.Users.Where(u => u.Id == userId).Select(u => u.Profile.Guid).FirstOrDefaultAsync();
+            return await this._db.Users.Where(u => u.Id == userId).Select(u => u.Profile.Guid).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace ExpenseManager.Web.Controllers
         {
             return
                 await
-                    this.db.Currencies.FirstOrDefaultAsync();
+                    this._db.Currencies.FirstOrDefaultAsync();
         }
 
         protected List<SelectListItem> GetPermissions()

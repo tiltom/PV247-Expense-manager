@@ -84,7 +84,7 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="id">id of wallet access right</param>
         /// <returns>view</returns>
-        public async Task<ActionResult> Edit(Guid? id)
+        public async Task<ActionResult> Edit(Guid id)
         {
             var walletAccessRight =
                 await this._db.WalletAccessRights.Where(war => war.Guid.Equals(id)).FirstOrDefaultAsync();
@@ -125,7 +125,7 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="id">id of wallet access right</param>
         /// <returns>view</returns>
-        public async Task<ActionResult> Delete(Guid? id)
+        public async Task<ActionResult> Delete(Guid id)
         {
             var walletAccessRight =
                 await this._db.WalletAccessRights.Where(war => war.Guid.Equals(id)).FirstOrDefaultAsync();
@@ -215,7 +215,7 @@ namespace ExpenseManager.Web.Controllers
                                 new SelectListItem
                                 {
                                     Value = user.Guid.ToString(),
-                                    Text = user.FirstName + " " + user.LastName
+                                    Text = $"{user.FirstName} {user.LastName}"
                                 })
                         .ToListAsync();
         }

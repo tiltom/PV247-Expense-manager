@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ExpenseManager.Entity.Providers.infrastructure
+﻿namespace ExpenseManager.Entity.Providers.infrastructure
 {
     public class DeletedEntity<TEntity>
         where TEntity : BaseEntity
