@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using ExpenseManager.Database.Common;
+using ExpenseManager.Database.Contexts;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
@@ -272,6 +274,7 @@ namespace ExpenseManager.Web.Controllers
 
         private async Task<UserIdentity> CreateUser(string email, string firstName, string lastName)
         {
+            var context = HttpContext.GetOwinContext().Get<UserContext>();
             var user = new UserIdentity
             {
                 UserName = email,
@@ -282,7 +285,7 @@ namespace ExpenseManager.Web.Controllers
                     PersonalWallet = new Wallet
                     {
                         Name = "Default Wallet",
-                        Currency = await this.GetDefaultCurrency()
+                        Currency = await context.Currencies.FirstOrDefaultAsync()
                     },
                     FirstName = firstName,
                     LastName = lastName
