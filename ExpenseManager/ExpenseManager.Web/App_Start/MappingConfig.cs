@@ -70,14 +70,14 @@ namespace ExpenseManager.Web
                 .ForMember(view => view.Guid, options => options.MapFrom(entity => entity.Guid))
                 .ForMember(view => view.Name, options => options.MapFrom(entity => entity.Name))
                 .ForMember(view => view.StartDate, options => options.MapFrom(entity => entity.StartDate))
-                .ForMember(view => view.StartDate, options => options.MapFrom(entity => entity.EndDate))
+                .ForMember(view => view.EndDate, options => options.MapFrom(entity => entity.EndDate))
                 .ForMember(view => view.Limit, options => options.MapFrom(entity => entity.Limit));
 
             Mapper.CreateMap<Budget, EditBudgetModel>()
                 .ForMember(view => view.Guid, options => options.MapFrom(entity => entity.Guid))
                 .ForMember(view => view.Name, options => options.MapFrom(entity => entity.Name))
                 .ForMember(view => view.StartDate, options => options.MapFrom(entity => entity.StartDate))
-                .ForMember(view => view.StartDate, options => options.MapFrom(entity => entity.EndDate))
+                .ForMember(view => view.EndDate, options => options.MapFrom(entity => entity.EndDate))
                 .ForMember(view => view.Limit, options => options.MapFrom(entity => entity.Limit));
 
             Mapper.CreateMap<Category, CategoryShowModel>()
