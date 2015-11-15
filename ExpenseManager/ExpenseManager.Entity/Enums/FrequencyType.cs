@@ -5,21 +5,21 @@
         /// <summary>
         ///     Represents daily repetition
         /// </summary>
-        Daily,
+        Day,
 
         /// <summary>
         ///     Represents weekly repetition
         /// </summary>
-        Weekly,
+        Week,
 
         /// <summary>
         ///     Represents monthly repetition
         /// </summary>
-        Monthly,
+        Month,
 
         /// <summary>
         ///     Represents annually repetition
         /// </summary>
-        Annually
+        Year
     }
 }

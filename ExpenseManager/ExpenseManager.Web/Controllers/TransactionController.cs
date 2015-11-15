@@ -103,7 +103,12 @@ namespace ExpenseManager.Web.Controllers
                 {
                     ModelState.AddModelError("LastOccurrence", "Date of last occurrence must be set");
                 }
-                if (transaction.NextRepeat <= 0)
+                else if (transaction.Date >= transaction.LastOccurrence.GetValueOrDefault())
+                {
+                    ModelState.AddModelError("LastOccurrence",
+                        "Date of last occurrence must be after first transaction occurrence");
+                }
+                if (transaction.NextRepeat == null || transaction.NextRepeat <= 0)
                 {
                     ModelState.AddModelError("NextRepeat", "Frequency must be positive number");
                 }
@@ -123,7 +128,7 @@ namespace ExpenseManager.Web.Controllers
 
                     {
                         FirstTransaction = transactionEntity,
-                        NextRepeat = transaction.NextRepeat,
+                        NextRepeat = transaction.NextRepeat.GetValueOrDefault(),
                         FrequencyType = transaction.FrequencyType,
                         LastOccurrence = transaction.LastOccurrence.GetValueOrDefault(),
                         Guid = Guid.NewGuid()
@@ -187,7 +192,12 @@ namespace ExpenseManager.Web.Controllers
                 {
                     ModelState.AddModelError("LastOccurrence", "Date of last occurrence must be set");
                 }
-                if (transaction.NextRepeat <= 0)
+                else if (transaction.Date >= transaction.LastOccurrence.GetValueOrDefault())
+                {
+                    ModelState.AddModelError("LastOccurrence",
+                        "Date of last occurrence must be after first transaction occurrence");
+                }
+                if (transaction.NextRepeat == null || transaction.NextRepeat <= 0)
                 {
                     ModelState.AddModelError("NextRepeat", "Frequency must be positive number");
                 }
@@ -218,7 +228,7 @@ namespace ExpenseManager.Web.Controllers
                         repeatableTransaction = new RepeatableTransaction
                         {
                             FirstTransaction = transactionEntity,
-                            NextRepeat = transaction.NextRepeat,
+                            NextRepeat = transaction.NextRepeat.GetValueOrDefault(),
                             FrequencyType = transaction.FrequencyType,
                             LastOccurrence = transaction.LastOccurrence.GetValueOrDefault(),
                             Guid = Guid.NewGuid()
@@ -228,7 +238,7 @@ namespace ExpenseManager.Web.Controllers
                     // if transaction exists in repeatable transactions in DB update it
                     else
                     {
-                        repeatableTransaction.NextRepeat = transaction.NextRepeat;
+                        repeatableTransaction.NextRepeat = transaction.NextRepeat.GetValueOrDefault();
                         repeatableTransaction.FrequencyType = transaction.FrequencyType;
                         repeatableTransaction.LastOccurrence = transaction.LastOccurrence.GetValueOrDefault();
                         await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);

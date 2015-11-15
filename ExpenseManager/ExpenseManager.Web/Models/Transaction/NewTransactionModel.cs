@@ -65,13 +65,12 @@ namespace ExpenseManager.Web.Models.Transaction
         /// <summary>
         ///     How often should transaction repeat
         /// </summary>
-        [Display(Name = "Frequency")]
-        public int NextRepeat { get; set; }
+        [Display(Name = "Repeat every")]
+        public int? NextRepeat { get; set; }
 
         /// <summary>
         ///     Type of repetition
         /// </summary>
-        [Display(Name = "Repetition")]
         public FrequencyType FrequencyType { get; set; }
 
         /// <summary>
