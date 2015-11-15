@@ -1,23 +1,33 @@
 ﻿@model IEnumerable<ExpenseManager.Web.Models.Transaction.TransactionShowModel>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Transactions overview";
 }
 
-<h2>Index</h2>
-
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create", null, new {@class = "btn btn-action"})
 </p>
 <p>
-    @using (Html.BeginForm("Index", "Transaction", FormMethod.Get))
+    @using (Html.BeginForm("Index", "Transaction", FormMethod.Get, new {@class = "form-horizontal"}))
     {
-        <text>Wallet</text>@Html.DropDownList("walletId", new SelectList(ViewBag.WalletList, "Value", "Text"))
-        <input type="submit" value="Show"/>
+        <div class="form-group small-margin-top">
+            <div class="col-md-2">
+                Choose your wallet:
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-2">
+                @Html.DropDownList("walletId", new SelectList(ViewBag.WalletList, "Value", "Text"), new {@class = "form-control"})
+            </div>
+            <input type="submit" class="btn btn-default" value="Show"/>
+        </div>
     }
 
 </p>
-<table class="table">
+
+<div class="medium-margin-top">
+<table class="table table-hover table-condensed">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Amount)
@@ -43,34 +53,42 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Amount)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CategoryName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CurrencySymbol)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BudgetName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsRepeatable)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { onclick = "return confirm('Are you sure you wish to delete this transaction?');" })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CurrencySymbol)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BudgetName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsRepeatable)
+            </td>
+            <td>
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>@Html.ActionLink("Edit", "Edit", new { id = item.Id })</li>
+                        <li>@Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { onclick = "return confirm('Are you sure you wish to delete this transaction?');" })</li>
+                    </ul>
+                </div>
+                
+            </td>
+        </tr>
+    }
 
 </table>
+</div>
