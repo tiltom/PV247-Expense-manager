@@ -19,7 +19,7 @@ namespace ExpenseManager.Web.Models.BudgetAccessRight
         /// <summary>
         ///     id of the user with this access right
         /// </summary>
-        [Display(Name = "UserProfile")]
+        [Display(Name = "Assigned user")]
         [Required]
         public Guid AssignedUserId { get; set; }
 

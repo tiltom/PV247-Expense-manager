@@ -1,14 +1,9 @@
 ﻿@model ExpenseManager.Web.Models.Role.RoleDetailViewModel
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Role details";
 }
-
-<h2>Details.</h2>
-
 <div>
-    <h4>SelectedRoles.</h4>
-    <hr />
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Name)
@@ -18,27 +13,31 @@
         </dd>
     </dl>
 </div>
-<h4>List of users in this role</h4>
-@if (Model.Users.Count == 0)
-{
-    <hr />
-    <p>No users found in this role.</p>
-}
+<div class="panel panel-default">
+<div class="panel-heading">
+    <h4>
+        List of users in this role
+        <span class="badge">@Model.Users.Count</span>
+    </h4>
+</div>
+    <ul class="list-group">
+        @if (Model.Users.Count == 0)
+        {
+            <li class="list-group-item">
+                No users found in this role.
+            </li>
+        }
 
-<table class="table">
+        @foreach (var item in Model.Users)
+        {
+                @Html.ActionLink(item.UserName, "Edit", "UsersAdmin", new {id = item.Id}, new {@class= "list-group-item btn btn-default" })
+        }
+    </ul>
+</div>
 
-    @foreach (var item in Model.Users)
-    {
-        <tr>
-            <td>
-                @item.UserName
-            </td>
-        </tr>
-    }
-</table>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-danger" })
 </p>
 
 

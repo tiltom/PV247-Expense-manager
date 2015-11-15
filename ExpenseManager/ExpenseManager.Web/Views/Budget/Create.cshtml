@@ -4,8 +4,6 @@
     ViewBag.Title = "Create budget";
 }
 
-<h2>Create budget</h2>
-
 @using (Html.BeginForm("Create", "Budget", FormMethod.Post, new {@class="form-horizontal"}))
 {
     @Html.AntiForgeryToken()
@@ -51,12 +49,11 @@
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-default">Create</button>
-        @Html.ActionLink("Cancel", "Index", null, new {@class="btn btn-danger"})
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-success">Create</button>
+            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-danger" })
+        </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 

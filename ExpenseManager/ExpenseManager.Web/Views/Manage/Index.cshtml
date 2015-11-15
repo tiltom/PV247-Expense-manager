@@ -1,44 +1,28 @@
 ﻿@model ExpenseManager.Web.Models.User.IndexViewModel
 @{
-    ViewBag.Title = "Manage";
+    ViewBag.Title = "Manage account";
 }
-
-<h2>@ViewBag.Title.</h2>
 
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div>
-    <h4>Change your account settings</h4>
-    <hr />
     <dl class="dl-horizontal">
         <dt>Password:</dt>
         <dd>
-            [
             @if (Model.HasPassword)
             {
-                @Html.ActionLink("Change your password", "ChangePassword")
+                @Html.ActionLink("Change your password", "ChangePassword", null, new {@class = "btn btn-primary"})
             }
             else
             {
-                @Html.ActionLink("Create", "SetPassword")
+                @Html.ActionLink("Create", "SetPassword", null, new {@class = "btn btn-primary"})
             }
-            ]
         </dd>
+        <div class="medium-margin-top" /> 
         <dt>External Logins:</dt>
         <dd>
-            @Model.Logins.Count [
-            @Html.ActionLink("Manage", "ManageLogins") ]
+            @Model.Logins.Count
+            @Html.ActionLink("Manage", "ManageLogins", null, new {@class = "btn btn-primary"})
         </dd>
-        <dt>Wallet:</dt>
-        <dd>
-            @Html.ActionLink("Edit", "Edit", "Wallet")
-        </dd>
-        <dt>Wallet Acess Rights:</dt>
-        <dd>
-            @Html.ActionLink("Manage", "Index", "WalletAccessRight")
-        </dd>
-        <dt>Budgets:</dt>
-        <dd>
-            @Html.ActionLink("Show", "Index", "Budget")
-        </dd>
+        
     </dl>
 </div>

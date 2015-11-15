@@ -25,8 +25,8 @@
                     {
                         <li>@Html.ActionLink("Transactions", "Index", "Transaction")</li>
                         <li>@Html.ActionLink("Categories", "Index", "Category")</li>
-                        <li>@Html.ActionLink("Edit Wallet", "Edit", "Wallet")</li>
                         <li>@Html.ActionLink("Budgets", "Index", "Budget")</li>
+                        <li>@Html.ActionLink("Wallet", "Edit", "Wallet")</li>
                         if (User.IsInRole("Admin"))
                         {
                             <li>@Html.ActionLink("Manage roles", "Index", "RolesAdmin")</li>

@@ -1,16 +1,14 @@
 ﻿@model IEnumerable<ExpenseManager.Web.Models.Budget.BudgetShowModel>
 
 @{
-    ViewBag.Title = "Budgets";
+    ViewBag.Title = "Budgets management";
 }
 
-<h2>Budgets</h2>
-
 <p>
-    @Html.ActionLink("Create new budget", "Create")
+    @Html.ActionLink("Create new", "Create",null, new {@class="btn btn-action"})
 </p>
-
-<table class="table">
+<div class="medium-margin-top" /> 
+<table class="table table-condensed table-responsive">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Name)
@@ -24,8 +22,6 @@
         <th>
             @Html.DisplayNameFor(model => model.Limit)
         </th>
-        <th></th>
-        <th></th>
         <th></th>
     </tr>
 
@@ -45,13 +41,21 @@
                 @Html.DisplayFor(modelItem => item.Limit)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Guid })
-            </td>
-            <td>
-                @Html.ActionLink("Permissions", "Index", "BudgetAccessRight", new {id = item.Guid}, null)
-            <td>
-                @Html.ActionLink("Delete", "Delete", new {id = item.Guid}, new { onclick = "return confirm('Are you sure you wish to delete this budget?');" })
-            </td>
+                <div class="dropdown">
+                <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            @Html.ActionLink("Edit", "Edit", new {id = item.Guid})
+                        </li>
+                        <li>
+                            @Html.ActionLink("Permissions", "Index", "BudgetAccessRight", new {id = item.Guid}, null)
+                        </li>
+                        <li>
+                            @Html.ActionLink("Delete", "Delete", new {id = item.Guid}, new {onclick = "return confirm('Are you sure you wish to delete this budget?');"})
+                        </li>
+                    </ul>
+                </div>
+</td>
         </tr>
     }
 

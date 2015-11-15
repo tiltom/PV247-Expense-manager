@@ -1,14 +1,10 @@
 ﻿@model ExpenseManager.Web.Models.User.UserDetailViewModel
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "User details";
 }
 
-<h2>Details.</h2>
-
 <div>
-    <h4>User</h4>
-    <hr />
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Email)
@@ -26,28 +22,35 @@
         </dd>
     </dl>
 </div>
-<h4>List of roles for this user</h4>
-@if (!Model.RolesList.Any())
-{
-    <hr />
-    <p>No roles found for this User.</p>
-}
 
-<table class="table">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>
+            List of roles for this user
+            <span class="badge">@Model.RolesList.Count()</span>
+        </h4>
+    </div>
 
-    @foreach (var item in Model.RolesList)
-    {
-        <tr>
-            <td>
+    <ul class="list-group">
+        @if (!Model.RolesList.Any())
+        {
+            <li class="list-group-item">
+                No roles found for this User.
+            </li>
+        }
+        @foreach (var item in Model.RolesList)
+        {
+            <li class="list-group-item">
                 @item
-            </td>
-        </tr>
-    }
-</table>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+            </li>
+        }
+    </ul>
+</div>
+
+    <p>
+        @Html.ActionLink("Edit User", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-danger" })
+    </p>
 
 
 
