@@ -46,3 +46,8 @@ textarea { max-width: 280px; }
 .medium-margin-top { margin-top: 40px; }
 
 .large-margin-top { margin-top: 60px; }
+
+.btn-show-more {
+    background: none;
+    border: none;
+}
