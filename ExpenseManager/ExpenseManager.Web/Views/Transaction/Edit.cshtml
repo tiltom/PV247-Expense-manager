@@ -34,7 +34,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-3">
-                @Html.TextBoxFor(model => model.Date, new { @class = "form-control datepicker", @Value=Model.Date.ToShortDateString()})
+                @Html.TextBoxFor(model => model.Date, new {@class = "form-control datepicker", @Value = Model.Date.ToShortDateString()})
                 @Html.ValidationMessageFor(model => model.Date, "", new {@class = "text-danger"})
             </div>
         </div>
@@ -115,6 +115,12 @@
             </div>
         </div>
 }
+
+<script type="text/javascript">
+    $(function () {
+       $('.datepicker').datepicker();
+    });
+</script>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
