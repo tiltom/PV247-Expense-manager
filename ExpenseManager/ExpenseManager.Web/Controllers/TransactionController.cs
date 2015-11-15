@@ -64,11 +64,17 @@ namespace ExpenseManager.Web.Controllers
             return this.View(list.Select(this.ConvertEntityToTransactionShowModel));
         }
 
+        public ActionResult ExpenseIncome()
+        {
+            return
+                this.View();
+        }
+
         /// <summary>
         ///     Creates new transaction
         /// </summary>
         /// <returns>View with model</returns>
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(bool expense)
         {
             //get wallet Id for currently selected wallet
             var walletId = new Guid(await this.GetCurrentWallet());
@@ -79,6 +85,7 @@ namespace ExpenseManager.Web.Controllers
             return
                 this.View(new NewTransactionModel
                 {
+                    Expense = expense,
                     WalletId = walletId,
                     CurrencyId = wallet.Currency.Guid,
                     Categories = await this.GetCategories(),
@@ -167,6 +174,11 @@ namespace ExpenseManager.Web.Controllers
 
             //fill model from DB entity
             var model = this.ConvertEntityToTransactionEditModel(transaction);
+            model.Expense = (transaction.Amount < 0);
+            if (model.Expense)
+            {
+                model.Amount *= -1;
+            }
             model.Currencies = await this.GetCurrencies();
             model.Categories = await this.GetCategories();
             model.Budgets = await this.GetBudgets();
@@ -315,7 +327,12 @@ namespace ExpenseManager.Web.Controllers
         private async Task<Transaction> ConvertNewModelToEntity(NewTransactionModel model, Transaction entity)
         {
             //setting properties from model
+
             entity.Amount = model.Amount;
+            if (model.Expense)
+            {
+                entity.Amount *= -1;
+            }
             entity.Date = model.Date;
             entity.Description = model.Description;
             entity.Wallet =
@@ -345,6 +362,10 @@ namespace ExpenseManager.Web.Controllers
         {
             //setting properties from model
             entity.Amount = model.Amount;
+            if (model.Expense)
+            {
+                entity.Amount *= -1;
+            }
             entity.Date = model.Date;
             entity.Description = model.Description;
             entity.Wallet =

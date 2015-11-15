@@ -1,7 +1,7 @@
 ﻿@model ExpenseManager.Web.Models.Transaction.EditTransactionModel
 
 @{
-    ViewBag.Title = "Edit transaction";
+    ViewBag.Title = @Model.Expense ? "Edit expense transaction" : "Edit income transaction";
 }
 
 
@@ -14,6 +14,7 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.WalletId)
+        @Html.HiddenFor(model => model.Expense)
 
         <div class="form-group">
             @Html.LabelFor(model => model.Amount, htmlAttributes: new {@class = "control-label col-md-2"})

@@ -12,6 +12,12 @@ namespace ExpenseManager.Web.Models.Transaction
     public class NewTransactionModel
     {
         /// <summary>
+        ///     Bool representing if transaction is expense
+        /// </summary>
+        [Required]
+        public bool Expense { get; set; }
+
+        /// <summary>
         ///     Amount of money in transaction
         /// </summary>
         [Required]
