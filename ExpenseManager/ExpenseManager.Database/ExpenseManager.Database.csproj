@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -24,7 +25,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -75,14 +75,6 @@
   <ItemGroup>
     <Compile Include="Contexts\CurrencyContext.cs" />
     <Compile Include="Contexts\ICurrencyContext.cs" />
-    <Compile Include="Contexts\SeedingContextMigrations\201511141800094_RepeatableTransactionTypo.cs" />
-    <Compile Include="Contexts\SeedingContextMigrations\201511141800094_RepeatableTransactionTypo.Designer.cs">
-      <DependentUpon>201511141800094_RepeatableTransactionTypo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Contexts\SeedingContextMigrations\201511141841591_RepeatableTransactionFixes.cs" />
-    <Compile Include="Contexts\SeedingContextMigrations\201511141841591_RepeatableTransactionFixes.Designer.cs">
-      <DependentUpon>201511141841591_RepeatableTransactionFixes.cs</DependentUpon>
-    </Compile>
     <Compile Include="Database.cs" />
     <Compile Include="Common\UserIdentity.cs" />
     <Compile Include="Contexts\BudgetContext.cs" />
@@ -118,7 +110,6 @@
       <Name>ExpenseManager.Entity</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6">
       <Visible>False</Visible>
@@ -132,21 +123,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Database.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Database_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>Database.mdf</DependentUpon>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Contexts\SeedingContextMigrations\201511141800094_RepeatableTransactionTypo.resx">
-      <DependentUpon>201511141800094_RepeatableTransactionTypo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Contexts\SeedingContextMigrations\201511141841591_RepeatableTransactionFixes.resx">
-      <DependentUpon>201511141841591_RepeatableTransactionFixes.cs</DependentUpon>
-    </EmbeddedResource>
+    <Folder Include="Contexts\SeedingContextMigrations\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
