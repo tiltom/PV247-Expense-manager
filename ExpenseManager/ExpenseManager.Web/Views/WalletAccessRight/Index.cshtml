@@ -2,43 +2,50 @@
 @model IEnumerable<ExpenseManager.Web.Models.WalletAccessRight.WalletAccessRightModel>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Manage Wallet Access Rights";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Permission)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AssignedUserId)
-        </th>
-        <th></th>
-    </tr>
+        <p>
+            @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-success" })
+        </p>
+        <table class="table table-bordered">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Permission)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AssignedUserId)
+                </th>
+                <th></th>
+            </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Permission)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AssignedUserName)
-        </td>
-        <td>
-            @if (!PermissionEnum.Owner.ToString().Equals(item.Permission))
+            @foreach (var item in Model)
             {
-            @Html.ActionLink("Edit", "Edit", new {id = item.Id})
-            @:|
-            @Html.ActionLink("Delete", "Delete", new {id = item.Id})
-            }
-        </td>
-    </tr>
-}
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Permission)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AssignedUserName)
+                    </td>
+                    <td>
 
-</table>
+                        @if (!PermissionEnum.Owner.ToString().Equals(item.Permission))
+                        {
+                            <div class="dropdown">
+                                <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li>@Html.ActionLink("Edit", "Edit", new {id = item.Id})</li>
+                                    <li>@Html.ActionLink("Delete", "Delete", new {id = item.Id})</li>
+                                </ul>
+                            </div>
+
+
+                        }
+                    </td>
+                </tr>
+            }
+
+        </table>

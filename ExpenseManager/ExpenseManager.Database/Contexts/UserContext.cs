@@ -29,8 +29,6 @@ namespace ExpenseManager.Database.Contexts
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
-            //modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
             modelBuilder.Entity<BudgetAccessRight>()
                 .HasRequired(right => right.UserProfile)

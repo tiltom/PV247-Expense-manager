@@ -1,11 +1,9 @@
 ﻿@model ExpenseManager.Web.Models.WalletAccessRight.WalletAccessRightModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit Wallet Access Right";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>Edit</h2>
 
 
 @using (Html.BeginForm())
@@ -13,8 +11,6 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>Wallet Access Right</h4>
-        <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.WalletId)
@@ -36,15 +32,13 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-success"/>
+                @Html.ActionLink("Back to List", "Index",null,new {@class="btn btn-danger"})
             </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

@@ -1,20 +1,15 @@
 ﻿@model ExpenseManager.Web.Models.WalletAccessRight.WalletAccessRightModel
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Create Wallet Access Right";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>Create</h2>
-
 
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>Wallet Access Right</h4>
-        <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.WalletId)
         <div class="form-group">
@@ -34,14 +29,15 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-success"/>
+                @Html.ActionLink("Cancel", "Index",null, new {@class="btn btn-danger"})
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+   
 </div>
 
 @section Scripts {

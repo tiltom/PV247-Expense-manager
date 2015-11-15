@@ -25,6 +25,8 @@
                     {
                         <li>@Html.ActionLink("Transactions", "Index", "Transaction")</li>
                         <li>@Html.ActionLink("Categories", "Index", "Category")</li>
+                        <li>@Html.ActionLink("Edit Wallet", "Edit", "Wallet")</li>
+                        <li>@Html.ActionLink("Budgets", "Index", "Budget")</li>
                         if (User.IsInRole("Admin"))
                         {
                             <li>@Html.ActionLink("Manage roles", "Index", "RolesAdmin")</li>
@@ -37,15 +39,24 @@
         </div>
     </div>
     <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Expense Manager</p>
-        </footer>
-    </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>@ViewBag.Title</h4>
+            </div>
+            <div class="panel-body">
+                <div>
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+                <hr />
+                <footer>
+                    <p>&copy; @DateTime.Now.Year - Expense Manager</p>
+                </footer>
+            </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+            @Scripts.Render("~/bundles/jquery")
+            @Scripts.Render("~/bundles/bootstrap")
+            @RenderSection("scripts", required: false)
 </body>
 </html>

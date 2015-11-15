@@ -22,7 +22,7 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        // GET: WalletAcessRights
+        // GET: WalletAccessRights
         public async Task<ActionResult> Index()
         {
             var id = await this.CurrentProfileId();
@@ -215,7 +215,7 @@ namespace ExpenseManager.Web.Controllers
                                 new SelectListItem
                                 {
                                     Value = user.Guid.ToString(),
-                                    Text = $"{user.FirstName} {user.LastName}"
+                                    Text = user.FirstName + " " + user.LastName
                                 })
                         .ToListAsync();
         }

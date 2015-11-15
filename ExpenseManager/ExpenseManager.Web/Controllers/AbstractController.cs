@@ -29,7 +29,8 @@ namespace ExpenseManager.Web.Controllers
             .Select(permission => new SelectListItem {Value = permission.ToString(), Text = permission.ToString()})
             .ToList();
 
-        private readonly UserContext _db = new UserContext();
+        protected readonly UserContext UserContext = new UserContext();
+
 
         /// <summary>
         ///     returns profile id of currenly logged user
@@ -38,8 +39,11 @@ namespace ExpenseManager.Web.Controllers
         protected async Task<Guid> CurrentProfileId()
         {
             var userId = HttpContext.User.Identity.GetUserId();
-            return await this._db.Users.Where(u => u.Id == userId).Select(u => u.Profile.Guid).FirstOrDefaultAsync();
+            return
+                await
+                    this.UserContext.Users.Where(u => u.Id == userId).Select(u => u.Profile.Guid).FirstOrDefaultAsync();
         }
+
 
         /// <summary>
         ///     Gets the default currency
@@ -49,8 +53,9 @@ namespace ExpenseManager.Web.Controllers
         {
             return
                 await
-                    this._db.Currencies.FirstOrDefaultAsync();
+                    this.UserContext.Currencies.FirstOrDefaultAsync();
         }
+
 
         protected List<SelectListItem> GetPermissions()
         {
