@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using ExpenseManager.BusinessLogic;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers;
@@ -66,7 +67,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // check if model is valid
-            if (!this.ValidateModel(model.StartDate, model.EndDate))
+            if (!BudgetService.ValidateModel(model.StartDate, model.EndDate))
             {
                 // TODO: add error message to layout and display it here
                 return this.View(model);
@@ -138,7 +139,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // check if model is valid
-            if (!this.ValidateModel(model.StartDate, model.EndDate))
+            if (!BudgetService.ValidateModel(model.StartDate, model.EndDate))
             {
                 // TODO: add error message to layout and display it here
                 return this.View(model);
@@ -190,21 +191,6 @@ namespace ExpenseManager.Web.Controllers
                 //this._db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        #endregion
-
-        #region private
-
-        /// <summary>
-        ///     Additional validation for model
-        /// </summary>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
-        /// <returns></returns>
-        private bool ValidateModel(DateTime startDate, DateTime endDate)
-        {
-            return startDate <= endDate;
         }
 
         #endregion

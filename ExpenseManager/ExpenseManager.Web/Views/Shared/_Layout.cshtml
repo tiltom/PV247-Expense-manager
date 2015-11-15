@@ -66,4 +66,10 @@
     $(function () {
        $('.datepicker').datepicker();
     });
+
+    $('.datepicker').datepicker()
+              .off('focus')
+              .click(function () {
+                  $(this).datepicker('show');
+              });
 </script>
