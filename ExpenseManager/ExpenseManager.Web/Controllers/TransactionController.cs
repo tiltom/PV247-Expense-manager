@@ -57,9 +57,11 @@ namespace ExpenseManager.Web.Controllers
             // when user doesn't have permission to manipulate with transaction show view without edit and delete
             if (permission != null && permission.Permission == PermissionEnum.Read)
             {
-                return this.View("IndexRead", list.Select(this.ConvertEntityToTransactionShowModel));
+                ViewBag.editable = false;
+                return this.View("Index", list.Select(this.ConvertEntityToTransactionShowModel));
             }
 
+            ViewBag.editable = true;
             //list of all transactions from UserProfile's wallet
             return this.View(list.Select(this.ConvertEntityToTransactionShowModel));
         }

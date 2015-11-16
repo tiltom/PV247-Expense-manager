@@ -3,10 +3,12 @@
 @{
     ViewBag.Title = "Transactions overview";
 }
-
-<p>
-    @Html.ActionLink("Create New", "ExpenseIncome", null, new { @class = "btn btn-action" })
-</p>
+@if (ViewBag.editable)
+{
+    <p>
+        @Html.ActionLink("Create New", "ExpenseIncome", null, new { @class = "btn btn-action" })
+    </p>
+}
 <p>
     @using (Html.BeginForm("Index", "Transaction", FormMethod.Get, new {@class = "form-horizontal"}))
     {
@@ -78,14 +80,17 @@
                 @Html.DisplayFor(modelItem => item.IsRepeatable)
             </td>
             <td>
-                <div class="dropdown">
-                    <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li>@Html.ActionLink("Edit", "Edit", new { id = item.Id })</li>
-                        <li>@Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { onclick = "return confirm('Are you sure you wish to delete this transaction?');" })</li>
-                    </ul>
-                </div>
-                
+                @if(ViewBag.editable)
+                {
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Edit", "Edit", new { id = item.Id })</li>
+                            <li>@Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { onclick = "return confirm('Are you sure you wish to delete this transaction?');" })</li>
+                        </ul>
+                    </div>
+                }
+
             </td>
         </tr>
     }
