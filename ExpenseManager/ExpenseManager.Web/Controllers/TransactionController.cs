@@ -27,18 +27,18 @@ namespace ExpenseManager.Web.Controllers
         ///     Shows transactions for users Wallet
         /// </summary>
         /// <returns>View with transaction</returns>
-        public async Task<ActionResult> Index(string walletId)
+        public async Task<ActionResult> Index(string wallet)
         {
             // get Id of currently logged UserProfile from HttpContext
             var id = await this.CurrentProfileId();
 
             // get all Wallets user has access to
-            ViewBag.WalletList = await this.GetViewableWallets();
+            ViewBag.wallet = await this.GetViewableWallets();
 
             // if walletId was selected remember it
-            if (!string.IsNullOrEmpty(walletId))
+            if (!string.IsNullOrEmpty(wallet))
             {
-                _walletId = walletId;
+                _walletId = wallet;
             }
             var selectedWalletId = await this.GetCurrentWallet();
             // get all Transactions in selected wallet
@@ -511,15 +511,15 @@ namespace ExpenseManager.Web.Controllers
         ///     Provides selectable list of Wallets user has at least permission to read
         /// </summary>
         /// <returns></returns>
-        private async Task<List<SelectListItem>> GetViewableWallets()
+        private async Task<SelectList> GetViewableWallets()
         {
             var id = await this.CurrentProfileId();
-            return
-                await this._walletsProvider.WalletAccessRights.Where(
-                    user => user.Permission >= PermissionEnum.Read && user.UserProfile.Guid == id)
-                    .Select(
-                        wallet => new SelectListItem {Value = wallet.Wallet.Guid.ToString(), Text = wallet.Wallet.Name})
-                    .ToListAsync();
+            var viewableWallets = await this._walletsProvider.WalletAccessRights.Where(
+                user => user.Permission >= PermissionEnum.Read && user.UserProfile.Guid == id)
+                .Select(
+                    wallet => new SelectListItem {Value = wallet.Wallet.Guid.ToString(), Text = wallet.Wallet.Name})
+                .ToListAsync();
+            return new SelectList(viewableWallets, "Value", "Text", await this.GetCurrentWallet());
         }
 
         /// <summary>
