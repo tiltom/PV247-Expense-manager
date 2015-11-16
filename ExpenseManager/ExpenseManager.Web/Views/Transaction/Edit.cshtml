@@ -105,7 +105,7 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-success" />
-                @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-danger" })
+                @Html.ActionLink("Cancel", "Index", new { wallet = Model.WalletId } , new { @class = "btn btn-danger" })
             </div>
         </div>
     </div>

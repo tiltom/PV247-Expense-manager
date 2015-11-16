@@ -46,7 +46,7 @@
             {
                 <text> in </text>
             }
-        }   
+        }
             " id="collapseExample">
             <div class="form-group">
                 @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -91,7 +91,7 @@
 
 
             <div class="repeatableTransaction"
-                 @if (!@Html.ViewData.Model.IsRepeatable) { <text> hidden="hidden" </text>   }>
+                 @if (!@Html.ViewData.Model.IsRepeatable) { <text> hidden="hidden" </text>    }>
                 <div class="form-group">
                     @Html.LabelFor(model => model.NextRepeat, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="form-group row">
@@ -124,7 +124,7 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create" class="btn btn-success" />
-                @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-danger" })
+                @Html.ActionLink("Cancel", "Index", new { wallet = Model.WalletId }, new { @class = "btn btn-danger" })
             </div>
         </div>
     </div>

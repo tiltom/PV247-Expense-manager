@@ -9,14 +9,14 @@
     <div class="form-horizontal">
         <div class="form-group">
             <div class="col-md-10">
-                @Html.ActionLink("Income", "Create", null, new { expense = false }, new { @class = "btn-lg btn-success" })
-                @Html.ActionLink("Expense", "Create", null, new { expense = true }, new { @class = "btn-lg btn-danger" })
+                @Html.ActionLink("Income", "Create", null, new { expense = false, ViewBag.wallet }, new { @class = "btn-lg btn-success" })
+                @Html.ActionLink("Expense", "Create", null, new { expense = true, ViewBag.wallet }, new { @class = "btn-lg btn-danger" })
             </div>
         </div>
 
     <div class="form-group">
         <div class="col-md-10">
-            @Html.ActionLink("Cancel", "Index", null, new {@class = "btn btn-danger"})
+            @Html.ActionLink("Cancel", "Index", new { wallet = ViewBag.walletId}, new {@class = "btn btn-danger"})
         </div>
     </div>
   </div>

@@ -6,7 +6,7 @@
 @if (ViewBag.editable)
 {
     <p>
-        @Html.ActionLink("Create New", "ExpenseIncome", null, new { @class = "btn btn-action" })
+        @Html.ActionLink("Create New", "ExpenseIncome", new {wallet = ViewBag.displayedWalletId }, new { @class = "btn btn-action" })
     </p>
 }
 <p>
