@@ -80,9 +80,7 @@ namespace ExpenseManager.Web.Models.Transaction
         /// <summary>
         ///     Date until which transaction should repeat
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Last Occurrence")]
+        [Display(Name = "Repeat until")]
         public DateTime? LastOccurrence { get; set; }
 
         /// <summary>

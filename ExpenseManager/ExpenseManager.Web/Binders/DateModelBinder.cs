@@ -26,7 +26,7 @@ namespace ExpenseManager.Web.Binders
             if (!valid)
             {
                 var result = base.BindModel(controllerContext, bindingContext);
-                bindingContext.ModelState.AddModelError(modelName, "Date is not in format dd.MM.yyyy");
+                bindingContext.ModelState.AddModelError(modelName, "Date was not in format dd.MM.yyyy");
                 return result;
             }
 

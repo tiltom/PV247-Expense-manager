@@ -105,6 +105,10 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(NewTransactionModel transaction)
         {
+            if (transaction.Amount <= 0)
+            {
+                ModelState.AddModelError("Amount", "Transaction amount must be greater than zero");
+            }
             //If transaction is repeatable date of last Occurrence must be set
             if (transaction.IsRepeatable)
             {
@@ -115,7 +119,7 @@ namespace ExpenseManager.Web.Controllers
                 else if (transaction.Date >= transaction.LastOccurrence.GetValueOrDefault())
                 {
                     ModelState.AddModelError("LastOccurrence",
-                        "Date of last occurrence must be after first transaction occurrence");
+                        "Date until which transaction should be repeated must be after first transaction occurrence");
                 }
                 if (transaction.NextRepeat == null || transaction.NextRepeat <= 0)
                 {
@@ -200,6 +204,10 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(EditTransactionModel transaction)
         {
+            if (transaction.Amount <= 0)
+            {
+                ModelState.AddModelError("Amount", "Transaction amount must be greater than zero");
+            }
             if (transaction.IsRepeatable)
             {
                 if (transaction.LastOccurrence == null)
@@ -209,7 +217,7 @@ namespace ExpenseManager.Web.Controllers
                 else if (transaction.Date >= transaction.LastOccurrence.GetValueOrDefault())
                 {
                     ModelState.AddModelError("LastOccurrence",
-                        "Date of last occurrence must be after first transaction occurrence");
+                        "Date until which transaction should be repeated must be after first transaction occurrence");
                 }
                 if (transaction.NextRepeat == null || transaction.NextRepeat <= 0)
                 {

@@ -30,85 +30,87 @@
             </div>
         </div>
 
-    <div class="form-group">
-        <div class="col-md-2"></div>
-        <div class="col-md-10">
-            <a style="text-decoration: none;" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                Add more details <i class="glyphicon glyphicon-chevron-right"></i>
-            </a>
+        <div class="form-group">
+            <div class="col-md-2"></div>
+            <div class="col-md-10">
+                <a style="text-decoration: none;" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Add more details <i class="glyphicon glyphicon-chevron-right"></i>
+                </a>
+            </div>
         </div>
-        </div>
 
-        
-
-        <div class="collapse" id="collapseExample">
-
+        <div class="collapse @{
+            var amount = (ViewData.ModelState.ContainsKey("Amount")) ? ViewData.ModelState["Amount"].Errors.Count : 0;
+            var categoryId = (ViewData.ModelState.ContainsKey("CategoryId")) ? ViewData.ModelState["CategoryId"].Errors.Count : 0;
+            if (ViewData.ModelState.Values.Sum(m => m.Errors.Count) > amount + categoryId || Model.BudgetId != null || Model.Description != null)
+            {
+                <text> in </text>
+            }
+        }   
+            " id="collapseExample">
             <div class="form-group">
-                @Html.LabelFor(model => model.Date, htmlAttributes: new {@class = "control-label col-md-2"})
+                @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-3">
-                    @Html.TextBoxFor(model => model.Date, new {@class = "form-control datepicker", @Value = DateTime.Now.ToString("dd.MM.yyyy"), id="IssueDate"})
-                    @Html.ValidationMessageFor(model => model.Date, "", new {@class = "text-danger"})
+                    @Html.TextBoxFor(model => model.Date, new { @class = "form-control datepicker", @Value = DateTime.Now.ToString("dd.MM.yyyy"), id = "IssueDate" })
+                    @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.Description, htmlAttributes: new {@class = "control-label col-md-2"})
+                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-3">
-                    @Html.TextAreaFor(model => model.Description, new {@class = "form-control", @rows = 5})
-                    @Html.ValidationMessageFor(model => model.Description, "", new {@class = "text-danger"})
+                    @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @rows = 5 })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.CurrencyId, htmlAttributes: new {@class = "control-label col-md-2"})
+                @Html.LabelFor(model => model.CurrencyId, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-3">
-                    @Html.DropDownListFor(model => model.CurrencyId, Model.Currencies, "Select Currency", htmlAttributes: new {@class = "form-control"})
-                    @Html.ValidationMessageFor(model => model.CurrencyId, "", new {@class = "text-danger"})
+                    @Html.DropDownListFor(model => model.CurrencyId, Model.Currencies, "Select Currency", htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.CurrencyId, "", new { @class = "text-danger" })
                 </div>
             </div>
 
 
             <div class="form-group">
-                @Html.LabelFor(model => model.BudgetId, htmlAttributes: new {@class = "control-label col-md-2"})
+                @Html.LabelFor(model => model.BudgetId, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-3">
-                    @Html.DropDownListFor(model => model.BudgetId, Model.Budgets, "Select Budget", htmlAttributes: new {@class = "form-control"})
-                    @Html.ValidationMessageFor(model => model.BudgetId, "", new {@class = "text-danger"})
+                    @Html.DropDownListFor(model => model.BudgetId, Model.Budgets, "Select Budget", htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.BudgetId, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.IsRepeatable, htmlAttributes: new {@class = "control-label col-md-2"})
+                @Html.LabelFor(model => model.IsRepeatable, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-3" style="margin-top: 7px">
-                    @Html.CheckBoxFor(model => model.IsRepeatable, new {htmlAttributes = new {@class = "form-control"}})
-                    @Html.ValidationMessageFor(model => model.IsRepeatable, "", new {@class = "text-danger"})
+                    @Html.CheckBoxFor(model => model.IsRepeatable, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.IsRepeatable, "", new { @class = "text-danger" })
                 </div>
             </div>
 
 
             <div class="repeatableTransaction"
-                 @if (!@Html.ViewData.Model.IsRepeatable)
-                 {
-                     <text> hidden="hidden" </text>
-                 }>
+                 @if (!@Html.ViewData.Model.IsRepeatable) { <text> hidden="hidden" </text>   }>
                 <div class="form-group">
-                    @Html.LabelFor(model => model.NextRepeat, htmlAttributes: new {@class = "control-label col-md-2"})
+                    @Html.LabelFor(model => model.NextRepeat, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="form-group row">
                         <div class="col-md-1">
-                            @Html.EditorFor(model => model.NextRepeat, new {htmlAttributes = new {@class = "form-control", @Value = 1}})
-                            @Html.ValidationMessageFor(model => model.NextRepeat, "", new {@class = "text-danger"})
+                            @Html.EditorFor(model => model.NextRepeat, new { htmlAttributes = new { @class = "form-control", @Value = 1 } })
+                            @Html.ValidationMessageFor(model => model.NextRepeat, "", new { @class = "text-danger" })
                         </div>
                         <div class="col-md-2">
-                            @Html.EnumDropDownListFor(model => model.FrequencyType, "Select Frequency", htmlAttributes: new {@class = "form-control"})
-                            @Html.ValidationMessageFor(model => model.FrequencyType, "", new {@class = "text-danger"})
+                            @Html.EnumDropDownListFor(model => model.FrequencyType, "Select Frequency", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.FrequencyType, "", new { @class = "text-danger" })
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.LastOccurrence, htmlAttributes: new {@class = "control-label col-md-2"})
+                    @Html.LabelFor(model => model.LastOccurrence, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-3">
-                        @Html.TextBoxFor(model => model.LastOccurrence, new { @class = "form-control datepicker", placeholder = DateTime.Now.ToShortDateString() })
-                        @Html.ValidationMessageFor(model => model.LastOccurrence, "", new {@class = "text-danger"})
+                        @Html.TextBoxFor(model => model.LastOccurrence, new { @class = "form-control datepicker", placeholder = DateTime.Now.AddDays(1).ToString("dd.MM.yyyy") })
+                        @Html.ValidationMessageFor(model => model.LastOccurrence, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
@@ -116,15 +118,18 @@
         </div>
 
 
+
+
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-success"/>
+                <input type="submit" value="Create" class="btn btn-success" />
                 @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-danger" })
             </div>
         </div>
     </div>
 
-}
+    }
 
 
 <script type="text/javascript">

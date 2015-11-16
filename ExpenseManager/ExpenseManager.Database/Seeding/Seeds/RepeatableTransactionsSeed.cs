@@ -21,8 +21,8 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 {
                     FirstTransaction = firstTransaction,
                     NextRepeat = 2,
-                    FrequencyType = FrequencyType.Year,
-                    LastOccurrence = new DateTime(2015, 10, 17)
+                    FrequencyType = FrequencyType.Day,
+                    LastOccurrence = new DateTime(2015, 10, 30)
                 }
             };
 
