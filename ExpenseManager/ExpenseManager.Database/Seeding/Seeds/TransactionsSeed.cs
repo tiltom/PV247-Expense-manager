@@ -22,7 +22,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
                     Currency = context.Currencies.FirstOrDefault(),
                     Amount = 20,
                     Date = new DateTime(2015, 10, 17),
-                    Category = context.Categories.FirstOrDefault(),
+                    Category = context.Categories.FirstOrDefault(x => x.Name.Contains("Salary")),
                     Description = "Found 20 euro on the ground"
                 },
                 new Transaction
@@ -69,6 +69,33 @@ namespace ExpenseManager.Database.Seeding.Seeds
                     Date = new DateTime(2015, 10, 16),
                     Category = context.Categories.FirstOrDefault(x => x.Description.Contains("transportation")),
                     Description = "Write transaction"
+                },
+                new Transaction
+                {
+                    Wallet = wallet,
+                    Currency = context.Currencies.FirstOrDefault(x => x.Symbol == "Kč"),
+                    Amount = 100000,
+                    Date = new DateTime(2015, 11, 16),
+                    Category = context.Categories.FirstOrDefault(x => x.Name == "Salary"),
+                    Description = "Asp.net expense manager payment"
+                },
+                new Transaction
+                {
+                    Wallet = wallet,
+                    Currency = context.Currencies.FirstOrDefault(x => x.Symbol == "Kč"),
+                    Amount = -20000,
+                    Date = new DateTime(2013, 11, 25),
+                    Category = context.Categories.FirstOrDefault(x => x.Name == "Bitcoin"),
+                    Description = "Bought too late"
+                },
+                new Transaction
+                {
+                    Wallet = wallet,
+                    Currency = context.Currencies.FirstOrDefault(x => x.Symbol == "Kč"),
+                    Amount = 4400,
+                    Date = new DateTime(2015, 01, 12),
+                    Category = context.Categories.FirstOrDefault(x => x.Name == "Bitcoin"),
+                    Description = "Sold too soon"
                 }
             };
 

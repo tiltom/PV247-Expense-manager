@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using ExpenseManager.Entity;
+using ExpenseManager.Entity.Enums;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Transactions;
@@ -90,7 +91,7 @@ namespace ExpenseManager.Web.Controllers
                     Expense = expense,
                     WalletId = walletId,
                     CurrencyId = wallet.Currency.Guid,
-                    Categories = await this.GetCategories(),
+                    Categories = await this.GetCategories(this.GetCategoryType(expense)),
                     Currencies = await this.GetCurrencies(),
                     Budgets = await this.GetBudgets()
                 });
@@ -151,7 +152,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.RedirectToAction("Index");
             }
             transaction.Currencies = await this.GetCurrencies();
-            transaction.Categories = await this.GetCategories();
+            transaction.Categories = await this.GetCategories(this.GetCategoryType(transaction.Expense));
             transaction.Budgets = await this.GetBudgets();
             return this.View(transaction);
         }
@@ -186,7 +187,7 @@ namespace ExpenseManager.Web.Controllers
                 model.Amount *= -1;
             }
             model.Currencies = await this.GetCurrencies();
-            model.Categories = await this.GetCategories();
+            model.Categories = await this.GetCategories(this.GetCategoryType(model.Expense));
             model.Budgets = await this.GetBudgets();
 
             return this.View(model);
@@ -282,7 +283,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.RedirectToAction("Index");
             }
             transaction.Currencies = await this.GetCurrencies();
-            transaction.Categories = await this.GetCategories();
+            transaction.Categories = await this.GetCategories(this.GetCategoryType(transaction.Expense));
             transaction.Budgets = await this.GetBudgets();
             return this.View(transaction);
         }
@@ -506,12 +507,13 @@ namespace ExpenseManager.Web.Controllers
         ///     Provides selectable list of Categories which are available
         /// </summary>
         /// <returns>List of SelectListItem for Categories</returns>
-        private async Task<List<SelectListItem>> GetCategories()
+        private async Task<List<SelectListItem>> GetCategories(CategoryType type)
         {
             return
                 await
-                    this._transactionsProvider.Categories.Select(
-                        category => new SelectListItem {Value = category.Guid.ToString(), Text = category.Name})
+                    this._transactionsProvider.Categories.Where(
+                        m => m.Type == type || m.Type == CategoryType.IncomeAndExpense).Select(
+                            category => new SelectListItem {Value = category.Guid.ToString(), Text = category.Name})
                         .ToListAsync();
         }
 
@@ -558,6 +560,11 @@ namespace ExpenseManager.Web.Controllers
                 .Select(w => w.Guid)
                 .FirstOrDefaultAsync();
             return _walletId ?? (_walletId = currentUserWallet.ToString());
+        }
+
+        private CategoryType GetCategoryType(bool expense)
+        {
+            return expense ? CategoryType.Expense : CategoryType.Income;
         }
     }
 }
