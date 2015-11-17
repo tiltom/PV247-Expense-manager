@@ -1,6 +1,6 @@
-﻿using ExpenseManager.Database.Common;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using ExpenseManager.Web.Models.User;
 
 namespace ExpenseManager.Web.Models.Role
 {
@@ -12,6 +12,6 @@ namespace ExpenseManager.Web.Models.Role
         [Display(Name = "Role name")]
         public string Name { get; set; }
 
-        public List<UserIdentity> Users { get; set; }
+        public List<UserDetailViewModel> Users { get; set; }
     }
 }

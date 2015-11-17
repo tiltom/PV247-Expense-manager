@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using ExpenseManager.Database.Contexts;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -29,7 +31,12 @@ namespace ExpenseManager.Web.Controllers
             .Select(permission => new SelectListItem {Value = permission.ToString(), Text = permission.ToString()})
             .ToList();
 
-        protected readonly UserContext UserContext = new UserContext();
+        private UserContext _context;
+
+        protected UserContext UserContext
+        {
+            get { return this._context ?? (this._context = HttpContext.GetOwinContext().Get<UserContext>()); }
+        }
 
 
         /// <summary>
@@ -41,7 +48,7 @@ namespace ExpenseManager.Web.Controllers
             var userId = HttpContext.User.Identity.GetUserId();
             return
                 await
-                    this.UserContext.Users.Where(u => u.Id == userId).Select(u => u.Profile.Guid).FirstOrDefaultAsync();
+                    UserContext.Users.Where(u => u.Id == userId).Select(u => u.Profile.Guid).FirstOrDefaultAsync();
         }
 
 
@@ -53,7 +60,7 @@ namespace ExpenseManager.Web.Controllers
         {
             return
                 await
-                    this.UserContext.Currencies.FirstOrDefaultAsync();
+                    UserContext.Currencies.FirstOrDefaultAsync();
         }
 
 

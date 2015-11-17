@@ -4,13 +4,14 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using ExpenseManager.Database.Common;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Role;
+using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using WebGrease.Css.Extensions;
-using ExpenseManager.Database.Common;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -85,7 +86,15 @@ namespace ExpenseManager.Web.Controllers
                 }
             }
 
-            return this.View(new RoleDetailViewModel {Name = role.Name, Users = users});
+            return this.View(new RoleDetailViewModel
+            {
+                Name = role.Name,
+                Users = users.Select(u => new UserDetailViewModel
+                {
+                    Id = u.Id,
+                    UserName = u.UserName
+                }).ToList()
+            });
         }
 
         /// <summary>
