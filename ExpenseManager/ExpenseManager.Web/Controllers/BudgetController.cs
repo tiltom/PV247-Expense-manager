@@ -19,6 +19,7 @@ namespace ExpenseManager.Web.Controllers
     public class BudgetController : AbstractController
     {
         private readonly IBudgetsProvider _db = ProvidersFactory.GetNewBudgetsProviders();
+        private readonly ITransactionsProvider _transactionsProvider = ProvidersFactory.GetNewTransactionsProviders();
 
         /// <summary>
         ///     Shows all budgets for the current UserProfile.
@@ -173,9 +174,29 @@ namespace ExpenseManager.Web.Controllers
         {
             // find budget to delete by its Id
             var budget = await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
-            // delete connections to this budget in BudgetAccessRight table -
-            // TODO inspect if cascade won't apply
-            // budget.AccessRights.ToList().ForEach(r => this._db.BudgetAccessRights.Remove(r));
+
+            // delete connections to this budget in BudgetAccessRight table
+            var rightsToDelete = budget.AccessRights.ToList();
+
+            if (rightsToDelete.Count > 0)
+            {
+                foreach (var item in rightsToDelete)
+                {
+                    await this._db.DeteleAsync(item);
+                }
+            }
+
+            // delete all the transactions from the budget
+            var transactionsToDelete = budget.Transactions.ToList();
+
+            if (transactionsToDelete.Count > 0)
+            {
+                foreach (var item in transactionsToDelete)
+                {
+                    await this._transactionsProvider.DeteleAsync(item);
+                }
+            }
+
             // removing budget
             await this._db.DeteleAsync(budget);
 
