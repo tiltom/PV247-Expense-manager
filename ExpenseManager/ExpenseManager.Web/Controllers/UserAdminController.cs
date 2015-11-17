@@ -8,10 +8,12 @@ using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using ExpenseManager.Database.Common;
+using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using WebGrease.Css.Extensions;
 
@@ -60,7 +62,10 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View</returns>
         public ActionResult Index()
         {
-            return this.View(Mapper.Map<IEnumerable<UserViewModel>>(UserManager.Users));
+            return
+                this.View(
+                    Mapper.Map<IEnumerable<UserViewModel>>(
+                        UserManager.Users.ToList().Where(u => u.Id != User.Identity.GetUserId())));
         }
 
         /// <summary>
@@ -285,14 +290,47 @@ namespace ExpenseManager.Web.Controllers
                 return this.HttpNotFound();
             }
 
-            UserContext.UserProfiles.Remove(user.Profile);
+            var profile = user.Profile;
+            await this.DeleteUserDependentEntities(profile);
             var result = await UserManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
                 result.Errors.ForEach(e => ModelState.AddModelError("", e));
                 return this.View();
             }
+
+            var budgetProvider = ProvidersFactory.GetNewBudgetsProviders();
+            await budgetProvider.DeteleAsync(profile);
+
             return this.RedirectToAction("Index");
+        }
+
+        private async Task DeleteUserDependentEntities(UserProfile profile)
+        {
+            // Delete WalletAccessRights, Wallet and Transactions connected with Wallet
+            var walletToDelete = profile.PersonalWallet;
+            var warToDelete = walletToDelete.WalletAccessRights.ToList();
+            var transactionsToDelete = walletToDelete.Transactions.ToList();
+
+            var transactionsProvider = ProvidersFactory.GetNewTransactionsProviders();
+            foreach (var transaction in transactionsToDelete)
+            {
+                await transactionsProvider.DeteleAsync(transaction);
+            }
+
+            var walletProvider = ProvidersFactory.GetNewWalletsProviders();
+            foreach (var walletAccessRight in warToDelete)
+            {
+                await walletProvider.DeteleAsync(walletAccessRight);
+            }
+            await walletProvider.DeteleAsync(walletToDelete);
+
+            // Delete BudgetAccessRights and CreatedBudgets
+            var budgetProvider = ProvidersFactory.GetNewBudgetsProviders();
+            foreach (var createdBudget in profile.CreatedBudgets)
+            {
+                await budgetProvider.DeteleAsync(createdBudget);
+            }
         }
     }
 }
