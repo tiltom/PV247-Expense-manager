@@ -1,63 +1,75 @@
-﻿@model IEnumerable<ExpenseManager.Web.Models.Budget.BudgetShowModel>
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<ExpenseManager.Web.Models.Budget.BudgetShowModel>
 
 @{
     ViewBag.Title = "Budgets management";
 }
 
 <p>
-    @Html.ActionLink("Create new", "Create",null, new {@class="btn btn-action"})
+    @Html.ActionLink("Create new", "Create", null, new {@class = "btn btn-action"})
 </p>
+
+@if(Model.Count > 0)
+{ 
 <div class="medium-margin-top">
-<table class="table table-hover table-condensed">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.StartDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EndDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Limit)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
+    <table class="table table-hover table-condensed">
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Limit)
-            </td>
-            <td>
-                <div class="dropdown">
-                    <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            @Html.ActionLink("Edit", "Edit", new {id = item.Guid})
-                        </li>
-                        <li>
-                            @Html.ActionLink("Permissions", "Index", "BudgetAccessRight", new {id = item.Guid}, null)
-                        </li>
-                        <li>
-                            @Html.ActionLink("Delete", "Delete", new {id = item.Guid}, new {onclick = "return confirm('Are you sure you wish to delete this budget?');"})
-                        </li>
-                    </ul>
-                </div>
-            </td>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementAt(0).Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementAt(0).StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementAt(0).EndDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementAt(0).Limit)
+            </th>
+            <th></th>
         </tr>
-    }
 
-</table>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Limit)
+                </td>
+                <td>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Guid })
+                            </li>
+                            <li>
+                                @Html.ActionLink("Permissions", "Index", "BudgetAccessRight", new { id = item.Guid }, null)
+                            </li>
+                            <li>
+                                @Html.ActionLink("Delete", "Delete", new { id = item.Guid }, new { onclick = "return confirm('Are you sure you wish to delete this budget?');" })
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        }
+
+    </table>
 </div>
+
+    <div class="text-center">
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+        @Html.PagedListPager(Model, page => Url.Action("Index",
+            new {page}))
+    </div>
+}

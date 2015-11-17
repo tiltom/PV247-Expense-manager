@@ -12,6 +12,7 @@ using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.Budget;
+using PagedList;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -25,7 +26,7 @@ namespace ExpenseManager.Web.Controllers
         ///     Shows all budgets for the current UserProfile.
         /// </summary>
         /// <returns>View with model</returns>
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int? page)
         {
             // get Id of current logged UserProfile from HttpContext
             var userId = await this.CurrentProfileId();
@@ -37,7 +38,10 @@ namespace ExpenseManager.Web.Controllers
                         .ProjectTo<BudgetShowModel>()
                         .ToListAsync();
 
-            return this.View(budgetShowModels);
+            var pageSize = 5;
+            var pageNumber = (page ?? 1);
+
+            return this.View(budgetShowModels.ToPagedList(pageNumber, pageSize));
         }
 
         /// <summary>

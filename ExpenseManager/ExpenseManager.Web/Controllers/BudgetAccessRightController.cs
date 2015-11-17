@@ -11,6 +11,7 @@ using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.BudgetAccessRight;
+using PagedList;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -23,7 +24,7 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="id">Id of chosen budget</param>
         /// <returns>View with model</returns>
-        public async Task<ActionResult> Index(Guid id)
+        public async Task<ActionResult> Index(Guid id, int? page)
         {
             var accessRightModels =
                 await
@@ -33,7 +34,10 @@ namespace ExpenseManager.Web.Controllers
 
             accessRightModels.ForEach(model => model.BudgetId = id);
 
-            return this.View(accessRightModels);
+            var pageSize = 5;
+            var pageNumber = (page ?? 1);
+
+            return this.View(accessRightModels.ToPagedList(pageNumber, pageSize));
         }
 
         /// <summary>

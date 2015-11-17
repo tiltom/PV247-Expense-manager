@@ -26,7 +26,8 @@ namespace ExpenseManager.Web
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/bootstrap.css",
                 "~/Content/bootstrap-datepicker3.css",
-                "~/Content/site.css"));
+                "~/Content/site.css",
+                "~/Content/PagedList.css"));
         }
     }
 }
