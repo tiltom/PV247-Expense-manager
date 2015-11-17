@@ -1,22 +1,27 @@
 ﻿
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Income/Expense transaction";
+    ViewBag.Title = "Choose type of transaction";
 }
 
 @using (Html.BeginForm())
 {
     <div class="form-horizontal">
-        <div class="form-group">
-            <div class="col-md-10">
-                @Html.ActionLink("Income", "Create", null, new { expense = false, ViewBag.wallet }, new { @class = "btn-lg btn-success" })
-                @Html.ActionLink("Expense", "Create", null, new { expense = true, ViewBag.wallet }, new { @class = "btn-lg btn-danger" })
+        <div class="form-group" id="ExpenseIncome">
+            <div class="col-md-2"></div>
+            <div class="col-md-4">
+                @Html.ActionLink("Income", "Create", null, new {expense = false, ViewBag.wallet}, new {@class = "income"})
+
             </div>
+            <div class="col-md-4">
+                @Html.ActionLink("Expense", "Create", null, new {expense = true, ViewBag.wallet}, new {@class = "expense"}) @*btn-lg btn-danger*@
+            </div>
+            <div class="col-md-2"></div>
         </div>
 
     <div class="form-group">
         <div class="col-md-10">
-            @Html.ActionLink("Cancel", "Index", new { wallet = ViewBag.walletId}, new {@class = "btn btn-danger"})
+            @Html.ActionLink("Back", "Index", new { wallet = ViewBag.walletId}, new {@class = "btn btn-default"})
         </div>
     </div>
   </div>
