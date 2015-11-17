@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.Configuration;
 using ExpenseManager.Database.Common;
 using ExpenseManager.Database.Contexts;
 using ExpenseManager.Web.Helpers;
@@ -6,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Google;
 using Owin;
 
 namespace ExpenseManager.Web
@@ -62,11 +64,11 @@ namespace ExpenseManager.Web
                 }
             });*/
 
-            /*app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
             {
                 ClientId = WebConfigurationManager.AppSettings["GoogleClientID"],
                 ClientSecret = WebConfigurationManager.AppSettings["GoogleClientSecret"]
-            });*/
+            });
         }
     }
 }

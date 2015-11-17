@@ -8,7 +8,6 @@ using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using ExpenseManager.Database.Common;
-using ExpenseManager.Database.Contexts;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Helpers;
@@ -286,8 +285,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.HttpNotFound();
             }
 
-            var context = HttpContext.GetOwinContext().Get<UserContext>();
-            context.UserProfiles.Remove(user.Profile);
+            UserContext.UserProfiles.Remove(user.Profile);
             var result = await UserManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
