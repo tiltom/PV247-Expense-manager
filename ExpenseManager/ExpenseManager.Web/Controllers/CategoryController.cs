@@ -99,8 +99,6 @@ namespace ExpenseManager.Web.Controllers
                 categoryToEdit.Description = category.Description;
                 categoryToEdit.IconPath = category.Icon;
                 categoryToEdit.Name = category.Name;
-                categoryToEdit.Type = category.Type;
-
 
                 await this._db.AddOrUpdateAsync(categoryToEdit);
 
