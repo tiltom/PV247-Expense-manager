@@ -27,15 +27,19 @@ Suffix naming conventions:
 -----------------
 1. Entity - no suffix (e.g. Budget, Wallet)
 2. Controllers - Controller suffix (e.g. WalletControler, BudgetController)
-5. Rest (if rest will be used) - Rest suffix (e.g. WalletRest, BudgetRest)
+3. Rest (if rest will be used) - Rest suffix (e.g. WalletRest, BudgetRest)
+4. Business logic - Service suffix (e.g. WalletService, BudgetService)
+5. Unit tests - ServiceTest suffix (e.g. WalletServiceTest, BudgetServiceTest)
 
 Project modularity:
 -----------------
 ExpenseManagerSolution will be devided into following projects:
 
 1. ExpenseManager.Entity - this project will contain only DB entities
-2. ExpenseManager.BusinessLogic - this project will contain common buissiness logic used in FrontEnt project
-3. ExpenseManager.FrontEnd - controlles, views, js, html and css
+2. ExpenseManager.BusinessLogic - this project will contain common bussiness logic used in Web project
+3. ExpenseManager.BusinessLogic.Test - unit tests for business logic
+4. ExpenseManager.Database - contexts, initializers and seeding 
+5. ExpenseManager.Web - controlles, views, js, html and css
 
 Class structure:
 -----------------
