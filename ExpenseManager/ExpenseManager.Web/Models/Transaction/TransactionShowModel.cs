@@ -25,7 +25,7 @@ namespace ExpenseManager.Web.Models.Transaction
         /// </summary>
         [Required]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime Date { get; set; }
 
         /// <summary>
