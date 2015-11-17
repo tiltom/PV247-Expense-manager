@@ -5,16 +5,15 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using ExpenseManager.BusinessLogic;
 using ExpenseManager.Entity.Categories;
-using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.Category;
 
 namespace ExpenseManager.Web.Controllers
 {
     public class CategoryController : AbstractController
     {
-        private readonly ITransactionsProvider _db = ProvidersFactory.GetNewTransactionsProviders();
+        private readonly CategoryService _categoryService = new CategoryService();
 
         /// <summary>
         ///     Shows all existing categories.
@@ -22,7 +21,8 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View with model</returns>
         public async Task<ActionResult> Index()
         {
-            var categoryShowModels = await this._db.Categories.ProjectTo<CategoryShowModel>().ToListAsync();
+            var categories = this._categoryService.GetCategories();
+            var categoryShowModels = await categories.ProjectTo<CategoryShowModel>().OrderBy(x => x.Name).ToListAsync();
 
             return this.View(categoryShowModels);
         }
@@ -50,8 +50,7 @@ namespace ExpenseManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 var newCategory = Mapper.Map<Category>(category);
-
-                await this._db.AddOrUpdateAsync(newCategory);
+                await this._categoryService.CreateCategory(newCategory);
 
                 return this.RedirectToAction("Index");
             }
@@ -66,10 +65,10 @@ namespace ExpenseManager.Web.Controllers
         /// <param name="guid"></param>
         /// <returns>View with model</returns>
         [HttpGet]
-        public async Task<ActionResult> Edit(Guid guid)
+        public ActionResult Edit(Guid guid)
         {
             // find category by its Id
-            var category = await this._db.Categories.FirstOrDefaultAsync(x => x.Guid == guid);
+            var category = this._categoryService.GetCategoryByGuid(guid);
 
             if (category == null)
             {
@@ -91,16 +90,8 @@ namespace ExpenseManager.Web.Controllers
             // check if model is valid
             if (ModelState.IsValid)
             {
-                // find category by its Id from model
-                var categoryToEdit =
-                    await this._db.Categories.Where(c => c.Guid.Equals(category.Guid)).FirstOrDefaultAsync();
-
-                // editing editable properties, TODO: refactor this
-                categoryToEdit.Description = category.Description;
-                categoryToEdit.IconPath = category.Icon;
-                categoryToEdit.Name = category.Name;
-
-                await this._db.AddOrUpdateAsync(categoryToEdit);
+                var editedCategory = Mapper.Map<Category>(category);
+                await this._categoryService.EditCategory(editedCategory);
 
                 return this.RedirectToAction("Index");
             }
@@ -115,24 +106,7 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>Redirect to Index</returns>
         public async Task<ActionResult> Delete(Guid guid)
         {
-            // find category to delete by its Id
-            var categoryToDelete =
-                await this._db.Categories.Where(c => c.Guid.Equals(guid)).FirstOrDefaultAsync();
-
-            if (categoryToDelete == null)
-            {
-                return new HttpNotFoundResult();
-            }
-
-            // get the default category
-            var defaultCategory = await this._db.Categories.FirstOrDefaultAsync();
-
-            // delete connections to this category in Transactions table and set the category to Default
-            categoryToDelete.Transactions.ToList()
-                .ForEach(t => t.Category = defaultCategory);
-
-            // delete the category
-            await this._db.DeteleAsync(categoryToDelete);
+            await this._categoryService.DeleteCategory(guid);
 
             return this.RedirectToAction("Index");
         }
