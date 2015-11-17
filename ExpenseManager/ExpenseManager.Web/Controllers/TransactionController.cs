@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
+using ExpenseManager.BusinessLogic;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Enums;
 using ExpenseManager.Entity.Providers;
@@ -20,6 +21,7 @@ namespace ExpenseManager.Web.Controllers
     public class TransactionController : AbstractController
     {
         private readonly IBudgetsProvider _budgetsProvider = ProvidersFactory.GetNewBudgetsProviders();
+        private readonly TransactionService _transactionService = new TransactionService();
         private readonly ITransactionsProvider _transactionsProvider = ProvidersFactory.GetNewTransactionsProviders();
         private readonly IWalletsProvider _walletsProvider = ProvidersFactory.GetNewWalletsProviders();
 
@@ -35,7 +37,8 @@ namespace ExpenseManager.Web.Controllers
             // If no wallet was given set default wallet
             if (wallet == null)
             {
-                wallet = await this.GetDefaultWallet();
+                //TODO do by service
+                wallet = await this.GetDefaultWallet(id);
             }
             var walletId = wallet.Value;
 
@@ -43,10 +46,7 @@ namespace ExpenseManager.Web.Controllers
             ViewBag.wallet = await this.GetViewableWallets(walletId);
             ViewBag.displayedWalletId = walletId;
             // get all Transactions in selected wallet
-            var list =
-                await
-                    this._transactionsProvider.Transactions.Where(user => user.Wallet.Guid == walletId)
-                        .ToListAsync();
+            var list = await this._transactionService.GetAllTransactionsInWallet(walletId);
 
             // get user permission for selected wallet
             var permission =
@@ -55,13 +55,22 @@ namespace ExpenseManager.Web.Controllers
             if (permission != null && permission.Permission == PermissionEnum.Read)
             {
                 ViewBag.editable = false;
+                //TODO When commented code is called on asynch version of ConvertEntityToTransactionShowModel method exception: A second operation started on this context before a previous asynchronous operation completed. Use 'await' to ensure that any asynchronous operations have completed before calling another method on this context. Any instance members are not guaranteed to be thread safe.
+                /*var itemTaskList = list.Select(this.ConvertEntityToTransactionShowModel);
+                var transactions = await Task.WhenAll(itemTaskList);
+                return this.View("Index", transactions);*/
                 return this.View("Index", list.Select(this.ConvertEntityToTransactionShowModel));
             }
 
             ViewBag.editable = true;
+            //TODO When commented code is called on asynch version of ConvertEntityToTransactionShowModel method exception: A second operation started on this context before a previous asynchronous operation completed. Use 'await' to ensure that any asynchronous operations have completed before calling another method on this context. Any instance members are not guaranteed to be thread safe.
             //list of all transactions from UserProfile's wallet
-            return this.View(list.Select(this.ConvertEntityToTransactionShowModel));
+            /*var editableItemTaskList = list.Select(this.ConvertEntityToTransactionShowModel);
+            var editableTransactions = await Task.WhenAll(editableItemTaskList);
+            return this.View("Index", editableTransactions);*/
+            return this.View("Index", list.Select(this.ConvertEntityToTransactionShowModel));
         }
+
 
         public ActionResult ExpenseIncome(Guid wallet)
         {
@@ -76,22 +85,21 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View with model</returns>
         public async Task<ActionResult> Create(bool expense, Guid wallet)
         {
-            //get default currency for wallet
-            var transactionWallet =
-                await this._transactionsProvider.Wallets.Where(w => w.Guid.Equals(wallet)).FirstOrDefaultAsync();
             var permissions = await this.GetPermission(wallet);
-            if (transactionWallet == null || permissions == null || PermissionEnum.Read == permissions.Permission)
+            if (permissions == null || PermissionEnum.Read == permissions.Permission)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
                     "You don't have permission to create transactions in this wallet");
             }
+            //get default currency for wallet
+            var currency = await this._transactionService.GetDefaultCurrencyInWallet(wallet);
             //fill NewTransaction model with needed informations
             return
                 this.View(new NewTransactionModel
                 {
                     Expense = expense,
                     WalletId = wallet,
-                    CurrencyId = transactionWallet.Currency.Guid,
+                    CurrencyId = currency.Guid,
                     Categories = await this.GetCategories(this.GetCategoryType(expense)),
                     Currencies = await this.GetCurrencies(),
                     Budgets = await this.GetBudgets()
@@ -135,7 +143,7 @@ namespace ExpenseManager.Web.Controllers
                 var transactionEntity =
                     await this.ConvertNewModelToEntity(transaction, new Transaction {Guid = Guid.NewGuid()});
                 //check if transaction should be repeatable
-                await this._transactionsProvider.AddOrUpdateAsync(transactionEntity);
+                await this._transactionService.AddOrUpdate(transactionEntity);
                 if (transaction.IsRepeatable)
                 {
                     //create new repeatable transaction entity and fill from model
@@ -148,7 +156,7 @@ namespace ExpenseManager.Web.Controllers
                         LastOccurrence = transaction.LastOccurrence.GetValueOrDefault(),
                         Guid = Guid.NewGuid()
                     };
-                    await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
+                    await this._transactionService.AddOrUpdate(repeatableTransaction);
                 }
                 return this.RedirectToAction("Index", new {wallet = transaction.WalletId});
             }
@@ -157,6 +165,7 @@ namespace ExpenseManager.Web.Controllers
             transaction.Budgets = await this.GetBudgets();
             return this.View(transaction);
         }
+
 
         /// <summary>
         ///     Action for editing transaction
@@ -167,8 +176,7 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             //find transaction by it's Id
-            var transaction =
-                await this._transactionsProvider.Transactions.Where(t => t.Guid.Equals(id)).FirstOrDefaultAsync();
+            var transaction = await this._transactionService.GetTransactionById(id);
             if (transaction == null)
             {
                 return this.HttpNotFound();
@@ -181,7 +189,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             //fill model from DB entity
-            var model = this.ConvertEntityToTransactionEditModel(transaction);
+            var model = await this.ConvertEntityToTransactionEditModel(transaction);
             model.Expense = (transaction.Amount < 0);
             if (model.Expense)
             {
@@ -193,6 +201,7 @@ namespace ExpenseManager.Web.Controllers
 
             return this.View(model);
         }
+
 
         /// <summary>
         ///     Editing of transaction
@@ -231,17 +240,12 @@ namespace ExpenseManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 //find transaction by Id
-                var transactionEntity =
-                    await
-                        this._transactionsProvider.Transactions.Where(t => t.Guid.Equals(transaction.Id))
-                            .FirstOrDefaultAsync();
+                var transactionEntity = await this._transactionService.GetTransactionById(transaction.Id);
                 //update entity properties from model
                 await this.ConvertEditModelToEntity(transaction, transactionEntity);
                 //find if transaction is repeatable in DB
                 var repeatableTransaction =
-                    await
-                        this._transactionsProvider.RepeatableTransactions.FirstOrDefaultAsync(
-                            a => a.FirstTransaction.Guid == transaction.Id);
+                    await this._transactionService.GetRepeatableTransactionByFirstTransactionId(transaction.Id);
                 //check if transaction was set as repeatable in model
                 if (transaction.IsRepeatable)
                 {
@@ -257,7 +261,7 @@ namespace ExpenseManager.Web.Controllers
                             LastOccurrence = transaction.LastOccurrence.GetValueOrDefault(),
                             Guid = Guid.NewGuid()
                         };
-                        await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
+                        await this._transactionService.AddOrUpdate(repeatableTransaction);
                     }
                     // if transaction exists in repeatable transactions in DB update it
                     else
@@ -265,7 +269,7 @@ namespace ExpenseManager.Web.Controllers
                         repeatableTransaction.NextRepeat = transaction.NextRepeat.GetValueOrDefault();
                         repeatableTransaction.FrequencyType = transaction.FrequencyType;
                         repeatableTransaction.LastOccurrence = transaction.LastOccurrence.GetValueOrDefault();
-                        await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
+                        await this._transactionService.AddOrUpdate(repeatableTransaction);
                     }
                 }
                 // if transaction was set as not repeatable in model
@@ -274,11 +278,11 @@ namespace ExpenseManager.Web.Controllers
                     //if exists in DB in repeatable transactions delete it
                     if (repeatableTransaction != null)
                     {
-                        await this._transactionsProvider.DeteleAsync(repeatableTransaction);
+                        await this._transactionService.Remove(repeatableTransaction);
                     }
                     else
                     {
-                        await this._transactionsProvider.AddOrUpdateAsync(transactionEntity);
+                        await this._transactionService.AddOrUpdate(transactionEntity);
                     }
                 }
                 return this.RedirectToAction("Index", new {wallet = transaction.WalletId});
@@ -288,6 +292,7 @@ namespace ExpenseManager.Web.Controllers
             transaction.Budgets = await this.GetBudgets();
             return this.View(transaction);
         }
+
 
         /// <summary>
         ///     Deleting transactions
@@ -299,7 +304,7 @@ namespace ExpenseManager.Web.Controllers
         {
             //find transaction by its Id
             var transaction =
-                await this._transactionsProvider.Transactions.Where(t => t.Guid.Equals(id)).FirstOrDefaultAsync();
+                await this._transactionService.GetTransactionById(id);
             if (!await this.HasWritePermission(transaction))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
@@ -307,18 +312,15 @@ namespace ExpenseManager.Web.Controllers
             }
             var walletId = transaction.Wallet.Guid;
             //get if transaction is also in repeatable transactions
-            var repeatableTransaction =
-                await
-                    this._transactionsProvider.RepeatableTransactions.FirstOrDefaultAsync(
-                        a => a.FirstTransaction.Guid.Equals(id));
-
-            if (repeatableTransaction != null) //check if transaction was not repeatable
+            var repeatableTransaction = await this._transactionService.GetRepeatableTransaction(id);
+            //check if transaction was not repeatable
+            if (repeatableTransaction != null)
             {
                 //if true remove it from repeatable transactions first
-                await this._transactionsProvider.DeteleAsync(repeatableTransaction);
+                await this._transactionService.Remove(repeatableTransaction);
             }
             //removing transaction from DB
-            await this._transactionsProvider.DeteleAsync(transaction);
+            await this._transactionService.Remove(transaction);
             return this.RedirectToAction("Index", new {wallet = walletId});
         }
 
@@ -349,19 +351,17 @@ namespace ExpenseManager.Web.Controllers
             entity.Date = model.Date;
             entity.Description = model.Description;
             entity.Wallet =
-                await this._transactionsProvider.Wallets.Where(w => w.Guid.Equals(model.WalletId)).FirstOrDefaultAsync();
+                await this._transactionService.GetWalletById(model.WalletId);
             //check if budget was set to category in model
             if (model.BudgetId != null)
             {
-                var budgetId = model.BudgetId.GetValueOrDefault();
                 entity.Budget =
-                    await this._transactionsProvider.Budgets.Where(b => b.Guid == budgetId).FirstOrDefaultAsync();
+                    await this._transactionService.GetBudgetById(model.BudgetId.Value);
             }
             entity.Currency =
-                await this._transactionsProvider.Currencies.Where(c => c.Guid == model.CurrencyId).FirstOrDefaultAsync();
+                await this._transactionService.GetCurrencyById(model.CurrencyId);
             entity.Category =
-                await this._transactionsProvider.Categories.Where(c => c.Guid == model.CategoryId).FirstOrDefaultAsync();
-
+                await this._transactionService.GetCategoryById(model.CategoryId);
             return entity;
         }
 
@@ -382,7 +382,7 @@ namespace ExpenseManager.Web.Controllers
             entity.Date = model.Date;
             entity.Description = model.Description;
             entity.Wallet =
-                await this._transactionsProvider.Wallets.Where(w => w.Guid.Equals(model.WalletId)).FirstOrDefaultAsync();
+                await this._transactionService.GetWalletById(model.WalletId);
             //check if budget was set in model
             if (model.BudgetId == null)
             {
@@ -392,22 +392,14 @@ namespace ExpenseManager.Web.Controllers
             }
             else
             {
-                // TODO: REMOVE THESE SUPER UGLY TOSTRINGS JUST TEST
-                var budgetId = model.BudgetId.GetValueOrDefault();
-                entity.Budget =
-                    await
-                        this._transactionsProvider.Budgets.Where(b => b.Guid.Equals(budgetId))
-                            .FirstOrDefaultAsync();
+                entity.Budget = await this._transactionService.GetBudgetById(model.BudgetId.Value);
             }
-            // TODO: REMOVE THESE SUPER UGLY TOSTRINGS JUST TEST
             entity.Currency =
                 await
-                    this._transactionsProvider.Currencies.Where(c => c.Guid.Equals(model.CurrencyId))
-                        .FirstOrDefaultAsync();
+                    this._transactionService.GetCurrencyById(model.CurrencyId);
             entity.Category =
                 await
-                    this._transactionsProvider.Categories.Where(c => c.Guid.Equals(model.CategoryId))
-                        .FirstOrDefaultAsync();
+                    this._transactionService.GetCategoryById(model.CategoryId);
             return entity;
         }
 
@@ -416,12 +408,11 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="entity">entity of type Transaction</param>
         /// <returns>EditTransactionModel</returns>
-        private EditTransactionModel ConvertEntityToTransactionEditModel(Transaction entity)
+        private async Task<EditTransactionModel> ConvertEntityToTransactionEditModel(Transaction entity)
         {
             //get if transaction is repeatable
             var repeatableTransaction =
-                this._transactionsProvider.RepeatableTransactions.FirstOrDefault(
-                    a => a.FirstTransaction.Guid == entity.Guid);
+                await this._transactionService.GetRepeatableTransactionByFirstTransactionId(entity.Guid);
 
             Guid? budgetId = null;
             if (entity.Budget != null)
@@ -438,7 +429,6 @@ namespace ExpenseManager.Web.Controllers
                 transactionModel.FrequencyType = repeatableTransaction.FrequencyType;
                 transactionModel.LastOccurrence = repeatableTransaction.LastOccurrence;
             }
-
             return transactionModel;
         }
 
@@ -453,6 +443,8 @@ namespace ExpenseManager.Web.Controllers
             if (entity.Budget != null)
                 budgetName = entity.Budget.Name;
             //get if transaction is repeatable
+            //TODO change to and make method async
+            //await this._transactionService.GetRepeatableTransactionByFirstTransactionId(entity.Guid);
             var repeatableTransaction =
                 this._transactionsProvider.RepeatableTransactions.FirstOrDefault(
                     a => a.FirstTransaction.Guid == entity.Guid);
@@ -524,17 +516,6 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="walletId">wallet which should be selected</param>
         /// <returns></returns>
-        private async Task<SelectList> GetViewableWallets(Guid walletId)
-        {
-            var id = await this.CurrentProfileId();
-            var viewableWallets = await this._walletsProvider.WalletAccessRights.Where(
-                user => user.Permission >= PermissionEnum.Read && user.UserProfile.Guid == id)
-                .Select(
-                    wallet => new SelectListItem {Value = wallet.Wallet.Guid.ToString(), Text = wallet.Wallet.Name})
-                .ToListAsync();
-            return new SelectList(viewableWallets, "Value", "Text", walletId);
-        }
-
         /// <summary>
         ///     Checks if user has permission to write to Wallet
         /// </summary>
@@ -552,19 +533,6 @@ namespace ExpenseManager.Web.Controllers
             return permission != null && permission.Permission != PermissionEnum.Read;
         }
 
-        /// <summary>
-        ///     Returns id of User's default Wallet
-        /// </summary>
-        /// <returns>id of User's default Wallet</returns>
-        private async Task<Guid> GetDefaultWallet()
-        {
-            var profileId = await this.CurrentProfileId();
-            var currentUserWallet = await this._walletsProvider.Wallets.Where(w => w.Owner.Guid == profileId)
-                .Select(w => w.Guid)
-                .FirstOrDefaultAsync();
-            return currentUserWallet;
-        }
-
         private async Task<WalletAccessRight> GetPermission(Guid walletId)
         {
             var id = await this.CurrentProfileId();
@@ -573,6 +541,31 @@ namespace ExpenseManager.Web.Controllers
                     .FirstOrDefaultAsync(
                         r =>
                             r.UserProfile.Guid == id && r.Wallet.Guid == walletId);
+        }
+
+        /// <summary>
+        ///     Provides selectable list of Wallets user has at least permission to read
+        /// </summary>
+        /// <param name="walletId">wallet which should be selected</param>
+        /// <returns></returns>
+        private async Task<SelectList> GetViewableWallets(Guid walletId)
+        {
+            var id = await this.CurrentProfileId();
+            var viewableWallets = await this._walletsProvider.WalletAccessRights.Where(
+                user => user.Permission >= PermissionEnum.Read && user.UserProfile.Guid == id)
+                .Select(
+                    wallet => new SelectListItem {Value = wallet.Wallet.Guid.ToString(), Text = wallet.Wallet.Name})
+                .ToListAsync();
+            return new SelectList(viewableWallets, "Value", "Text", walletId);
+        }
+
+        private async Task<Guid> GetDefaultWallet(Guid userId)
+        {
+            //TODO Should be  
+            var currentUserWallet = await this._walletsProvider.Wallets.Where(w => w.Owner.Guid == userId)
+                .Select(w => w.Guid)
+                .FirstOrDefaultAsync();
+            return currentUserWallet;
         }
 
         private CategoryType GetCategoryType(bool expense)
