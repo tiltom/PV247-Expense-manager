@@ -74,4 +74,12 @@
               .click(function () {
                   $(this).datepicker('show');
               });
+
+    $('#collapseExample').on('shown.bs.collapse', function () {
+        $(".glyphicon").removeClass("glyphicon-chevron-right").addClass("glyphicon-chevron-down");
+    });
+
+    $('#collapseExample').on('hidden.bs.collapse', function () {
+        $(".glyphicon").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-right");
+    });
 </script>

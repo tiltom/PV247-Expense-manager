@@ -140,16 +140,6 @@
 }
 
 
-<script type="text/javascript">
-    $('#collapseExample').on('shown.bs.collapse', function () {
-        $(".glyphicon").removeClass("glyphicon-chevron-right").addClass("glyphicon-chevron-down");
-    });
-
-    $('#collapseExample').on('hidden.bs.collapse', function () {
-        $(".glyphicon").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-right");
-    });
-</script>
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("/Scripts/transactionCheckbox.js")
