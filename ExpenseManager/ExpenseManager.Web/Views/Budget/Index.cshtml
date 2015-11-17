@@ -7,7 +7,7 @@
 <p>
     @Html.ActionLink("Create new", "Create",null, new {@class="btn btn-action"})
 </p>
-<div class="medium-margin-top" /> 
+<div class="medium-margin-top">
 <table class="table table-hover table-condensed">
     <tr>
         <th>
@@ -42,7 +42,7 @@
             </td>
             <td>
                 <div class="dropdown">
-                <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li>
                             @Html.ActionLink("Edit", "Edit", new {id = item.Guid})
@@ -55,8 +55,9 @@
                         </li>
                     </ul>
                 </div>
-</td>
+            </td>
         </tr>
     }
 
 </table>
+</div>
