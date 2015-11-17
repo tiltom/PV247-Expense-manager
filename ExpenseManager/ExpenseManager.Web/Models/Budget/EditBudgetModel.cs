@@ -38,7 +38,8 @@ namespace ExpenseManager.Web.Models.Budget
         /// </summary>
         [Required]
         [Display(Name = "Limit")]
-        [Range(typeof (decimal), "0", "9999999999999999999999")]
+        [Range(typeof (decimal), "1", "9999999999999999999999",
+            ErrorMessage = "Limit for budget must be greater than 0.")]
         public decimal Limit { get; set; }
 
         /// <summary>
