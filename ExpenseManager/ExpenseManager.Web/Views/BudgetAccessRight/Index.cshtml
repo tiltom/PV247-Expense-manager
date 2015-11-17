@@ -9,7 +9,7 @@
 <p>
     @Html.ActionLink("Create New", "Create", new {id = Model.ElementAt(0).BudgetId}, new {@class = "btn btn-action"})
 </p>
-<div class="medium-margin-top" /> 
+<div class="medium-margin-top"></div>
 <table class="table table-condensed table-hover">
     <tr>
         <th>
@@ -37,10 +37,10 @@
                         <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li>
-                                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                                @Html.ActionLink("Edit", "Edit", new {id = item.Id})
                             </li>
                             <li>
-                                @Html.ActionLink("Delete", "Delete", new { id = item.Id, budgetId = item.BudgetId }, new { onclick = "return confirm('Are you sure you wish to delete this permission?');" })
+                                @Html.ActionLink("Delete", "Delete", new {id = item.Id, budgetId = item.BudgetId}, new {onclick = "return confirm('Are you sure you wish to delete this permission?');"})
                             </li>
                         </ul>
                     </div>
@@ -50,4 +50,4 @@
     }
 
 </table>
-
+<div class="clear"></div>
