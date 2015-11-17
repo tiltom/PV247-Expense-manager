@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Web.Mvc;
+using ExpenseManager.Web.Controllers;
 
 namespace ExpenseManager.Web.Binders
 {
@@ -20,13 +21,14 @@ namespace ExpenseManager.Web.Binders
             }
 
             DateTime value;
-            var valid = DateTime.TryParseExact(attemptedValue, "dd.MM.yyyy",
+            var valid = DateTime.TryParseExact(attemptedValue, AbstractController.DateFormat,
                 CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
 
             if (!valid)
             {
                 var result = base.BindModel(controllerContext, bindingContext);
-                bindingContext.ModelState.AddModelError(modelName, "Date was not in format dd.MM.yyyy");
+                bindingContext.ModelState.AddModelError(modelName,
+                    "Date was not in format " + AbstractController.DateFormat);
                 return result;
             }
 

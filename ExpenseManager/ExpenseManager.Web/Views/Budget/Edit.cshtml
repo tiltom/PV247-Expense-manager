@@ -1,4 +1,5 @@
-﻿@model ExpenseManager.Web.Models.Budget.EditBudgetModel
+﻿@using ExpenseManager.Web.Controllers
+@model ExpenseManager.Web.Models.Budget.EditBudgetModel
 
 @{
     ViewBag.Title = "Edit budget";
@@ -20,7 +21,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control datepicker", @Value = Model.StartDate.ToString("dd.MM.yyyy") })
+            @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control datepicker", @Value = Model.StartDate.ToString(AbstractController.DateFormat) })
             @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -28,7 +29,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-           @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control datepicker", @Value = Model.EndDate.ToString("dd.MM.yyyy") })
+           @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control datepicker", @Value = Model.EndDate.ToString(AbstractController.DateFormat) })
             @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
         </div>
     </div>
