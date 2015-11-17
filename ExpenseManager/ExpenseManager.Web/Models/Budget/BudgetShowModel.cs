@@ -26,6 +26,7 @@ namespace ExpenseManager.Web.Models.Budget
         /// </summary>
         [Required]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         [Display(Name = "Start date")]
         public DateTime StartDate { get; set; }
 
@@ -34,6 +35,7 @@ namespace ExpenseManager.Web.Models.Budget
         /// </summary>
         [Required]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         [Display(Name = "End date")]
         public DateTime EndDate { get; set; }
 
