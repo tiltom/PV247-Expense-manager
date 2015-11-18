@@ -6,8 +6,6 @@ using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
-using ExpenseManager.Entity.Budgets;
-using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Enums;
 using ExpenseManager.Entity.Providers;
@@ -15,7 +13,7 @@ using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Wallets;
 
-namespace ExpenseManager.BusinessLogic
+namespace ExpenseManager.BusinessLogic.Transactions
 {
     public class TransactionService
     {
@@ -83,7 +81,7 @@ namespace ExpenseManager.BusinessLogic
                     a => a.FirstTransaction.Guid == transactionId);
         }
 
-        public async Task<Category> GetCategoryById(Guid categoryId)
+        public async Task<Entity.Categories.Category> GetCategoryById(Guid categoryId)
         {
             return
                 await this._transactionsProvider.Categories.Where(t => t.Guid == categoryId).FirstOrDefaultAsync();
@@ -95,7 +93,7 @@ namespace ExpenseManager.BusinessLogic
                 await this._transactionsProvider.Currencies.Where(t => t.Guid == currencyId).FirstOrDefaultAsync();
         }
 
-        public async Task<Budget> GetBudgetById(Guid budgetId)
+        public async Task<Entity.Budgets.Budget> GetBudgetById(Guid budgetId)
         {
             return
                 await this._transactionsProvider.Budgets.Where(b => b.Guid == budgetId).FirstOrDefaultAsync();
@@ -118,7 +116,7 @@ namespace ExpenseManager.BusinessLogic
                         a => a.FirstTransaction.Guid == transactionId);
         }
 
-        public async Task<Wallet> GetWalletById(Guid walletId)
+        public async Task<Entity.Wallets.Wallet> GetWalletById(Guid walletId)
         {
             return
                 await this._transactionsProvider.Wallets.Where(w => w.Guid == walletId).FirstOrDefaultAsync();

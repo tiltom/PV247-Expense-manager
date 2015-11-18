@@ -2,12 +2,11 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 
-namespace ExpenseManager.BusinessLogic
+namespace ExpenseManager.BusinessLogic.Budgets
 {
     /// <summary>
     ///     Class that handles logic of BudgetController
@@ -53,7 +52,7 @@ namespace ExpenseManager.BusinessLogic
         /// </summary>
         /// <param name="budget">New budget</param>
         /// <returns></returns>
-        public async Task CreateBudget(Budget budget)
+        public async Task CreateBudget(Entity.Budgets.Budget budget)
         {
             this.ValidateBudget(budget);
 
@@ -65,7 +64,7 @@ namespace ExpenseManager.BusinessLogic
         /// </summary>
         /// <param name="guid">ID that specifies returned budget</param>
         /// <returns>Desired budget</returns>
-        public async Task<Budget> GetBudgetById(Guid guid)
+        public async Task<Entity.Budgets.Budget> GetBudgetById(Guid guid)
         {
             return await this._db.Budgets.Where(x => x.Guid.Equals(guid)).FirstOrDefaultAsync();
         }
@@ -75,7 +74,7 @@ namespace ExpenseManager.BusinessLogic
         /// </summary>
         /// <param name="editedBudget">Edited budget</param>
         /// <returns></returns>
-        public async Task EditBudget(Budget editedBudget)
+        public async Task EditBudget(Entity.Budgets.Budget editedBudget)
         {
             var originalBudget = await this.GetBudgetById(editedBudget.Guid);
 
@@ -117,7 +116,7 @@ namespace ExpenseManager.BusinessLogic
 
         #region private
 
-        private void ValidateBudget(Budget budget)
+        private void ValidateBudget(Entity.Budgets.Budget budget)
         {
             // TODO: validate budget
         }

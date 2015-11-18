@@ -6,7 +6,7 @@ using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
-using ExpenseManager.BusinessLogic;
+using ExpenseManager.BusinessLogic.Transactions;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Web.Models.Transaction;

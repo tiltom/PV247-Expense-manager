@@ -74,14 +74,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BudgetAccessRightService.cs" />
-    <Compile Include="BudgetService.cs" />
-    <Compile Include="CategoryService.cs" />
+    <Compile Include="Budget\BudgetAccessRightService.cs" />
+    <Compile Include="Budget\BudgetService.cs" />
+    <Compile Include="Category\CategoryService.cs" />
     <Compile Include="Common\ColorGeneratorService.cs" />
     <Compile Include="Dashboard\DashBoardService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TransactionService.cs" />
-    <Compile Include="WalletService.cs" />
+    <Compile Include="Transaction\TransactionService.cs" />
+    <Compile Include="Wallet\WalletService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExpenseManager.Entity\ExpenseManager.Entity.csproj">
