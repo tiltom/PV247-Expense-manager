@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
@@ -19,9 +18,8 @@ namespace ExpenseManager.Web.Controllers
     [Authorize]
     public class BudgetController : AbstractController
     {
-        private readonly IBudgetsProvider _db = ProvidersFactory.GetNewBudgetsProviders();
-        private readonly ITransactionsProvider _transactionsProvider = ProvidersFactory.GetNewTransactionsProviders();
-
+        private readonly BudgetService _budgetService = new BudgetService();
+        
         /// <summary>
         ///     Shows all budgets for the current UserProfile.
         /// </summary>
@@ -32,11 +30,8 @@ namespace ExpenseManager.Web.Controllers
             var userId = await this.CurrentProfileId();
 
             // get list of all UserProfile's budgets
-            var budgetShowModels =
-                await
-                    this._db.Budgets.Where(user => user.Creator.Guid == userId)
-                        .ProjectTo<BudgetShowModel>()
-                        .ToListAsync();
+            var budgets = this._budgetService.GetBudgetsByUserId(userId);
+            var budgetShowModels = await budgets.ProjectTo<BudgetShowModel>().ToListAsync();
 
             var pageSize = 5;
             var pageNumber = (page ?? 1);
@@ -82,10 +77,10 @@ namespace ExpenseManager.Web.Controllers
             var userId = await this.CurrentProfileId();
 
             // finding creator by his ID
-            var creator = await this._db.UserProfiles.FirstOrDefaultAsync(user => user.Guid == userId);
+            var creator = await this._budgetService.GetBudgetCreator(userId);
 
             // creating new Budget by filling it from model
-            await this._db.AddOrUpdateAsync(new Budget
+            var budget = new Budget
             {
                 Name = model.Name,
                 StartDate = model.StartDate,
@@ -103,7 +98,10 @@ namespace ExpenseManager.Web.Controllers
                             UserProfile = creator
                         }
                     }
-            });
+            };
+
+            // write budget to DB
+            await this._budgetService.CreateBudget(budget);
 
             return this.RedirectToAction("Index");
         }
@@ -117,8 +115,7 @@ namespace ExpenseManager.Web.Controllers
         {
             // find budget by its Id
 
-            var budget = await this._db.Budgets.Where(b => b.Guid == id).FirstOrDefaultAsync();
-
+            var budget = await this._budgetService.GetBudgetById(id);
 
             if (budget == null)
             {
@@ -150,20 +147,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(model);
             }
 
-            // find budget by its Id from model
-            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(model.Guid)).FirstOrDefaultAsync();
-
-            // editing editable properties, TODO: refactor it
-            budget.Name = model.Name;
-            budget.StartDate = model.StartDate;
-            budget.EndDate = model.EndDate;
-            budget.Description = model.Description;
-            budget.Limit = model.Limit;
-            budget.Creator = budget.Creator;
-            budget.AccessRights = budget.AccessRights;
-            budget.Currency = budget.Currency;
-
-            await this._db.AddOrUpdateAsync(budget);
+            await this._budgetService.EditBudget(Mapper.Map<Budget>(model));
 
             // Add OK message
             return this.RedirectToAction("Index");
@@ -176,33 +160,7 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>Redirect to Index</returns>
         public async Task<ActionResult> Delete(Guid id)
         {
-            // find budget to delete by its Id
-            var budget = await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
-
-            // delete connections to this budget in BudgetAccessRight table
-            var rightsToDelete = budget.AccessRights.ToList();
-
-            if (rightsToDelete.Count > 0)
-            {
-                foreach (var item in rightsToDelete)
-                {
-                    await this._db.DeteleAsync(item);
-                }
-            }
-
-            // delete all the transactions from the budget
-            var transactionsToDelete = budget.Transactions.ToList();
-
-            if (transactionsToDelete.Count > 0)
-            {
-                foreach (var item in transactionsToDelete)
-                {
-                    await this._transactionsProvider.DeteleAsync(item);
-                }
-            }
-
-            // removing budget
-            await this._db.DeteleAsync(budget);
+            await this._budgetService.DeleteBudget(id);
 
             return this.RedirectToAction("Index");
         }

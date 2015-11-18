@@ -27,7 +27,7 @@ namespace ExpenseManager.BusinessLogic
         /// <summary>
         ///     Creates new category - adds it to database
         /// </summary>
-        /// <param name="category">Cate</param>
+        /// <param name="category">New category</param>
         /// <returns></returns>
         public async Task CreateCategory(Category category)
         {
