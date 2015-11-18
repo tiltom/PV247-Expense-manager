@@ -74,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BudgetAccessRightService.cs" />
     <Compile Include="BudgetService.cs" />
     <Compile Include="CategoryService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
