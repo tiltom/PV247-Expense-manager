@@ -22,7 +22,8 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Index()
         {
             var categories = this._categoryService.GetCategories();
-            var categoryShowModels = await categories.ProjectTo<CategoryShowModel>().OrderBy(x => x.Name).ToListAsync();
+            var categoryShowModels = await
+                categories.ProjectTo<CategoryShowModel>(categories).OrderBy(x => x.Name).ToListAsync();
 
             return this.View(categoryShowModels);
         }
@@ -65,15 +66,10 @@ namespace ExpenseManager.Web.Controllers
         /// <param name="guid"></param>
         /// <returns>View with model</returns>
         [HttpGet]
-        public ActionResult Edit(Guid guid)
+        public async Task<ActionResult> Edit(Guid guid)
         {
             // find category by its Id
-            var category = this._categoryService.GetCategoryByGuid(guid);
-
-            if (category == null)
-            {
-                return new HttpNotFoundResult();
-            }
+            var category = await this._categoryService.GetCategoryByGuid(guid);
 
             return this.View(Mapper.Map<CategoryShowModel>(category));
         }

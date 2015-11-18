@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using ExpenseManager.Entity.Categories;
@@ -7,15 +8,27 @@ using ExpenseManager.Entity.Providers.Factory;
 
 namespace ExpenseManager.BusinessLogic
 {
+    /// <summary>
+    ///     Class that handles logic of CategoryController
+    /// </summary>
     public class CategoryService
     {
         private readonly ITransactionsProvider _db = ProvidersFactory.GetNewTransactionsProviders();
 
+        /// <summary>
+        ///     Returns all categories from database
+        /// </summary>
+        /// <returns>All categories</returns>
         public IQueryable GetCategories()
         {
             return this._db.Categories;
         }
 
+        /// <summary>
+        ///     Creates new category - adds it to database
+        /// </summary>
+        /// <param name="category">Cate</param>
+        /// <returns></returns>
         public async Task CreateCategory(Category category)
         {
             this.ValidateCategory(category);
@@ -23,27 +36,37 @@ namespace ExpenseManager.BusinessLogic
             await this._db.AddOrUpdateAsync(category);
         }
 
-        public Category GetCategoryByGuid(Guid guid)
+        /// <summary>
+        ///     Returns specified category by guid
+        /// </summary>
+        /// <param name="guid">ID that specifies returned category</param>
+        /// <returns>Desired category</returns>
+        public async Task<Category> GetCategoryByGuid(Guid guid)
         {
-            return this._db.Categories.FirstOrDefault(x => x.Guid.Equals(guid));
+            return await this._db.Categories.Where(x => x.Guid.Equals(guid)).FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        ///     Edits category and saves it to database
+        /// </summary>
+        /// <param name="category">Edited category</param>
+        /// <returns></returns>
         public async Task EditCategory(Category category)
         {
-            var categoryToEdit = this.GetCategoryByGuid(category.Guid);
-            categoryToEdit.Name = category.Name;
-            categoryToEdit.Description = category.Description;
-            categoryToEdit.IconPath = category.IconPath;
+            this.ValidateCategory(category);
 
-            this.ValidateCategory(categoryToEdit);
-
-            await this._db.AddOrUpdateAsync(categoryToEdit);
+            await this._db.AddOrUpdateAsync(category);
         }
 
+        /// <summary>
+        ///     Deletes category from database
+        /// </summary>
+        /// <param name="guid">ID that specifies edited category</param>
+        /// <returns></returns>
         public async Task DeleteCategory(Guid guid)
         {
-            var categoryToDelete = this.GetCategoryByGuid(guid);
-            var defaultCategory = this.GetDefaultCategory();
+            var categoryToDelete = await this.GetCategoryByGuid(guid);
+            var defaultCategory = await this.GetDefaultCategory();
 
             categoryToDelete.Transactions.ToList()
                 .ForEach(t => t.Category = defaultCategory);
@@ -53,9 +76,9 @@ namespace ExpenseManager.BusinessLogic
 
         #region private
 
-        private Category GetDefaultCategory()
+        private async Task<Category> GetDefaultCategory()
         {
-            return this._db.Categories.FirstOrDefault();
+            return await this._db.Categories.FirstOrDefaultAsync();
         }
 
         private void ValidateCategory(Category category)
