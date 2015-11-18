@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,7 +56,12 @@ namespace ExpenseManager.BusinessLogic
         {
             this.ValidateCategory(category);
 
-            await this._db.AddOrUpdateAsync(category);
+            var categoryToEdit = await this.GetCategoryByGuid(category.Guid);
+            categoryToEdit.Name = category.Name;
+            categoryToEdit.Description = category.Description;
+            categoryToEdit.IconPath = category.IconPath;
+
+            await this._db.AddOrUpdateAsync(categoryToEdit);
         }
 
         /// <summary>
@@ -72,6 +78,25 @@ namespace ExpenseManager.BusinessLogic
                 .ForEach(t => t.Category = defaultCategory);
 
             await this._db.DeteleAsync(categoryToDelete);
+        }
+
+        /// <summary>
+        /// Returns glyphicon icons for categories
+        /// </summary>
+        /// <returns>Glyphicons</returns>
+        public static IList<string> GetGlyphicons()
+        {
+            // TODO: do this another way?
+            IList<string> glyphicons = new List<string>();
+            glyphicons.Add("glyphicon-record");
+            glyphicons.Add("glyphicon-glass");
+            glyphicons.Add("glyphicon-film");
+            glyphicons.Add("glyphicon-road");
+            glyphicons.Add("glyphicon-heart");
+            glyphicons.Add("glyphicon-stats");
+            glyphicons.Add("glyphicon-leaf");
+
+            return glyphicons;
         }
 
         #region private

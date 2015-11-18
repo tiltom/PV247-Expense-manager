@@ -26,10 +26,10 @@ namespace ExpenseManager.Web.Models.Category
         public string Name { get; set; }
 
         /// <summary>
-        ///     Glyphicons name for category's icon
+        ///     Glyphicons icon for category
         /// </summary>
         [Required]
-        [Display(Name = "Icon path")]
+        [Display(Name = "Icon")]
         public string Icon { get; set; }
 
         /// <summary>

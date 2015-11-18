@@ -35,6 +35,8 @@ namespace ExpenseManager.Web.Controllers
         [HttpGet]
         public ActionResult Create()
         {
+            var glyphicons = CategoryService.GetGlyphicons();
+            ViewBag.Glyphicons = glyphicons;
             return this.View();
         }
 
@@ -70,6 +72,9 @@ namespace ExpenseManager.Web.Controllers
         {
             // find category by its Id
             var category = await this._categoryService.GetCategoryByGuid(guid);
+
+            var glyphicons = CategoryService.GetGlyphicons();
+            ViewBag.Glyphicons = glyphicons;
 
             return this.View(Mapper.Map<CategoryShowModel>(category));
         }

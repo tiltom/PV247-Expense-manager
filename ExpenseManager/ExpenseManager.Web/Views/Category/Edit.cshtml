@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Edit category";
+    var glyphicons = ViewBag.Glyphicons;
 }
 @using (Html.BeginForm())
 {
@@ -31,8 +32,16 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Icon, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Icon, Model.Icon, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Icon, "", new { @class = "text-danger" })
+                <div class="btn-group" data-toggle="buttons">
+                    @foreach (string glyphicon in glyphicons)
+                    {
+                        var active = Model.Icon == glyphicon ? "active" : "";
+                        <label class="pdsa-radiobutton btn btn-default @active">
+                            <span class="glyphicon @glyphicon"></span>
+                            @Html.RadioButtonFor(x => x.Icon, glyphicon)
+                        </label>
+                    }
+                </div>
             </div>
         </div>
 
