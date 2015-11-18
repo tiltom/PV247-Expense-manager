@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;
-using ExpenseManager.Entity.Wallets;
 
-namespace ExpenseManager.BusinessLogic
+namespace ExpenseManager.BusinessLogic.Wallet
 {
     /// <summary>
     ///     Class that handles logic of WalletController
@@ -31,7 +30,7 @@ namespace ExpenseManager.BusinessLogic
         /// </summary>
         /// <param name="id">ID of returned wallet</param>
         /// <returns>Desired wallet</returns>
-        public async Task<Wallet> GetWalletById(Guid id)
+        public async Task<Entity.Wallets.Wallet> GetWalletById(Guid id)
         {
             return await this._db.Wallets.Where(w => w.Guid.Equals(id)).FirstOrDefaultAsync();
         }

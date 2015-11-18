@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper.QueryableExtensions;
-using ExpenseManager.BusinessLogic;
+using ExpenseManager.BusinessLogic.Wallet;
 using ExpenseManager.Web.Models.Wallet;
 
 namespace ExpenseManager.Web.Controllers
@@ -50,26 +50,12 @@ namespace ExpenseManager.Web.Controllers
             {
                 await this._walletService.EditWallet(wallet.Guid, wallet.Name, wallet.CurrencyId);
 
-                return this.RedirectToAction("Index", "Manage");
+                return this.RedirectToAction("Index", "Home");
             }
 
             wallet.Currencies = await this.GetCurrencies();
             return this.View(wallet);
         }
-
-        #region protected
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                // TODO commented out ? why ?
-                //this.db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        #endregion
 
         #region private
 

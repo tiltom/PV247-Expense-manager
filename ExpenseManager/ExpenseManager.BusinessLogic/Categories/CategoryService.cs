@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;
 
-namespace ExpenseManager.BusinessLogic
+namespace ExpenseManager.BusinessLogic.Category
 {
     /// <summary>
     ///     Class that handles logic of CategoryController
@@ -30,7 +29,7 @@ namespace ExpenseManager.BusinessLogic
         /// </summary>
         /// <param name="category">New category</param>
         /// <returns></returns>
-        public async Task CreateCategory(Category category)
+        public async Task CreateCategory(Entity.Categories.Category category)
         {
             this.ValidateCategory(category);
 
@@ -42,7 +41,7 @@ namespace ExpenseManager.BusinessLogic
         /// </summary>
         /// <param name="guid">ID that specifies returned category</param>
         /// <returns>Desired category</returns>
-        public async Task<Category> GetCategoryByGuid(Guid guid)
+        public async Task<Entity.Categories.Category> GetCategoryByGuid(Guid guid)
         {
             return await this._db.Categories.Where(x => x.Guid.Equals(guid)).FirstOrDefaultAsync();
         }
@@ -52,7 +51,7 @@ namespace ExpenseManager.BusinessLogic
         /// </summary>
         /// <param name="category">Edited category</param>
         /// <returns></returns>
-        public async Task EditCategory(Category category)
+        public async Task EditCategory(Entity.Categories.Category category)
         {
             this.ValidateCategory(category);
 
@@ -81,7 +80,7 @@ namespace ExpenseManager.BusinessLogic
         }
 
         /// <summary>
-        /// Returns glyphicon icons for categories
+        ///     Returns glyphicon icons for categories
         /// </summary>
         /// <returns>Glyphicons</returns>
         public static IList<string> GetGlyphicons()
@@ -101,12 +100,12 @@ namespace ExpenseManager.BusinessLogic
 
         #region private
 
-        private async Task<Category> GetDefaultCategory()
+        private async Task<Entity.Categories.Category> GetDefaultCategory()
         {
             return await this._db.Categories.FirstOrDefaultAsync();
         }
 
-        private void ValidateCategory(Category category)
+        private void ValidateCategory(Entity.Categories.Category category)
         {
             if (category == null)
             {

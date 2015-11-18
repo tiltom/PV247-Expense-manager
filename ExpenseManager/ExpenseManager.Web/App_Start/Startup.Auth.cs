@@ -64,11 +64,11 @@ namespace ExpenseManager.Web
                 }
             });*/
 
-            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
+            /*app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
             {
                 ClientId = WebConfigurationManager.AppSettings["GoogleClientID"],
                 ClientSecret = WebConfigurationManager.AppSettings["GoogleClientSecret"]
-            });
+            });*/
         }
     }
 }

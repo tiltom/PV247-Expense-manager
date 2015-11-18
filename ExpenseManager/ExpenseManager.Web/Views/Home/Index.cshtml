@@ -1,6 +1,6 @@
 ﻿@using Chart.Mvc.Extensions
 @using ExpenseManager.Web.Controllers
-@model ExpenseManager.Web.Models.HomePage.FilterDataModel
+@model ExpenseManager.Web.Models.HomePage.DashBoardModel
 @{
     ViewBag.Title = "Overview page";
 }
@@ -18,18 +18,18 @@
 
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.StartDate, htmlAttributes: new {@class = "control-label col-md-2"})
+                    @Html.LabelFor(model => model.Filter.StartDate, new {@class = "control-label col-md-2"})
                     <div class="col-md-10">
-                        @Html.TextBoxFor(model => model.StartDate, new {@class = "form-control datepicker", @Value = Model.StartDate.ToString(AbstractController.DateFormat)})
-                        @Html.ValidationMessageFor(model => model.StartDate, "", new {@class = "text-danger"})
+                        @Html.TextBoxFor(model => model.Filter.StartDate, new {@class = "form-control datepicker", @Value = Model.Filter.StartDate.ToString(AbstractController.DateFormat)})
+                        @Html.ValidationMessageFor(model => model.Filter.StartDate, "", new {@class = "text-danger"})
                     </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.EndDate, htmlAttributes: new {@class = "control-label col-md-2"})
+                    @Html.LabelFor(model => model.Filter.EndDate, new {@class = "control-label col-md-2"})
                     <div class="col-md-10">
-                        @Html.TextBoxFor(model => model.EndDate, new {@class = "form-control datepicker", @Value = Model.EndDate.ToString(AbstractController.DateFormat)})
-                        @Html.ValidationMessageFor(model => model.EndDate, "", new {@class = "text-danger"})
+                        @Html.TextBoxFor(model => model.Filter.EndDate, new {@class = "form-control datepicker", @Value = Model.Filter.EndDate.ToString(AbstractController.DateFormat)})
+                        @Html.ValidationMessageFor(model => model.Filter.EndDate, "", new {@class = "text-danger"})
                     </div>
                 </div>
 
@@ -42,14 +42,33 @@
             }
         </div>
         <div class="col-md-6">
-            <canvas id="graphCanvas" width="300" height="300"></canvas>
+            @if (Model.Categories != null || Model.Months != null)
+            {
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#category" aria-controls="category" role="tab" data-toggle="tab">Category</a></li>
+                    <li role="presentation"><a href="#months" aria-controls="months" role="tab" data-toggle="tab">Months</a></li>
+                </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="category">
+                    <div class="medium-margin-top"></div>
+                    <canvas id="categoriesGraph" width="300" height="300"></canvas>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="months">
+                    <div class="medium-margin-top"></div>
+                    <canvas id="monthsGraph" width="300" height="300"></canvas>
+                </div>
+            </div>
+            }
             @{
-                if (ViewBag.ChartData != null)
+                if (Model.Categories != null)
                 {
-                    @HtmlExtensions.CreateChart((HtmlHelper) Html, (string) "graphCanvas", ViewBag.ChartData)
+                    @Html.CreateChart("categoriesGraph", Model.Categories)
                 }
-
-
+                if (Model.Months != null)
+                {
+                    @Html.CreateChart("monthsGraph", Model.Months)
+                }
             }
 
         </div>

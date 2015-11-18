@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using ExpenseManager.BusinessLogic;
+using ExpenseManager.BusinessLogic.Category;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Web.Models.Category;
 
@@ -111,18 +111,5 @@ namespace ExpenseManager.Web.Controllers
 
             return this.RedirectToAction("Index");
         }
-
-        #region protected
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //this._db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        #endregion
     }
 }
