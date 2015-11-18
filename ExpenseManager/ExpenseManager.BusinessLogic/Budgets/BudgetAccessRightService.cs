@@ -30,7 +30,7 @@ namespace ExpenseManager.BusinessLogic.Budget
             return accessRights.Select(item => item.UserProfile.Guid).ToList();
         }
 
-        private async Task<Budget> GetBudgetById(Guid id)
+        private async Task<Entity.Budgets.Budget> GetBudgetById(Guid id)
         {
             return await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
         }

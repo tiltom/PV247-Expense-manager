@@ -162,18 +162,5 @@ namespace ExpenseManager.Web.Controllers
 
             return this.RedirectToAction("Index");
         }
-
-        #region protected
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //this._db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        #endregion
     }
 }

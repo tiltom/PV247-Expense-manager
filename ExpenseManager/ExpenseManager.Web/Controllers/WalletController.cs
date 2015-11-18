@@ -50,26 +50,12 @@ namespace ExpenseManager.Web.Controllers
             {
                 await this._walletService.EditWallet(wallet.Guid, wallet.Name, wallet.CurrencyId);
 
-                return this.RedirectToAction("Index", "Manage");
+                return this.RedirectToAction("Index", "Home");
             }
 
             wallet.Currencies = await this.GetCurrencies();
             return this.View(wallet);
         }
-
-        #region protected
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                // TODO commented out ? why ?
-                //this.db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        #endregion
 
         #region private
 
