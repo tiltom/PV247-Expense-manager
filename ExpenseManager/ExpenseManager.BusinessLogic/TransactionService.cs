@@ -162,6 +162,20 @@ namespace ExpenseManager.BusinessLogic
                         .ToListAsync();
         }
 
+        public async Task<SelectList> GetCategoriesSelectionFilter(Guid walletId, Guid categoryId)
+        {
+            var usedCategories = (await this.GetAllTransactionsInWallet(walletId)).GroupBy(c => c.Category.Guid)
+                .Select(g => g.First());
+            var selectList = usedCategories.Select(
+                category =>
+                    new SelectListItem
+                    {
+                        Value = category.Category.Guid.ToString(),
+                        Text = category.Category.Name
+                    });
+            return new SelectList(selectList, "Value", "Text", categoryId);
+        }
+
         /// <summary>
         ///     Returns guid of User's default Wallet
         /// </summary>
@@ -173,6 +187,7 @@ namespace ExpenseManager.BusinessLogic
                 .Select(w => w.Guid)
                 .FirstOrDefaultAsync();
         }
+
         //TODO will be only private
         public async Task<WalletAccessRight> GetPermission(Guid userId, Guid walletId)
         {
@@ -182,6 +197,7 @@ namespace ExpenseManager.BusinessLogic
                         r =>
                             r.UserProfile.Guid == userId && r.Wallet.Guid == walletId);
         }
+
         //TODO will be only private
         public async Task<bool> HasWritePermission(Guid userId, Guid walletId)
         {
@@ -207,13 +223,13 @@ namespace ExpenseManager.BusinessLogic
         ///     Provides selectable list of Budgets available to UserProfile
         /// </summary>
         /// <returns>List of SelectListItem for Budgets</returns>
-        public async Task<List<SelectListItem>> GetBudgetsSelection(Guid userGuid)
+        public async Task<List<SelectListItem>> GetBudgetsSelection(Guid userId)
         {
             return
                 await
                     this._budgetsProvider.BudgetAccessRights.Where(
                         access =>
-                            access.UserProfile.Guid == userGuid &&
+                            access.UserProfile.Guid == userId &&
                             access.Permission >= PermissionEnum.Write)
                         .Select(
                             budget =>
@@ -223,6 +239,29 @@ namespace ExpenseManager.BusinessLogic
                                     Text = budget.Budget.Name
                                 })
                         .ToListAsync();
+        }
+
+        public async Task<SelectList> GetBudgetsSelectionFilter(Guid userId, Guid walletId, Guid budgetId)
+        {
+            var allAccessibleBudgetsId = await
+                this._budgetsProvider.BudgetAccessRights.Where(
+                    access =>
+                        access.UserProfile.Guid == userId &&
+                        access.Permission >= PermissionEnum.Write)
+                    .Select(budget => budget.Budget.Guid)
+                    .ToListAsync();
+            var usedBudgets =
+                (await this.GetAllTransactionsInWallet(walletId)).Where(
+                    b => b.Budget != null && allAccessibleBudgetsId.Contains(b.Budget.Guid)).GroupBy(b => b.Budget.Guid)
+                    .Select(g => g.First());
+            var selectList = usedBudgets.Select(
+                budget =>
+                    new SelectListItem
+                    {
+                        Value = budget.Budget.Guid.ToString(),
+                        Text = budget.Budget.Name
+                    }).Distinct();
+            return new SelectList(selectList, "Value", "Text", budgetId);
         }
 
         private CategoryType GetCategoryType(bool expense)
