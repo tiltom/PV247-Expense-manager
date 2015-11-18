@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
@@ -39,9 +40,29 @@ namespace ExpenseManager.BusinessLogic
             await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
         }
 
-        public async Task Remove(Transaction transaction)
+        public async Task<Guid> RemoveTransaction(Guid userId, Guid transactionId)
         {
+            //find transaction by its Id
+            var transaction =
+                await this.GetTransactionById(transactionId);
+            //if (!await this.HasWritePermission(transaction))
+            if (
+                !await
+                    this.HasWritePermission(userId, transaction.Wallet.Guid))
+            {
+                throw new SecurityException();
+            }
+            var walletId = transaction.Wallet.Guid;
+            //get if transaction is also in repeatable transactions
+            var repeatableTransaction = await this.GetRepeatableTransactionByFirstTransactionId(transactionId);
+            //check if transaction was not repeatable
+            if (repeatableTransaction != null)
+            {
+                //if true remove it from repeatable transactions first
+                await this.Remove(repeatableTransaction);
+            }
             await this._transactionsProvider.DeteleAsync(transaction);
+            return walletId;
         }
 
         public async Task Remove(RepeatableTransaction repeatableTransaction)
@@ -152,7 +173,7 @@ namespace ExpenseManager.BusinessLogic
                 .Select(w => w.Guid)
                 .FirstOrDefaultAsync();
         }
-
+        //TODO will be only private
         public async Task<WalletAccessRight> GetPermission(Guid userId, Guid walletId)
         {
             return await
@@ -161,7 +182,7 @@ namespace ExpenseManager.BusinessLogic
                         r =>
                             r.UserProfile.Guid == userId && r.Wallet.Guid == walletId);
         }
-
+        //TODO will be only private
         public async Task<bool> HasWritePermission(Guid userId, Guid walletId)
         {
             var permission = await this._walletsProvider.WalletAccessRights

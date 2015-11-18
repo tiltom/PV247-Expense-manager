@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
@@ -63,8 +64,12 @@ namespace ExpenseManager.Web.Controllers
         }
 
 
-        public ActionResult ExpenseIncome(Guid wallet)
+        public async Task<ActionResult> ExpenseIncome(Guid? wallet)
         {
+            if (wallet == null)
+            {
+                wallet = await this._transactionService.GetDefaultWallet(await this.CurrentProfileId());
+            }
             ViewBag.wallet = wallet;
             return
                 this.View();
@@ -297,28 +302,17 @@ namespace ExpenseManager.Web.Controllers
         // POST: Transactions/Delete/5
         public async Task<ActionResult> Delete(Guid id)
         {
-            //find transaction by its Id
-            var transaction =
-                await this._transactionService.GetTransactionById(id);
-            //if (!await this.HasWritePermission(transaction))
-            if (
-                !await
-                    this._transactionService.HasWritePermission(await this.CurrentProfileId(), transaction.Wallet.Guid))
+            Guid walletId;
+            try
+            {
+                //removing transaction from DB
+                walletId = await this._transactionService.RemoveTransaction(await this.CurrentProfileId(), id);
+            }
+            catch (SecurityException)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
                     "You don't have permission to delete this transaction");
             }
-            var walletId = transaction.Wallet.Guid;
-            //get if transaction is also in repeatable transactions
-            var repeatableTransaction = await this._transactionService.GetRepeatableTransaction(id);
-            //check if transaction was not repeatable
-            if (repeatableTransaction != null)
-            {
-                //if true remove it from repeatable transactions first
-                await this._transactionService.Remove(repeatableTransaction);
-            }
-            //removing transaction from DB
-            await this._transactionService.Remove(transaction);
             return this.RedirectToAction("Index", new {wallet = walletId});
         }
 
