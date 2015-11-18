@@ -79,6 +79,7 @@
     <Compile Include="CategoryService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactionService.cs" />
+    <Compile Include="WalletService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExpenseManager.Entity\ExpenseManager.Entity.csproj">

@@ -4,8 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper.QueryableExtensions;
-using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.BusinessLogic;
 using ExpenseManager.Web.Models.Wallet;
 
 namespace ExpenseManager.Web.Controllers
@@ -13,8 +12,7 @@ namespace ExpenseManager.Web.Controllers
     [Authorize]
     public class WalletController : AbstractController
     {
-        private readonly IWalletsProvider _db = ProvidersFactory.GetNewWalletsProviders();
-
+        private readonly WalletService _walletService = new WalletService();
 
         /// <summary>
         ///     Address: GET: Wallets/Edit
@@ -23,17 +21,17 @@ namespace ExpenseManager.Web.Controllers
         /// <returns> page for currently logged UserProfile or HttpNotFound if no wallet was created</returns>
         public async Task<ActionResult> Edit()
         {
-            // get UserProfile and his wallet from context
+            // get UserProfile and his wallet
             var id = await this.CurrentProfileId();
-            var walletEditModel =
-                await this._db.Wallets
-                    .Where(u => u.Owner.Guid == id)
-                    .ProjectTo<WalletEditModel>()
-                    .FirstOrDefaultAsync();
+            var wallet = this._walletService.GetWalletByOwnerId(id);
+
+            var walletEditModel = await wallet.ProjectTo<WalletEditModel>().FirstOrDefaultAsync();
+
             if (walletEditModel == null)
             {
                 return this.HttpNotFound();
             }
+
             walletEditModel.Currencies = await this.GetCurrencies();
             return this.View(walletEditModel);
         }
@@ -50,13 +48,11 @@ namespace ExpenseManager.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var walletEntity = await this._db.Wallets.Where(w => w.Guid == wallet.Guid).FirstOrDefaultAsync();
-                walletEntity.Owner = walletEntity.Owner;
-                walletEntity.Currency =
-                    await this._db.Currencies.Where(c => c.Guid == wallet.CurrencyId).FirstOrDefaultAsync();
-                walletEntity.Name = wallet.Name;
+                await this._walletService.EditWallet(wallet.Guid, wallet.Name, wallet.CurrencyId);
+
                 return this.RedirectToAction("Index", "Manage");
             }
+
             wallet.Currencies = await this.GetCurrencies();
             return this.View(wallet);
         }
@@ -79,7 +75,7 @@ namespace ExpenseManager.Web.Controllers
 
         private async Task<List<SelectListItem>> GetCurrencies()
         {
-            var currencies = await this._db.Currencies.Select(currency => new SelectListItem
+            var currencies = await this._walletService.GetCurrencies().Select(currency => new SelectListItem
             {
                 Text = currency.Name,
                 Value = currency.Guid.ToString()
