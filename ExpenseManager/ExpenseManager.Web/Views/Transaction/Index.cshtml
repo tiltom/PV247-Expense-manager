@@ -104,9 +104,12 @@
 
     </table>
 </div>
-<div class="text-center">
-    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@if (Model.PageCount > 1)
+{
+    <div class="text-center">
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
 
-    @Html.PagedListPager(Model, page => Url.Action("Index",
-            new { wallet = ViewBag.displayedWalletId, category = ViewBag.selectedCategoryId, budget = ViewBag.selectedBudgetId, page }))
-</div>
+        @Html.PagedListPager(Model, page => Url.Action("Index",
+            new {wallet = ViewBag.displayedWalletId, category = ViewBag.selectedCategoryId, budget = ViewBag.selectedBudgetId, page}))
+    </div>
+}
