@@ -10,14 +10,12 @@ namespace ExpenseManager.Web.Models.HomePage
         {
             StartDate = DateTime.Now.AddDays(-30);
             EndDate = DateTime.Now;
-            Walets = new List<Guid>();
+            Wallets = new List<Guid>();
             Categories = new List<Guid>();
             Budgets = new List<Guid>();
         }
 
-        /// <summary>
-        ///     data used for graph generation
-        /// </summary>
+
         /// <summary>
         ///     start of interval for transactions shown
         /// </summary>
@@ -41,7 +39,7 @@ namespace ExpenseManager.Web.Models.HomePage
         /// <summary>
         ///     selected wallets
         /// </summary>
-        public IEnumerable<Guid> Walets { get; set; }
+        public IEnumerable<Guid> Wallets { get; set; }
 
         /// <summary>
         ///     selected budgets

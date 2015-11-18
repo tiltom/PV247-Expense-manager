@@ -215,7 +215,9 @@
     <Compile Include="Models\Budget\EditBudgetModel.cs" />
     <Compile Include="Models\Budget\NewBudgetModel.cs" />
     <Compile Include="Models\Category\CategoryShowModel.cs" />
+    <Compile Include="Models\HomePage\DashBoardModel.cs" />
     <Compile Include="Models\HomePage\FilterDataModel.cs" />
+    <Compile Include="Models\HomePage\SimpleGraphWrapper.cs" />
     <Compile Include="Models\Transaction\NewTransactionModel.cs" />
     <Compile Include="Models\Transaction\EditTransactionModel.cs" />
     <Compile Include="Models\Transaction\TransactionShowModel.cs" />

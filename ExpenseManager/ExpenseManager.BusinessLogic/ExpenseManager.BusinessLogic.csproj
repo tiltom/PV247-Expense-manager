@@ -77,6 +77,8 @@
     <Compile Include="BudgetAccessRightService.cs" />
     <Compile Include="BudgetService.cs" />
     <Compile Include="CategoryService.cs" />
+    <Compile Include="Common\ColorGeneratorService.cs" />
+    <Compile Include="Dashboard\DashBoardService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactionService.cs" />
     <Compile Include="WalletService.cs" />
