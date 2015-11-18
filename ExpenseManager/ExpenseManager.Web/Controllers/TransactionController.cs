@@ -23,7 +23,7 @@ namespace ExpenseManager.Web.Controllers
         ///     Shows transactions for users Wallet
         /// </summary>
         /// <returns>View with transaction</returns>
-        public async Task<ActionResult> Index(Guid? wallet, int? page)
+        public async Task<ActionResult> Index(Guid? wallet, Guid? category, Guid? budget, int? page)
         {
             // get Id of currently logged UserProfile from HttpContext
             var id = await this.CurrentProfileId();
@@ -34,36 +34,46 @@ namespace ExpenseManager.Web.Controllers
                 wallet = await this._transactionService.GetDefaultWallet(id);
             }
             var walletId = wallet.Value;
+            // get user permission for selected wallet
+            var permission =
+                await this._transactionService.GetPermission(id, walletId);
+            if (permission == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
+                    "You don't have permission to view this wallet");
+            }
 
             // get all Wallets user has access to
             ViewBag.wallet = await this._transactionService.GetViewableWalletsSelection(id, walletId);
             ViewBag.displayedWalletId = walletId;
+            ViewBag.category =
+                await this._transactionService.GetCategoriesSelectionFilter(walletId, category.GetValueOrDefault());
+            ViewBag.selectedCategoryId = category;
+            ViewBag.budget =
+                await this._transactionService.GetBudgetsSelectionFilter(id, walletId, budget.GetValueOrDefault());
+            ViewBag.selectedBudgetId = budget;
             // get all Transactions in selected wallet
-            var list = await this._transactionService.GetAllTransactionsInWallet(walletId);
-            // get user permission for selected wallet
-            var permission =
-                await this._transactionService.GetPermission(id, walletId);
-            // when user doesn't have permission to manipulate with transaction show view without edit and delete
-            var pageSize = 5;
-            var pageNumber = (page ?? 1);
-            List<TransactionShowModel> showModels;
-            if (permission != null && permission.Permission == PermissionEnum.Read)
+            IEnumerable<Transaction> list = await this._transactionService.GetAllTransactionsInWallet(walletId);
+            if (category != null)
             {
-                ViewBag.editable = false;
-                showModels = new List<TransactionShowModel>();
-                foreach (var transaction in list)
-                {
-                    showModels.Add(await this.ConvertEntityToTransactionShowModel(transaction));
-                }
-                return this.View("Index", showModels.OrderBy(t => t.Date).ToPagedList(pageNumber, pageSize));
+                list = list.Where(s => s.Category.Guid == category.Value);
             }
-            ViewBag.editable = true;
-            showModels = new List<TransactionShowModel>();
+            if (budget != null)
+            {
+                list = list.Where(s => s.Budget?.Guid == budget.Value);
+            }
+
+            const int pageSize = 5;
+            var pageNumber = (page ?? 1);
+            var showModels = new List<TransactionShowModel>();
             foreach (var transaction in list)
             {
                 showModels.Add(await this.ConvertEntityToTransactionShowModel(transaction));
             }
-            return this.View("Index", showModels.OrderBy(t => t.Date).ToPagedList(pageNumber, pageSize));
+
+            // when user doesn't have permission to manipulate with transaction show view without edit and delete
+            ViewBag.editable = permission.Permission != PermissionEnum.Read;
+            return this.View("Index", showModels.OrderByDescending(t => t.Date).ToPagedList(pageNumber, pageSize));
         }
 
 
