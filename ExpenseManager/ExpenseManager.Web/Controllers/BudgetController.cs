@@ -8,8 +8,6 @@ using AutoMapper.QueryableExtensions;
 using ExpenseManager.BusinessLogic;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
-using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.Budget;
 using PagedList;
 
@@ -19,7 +17,7 @@ namespace ExpenseManager.Web.Controllers
     public class BudgetController : AbstractController
     {
         private readonly BudgetService _budgetService = new BudgetService();
-        
+
         /// <summary>
         ///     Shows all budgets for the current UserProfile.
         /// </summary>
@@ -147,7 +145,9 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(model);
             }
 
-            await this._budgetService.EditBudget(Mapper.Map<Budget>(model));
+            await
+                this._budgetService.EditBudget(model.Guid, model.Name, model.Description, model.Limit, model.StartDate,
+                    model.EndDate);
 
             // Add OK message
             return this.RedirectToAction("Index");

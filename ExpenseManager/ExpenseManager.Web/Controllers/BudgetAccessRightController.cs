@@ -7,9 +7,6 @@ using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ExpenseManager.BusinessLogic;
-using ExpenseManager.Entity.Budgets;
-using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.BudgetAccessRight;
 using PagedList;
 
@@ -18,7 +15,6 @@ namespace ExpenseManager.Web.Controllers
     public class BudgetAccessRightController : AbstractController
     {
         private readonly BudgetAccessRightService _budgetAccessRightService = new BudgetAccessRightService();
-        private readonly IBudgetsProvider _db = ProvidersFactory.GetNewBudgetsProviders();
 
         /// <summary>
         ///     Display all budget access rights for chosen budget
@@ -110,7 +106,7 @@ namespace ExpenseManager.Web.Controllers
             if (!ModelState.IsValid) // checking if model is valid
                 return this.View(model);
 
-            await this._budgetAccessRightService.EditBudgetAccessRight(Mapper.Map<BudgetAccessRight>(model));
+            await this._budgetAccessRightService.EditBudgetAccessRight(model.Id, model.Permission, model.AssignedUserId);
 
             return this.RedirectToAction("Index", new {id = model.BudgetId});
         }

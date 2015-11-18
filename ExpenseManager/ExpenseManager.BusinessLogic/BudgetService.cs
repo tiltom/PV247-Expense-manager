@@ -73,17 +73,23 @@ namespace ExpenseManager.BusinessLogic
         /// <summary>
         ///     Edits budget and saves it to database
         /// </summary>
-        /// <param name="editedBudget">Edited budget</param>
+        /// <param name="budgetId">ID of edited budget</param>
+        /// <param name="name">New name of budget</param>
+        /// <param name="description">New description of budget</param>
+        /// <param name="limit">New limit of budget</param>
+        /// <param name="startDate">New start date of budget</param>
+        /// <param name="endDate">New end date of budget</param>
         /// <returns></returns>
-        public async Task EditBudget(Budget editedBudget)
+        public async Task EditBudget(Guid budgetId, string name, string description, decimal limit,
+            DateTime startDate, DateTime endDate)
         {
-            var originalBudget = await this.GetBudgetById(editedBudget.Guid);
+            var originalBudget = await this.GetBudgetById(budgetId);
 
-            originalBudget.Name = editedBudget.Name;
-            originalBudget.StartDate = editedBudget.StartDate;
-            originalBudget.EndDate = editedBudget.EndDate;
-            originalBudget.Description = editedBudget.Description;
-            originalBudget.Limit = editedBudget.Limit;
+            originalBudget.Name = name;
+            originalBudget.StartDate = startDate;
+            originalBudget.EndDate = endDate;
+            originalBudget.Description = description;
+            originalBudget.Limit = limit;
 
             this.ValidateBudget(originalBudget);
 
