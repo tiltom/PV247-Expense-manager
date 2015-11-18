@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ExpenseManager.Web.Models.Transaction.TransactionShowModel>
+﻿@model PagedList.IPagedList<ExpenseManager.Web.Models.Transaction.TransactionShowModel>
+@using PagedList.Mvc;
 
 @{
     ViewBag.Title = "Transactions overview";
@@ -29,71 +30,77 @@
 </p>
 
 <div class="medium-margin-top">
-<table class="table table-hover table-condensed">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Amount)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Date)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CategoryName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CurrencySymbol)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.BudgetName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsRepeatable)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
+    <table class="table table-hover table-condensed">
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CurrencySymbol)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BudgetName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsRepeatable)
-            </td>
-            <td>
-                @if(ViewBag.editable)
-                {
-                    <div class="dropdown">
-                        <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Edit", "Edit", new { id = item.Id })</li>
-                            <li>@Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { onclick = "return confirm('Are you sure you wish to delete this transaction?');" })</li>
-                        </ul>
-                    </div>
-                }
-
-            </td>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementAt(0).Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementAt(0).Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementAt(0).Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementAt(0).CategoryName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementAt(0).CurrencySymbol)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementAt(0).BudgetName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementAt(0).IsRepeatable)
+            </th>
+            <th></th>
         </tr>
-    }
 
-</table>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrencySymbol)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BudgetName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsRepeatable)
+                </td>
+                <td>
+                    @if (ViewBag.editable)
+                    {
+                        <div class="dropdown">
+                            <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Edit", "Edit", new {id = item.Id})</li>
+                                <li>@Html.ActionLink("Delete", "Delete", new {id = item.Id}, new {onclick = "return confirm('Are you sure you wish to delete this transaction?');"})</li>
+                            </ul>
+                        </div>
+                    }
+
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+<div class="text-center">
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index",
+            new { wallet = ViewBag.displayedWalletId, page }))
 </div>

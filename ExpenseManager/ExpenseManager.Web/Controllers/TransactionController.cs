@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Security;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using ExpenseManager.BusinessLogic;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Web.Models.Transaction;
+using PagedList;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -21,7 +23,7 @@ namespace ExpenseManager.Web.Controllers
         ///     Shows transactions for users Wallet
         /// </summary>
         /// <returns>View with transaction</returns>
-        public async Task<ActionResult> Index(Guid? wallet)
+        public async Task<ActionResult> Index(Guid? wallet, int? page)
         {
             // get Id of currently logged UserProfile from HttpContext
             var id = await this.CurrentProfileId();
@@ -38,11 +40,12 @@ namespace ExpenseManager.Web.Controllers
             ViewBag.displayedWalletId = walletId;
             // get all Transactions in selected wallet
             var list = await this._transactionService.GetAllTransactionsInWallet(walletId);
-
             // get user permission for selected wallet
             var permission =
                 await this._transactionService.GetPermission(id, walletId);
             // when user doesn't have permission to manipulate with transaction show view without edit and delete
+            var pageSize = 5;
+            var pageNumber = (page ?? 1);
             List<TransactionShowModel> showModels;
             if (permission != null && permission.Permission == PermissionEnum.Read)
             {
@@ -52,7 +55,7 @@ namespace ExpenseManager.Web.Controllers
                 {
                     showModels.Add(await this.ConvertEntityToTransactionShowModel(transaction));
                 }
-                return this.View("Index", showModels);
+                return this.View("Index", showModels.OrderBy(t => t.Date).ToPagedList(pageNumber, pageSize));
             }
             ViewBag.editable = true;
             showModels = new List<TransactionShowModel>();
@@ -60,7 +63,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 showModels.Add(await this.ConvertEntityToTransactionShowModel(transaction));
             }
-            return this.View("Index", showModels);
+            return this.View("Index", showModels.OrderBy(t => t.Date).ToPagedList(pageNumber, pageSize));
         }
 
 
