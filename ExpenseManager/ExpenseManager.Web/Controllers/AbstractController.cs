@@ -16,6 +16,7 @@ namespace ExpenseManager.Web.Controllers
     public abstract class AbstractController : Controller
     {
         public const string DateFormat = "dd.MM.yyyy";
+
         /// <summary>
         ///     List of permission which can be used at front end
         /// </summary>
