@@ -33,7 +33,8 @@
                 <div class="btn-group" data-toggle="buttons">
                     @foreach (string glyphicon in glyphicons)
                     {
-                        <label class="pdsa-radiobutton btn btn-default active">
+                        var active = glyphicon == glyphicons[0] ? "active" : ""; 
+                        <label class="pdsa-radiobutton btn btn-default @active">
                             <span class="glyphicon @glyphicon"></span>
                             @Html.RadioButtonFor(x => x.Icon, glyphicon)
                         </label>
