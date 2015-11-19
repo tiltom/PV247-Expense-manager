@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web.Configuration;
 using ExpenseManager.Database.Common;
 using ExpenseManager.Database.Contexts;
@@ -7,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Facebook;
 using Microsoft.Owin.Security.Google;
 using Owin;
 
@@ -49,7 +52,7 @@ namespace ExpenseManager.Web
             // This is similar to the RememberMe option when you log in.
             app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
 
-            /*app.UseFacebookAuthentication(new FacebookAuthenticationOptions
+            app.UseFacebookAuthentication(new FacebookAuthenticationOptions
             {
                 AppId = WebConfigurationManager.AppSettings["FBClientID"],
                 AppSecret = WebConfigurationManager.AppSettings["FBClientSecret"],
@@ -62,13 +65,13 @@ namespace ExpenseManager.Web
                         return Task.FromResult(true);
                     }
                 }
-            });*/
+            });
 
-            /*app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
             {
                 ClientId = WebConfigurationManager.AppSettings["GoogleClientID"],
                 ClientSecret = WebConfigurationManager.AppSettings["GoogleClientSecret"]
-            });*/
+            });
         }
     }
 }
