@@ -20,18 +20,23 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         ///     List of permission which can be used at front end
         /// </summary>
-        protected static readonly List<PermissionEnum> AllowedPermissions = new List<PermissionEnum>
-        {
-            PermissionEnum.Read,
-            PermissionEnum.Write
-        };
+        protected static readonly Lazy<List<PermissionEnum>> AllowedPermissions = new Lazy<List<PermissionEnum>>(
+            () => new List<PermissionEnum>
+            {
+                PermissionEnum.Read,
+                PermissionEnum.Write
+            });
 
         /// <summary>
         ///     Generated select options for front end editing of permissions
         /// </summary>
-        protected static readonly List<SelectListItem> PermissionSelectList = AllowedPermissions
-            .Select(permission => new SelectListItem {Value = permission.ToString(), Text = permission.ToString()})
-            .ToList();
+        protected static readonly Lazy<List<SelectListItem>> PermissionSelectList =
+            new Lazy<List<SelectListItem>>(() =>
+                AllowedPermissions.Value
+                    .Select(
+                        permission => new SelectListItem {Value = permission.ToString(), Text = permission.ToString()})
+                    .ToList()
+                );
 
         private UserContext _context;
 
@@ -68,7 +73,7 @@ namespace ExpenseManager.Web.Controllers
 
         protected List<SelectListItem> GetPermissions()
         {
-            return PermissionSelectList;
+            return PermissionSelectList.Value;
         }
     }
 }

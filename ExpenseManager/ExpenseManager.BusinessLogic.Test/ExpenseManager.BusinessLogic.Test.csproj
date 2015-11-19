@@ -55,6 +55,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="BudgetTests\BudgetServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +65,10 @@
     <ProjectReference Include="..\ExpenseManager.BusinessLogic\ExpenseManager.BusinessLogic.csproj">
       <Project>{8047c791-c961-4624-9e5e-e8c13901bd28}</Project>
       <Name>ExpenseManager.BusinessLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExpenseManager.Entity\ExpenseManager.Entity.csproj">
+      <Project>{73A4FAB0-96F1-4DC9-92A8-2CC73B4EF776}</Project>
+      <Name>ExpenseManager.Entity</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
