@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using ExpenseManager.BusinessLogic.Wallets;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;
@@ -17,7 +18,7 @@ namespace ExpenseManager.Web.Controllers
 {
     public class WalletAccessRightController : AbstractController
     {
-        private readonly IWalletsProvider _db = ProvidersFactory.GetNewWalletsProviders();
+        private readonly WalletAccessRightService _walletAccessRightService = new WalletAccessRightService();
 
         /// <summary>
         /// </summary>
@@ -26,11 +27,10 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Index()
         {
             var id = await this.CurrentProfileId();
-            var accessRightModels =
-                await
-                    this._db.WalletAccessRights.Where(right => right.Wallet.Owner.Guid == id)
-                        .ProjectTo<WalletAccessRightModel>()
-                        .ToListAsync();
+
+            var accessRights = this._walletAccessRightService.GetAccessRightsByWalletOwnerId(id);
+            var accessRightModels = await accessRights.ProjectTo<WalletAccessRightModel>().ToListAsync();
+
             return this.View(accessRightModels);
         }
 
@@ -42,10 +42,8 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Create()
         {
             var profileId = await this.CurrentProfileId();
-            var walletId = await this._db.Wallets
-                .Where(w => w.Owner.Guid == profileId)
-                .Select(w => w.Guid)
-                .FirstOrDefaultAsync();
+            var walletId = await this._walletAccessRightService.GetWalletAccessRightIdByWalletId(profileId);
+
             return
                 this.View(await this.ConvertEntityToModelWithComboOptions(new WalletAccessRight
                 {
@@ -68,7 +66,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                await this._db.AddOrUpdateAsync(
+                await this._walletAccessRightService.CreateWalletAccessRight(
                     await this.ConvertModelToEntity(walletAccessRight, new WalletAccessRight {Guid = Guid.NewGuid()}));
                 return this.RedirectToAction("Index");
             }
@@ -86,8 +84,8 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>view</returns>
         public async Task<ActionResult> Edit(Guid id)
         {
-            var walletAccessRight =
-                await this._db.WalletAccessRights.Where(war => war.Guid.Equals(id)).FirstOrDefaultAsync();
+            var walletAccessRight = await this._walletAccessRightService.GetWalletAccessRightById(id);
+
             if (walletAccessRight == null)
             {
                 return this.HttpNotFound();
@@ -106,15 +104,18 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(WalletAccessRightModel walletAccessRight)
         {
-            var walletAccessRightEntity =
-                await
-                    this._db.WalletAccessRights.Where(war => war.Guid.Equals(walletAccessRight.Id))
-                        .FirstOrDefaultAsync();
             if (ModelState.IsValid)
             {
-                await this.ConvertModelToEntity(walletAccessRight, walletAccessRightEntity);
+                var permission = this.ConvertPermissionStringToEnum(walletAccessRight.Permission);
+                await
+                    this._walletAccessRightService.EditWalletAccessRight(walletAccessRight.Id, permission,
+                        walletAccessRight.AssignedUserId);
+
                 return this.RedirectToAction("Index");
             }
+
+            var walletAccessRightEntity =
+                await this._walletAccessRightService.GetWalletAccessRightById(walletAccessRight.Id);
             walletAccessRight.Users = await this.GetUsers(walletAccessRightEntity.UserProfile.Guid);
             return this.View(walletAccessRight);
         }
@@ -127,12 +128,13 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>view</returns>
         public async Task<ActionResult> Delete(Guid id)
         {
-            var walletAccessRight =
-                await this._db.WalletAccessRights.Where(war => war.Guid.Equals(id)).FirstOrDefaultAsync();
+            var walletAccessRight = await this._walletAccessRightService.GetWalletAccessRightById(id);
+
             if (walletAccessRight == null)
             {
                 return this.HttpNotFound();
             }
+
             return this.View(Mapper.Map<WalletAccessRightModel>(walletAccessRight));
         }
 
@@ -146,14 +148,15 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<RedirectToRouteResult> DeleteConfirmed(Guid id)
         {
-            var walletAccessRight =
-                await this._db.WalletAccessRights.Where(war => war.Guid.Equals(id)).FirstOrDefaultAsync();
-            if (walletAccessRight.Permission.Equals(PermissionEnum.Owner))
+            var walletAccessRightPermission =
+                await this._walletAccessRightService.GetPermissionByWalletAccessRightId(id);
+
+            if (walletAccessRightPermission.Equals(PermissionEnum.Owner))
             {
                 return this.RedirectToAction("Index");
             }
 
-            await this._db.DeteleAsync(walletAccessRight);
+            await this._walletAccessRightService.DeleteWalletAccessRight(id);
             return this.RedirectToAction("Index");
         }
 
@@ -165,8 +168,8 @@ namespace ExpenseManager.Web.Controllers
             var defaultPermission = PermissionEnum.Read;
             Enum.TryParse(model.Permission, out defaultPermission);
 
-            entity.Wallet = await this._db.Wallets.Where(w => w.Guid == model.WalletId).FirstOrDefaultAsync();
-            entity.UserProfile = await this._db.UserProfiles.FirstOrDefaultAsync(u => u.Guid == model.AssignedUserId);
+            entity.Wallet = await this._walletAccessRightService.GetWalletById(model.WalletId);
+            entity.UserProfile = await this._walletAccessRightService.GetUserProfileById(model.AssignedUserId);
             entity.Permission = defaultPermission;
             return entity;
         }
@@ -190,21 +193,29 @@ namespace ExpenseManager.Web.Controllers
         private async Task<List<SelectListItem>> GetUsers(Guid? userId)
         {
             var currentUserId = await this.CurrentProfileId();
-            return
-                await
-                    this._db.UserProfiles
-                        .Where(
-                            u =>
-                                u.WalletAccessRights.All(war => war.Wallet.Owner.Guid != currentUserId) ||
-                                u.Guid == userId)
-                        .Select(
-                            user =>
-                                new SelectListItem
-                                {
-                                    Value = user.Guid.ToString(),
-                                    Text = user.FirstName + " " + user.LastName
-                                })
-                        .ToListAsync();
+            var userProfile = this._walletAccessRightService.GetUserProfileByIds(userId, currentUserId);
+
+            return await userProfile.Select(
+                user =>
+                    new SelectListItem
+                    {
+                        Value = user.Guid.ToString(),
+                        Text = user.FirstName + " " + user.LastName
+                    })
+                .ToListAsync();
+        }
+
+        private PermissionEnum ConvertPermissionStringToEnum(string permission)
+        {
+            switch (permission)
+            {
+                case "Write":
+                    return PermissionEnum.Write;
+                case "Read":
+                    return PermissionEnum.Read;
+                default:
+                    return PermissionEnum.Owner;
+            }
         }
 
         #endregion

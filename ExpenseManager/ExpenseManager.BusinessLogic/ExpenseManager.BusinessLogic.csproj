@@ -81,6 +81,7 @@
     <Compile Include="Dashboard\DashBoardService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transactions\TransactionService.cs" />
+    <Compile Include="Wallets\WalletAccessRightService.cs" />
     <Compile Include="Wallets\WalletService.cs" />
   </ItemGroup>
   <ItemGroup>
