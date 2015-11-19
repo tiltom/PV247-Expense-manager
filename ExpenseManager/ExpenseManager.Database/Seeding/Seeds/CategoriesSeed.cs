@@ -17,35 +17,35 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 {
                     Name = "Other",
                     Description = "Category for non-classifiable transactions",
-                    IconPath = "glyphicons-circle-question-mark",
+                    IconPath = "glyphicon-question-sign",
                     Type = CategoryType.Expense
                 },
                 new Category
                 {
                     Name = "Food & Drinks",
                     Description = "Category for consumables",
-                    IconPath = "glyphicons-fast-food",
+                    IconPath = "glyphicon-glass",
                     Type = CategoryType.Expense
                 },
                 new Category
                 {
                     Name = "Travel",
                     Description = "Category for transportation and related stuff",
-                    IconPath = "glyphicons-transport",
+                    IconPath = "glyphicon-plane",
                     Type = CategoryType.Expense
                 },
                 new Category
                 {
                     Name = "Salary",
                     Description = "Category for income from working",
-                    IconPath = "glyphicons-money",
+                    IconPath = "glyphicon-usd",
                     Type = CategoryType.Income
                 },
                 new Category
                 {
                     Name = "Bitcoin",
                     Description = "Category for investments in Bitcoin",
-                    IconPath = "glyphicons-bitcoin",
+                    IconPath = "glyphicon-bitcoin",
                     Type = CategoryType.IncomeAndExpense
                 }
             };
