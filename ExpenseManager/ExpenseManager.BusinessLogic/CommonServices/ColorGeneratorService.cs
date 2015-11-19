@@ -1,4 +1,4 @@
-﻿namespace ExpenseManager.BusinessLogic.Common
+﻿namespace ExpenseManager.BusinessLogic.CommonServices
 {
     /// <summary>
     ///     Simple class for generating nice colors for graphs

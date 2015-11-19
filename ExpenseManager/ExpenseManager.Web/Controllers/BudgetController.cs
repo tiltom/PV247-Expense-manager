@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using ExpenseManager.BusinessLogic.Budgets;
+using ExpenseManager.BusinessLogic.BudgetServices;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Web.Models.Budget;

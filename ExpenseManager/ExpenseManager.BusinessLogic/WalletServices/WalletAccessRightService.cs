@@ -8,7 +8,7 @@ using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 
-namespace ExpenseManager.BusinessLogic.Wallets
+namespace ExpenseManager.BusinessLogic.WalletServices
 {
     /// <summary>
     ///     Class that handles logic of WalletAccessRightController
@@ -67,7 +67,7 @@ namespace ExpenseManager.BusinessLogic.Wallets
         /// </summary>
         /// <param name="id">Wallet ID</param>
         /// <returns>Desired wallet</returns>
-        public async Task<Entity.Wallets.Wallet> GetWalletById(Guid id)
+        public async Task<Wallet> GetWalletById(Guid id)
         {
             return await this._db.Wallets.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
         }

@@ -8,7 +8,7 @@ using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Transactions;
 
-namespace ExpenseManager.BusinessLogic.Dashboard
+namespace ExpenseManager.BusinessLogic.DashboardServices
 {
     public class DashBoardService
     {

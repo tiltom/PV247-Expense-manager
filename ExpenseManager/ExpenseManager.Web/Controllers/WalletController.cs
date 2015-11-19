@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper.QueryableExtensions;
-using ExpenseManager.BusinessLogic.Wallet;
+using ExpenseManager.BusinessLogic.WalletServices;
 using ExpenseManager.Web.Models.Wallet;
 
 namespace ExpenseManager.Web.Controllers

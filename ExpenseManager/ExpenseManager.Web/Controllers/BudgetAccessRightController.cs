@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using ExpenseManager.BusinessLogic.Budgets;
+using ExpenseManager.BusinessLogic.BudgetServices;
 using ExpenseManager.Web.Models.BudgetAccessRight;
 using PagedList;
 

@@ -9,7 +9,7 @@ using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 
-namespace ExpenseManager.BusinessLogic.Budgets
+namespace ExpenseManager.BusinessLogic.BudgetServices
 {
     /// <summary>
     ///     Class that handles logic of BudgetAccessRightController

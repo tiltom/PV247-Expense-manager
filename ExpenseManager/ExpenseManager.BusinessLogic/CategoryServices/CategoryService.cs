@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Factory;
 
-namespace ExpenseManager.BusinessLogic.Category
+namespace ExpenseManager.BusinessLogic.CategoryServices
 {
     /// <summary>
     ///     Class that handles logic of CategoryController
@@ -29,7 +30,7 @@ namespace ExpenseManager.BusinessLogic.Category
         /// </summary>
         /// <param name="category">New category</param>
         /// <returns></returns>
-        public async Task CreateCategory(Entity.Categories.Category category)
+        public async Task CreateCategory(Category category)
         {
             this.ValidateCategory(category);
 
@@ -41,7 +42,7 @@ namespace ExpenseManager.BusinessLogic.Category
         /// </summary>
         /// <param name="guid">ID that specifies returned category</param>
         /// <returns>Desired category</returns>
-        public async Task<Entity.Categories.Category> GetCategoryByGuid(Guid guid)
+        public async Task<Category> GetCategoryByGuid(Guid guid)
         {
             return await this._db.Categories.Where(x => x.Guid.Equals(guid)).FirstOrDefaultAsync();
         }
@@ -51,7 +52,7 @@ namespace ExpenseManager.BusinessLogic.Category
         /// </summary>
         /// <param name="category">Edited category</param>
         /// <returns></returns>
-        public async Task EditCategory(Entity.Categories.Category category)
+        public async Task EditCategory(Category category)
         {
             this.ValidateCategory(category);
 
@@ -100,12 +101,12 @@ namespace ExpenseManager.BusinessLogic.Category
 
         #region private
 
-        private async Task<Entity.Categories.Category> GetDefaultCategory()
+        private async Task<Category> GetDefaultCategory()
         {
             return await this._db.Categories.FirstOrDefaultAsync();
         }
 
-        private void ValidateCategory(Entity.Categories.Category category)
+        private void ValidateCategory(Category category)
         {
             if (category == null)
             {

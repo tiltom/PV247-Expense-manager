@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Chart.Mvc.ComplexChart;
 using Chart.Mvc.SimpleChart;
-using ExpenseManager.BusinessLogic.Common;
-using ExpenseManager.BusinessLogic.Dashboard;
+using ExpenseManager.BusinessLogic.CommonServices;
+using ExpenseManager.BusinessLogic.DashboardServices;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Web.Models.HomePage;
 

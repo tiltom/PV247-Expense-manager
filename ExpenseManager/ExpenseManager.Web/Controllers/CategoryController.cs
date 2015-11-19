@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using ExpenseManager.BusinessLogic.Category;
+using ExpenseManager.BusinessLogic.CategoryServices;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Web.Models.Category;
 
