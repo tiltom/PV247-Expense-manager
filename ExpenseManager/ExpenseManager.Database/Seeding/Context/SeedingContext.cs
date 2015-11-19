@@ -11,7 +11,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace ExpenseManager.Database.Seeding.Context
 {
-    public class SeedingContext : IdentityDbContext<UserIdentity>, IWalletContext, IUserContext, ITransactionContext,
+    internal class SeedingContext : IdentityDbContext<UserIdentity>, IWalletContext, IUserContext, ITransactionContext,
         IBudgetContext
     {
         public SeedingContext()

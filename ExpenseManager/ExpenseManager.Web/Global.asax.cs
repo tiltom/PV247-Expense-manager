@@ -34,7 +34,7 @@ namespace ExpenseManager.Web
 
             // Initialize Database
             RegisterContexts.Register();
-            Database.Database.SetDatabaseInitializer();
+            Database.Database.Initialize();
 
             // Initialize auto mappings
             Mapper.CreateMap<Budget, BudgetShowModel>();
