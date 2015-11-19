@@ -11,7 +11,6 @@ using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Enums;
 using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Wallets;
 
@@ -23,11 +22,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         private readonly ITransactionsProvider _transactionsProvider;
         private readonly IWalletsProvider _walletsProvider;
 
-        public TransactionService()
+        public TransactionService(IBudgetsProvider budgetsProvider, ITransactionsProvider transactionsProvider,
+            IWalletsProvider walletsProvider)
         {
-            this._transactionsProvider = ProvidersFactory.GetNewTransactionsProviders();
-            this._walletsProvider = ProvidersFactory.GetNewWalletsProviders();
-            this._budgetsProvider = ProvidersFactory.GetNewBudgetsProviders();
+            this._budgetsProvider = budgetsProvider;
+            this._transactionsProvider = transactionsProvider;
+            this._walletsProvider = walletsProvider;
         }
 
         public async Task AddOrUpdate(Transaction transaction)

@@ -8,6 +8,7 @@ using AutoMapper.QueryableExtensions;
 using ExpenseManager.BusinessLogic.BudgetServices;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
+using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.Budget;
 using PagedList;
 
@@ -16,7 +17,8 @@ namespace ExpenseManager.Web.Controllers
     [Authorize]
     public class BudgetController : AbstractController
     {
-        private readonly BudgetService _budgetService = new BudgetService();
+        private readonly BudgetService _budgetService =
+            new BudgetService(ProvidersFactory.GetNewBudgetsProviders(), ProvidersFactory.GetNewTransactionsProviders());
 
         /// <summary>
         ///     Shows all budgets for the current UserProfile.

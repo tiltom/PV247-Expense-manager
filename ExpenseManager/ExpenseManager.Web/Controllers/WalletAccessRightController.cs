@@ -8,6 +8,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ExpenseManager.BusinessLogic.WalletServices;
 using ExpenseManager.Entity;
+using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Models.WalletAccessRight;
@@ -16,7 +17,8 @@ namespace ExpenseManager.Web.Controllers
 {
     public class WalletAccessRightController : AbstractController
     {
-        private readonly WalletAccessRightService _walletAccessRightService = new WalletAccessRightService();
+        private readonly WalletAccessRightService _walletAccessRightService =
+            new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders());
 
         /// <summary>
         /// </summary>

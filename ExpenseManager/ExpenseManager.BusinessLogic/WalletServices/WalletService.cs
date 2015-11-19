@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Wallets;
 
 namespace ExpenseManager.BusinessLogic.WalletServices
@@ -14,7 +13,12 @@ namespace ExpenseManager.BusinessLogic.WalletServices
     /// </summary>
     public class WalletService
     {
-        private readonly IWalletsProvider _db = ProvidersFactory.GetNewWalletsProviders();
+        private readonly IWalletsProvider _db;
+
+        public WalletService(IWalletsProvider db)
+        {
+            this._db = db;
+        }
 
         /// <summary>
         ///     Returns wallet owner by owner's ID

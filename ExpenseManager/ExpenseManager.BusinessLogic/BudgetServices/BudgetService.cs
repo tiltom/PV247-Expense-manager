@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 
 namespace ExpenseManager.BusinessLogic.BudgetServices
@@ -14,8 +13,14 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
     /// </summary>
     public class BudgetService
     {
-        private readonly IBudgetsProvider _db = ProvidersFactory.GetNewBudgetsProviders();
-        private readonly ITransactionsProvider _transactionsProvider = ProvidersFactory.GetNewTransactionsProviders();
+        private readonly IBudgetsProvider _db;
+        private readonly ITransactionsProvider _transactionsProvider;
+
+        public BudgetService(IBudgetsProvider db, ITransactionsProvider transactionsProvider)
+        {
+            this._db = db;
+            this._transactionsProvider = transactionsProvider;
+        }
 
         /// <summary>
         ///     Additional validation for model

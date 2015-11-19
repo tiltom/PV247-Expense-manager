@@ -7,13 +7,15 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ExpenseManager.BusinessLogic.CategoryServices;
 using ExpenseManager.Entity.Categories;
+using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.Category;
 
 namespace ExpenseManager.Web.Controllers
 {
     public class CategoryController : AbstractController
     {
-        private readonly CategoryService _categoryService = new CategoryService();
+        private readonly CategoryService _categoryService =
+            new CategoryService(ProvidersFactory.GetNewTransactionsProviders());
 
         /// <summary>
         ///     Shows all existing categories.

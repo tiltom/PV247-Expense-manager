@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Providers.Factory;
 
 namespace ExpenseManager.BusinessLogic.CategoryServices
 {
@@ -14,7 +13,12 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
     /// </summary>
     public class CategoryService
     {
-        private readonly ITransactionsProvider _db = ProvidersFactory.GetNewTransactionsProviders();
+        private readonly ITransactionsProvider _db;
+
+        public CategoryService(ITransactionsProvider db)
+        {
+            this._db = db;
+        }
 
         /// <summary>
         ///     Returns all categories from database

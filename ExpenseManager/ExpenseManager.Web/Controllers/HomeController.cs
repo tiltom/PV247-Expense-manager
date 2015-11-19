@@ -8,6 +8,7 @@ using Chart.Mvc.ComplexChart;
 using Chart.Mvc.SimpleChart;
 using ExpenseManager.BusinessLogic.CommonServices;
 using ExpenseManager.BusinessLogic.DashboardServices;
+using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Web.Models.HomePage;
 
@@ -17,7 +18,9 @@ namespace ExpenseManager.Web.Controllers
     public class HomeController : AbstractController
     {
         private readonly ColorGeneratorService _colorGenerator = new ColorGeneratorService();
-        private readonly DashBoardService _dashBoardService = new DashBoardService();
+
+        private readonly DashBoardService _dashBoardService =
+            new DashBoardService(ProvidersFactory.GetNewTransactionsProviders());
 
         /// <summary>
         ///     Will display empty page with initialized filter

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 
@@ -15,7 +14,12 @@ namespace ExpenseManager.BusinessLogic.WalletServices
     /// </summary>
     public class WalletAccessRightService
     {
-        private readonly IWalletsProvider _db = ProvidersFactory.GetNewWalletsProviders();
+        private readonly IWalletsProvider _db;
+
+        public WalletAccessRightService(IWalletsProvider db)
+        {
+            this._db = db;
+        }
 
         /// <summary>
         ///     Returns access rights for walled by wallet owner

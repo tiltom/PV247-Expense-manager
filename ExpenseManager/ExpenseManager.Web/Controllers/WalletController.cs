@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper.QueryableExtensions;
 using ExpenseManager.BusinessLogic.WalletServices;
+using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.Wallet;
 
 namespace ExpenseManager.Web.Controllers
@@ -12,7 +13,8 @@ namespace ExpenseManager.Web.Controllers
     [Authorize]
     public class WalletController : AbstractController
     {
-        private readonly WalletService _walletService = new WalletService();
+        private readonly WalletService _walletService =
+            new WalletService(ProvidersFactory.GetNewWalletsProviders());
 
         /// <summary>
         ///     Address: GET: Wallets/Edit

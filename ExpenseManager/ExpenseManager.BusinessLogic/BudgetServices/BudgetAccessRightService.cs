@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 
 namespace ExpenseManager.BusinessLogic.BudgetServices
@@ -16,7 +15,12 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
     /// </summary>
     public class BudgetAccessRightService
     {
-        private readonly IBudgetsProvider _db = ProvidersFactory.GetNewBudgetsProviders();
+        private readonly IBudgetsProvider _db;
+
+        public BudgetAccessRightService(IBudgetsProvider db)
+        {
+            this._db = db;
+        }
 
         /// <summary>
         ///     Returns access rights for specified budget

@@ -5,15 +5,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ExpenseManager.Entity.Providers;
-using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Transactions;
 
 namespace ExpenseManager.BusinessLogic.DashboardServices
 {
     public class DashBoardService
     {
-        private readonly
-            ITransactionsProvider _transactionsProvider = ProvidersFactory.GetNewTransactionsProviders();
+        private readonly ITransactionsProvider _transactionsProvider;
+
+        public DashBoardService(ITransactionsProvider transactionsProvider)
+        {
+            this._transactionsProvider = transactionsProvider;
+        }
 
         /// <summary>
         ///     Will return just transaction which can be seen by this user

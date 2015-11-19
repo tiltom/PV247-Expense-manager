@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using ExpenseManager.BusinessLogic.TransactionServices;
 using ExpenseManager.Entity;
+using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Web.Models.Transaction;
 using PagedList;
@@ -17,7 +18,9 @@ namespace ExpenseManager.Web.Controllers
     [Authorize]
     public class TransactionController : AbstractController
     {
-        private readonly TransactionService _transactionService = new TransactionService();
+        private readonly TransactionService _transactionService =
+            new TransactionService(ProvidersFactory.GetNewBudgetsProviders(),
+                ProvidersFactory.GetNewTransactionsProviders(), ProvidersFactory.GetNewWalletsProviders());
 
         /// <summary>
         ///     Shows transactions for users Wallet

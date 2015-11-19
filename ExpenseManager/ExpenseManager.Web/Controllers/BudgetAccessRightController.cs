@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ExpenseManager.BusinessLogic.BudgetServices;
+using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.BudgetAccessRight;
 using PagedList;
 
@@ -14,7 +15,8 @@ namespace ExpenseManager.Web.Controllers
 {
     public class BudgetAccessRightController : AbstractController
     {
-        private readonly BudgetAccessRightService _budgetAccessRightService = new BudgetAccessRightService();
+        private readonly BudgetAccessRightService _budgetAccessRightService
+            = new BudgetAccessRightService(ProvidersFactory.GetNewBudgetsProviders());
 
         /// <summary>
         ///     Display all budget access rights for chosen budget
