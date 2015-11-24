@@ -9,65 +9,117 @@
     @Html.ActionLink("Add transaction", "ExpenseIncome", "Transaction", null, new {@class = "btn btn-action"})
     <div class="medium-margin-top"/>
     <div class="row">
-        <div class="col-md-6">
-            <h2>Filter:</h2>
-            @using (Html.BeginForm("Index", "Home", FormMethod.Post, new {@class = "form-horizontal"}))
-            {
-                @Html.AntiForgeryToken()
+        <div class="col-md-7">
+            <h3> Last 5 transactions</h3>
+            <div class="medium-margin-top">
+                <table class="table table-hover table-condensed">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().Amount)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().Date)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().Description)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().CategoryName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().CurrencySymbol)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().BudgetName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().IsRepeatable)
+                        </th>
+                    </tr>
 
-
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Filter.StartDate, new {@class = "control-label col-md-2"})
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(model => model.Filter.StartDate, new {@class = "form-control datepicker", @Value = Model.Filter.StartDate.ToString(AbstractController.DateFormat)})
-                        @Html.ValidationMessageFor(model => model.Filter.StartDate, "", new {@class = "text-danger"})
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Filter.EndDate, new {@class = "control-label col-md-2"})
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(model => model.Filter.EndDate, new {@class = "form-control datepicker", @Value = Model.Filter.EndDate.ToString(AbstractController.DateFormat)})
-                        @Html.ValidationMessageFor(model => model.Filter.EndDate, "", new {@class = "text-danger"})
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <button type="submit" class="btn btn-success">Show</button>
-                        @Html.ActionLink("Clear", "Index", null, new {@class = "btn btn-danger"})
-                    </div>
-                </div>
-            }
+                    @foreach (var item in Model.Transactions)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Amount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Date)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CategoryName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CurrencySymbol)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BudgetName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.IsRepeatable)
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
         </div>
-        <div class="col-md-6">
-            @if (Model.Categories != null || Model.Months != null)
+        <div class="col-md-5">
+            <h3> Graph summaries</h3>
+            <div class="medium-margin-top">
+            @if (Model.CategoriesChart != null || Model.MonthSummaryChart != null)
             {
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#category" aria-controls="category" role="tab" data-toggle="tab">Category</a></li>
-                    <li role="presentation"><a href="#months" aria-controls="months" role="tab" data-toggle="tab">Months</a></li>
+                    <li role="presentation" class="active"><a href="#category" aria-controls="category" role="tab" data-toggle="tab" id="categoryTab">Category</a></li>
+                    <li role="presentation"><a href="#months" aria-controls="months" role="tab" data-toggle="tab">Last Month report</a></li>
+                    <li role="presentation"><a href="#years" aria-controls="years" role="tab" data-toggle="tab">Last Year report</a></li>
                 </ul>
 
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="category">
-                    <div class="medium-margin-top"></div>
-                    <canvas id="categoriesGraph" width="300" height="300"></canvas>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="category">
+                        <div class="medium-margin-top"></div>
+                        <canvas id="categoriesGraph" width="300" height="300"></canvas>
+
+                    </div>
+                    <div role="tabpanel" class="tab-pane active" id="months">
+                        <div class="medium-margin-top"></div>
+                        <canvas id="monthsGraph" width="300" height="300"></canvas>
+                    </div>
+                    <div role="tabpanel" class="tab-pane active" id="years">
+                        <div class="medium-margin-top"></div>
+                        <canvas id="yearsGraph" width="300" height="300"></canvas>
+                    </div>
+
                 </div>
-                <div role="tabpanel" class="tab-pane" id="months">
-                    <div class="medium-margin-top"></div>
-                    <canvas id="monthsGraph" width="300" height="300"></canvas>
-                </div>
-            </div>
             }
-            @{
-                if (Model.Categories != null)
-                {
-                    @Html.CreateChart("categoriesGraph", Model.Categories)
-                }
-                if (Model.Months != null)
-                {
-                    @Html.CreateChart("monthsGraph", Model.Months)
+            </div>
+
+            @section Scripts {
+                @{
+                    if (Model.CategoriesChart != null)
+                    {
+                        @Html.CreateChart("categoriesGraph", Model.CategoriesChart)
+
+                    }
+                    if (Model.MonthSummaryChart != null)
+                    {
+                        @Html.CreateChart("monthsGraph", Model.MonthSummaryChart)
+                        <script type="text/javascript">
+                            // other tabs won't generate without being active and we need to have just single active tab 
+                            // hence we have to remove active class from other tabs
+                            $('#months').removeClass('active');
+                        </script>
+                    }
+                    if (Model.MonthSummaryChart != null)
+                    {
+                        @Html.CreateChart("yearsGraph", Model.YearSummaryChart)
+                        <script type="text/javascript">
+                            $('#years').removeClass('active');
+                        </script>
+                    }
+
                 }
             }
 

@@ -1,5 +1,7 @@
-﻿using Chart.Mvc.ComplexChart;
+﻿using System.Collections.Generic;
+using Chart.Mvc.ComplexChart;
 using Chart.Mvc.SimpleChart;
+using ExpenseManager.Web.Models.Transaction;
 
 namespace ExpenseManager.Web.Models.HomePage
 {
@@ -16,16 +18,28 @@ namespace ExpenseManager.Web.Models.HomePage
         /// <summary>
         ///     categories chart data
         /// </summary>
-        public PieChart Categories { get; set; }
+        public PieChart CategoriesChart { get; set; }
+
 
         /// <summary>
-        ///     months chart data
+        ///     last month chart data
         /// </summary>
-        public BarChart Months { get; set; }
+        public BarChart MonthSummaryChart { get; set; }
+
+
+        /// <summary>
+        ///     last year chart data
+        /// </summary>
+        public BarChart YearSummaryChart { get; set; }
 
         /// <summary>
         ///     filter data model
         /// </summary>
         public FilterDataModel Filter { get; set; }
+
+        /// <summary>
+        ///     last 5 transactions
+        /// </summary>
+        public IEnumerable<TransactionShowModel> Transactions { get; set; }
     }
 }

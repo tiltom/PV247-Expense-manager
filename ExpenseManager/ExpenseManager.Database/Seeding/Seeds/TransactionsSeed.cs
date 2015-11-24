@@ -21,7 +21,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
                     Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(),
                     Amount = 20,
-                    Date = new DateTime(2015, 10, 17),
+                    Date = new DateTime(2015, 10, 11),
                     Category = context.Categories.FirstOrDefault(x => x.Name.Contains("Salary")),
                     Description = "Found 20 euro on the ground"
                 },
@@ -29,8 +29,8 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 {
                     Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(),
-                    Amount = -10,
-                    Date = new DateTime(2015, 10, 17),
+                    Amount = 10,
+                    Date = new DateTime(2015, 10, 12),
                     Category = context.Categories.FirstOrDefault(),
                     Description = "Bought a ticket to the cinema"
                 },
@@ -38,8 +38,8 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 {
                     Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(),
-                    Amount = -5,
-                    Date = new DateTime(2015, 10, 17),
+                    Amount = 5,
+                    Date = new DateTime(2015, 10, 13),
                     Category = context.Categories.FirstOrDefault(),
                     Description = "Bet on a Chicago Blackhawks"
                 },
@@ -47,8 +47,8 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 {
                     Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(),
-                    Amount = -50,
-                    Date = new DateTime(2015, 10, 16),
+                    Amount = 50,
+                    Date = new DateTime(2015, 10, 14),
                     Category = context.Categories.FirstOrDefault(x => x.Description.Contains("transportation")),
                     Description = "Bought a ticket to Madrid"
                 },
@@ -56,8 +56,8 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 {
                     Wallet = context.Wallets.FirstOrDefault(u => u.Name.Contains("Read")),
                     Currency = context.Currencies.FirstOrDefault(),
-                    Amount = -5,
-                    Date = new DateTime(2015, 10, 17),
+                    Amount = 5,
+                    Date = new DateTime(2015, 10, 15),
                     Category = context.Categories.FirstOrDefault(),
                     Description = "Read transaction"
                 },
@@ -65,7 +65,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 {
                     Wallet = context.Wallets.FirstOrDefault(u => u.Name.Contains("Write")),
                     Currency = context.Currencies.FirstOrDefault(),
-                    Amount = -50,
+                    Amount = 50,
                     Date = new DateTime(2015, 10, 16),
                     Category = context.Categories.FirstOrDefault(x => x.Description.Contains("transportation")),
                     Description = "Write transaction"
@@ -75,7 +75,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
                     Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(x => x.Symbol == "Kč"),
                     Amount = 100000,
-                    Date = new DateTime(2015, 11, 16),
+                    Date = new DateTime(2015, 11, 17),
                     Category = context.Categories.FirstOrDefault(x => x.Name == "Salary"),
                     Description = "Asp.net expense manager payment"
                 },
@@ -83,7 +83,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 {
                     Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(x => x.Symbol == "Kč"),
-                    Amount = -20000,
+                    Amount = 20000,
                     Date = new DateTime(2013, 11, 25),
                     Category = context.Categories.FirstOrDefault(x => x.Name == "Bitcoin"),
                     Description = "Bought too late"

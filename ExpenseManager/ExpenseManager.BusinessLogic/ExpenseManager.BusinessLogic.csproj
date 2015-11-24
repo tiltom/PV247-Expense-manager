@@ -79,6 +79,9 @@
     <Compile Include="CategoryServices\CategoryService.cs" />
     <Compile Include="CommonServices\ColorGeneratorService.cs" />
     <Compile Include="DashboardServices\DashBoardService.cs" />
+    <Compile Include="DashboardServices\Models\FilterDataServiceModel.cs" />
+    <Compile Include="DashboardServices\Models\GraphWithDescriptionModel.cs" />
+    <Compile Include="DashboardServices\Models\SimpleGraphModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactionServices\TransactionService.cs" />
     <Compile Include="WalletServices\WalletAccessRightService.cs" />

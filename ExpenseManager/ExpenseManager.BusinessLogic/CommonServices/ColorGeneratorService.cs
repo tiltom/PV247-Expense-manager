@@ -5,6 +5,9 @@
     /// </summary>
     public class ColorGeneratorService
     {
+        public  const string White = "#FFFFFF";
+        public  const string Black = "#000000";
+
         private static readonly string[] ColourValues =
         {
             "FF0000", "00FF00", "0000FF", "FFFF00", "FF00FF", "00FFFF", "000000",

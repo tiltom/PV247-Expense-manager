@@ -4,13 +4,16 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Chart.Mvc.ComplexChart;
 using Chart.Mvc.SimpleChart;
 using ExpenseManager.BusinessLogic.CommonServices;
 using ExpenseManager.BusinessLogic.DashboardServices;
+using ExpenseManager.BusinessLogic.DashboardServices.Models;
 using ExpenseManager.Entity.Providers.Factory;
-using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Web.Models.HomePage;
+using ExpenseManager.Web.Models.Transaction;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -26,94 +29,63 @@ namespace ExpenseManager.Web.Controllers
         ///     Will display empty page with initialized filter
         /// </summary>
         /// <returns>Initialized filter</returns>
-        public ViewResult Index()
+        public async Task<ViewResult> Index()
         {
-            return this.View(new DashBoardModel());
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Index(FilterDataModel filter)
-        {
-            var model = new DashBoardModel();
+            var filter = new FilterDataModel();
+            var mappedFilter = Mapper.Map<FilterDataServiceModel>(filter);
+            var userId = await this.CurrentProfileId();
             // select transactions according to filter
-            var result = await this.FilterTransactions(filter);
+            var resultMonth = this._dashBoardService.FilterTransactions(mappedFilter.WithMonthFilterValues(), userId);
+            var resultYear = this._dashBoardService.FilterTransactions(mappedFilter.WithYearFilterValues(), userId);
+            var last5Transactions =
+                await
+                    this._dashBoardService.GetAccessibleResults(userId)
+                        .OrderByDescending(t => t.Date)
+                        .Take(5).ProjectTo<TransactionShowModel>()
+                        .ToListAsync();
             // prepare data for graphs
-            var categories = await GetWrapperValuesForCategories(result);
-            var months = await GetWrapperValuesForMonths(result);
+            var categories = await this._dashBoardService.GetWrapperValuesForCategories(resultMonth);
+            var monthSummary = await this._dashBoardService.GetGraphForDaysLastMonth(resultMonth);
+            var yearSummary = await this._dashBoardService.GetGraphForMonthLastYear(resultYear);
             // generate pie chart
-            model.Categories = this.GeneratePieChart(categories);
-            model.Months = this.GenerateBarChart(months);
-            return this.View(model);
+            var categoriesChart = this.GeneratePieChart(categories);
+            var monthSummaryChart = this.GenerateBarChart(monthSummary);
+            var yearSummaryChart = this.GenerateBarChart(yearSummary);
+            return
+                this.View(new DashBoardModel
+                {
+                    Filter = filter,
+                    CategoriesChart = categoriesChart,
+                    MonthSummaryChart = monthSummaryChart,
+                    YearSummaryChart = yearSummaryChart,
+                    Transactions = last5Transactions
+                });
         }
 
         #region private
 
-        private BarChart GenerateBarChart(List<SimpleGraphWrapper> months)
+        private BarChart GenerateBarChart(GraphWithDescriptionModel data)
         {
             var barChart = new BarChart();
-            barChart.ComplexData.Labels.AddRange(months.Select(t => t.Label));
+            barChart.ComplexData.Labels.AddRange(data.GraphData.Select(t => t.Label));
             barChart.ComplexData.Datasets.AddRange(new List<ComplexDataset>
             {
                 new ComplexDataset
                 {
-                    Data = months.Select(t => Convert.ToDouble(t.Value)) as List<double>,
-                    Label = "Monthly report",
+                    Data = data.GraphData.Select(t => Convert.ToDouble(t.Value)).ToList(),
+                    Label = data.Description,
                     FillColor = this._colorGenerator.GenerateColor(),
-                    StrokeColor = this._colorGenerator.GenerateColor(),
-                    PointColor = this._colorGenerator.GenerateColor(),
-                    PointStrokeColor = this._colorGenerator.GenerateColor(),
-                    PointHighlightFill = this._colorGenerator.GenerateColor(),
-                    PointHighlightStroke = this._colorGenerator.GenerateColor()
+                    StrokeColor = ColorGeneratorService.Black,
+                    PointColor = ColorGeneratorService.Black,
+                    PointStrokeColor = ColorGeneratorService.Black,
+                    PointHighlightFill = ColorGeneratorService.Black,
+                    PointHighlightStroke = ColorGeneratorService.Black
                 }
             });
             return barChart;
         }
 
-        private static async Task<List<SimpleGraphWrapper>> GetWrapperValuesForCategories(IQueryable<Transaction> result)
-        {
-            return await result
-                .GroupBy(t => t.Category.Name)
-                .Select(
-                    x =>
-                        new SimpleGraphWrapper
-                        {
-                            Label = x.Key,
-                            Value = x.Sum(f => f.Amount)
-                        })
-                .ToListAsync();
-        }
-
-
-        private static async Task<List<SimpleGraphWrapper>> GetWrapperValuesForMonths(IQueryable<Transaction> result)
-        {
-            return await result
-                .GroupBy(t => t.Date.Month)
-                .Select(
-                    x =>
-                        new SimpleGraphWrapper
-                        {
-                            Label = x.Key.ToString(),
-                            Value = x.Sum(f => f.Amount)
-                        })
-                .ToListAsync();
-        }
-
-        private async Task<IQueryable<Transaction>> FilterTransactions(FilterDataModel model)
-        {
-            var currentUser = await this.CurrentProfileId();
-            var result = this._dashBoardService.GetAccessibleResults(currentUser)
-                .Where(
-                    t =>
-                        t.Date <= model.EndDate && t.Date >= model.StartDate
-                        && (!model.Budgets.Any() || model.Budgets.Contains(t.Budget.Guid))
-                        && (!model.Wallets.Any() || model.Wallets.Contains(t.Wallet.Guid))
-                        && (!model.Categories.Any() || model.Categories.Contains(t.Category.Guid))
-                );
-            return result;
-        }
-
-        private PieChart GeneratePieChart(List<SimpleGraphWrapper> result)
+        private PieChart GeneratePieChart(List<SimpleGraphModel> result)
         {
             var pieChart = new PieChart();
             pieChart.Data.AddRange(result.Select(
