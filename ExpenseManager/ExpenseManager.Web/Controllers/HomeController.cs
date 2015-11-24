@@ -44,6 +44,7 @@ namespace ExpenseManager.Web.Controllers
             // generate pie chart
             model.Categories = this.GeneratePieChart(categories);
             model.Months = this.GenerateBarChart(months);
+            model.Filter = filter;
             return this.View(model);
         }
 
@@ -57,14 +58,14 @@ namespace ExpenseManager.Web.Controllers
             {
                 new ComplexDataset
                 {
-                    Data = months.Select(t => Convert.ToDouble(t.Value)) as List<double>,
+                    Data = months.Select(t => Convert.ToDouble(t.Value)).ToList(),
                     Label = "Monthly report",
                     FillColor = this._colorGenerator.GenerateColor(),
-                    StrokeColor = this._colorGenerator.GenerateColor(),
-                    PointColor = this._colorGenerator.GenerateColor(),
-                    PointStrokeColor = this._colorGenerator.GenerateColor(),
-                    PointHighlightFill = this._colorGenerator.GenerateColor(),
-                    PointHighlightStroke = this._colorGenerator.GenerateColor()
+                    StrokeColor = ColorGeneratorService.Black,
+                    PointColor = ColorGeneratorService.Black,
+                    PointStrokeColor = ColorGeneratorService.Black,
+                    PointHighlightFill = ColorGeneratorService.Black,
+                    PointHighlightStroke = ColorGeneratorService.Black
                 }
             });
             return barChart;
@@ -79,7 +80,7 @@ namespace ExpenseManager.Web.Controllers
                         new SimpleGraphWrapper
                         {
                             Label = x.Key,
-                            Value = x.Sum(f => f.Amount)
+                            Value = x.Sum(f => f.Amount > 0 ? f.Amount : f.Amount*-1)
                         })
                 .ToListAsync();
         }

@@ -45,7 +45,7 @@
             @if (Model.Categories != null || Model.Months != null)
             {
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#category" aria-controls="category" role="tab" data-toggle="tab">Category</a></li>
+                    <li role="presentation" class="active"><a href="#category" aria-controls="category" role="tab" data-toggle="tab" id="categoryTab">Category</a></li>
                     <li role="presentation"><a href="#months" aria-controls="months" role="tab" data-toggle="tab">Months</a></li>
                 </ul>
 
@@ -53,21 +53,32 @@
                 <div role="tabpanel" class="tab-pane active" id="category">
                     <div class="medium-margin-top"></div>
                     <canvas id="categoriesGraph" width="300" height="300"></canvas>
+                  
                 </div>
-                <div role="tabpanel" class="tab-pane" id="months">
+                <div role="tabpanel" class="tab-pane active" id="months">
                     <div class="medium-margin-top"></div>
                     <canvas id="monthsGraph" width="300" height="300"></canvas>
                 </div>
             </div>
             }
-            @{
-                if (Model.Categories != null)
-                {
-                    @Html.CreateChart("categoriesGraph", Model.Categories)
-                }
-                if (Model.Months != null)
-                {
-                    @Html.CreateChart("monthsGraph", Model.Months)
+
+            @section Scripts {
+                @{
+                    if (Model.Categories != null)
+                    {
+                        @Html.CreateChart("categoriesGraph", Model.Categories)
+              
+                    }
+                    if (Model.Months != null)
+                    {
+                        @Html.CreateChart("monthsGraph", Model.Months)
+                        <script type="text/javascript">
+                            // other tabs won't generate without being active and we need to have just single active tab 
+                            // hence we have to remove active class from other tabs
+                            $('#months').removeClass('active');
+                        </script>
+                    }
+
                 }
             }
 
