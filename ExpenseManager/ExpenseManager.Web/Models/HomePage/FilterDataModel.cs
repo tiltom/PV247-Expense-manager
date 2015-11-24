@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace ExpenseManager.Web.Models.HomePage
 {
@@ -8,27 +7,11 @@ namespace ExpenseManager.Web.Models.HomePage
     {
         public FilterDataModel()
         {
-            StartDate = DateTime.Now.AddDays(-30);
-            EndDate = DateTime.Now;
             Wallets = new List<Guid>();
             Categories = new List<Guid>();
             Budgets = new List<Guid>();
         }
 
-
-        /// <summary>
-        ///     start of interval for transactions shown
-        /// </summary>
-        [Display(Name = "Start")]
-        [Required]
-        public DateTime StartDate { get; set; }
-
-        /// <summary>
-        ///     end of interval for transactions shown
-        /// </summary>
-        [Display(Name = "End")]
-        [Required]
-        public DateTime EndDate { get; set; }
 
         /// <summary>
         ///     selected categories

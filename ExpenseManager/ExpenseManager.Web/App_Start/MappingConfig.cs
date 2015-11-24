@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ExpenseManager.BusinessLogic.DashboardServices.Models;
 using ExpenseManager.Database.Common;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
@@ -7,6 +8,7 @@ using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Models.Budget;
 using ExpenseManager.Web.Models.BudgetAccessRight;
 using ExpenseManager.Web.Models.Category;
+using ExpenseManager.Web.Models.HomePage;
 using ExpenseManager.Web.Models.Transaction;
 using ExpenseManager.Web.Models.User;
 using ExpenseManager.Web.Models.Wallet;
@@ -25,6 +27,7 @@ namespace ExpenseManager.Web
             RegisterBudgetMappings();
             RegisterCategoryMappings();
             RegisterTransactionMappings();
+            RegisterDashBoardMappings();
         }
 
         private static void RegisterTransactionMappings()
@@ -141,6 +144,14 @@ namespace ExpenseManager.Web
                     options =>
                         options.MapFrom(entity => entity.UserProfile.FirstName + " " + entity.UserProfile.LastName))
                 .ForMember(view => view.WalletId, options => options.MapFrom(entity => entity.Wallet.Guid));
+        }
+
+        private static void RegisterDashBoardMappings()
+        {
+            Mapper.CreateMap<FilterDataModel, FilterDataServiceModel>()
+                .ForMember(view => view.Categories, options => options.MapFrom(model => model.Categories))
+                .ForMember(view => view.Wallets, options => options.MapFrom(model => model.Wallets))
+                .ForMember(view => view.Budgets, options => options.MapFrom(model => model.Budgets));
         }
     }
 }
