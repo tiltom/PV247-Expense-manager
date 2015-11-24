@@ -141,6 +141,15 @@ namespace ExpenseManager.Web
                     options =>
                         options.MapFrom(entity => entity.UserProfile.FirstName + " " + entity.UserProfile.LastName))
                 .ForMember(view => view.WalletId, options => options.MapFrom(entity => entity.Wallet.Guid));
+
+            Mapper.CreateMap<WalletAccessRight, WalletAccessRightEditModel>()
+                .ForMember(view => view.Id, options => options.MapFrom(entity => entity.Guid))
+                .ForMember(view => view.Permission, options => options.MapFrom(entity => entity.Permission.ToString()))
+                .ForMember(view => view.AssignedUserId, options => options.MapFrom(entity => entity.UserProfile.Guid))
+                .ForMember(view => view.AssignedUserName,
+                    options =>
+                        options.MapFrom(entity => entity.UserProfile.FirstName + " " + entity.UserProfile.LastName))
+                .ForMember(view => view.WalletId, options => options.MapFrom(entity => entity.Wallet.Guid));
         }
     }
 }

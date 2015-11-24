@@ -229,6 +229,7 @@
     <Compile Include="Models\User\ManageViewModels.cs" />
     <Compile Include="Models\Role\RoleViewModel.cs" />
     <Compile Include="Models\User\UserViewModel.cs" />
+    <Compile Include="Models\WalletAccessRight\WalletAccessRightEditModel.cs" />
     <Compile Include="Models\WalletAccessRight\WalletAccessRightModel.cs" />
     <Compile Include="Models\Wallet\WalletEditModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

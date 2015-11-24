@@ -1,4 +1,4 @@
-﻿@model ExpenseManager.Web.Models.WalletAccessRight.WalletAccessRightModel
+﻿@model ExpenseManager.Web.Models.WalletAccessRight.WalletAccessRightEditModel
 
 @{
     ViewBag.Title = "Edit Wallet Access Right";
@@ -9,6 +9,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.AssignedUserId)
     
     <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -25,8 +26,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.AssignedUserId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.AssignedUserId, Model.Users, "Select User", htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.AssignedUserId, "", new { @class = "text-danger" })
+                @Html.DisplayFor(model => model.AssignedUserName)
             </div>
         </div>
 

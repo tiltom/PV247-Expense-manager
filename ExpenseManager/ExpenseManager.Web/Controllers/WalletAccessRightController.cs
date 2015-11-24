@@ -90,7 +90,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 return this.HttpNotFound();
             }
-            return this.View(await this.ConvertEntityToModelWithComboOptions(walletAccessRight));
+            return this.View(this.ConvertEntityToEditModel(walletAccessRight));
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace ExpenseManager.Web.Controllers
         // 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(WalletAccessRightModel walletAccessRight)
+        public async Task<ActionResult> Edit(WalletAccessRightEditModel walletAccessRight)
         {
             if (ModelState.IsValid)
             {
@@ -113,10 +113,7 @@ namespace ExpenseManager.Web.Controllers
 
                 return this.RedirectToAction("Index");
             }
-
-            var walletAccessRightEntity =
-                await this._walletAccessRightService.GetWalletAccessRightById(walletAccessRight.Id);
-            walletAccessRight.Users = await this.GetUsers(walletAccessRightEntity.UserProfile.Guid);
+            
             return this.View(walletAccessRight);
         }
 
@@ -178,6 +175,13 @@ namespace ExpenseManager.Web.Controllers
         {
             var model = Mapper.Map<WalletAccessRightModel>(entity);
             model.Users = await this.GetUsers(entity.UserProfile.Guid);
+            model.Permissions = this.GetPermissions();
+            return model;
+        }
+
+        private WalletAccessRightEditModel ConvertEntityToEditModel(WalletAccessRight entity)
+        {
+            var model = Mapper.Map<WalletAccessRightEditModel>(entity);
             model.Permissions = this.GetPermissions();
             return model;
         }
