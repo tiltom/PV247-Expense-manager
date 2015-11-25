@@ -36,9 +36,10 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         /// <returns></returns>
         public async Task CreateCategory(Category category)
         {
-            this.ValidateCategory(category);
-
-            await this._db.AddOrUpdateAsync(category);
+            if (this.ValidateCategory(category))
+            {
+                await this._db.AddOrUpdateAsync(category);
+            }
         }
 
         /// <summary>
@@ -58,14 +59,15 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         /// <returns></returns>
         public async Task EditCategory(Category category)
         {
-            this.ValidateCategory(category);
+            if (this.ValidateCategory(category))
+            {
+                var categoryToEdit = await this.GetCategoryByGuid(category.Guid);
+                categoryToEdit.Name = category.Name;
+                categoryToEdit.Description = category.Description;
+                categoryToEdit.IconPath = category.IconPath;
 
-            var categoryToEdit = await this.GetCategoryByGuid(category.Guid);
-            categoryToEdit.Name = category.Name;
-            categoryToEdit.Description = category.Description;
-            categoryToEdit.IconPath = category.IconPath;
-
-            await this._db.AddOrUpdateAsync(categoryToEdit);
+                await this._db.AddOrUpdateAsync(categoryToEdit);
+            }
         }
 
         /// <summary>
@@ -76,8 +78,13 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         public async Task DeleteCategory(Guid guid)
         {
             var categoryToDelete = await this.GetCategoryByGuid(guid);
-            var defaultCategory = await this.GetDefaultCategory();
 
+            if (categoryToDelete == null)
+            {
+                return;
+            }
+
+            var defaultCategory = await this.GetDefaultCategory();
             categoryToDelete.Transactions.ToList()
                 .ForEach(t => t.Category = defaultCategory);
 
@@ -85,12 +92,43 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         }
 
         /// <summary>
-        ///     Returns glyphicon icons for categories
+        ///     Validates category
+        /// </summary>
+        /// <param name="category">Category to validate</param>
+        /// <returns>True if category is valid, false otherwise</returns>
+        public bool ValidateCategory(Category category)
+        {
+            if (category == null)
+            {
+                return false;
+            }
+
+            if (string.Empty.Equals(category.Name))
+            {
+                return false;
+            }
+
+            if (string.Empty.Equals(category.Description))
+            {
+                return false;
+            }
+
+            if (!GetGlyphicons().Contains(category.IconPath))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        ///     Returns supported glyphicon icons for categories
         /// </summary>
         /// <returns>Glyphicons</returns>
         public static IList<string> GetGlyphicons()
         {
             // TODO: do this another way?
+            // TODO: add more glyphicons
             IList<string> glyphicons = new List<string>();
             glyphicons.Add("glyphicon-record");
             glyphicons.Add("glyphicon-glass");
@@ -108,24 +146,6 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         private async Task<Category> GetDefaultCategory()
         {
             return await this._db.Categories.FirstOrDefaultAsync();
-        }
-
-        private void ValidateCategory(Category category)
-        {
-            if (category == null)
-            {
-                throw new ArgumentNullException(nameof(category), "Category must not be null");
-            }
-
-            if ("".Equals(category.Name))
-            {
-                throw new ArgumentException("Name must not be empty");
-            }
-
-            if ("".Equals(category.Description))
-            {
-                throw new ArgumentException("Description must not be empty");
-            }
         }
 
         #endregion
