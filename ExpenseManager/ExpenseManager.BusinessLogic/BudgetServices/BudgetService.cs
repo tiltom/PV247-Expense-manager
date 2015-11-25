@@ -60,9 +60,10 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <returns></returns>
         public async Task CreateBudget(Budget budget)
         {
-            this.ValidateBudget(budget);
-
-            await this._db.AddOrUpdateAsync(budget);
+            if (this.ValidateBudget(budget))
+            {
+                await this._db.AddOrUpdateAsync(budget);
+            }
         }
 
         /// <summary>
@@ -96,9 +97,10 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
             originalBudget.Description = description;
             originalBudget.Limit = limit;
 
-            this.ValidateBudget(originalBudget);
-
-            await this._db.AddOrUpdateAsync(originalBudget);
+            if (this.ValidateBudget(originalBudget))
+            {
+                await this._db.AddOrUpdateAsync(originalBudget);
+            }
         }
 
         /// <summary>
@@ -126,13 +128,44 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
             await this._db.DeteleAsync(budget);
         }
 
-        #region private
-
-        private void ValidateBudget(Budget budget)
+        /// <summary>
+        ///     Validates budget
+        /// </summary>
+        /// <param name="budget">Budget to validate</param>
+        /// <returns>True if budget is valid, false otherwise</returns>
+        public bool ValidateBudget(Budget budget)
         {
-            // TODO: validate budget
-        }
+            if (budget == null)
+            {
+                return false;
+            }
 
-        #endregion
+            if (budget.Currency == null)
+            {
+                return false;
+            }
+
+            if (budget.Creator == null)
+            {
+                return false;
+            }
+
+            if (budget.Name.Equals(string.Empty))
+            {
+                return false;
+            }
+
+            if (!ValidateModel(budget.StartDate, budget.EndDate))
+            {
+                return false;
+            }
+
+            if (budget.Limit <= 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

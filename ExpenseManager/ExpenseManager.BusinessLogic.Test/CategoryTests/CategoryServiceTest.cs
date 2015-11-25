@@ -61,5 +61,20 @@ namespace ExpenseManager.BusinessLogic.Test.CategoryTests
             var categoryService = new CategoryService(ProvidersFactory.GetNewTransactionsProviders());
             Assert.IsFalse(categoryService.ValidateCategory(category));
         }
+
+        [Test]
+        public void ValidateCategory_ValidCategory_ReturnTrue()
+        {
+            var category = new Category
+            {
+                Name = "Test name",
+                Description = "Test description",
+                IconPath = "glyphicon-record",
+                Type = CategoryType.Expense
+            };
+
+            var categoryService = new CategoryService(ProvidersFactory.GetNewTransactionsProviders());
+            Assert.IsTrue(categoryService.ValidateCategory(category));
+        }
     }
 }
