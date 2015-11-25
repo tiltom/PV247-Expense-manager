@@ -158,16 +158,36 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
                         !users.Contains(u.Guid));
         }
 
+        /// <summary>
+        ///     Validates budget access rights
+        /// </summary>
+        /// <param name="budgetAccessRight">Budget access right to validate</param>
+        /// <returns>True if budget access right is valid, false otherwise</returns>
+        public bool ValidateBudgetAccessRight(BudgetAccessRight budgetAccessRight)
+        {
+            if (budgetAccessRight == null)
+            {
+                return false;
+            }
+
+            if (budgetAccessRight.UserProfile == null)
+            {
+                return false;
+            }
+
+            if (budgetAccessRight.Budget == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         #region private
 
         private ICollection<BudgetAccessRight> GetBudgetAccessRightsByBudget(Guid id)
         {
             return this._db.Budgets.FirstOrDefault(x => x.Guid.Equals(id)).AccessRights;
-        }
-
-        private void ValidateBudgetAccessRight(BudgetAccessRight budgetAccessRight)
-        {
-            // TODO: add validation
         }
 
         #endregion
