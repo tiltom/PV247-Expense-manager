@@ -8,15 +8,15 @@
 {
     <div class="form-horizontal">
         <div class="form-group" id="ExpenseIncome">
-            <div class="col-md-2"></div>
-            <div class="col-md-4">
+            <div class="col-md-2 col-xs-0"></div>
+            <div class="col-md-4 col-xs-6">
                 @Html.ActionLink("Income", "Create", null, new {expense = false, ViewBag.wallet}, new {@class = "income"})
 
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 col-xs-6">
                 @Html.ActionLink("Expense", "Create", null, new {expense = true, ViewBag.wallet}, new {@class = "expense"}) @*btn-lg btn-danger*@
             </div>
-            <div class="col-md-2"></div>
+            <div class="col-md-2 col-xs-0"></div>
         </div>
 
     <div class="form-group">

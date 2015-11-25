@@ -114,3 +114,21 @@ textarea { resize: none; }
         padding-top: 10px;
     }
 }
+
+@media (max-width: 992px) {
+    .expense {
+        height: 85px;
+        line-height: 85px;
+        font-size: 14px;
+    }
+
+    .income {
+        height: 85px;
+        line-height: 85px;
+        font-size: 14px;
+    }
+
+    #ExpenseIncome {
+        height: 90px;
+    }
+}
