@@ -6,40 +6,42 @@
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-   
+
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Expense Manager", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    @if (Request.IsAuthenticated)
-                    {
-                        <li>@Html.ActionLink("Transactions", "Index", "Transaction")</li>
-                        <li>@Html.ActionLink("Categories", "Index", "Category")</li>
-                        <li>@Html.ActionLink("Budgets", "Index", "Budget")</li>
-                        <li>@Html.ActionLink("Wallet", "Edit", "Wallet")</li>
-                        if (User.IsInRole("Admin"))
+    <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Expense Manager", "Index", "Home", new {area = ""}, new {@class = "navbar-brand"})
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        @if (Request.IsAuthenticated)
                         {
-                            <li>@Html.ActionLink("Manage roles", "Index", "RolesAdmin")</li>
-                            <li>@Html.ActionLink("Manage users", "Index", "UsersAdmin")</li>
+                            <li>@Html.ActionLink("Transactions", "Index", "Transaction")</li>
+                            <li>@Html.ActionLink("Categories", "Index", "Category")</li>
+                            <li>@Html.ActionLink("Budgets", "Index", "Budget")</li>
+                            <li>@Html.ActionLink("Wallet", "Edit", "Wallet")</li>
+                            if (User.IsInRole("Admin"))
+                            {
+                                <li>@Html.ActionLink("Manage roles", "Index", "RolesAdmin")</li>
+                                <li>@Html.ActionLink("Manage users", "Index", "UsersAdmin")</li>
+                            }
                         }
-                    }
-                </ul>
-                @Html.Partial("_LoginPartial")
+                    </ul>
+                    @Html.Partial("_LoginPartial")
+                </div>
             </div>
         </div>
-    </div>
-    <div class="container body-content">
+
+
+    <div class="container body-content small-margin-top">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4>@ViewBag.Title</h4>
@@ -54,13 +56,13 @@
                 </div>
             </div>
         </div>
-                <hr />
-                <footer>
-                    <p>&copy; @DateTime.Now.Year - Expense Manager</p>
-                </footer>
-            </div>
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Expense Manager</p>
+        </footer>
+    </div>
 
-            
+
 </body>
 </html>
 
