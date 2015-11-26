@@ -16,9 +16,14 @@ namespace ExpenseManager.Web.Models.HomePage
         }
 
         /// <summary>
-        ///     categories chart data
+        ///     Income categories chart data
         /// </summary>
-        public PieChart CategoriesChart { get; set; }
+        public PieChart CategoriesIncomeChart { get; set; }
+
+        /// <summary>
+        ///     Exepense categories chart data
+        /// </summary>
+        public PieChart CategoriesExpenseChart { get; set; }
 
 
         /// <summary>
@@ -41,5 +46,14 @@ namespace ExpenseManager.Web.Models.HomePage
         ///     last 5 transactions
         /// </summary>
         public IEnumerable<TransactionShowModel> Transactions { get; set; }
+
+
+        public bool ContainsData()
+        {
+            return MonthSummaryChart != null
+                   && YearSummaryChart != null
+                   && CategoriesExpenseChart != null
+                   && CategoriesIncomeChart != null;
+        }
     }
 }

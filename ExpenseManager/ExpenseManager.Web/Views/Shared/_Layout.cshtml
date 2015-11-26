@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -73,7 +74,7 @@
 
     $('.table-responsive').on('hide.bs.dropdown', function () {
         $('.table-responsive').css("overflow", "auto");
-    })
+    });
 
 
     $('.datepicker').datepicker({
@@ -86,6 +87,7 @@
               .click(function () {
                   $(this).datepicker('show');
               });
+    $('[data-toggle="tooltip"]').tooltip();
 
     $('#collapseExample').on('shown.bs.collapse', function () {
         $(".glyphicon").removeClass("glyphicon-chevron-right").addClass("glyphicon-chevron-down");

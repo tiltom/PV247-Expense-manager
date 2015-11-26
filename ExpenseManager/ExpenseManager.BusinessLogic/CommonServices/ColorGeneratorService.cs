@@ -1,12 +1,14 @@
-﻿namespace ExpenseManager.BusinessLogic.CommonServices
+﻿using System;
+
+namespace ExpenseManager.BusinessLogic.CommonServices
 {
     /// <summary>
     ///     Simple class for generating nice colors for graphs
     /// </summary>
     public class ColorGeneratorService
     {
-        public  const string White = "#FFFFFF";
-        public  const string Black = "#000000";
+        public const string White = "#FFFFFF";
+        public const string Black = "#000000";
 
         private static readonly string[] ColourValues =
         {
@@ -30,7 +32,7 @@
         public string GenerateColorForIndex(int index)
         {
             // make number in range of array (currently used for color generation)
-            var normalizedIndex = index*((index < 0) ? -1 : 1)%ColourValues.Length;
+            var normalizedIndex = Math.Abs(index)%ColourValues.Length;
             return "#" + ColourValues[normalizedIndex];
         }
 

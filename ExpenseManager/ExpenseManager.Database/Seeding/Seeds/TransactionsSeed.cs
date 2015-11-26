@@ -29,7 +29,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 {
                     Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(),
-                    Amount = 10,
+                    Amount = -10,
                     Date = new DateTime(2015, 10, 12),
                     Category = context.Categories.FirstOrDefault(),
                     Description = "Bought a ticket to the cinema"
@@ -38,7 +38,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 {
                     Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(),
-                    Amount = 5,
+                    Amount = -5,
                     Date = new DateTime(2015, 10, 13),
                     Category = context.Categories.FirstOrDefault(),
                     Description = "Bet on a Chicago Blackhawks"
@@ -47,7 +47,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 {
                     Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(),
-                    Amount = 50,
+                    Amount = -50,
                     Date = new DateTime(2015, 10, 14),
                     Category = context.Categories.FirstOrDefault(x => x.Description.Contains("transportation")),
                     Description = "Bought a ticket to Madrid"
@@ -65,7 +65,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 {
                     Wallet = context.Wallets.FirstOrDefault(u => u.Name.Contains("Write")),
                     Currency = context.Currencies.FirstOrDefault(),
-                    Amount = 50,
+                    Amount = -50,
                     Date = new DateTime(2015, 10, 16),
                     Category = context.Categories.FirstOrDefault(x => x.Description.Contains("transportation")),
                     Description = "Write transaction"
@@ -92,7 +92,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 {
                     Wallet = wallet,
                     Currency = context.Currencies.FirstOrDefault(x => x.Symbol == "Kč"),
-                    Amount = 4400,
+                    Amount = -4400,
                     Date = new DateTime(2015, 01, 12),
                     Category = context.Categories.FirstOrDefault(x => x.Name == "Bitcoin"),
                     Description = "Sold too soon"

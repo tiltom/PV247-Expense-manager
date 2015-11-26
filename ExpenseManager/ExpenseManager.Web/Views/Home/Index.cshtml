@@ -7,11 +7,11 @@
 @if (Request.IsAuthenticated)
 {
     @Html.ActionLink("Add transaction", "ExpenseIncome", "Transaction", null, new { @class = "btn btn-action" })
-    <div class="medium-margin-top">
+    <div class="medium-margin-top ">
         <div class="row">
             <div class="col-md-7">
                 <h3> Last 5 transactions</h3>
-                <div class="medium-margin-top">
+                <div class="medium-margin-top table-responsive">
                     <table class="table table-hover table-condensed">
                         <tr>
                             <th>
@@ -69,54 +69,93 @@
             <div class="col-md-5">
                 <h3> Graph summaries</h3>
                 <div class="medium-margin-top">
-                    @if (Model.CategoriesChart != null || Model.MonthSummaryChart != null)
-                {
+                   
                         <ul class="nav nav-tabs" role="tablist">
-                            <li role="presentation" class="active"><a href="#category" aria-controls="category" role="tab" data-toggle="tab" id="categoryTab">Category</a></li>
-                            <li role="presentation"><a href="#months" aria-controls="months" role="tab" data-toggle="tab">Last Month report</a></li>
-                            <li role="presentation"><a href="#years" aria-controls="years" role="tab" data-toggle="tab">Last Year report</a></li>
+                            <li role="presentation" class="active">
+                                <a href="#categoriesExpense" aria-controls="categoriesExpense" role="tab" data-toggle="tab" id="categoryTab">
+                                    <span data-toggle="tooltip" data-placement="top" title="Expenses by category in last month">
+                                       Expense
+                                    </span>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#categoriesIncome" aria-controls="categoriesIncome" role="tab" data-toggle="tab">
+                                    <span data-toggle="tooltip" data-placement="top" title="Incomes by category in last month">
+                                        Income
+                                    </span>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#months" aria-controls="months" role="tab" data-toggle="tab">
+                                    <span data-toggle="tooltip" data-placement="top" title="Last month report">Month</span>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#years" aria-controls="years" role="tab" data-toggle="tab">
+                                <span data-toggle="tooltip" data-placement="top" title="Last year report">Year</span>
+                                </a>
+                            </li>
                         </ul>
 
-                        <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active" id="category">
-                                <div class="medium-margin-top"></div>
-                                <canvas id="categoriesGraph" width="300" height="300"></canvas>
 
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="categoriesExpense">
+                            <div class="medium-margin-top">
+                                <h4>Expenses by category in last month</h4>
+                                <canvas id="categoriesExpenseGraph" width="300" height="300"></canvas>
                             </div>
-                            <div role="tabpanel" class="tab-pane active" id="months">
-                                <div class="medium-margin-top"></div>
-                                <canvas id="monthsGraph" width="300" height="300"></canvas>
-                            </div>
-                            <div role="tabpanel" class="tab-pane active" id="years">
-                                <div class="medium-margin-top"></div>
-                                <canvas id="yearsGraph" width="300" height="300"></canvas>
+                        </div>
+                        <div role="tabpanel" class="tab-pane active" id="categoriesIncome">
+                            <div class="medium-margin-top">
+                                <h4>Incomes by category in last month</h4>
+                                <canvas id="categoriesIncomeGraph" width="300" height="300"></canvas>
                             </div>
 
                         </div>
-                    }
+                        <div role="tabpanel" class="tab-pane active" id="months">
+                            <h4>Last Month report</h4>
+                            <div class="medium-margin-top">
+                                <canvas id="monthsGraph" width="300" height="300"></canvas>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane active" id="years">
+                            <h4>Last year report</h4>
+                            <div class="medium-margin-top">
+                                <canvas id="yearsGraph" width="300" height="300"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
             @section Scripts {
                 @{
-                    if (Model.CategoriesChart != null)
+                    if (Model.CategoriesExpenseChart != null)
                     {
-                        @Html.CreateChart("categoriesGraph", Model.CategoriesChart)
+                        @Html.CreateChart("categoriesExpenseGraph", Model.CategoriesExpenseChart)
 
+                    }
+                    if (Model.CategoriesExpenseChart != null)
+                    {
+                       @Html.CreateChart("categoriesIncomeGraph", Model.CategoriesIncomeChart)
                     }
                     if (Model.MonthSummaryChart != null)
                     {
                         @Html.CreateChart("monthsGraph", Model.MonthSummaryChart)
-                        <script type="text/javascript">
-                            // other tabs won't generate without being active and we need to have just single active tab
-                            // hence we have to remove active class from other tabs
-                            $('#months').removeClass('active');
-                        </script>
                     }
                     if (Model.MonthSummaryChart != null)
                     {
                         @Html.CreateChart("yearsGraph", Model.YearSummaryChart)
+                    }
+                    if (   Model.ContainsData())
+                    {
+                        @Html.CreateChart("categoriesIncomeGraph", Model.CategoriesIncomeChart)
                         <script type="text/javascript">
-                            $('#years').removeClass('active');
+                            // other tabs won't generate without being active and we need to have just single active tab
+                            // hence we have to remove active class from other tabs
+                             $('#categoriesIncome').removeClass('active');
+                             $('#months').removeClass('active');
+                             $('#years').removeClass('active');
                         </script>
                     }
 
