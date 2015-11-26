@@ -214,3 +214,5 @@ ModelManifest.xml
 # Webconfig
 Web.config
 AppSettingsSecrets.config
+# Publish profile
+ExpenseManager/ExpenseManager.Web/Properties/PublishProfiles/
