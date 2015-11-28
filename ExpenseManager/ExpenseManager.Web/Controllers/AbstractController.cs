@@ -5,9 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using ExpenseManager.Database.Common;
 using ExpenseManager.Database.Contexts;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
+using ExpenseManager.Entity.Users;
+using ExpenseManager.Entity.Wallets;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
@@ -16,6 +19,8 @@ namespace ExpenseManager.Web.Controllers
     public abstract class AbstractController : Controller
     {
         public const string DateFormat = "dd.MM.yyyy";
+
+        #region protected
 
         /// <summary>
         ///     List of permission which can be used at front end
@@ -75,5 +80,38 @@ namespace ExpenseManager.Web.Controllers
         {
             return PermissionSelectList.Value;
         }
+
+        protected async Task<UserIdentity> CreateUser(string email, string firstName, string lastName)
+        {
+            var user = new UserIdentity
+            {
+                UserName = email,
+                Email = email,
+                CreationDate = DateTime.Now,
+                Profile = new UserProfile
+                {
+                    PersonalWallet = new Wallet
+                    {
+                        Name = "Default Wallet",
+                        Currency = await this.GetDefaultCurrency()
+                    },
+                    FirstName = firstName,
+                    LastName = lastName
+                }
+            };
+
+            user.Profile.WalletAccessRights = new List<WalletAccessRight>
+            {
+                new WalletAccessRight
+                {
+                    Permission = PermissionEnum.Owner,
+                    UserProfile = user.Profile,
+                    Wallet = user.Profile.PersonalWallet
+                }
+            };
+            return user;
+        }
     }
+
+    #endregion
 }

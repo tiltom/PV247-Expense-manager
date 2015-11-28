@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -7,10 +6,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
-using ExpenseManager.Database.Common;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
-using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
@@ -126,22 +123,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(userViewModel);
             }
 
-            var user = new UserIdentity
-            {
-                UserName = userViewModel.Email,
-                Email = userViewModel.Email,
-                CreationDate = DateTime.Now,
-                Profile = new UserProfile
-                {
-                    FirstName = userViewModel.FirstName,
-                    LastName = userViewModel.LastName,
-                    PersonalWallet = new Wallet
-                    {
-                        Name = "Default Wallet",
-                        Currency = await this.GetDefaultCurrency()
-                    }
-                }
-            };
+            var user = await this.CreateUser(userViewModel.Email, userViewModel.FirstName, userViewModel.LastName);
             var adminresult = await UserManager.CreateAsync(user, userViewModel.Password);
 
 

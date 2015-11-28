@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Chart.Mvc.ComplexChart;
 using Chart.Mvc.SimpleChart;
 using ExpenseManager.Web.Models.Transaction;
@@ -48,12 +49,17 @@ namespace ExpenseManager.Web.Models.HomePage
         public IEnumerable<TransactionShowModel> Transactions { get; set; }
 
 
-        public bool ContainsData()
+        public bool ContainsGraphData()
         {
             return MonthSummaryChart != null
                    && YearSummaryChart != null
                    && CategoriesExpenseChart != null
                    && CategoriesIncomeChart != null;
+        }
+
+        public bool ContainsAnyData()
+        {
+            return this.ContainsGraphData() && Transactions.Any();
         }
     }
 }
