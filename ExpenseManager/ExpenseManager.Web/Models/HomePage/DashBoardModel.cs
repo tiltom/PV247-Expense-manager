@@ -30,13 +30,13 @@ namespace ExpenseManager.Web.Models.HomePage
         /// <summary>
         ///     last month chart data
         /// </summary>
-        public BarChart MonthSummaryChart { get; set; }
+        public LineChart MonthSummaryChart { get; set; }
 
 
         /// <summary>
         ///     last year chart data
         /// </summary>
-        public BarChart YearSummaryChart { get; set; }
+        public LineChart YearSummaryChart { get; set; }
 
         /// <summary>
         ///     filter data model

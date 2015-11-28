@@ -73,29 +73,36 @@ namespace ExpenseManager.Web.Controllers
 
         #region private
 
-        private BarChart GenerateBarChart(GraphWithDescriptionModel data)
+        private LineChart GenerateBarChart(GraphWithDescriptionModel data)
         {
             if (data.GraphData.Count == 0)
             {
                 return null;
             }
-            var barChart = new BarChart();
-            barChart.ComplexData.Labels.AddRange(data.GraphData.Select(t => t.Label));
-            barChart.ComplexData.Datasets.AddRange(new List<ComplexDataset>
+            var lineChart = new LineChart
             {
-                new ComplexDataset
+                ComplexData =
                 {
-                    Data = data.GraphData.Select(t => Convert.ToDouble(t.Value)).ToList(),
-                    Label = data.Description,
-                    FillColor = this._colorGenerator.GenerateColor(),
-                    StrokeColor = ColorGeneratorService.Black,
-                    PointColor = ColorGeneratorService.Black,
-                    PointStrokeColor = ColorGeneratorService.Black,
-                    PointHighlightFill = ColorGeneratorService.Black,
-                    PointHighlightStroke = ColorGeneratorService.Black
+                    Labels = data.GraphData.Select(t => t.Label).ToList(),
+                    Datasets = new List<ComplexDataset>
+                    {
+                        new ComplexDataset
+                        {
+                            Data = data.GraphData.Select(t => Convert.ToDouble(t.Value)).ToList(),
+                            Label = data.Description,
+                            FillColor = "rgba(151,187,205,0.2)",
+                            StrokeColor = this._colorGenerator.GenerateColor(),
+                            PointColor = ColorGeneratorService.Black,
+                            PointStrokeColor = ColorGeneratorService.White,
+                            PointHighlightFill = ColorGeneratorService.White,
+                            PointHighlightStroke = ColorGeneratorService.Black
+                        }
+                    }
                 }
-            });
-            return barChart;
+            };
+            lineChart.ChartConfiguration.ScaleBeginAtZero = false;
+            lineChart.ChartConfiguration.Responsive = true;
+            return lineChart;
         }
 
         private PieChart GeneratePieChart(List<SimpleGraphModel> result)
@@ -104,16 +111,17 @@ namespace ExpenseManager.Web.Controllers
             {
                 return null;
             }
-            var pieChart = new PieChart();
-            pieChart.Data.AddRange(result.Select(
-                t =>
-                    new SimpleData
-                    {
-                        Label = t.Label,
-                        Value = Math.Abs(Convert.ToDouble(t.Value)),
-                        Color = this._colorGenerator.GenerateColor()
-                    }));
-            return pieChart;
+            return new PieChart
+            {
+                Data = result.Select(
+                    t =>
+                        new SimpleData
+                        {
+                            Label = t.Label,
+                            Value = Math.Abs(Convert.ToDouble(t.Value)),
+                            Color = this._colorGenerator.GenerateColor()
+                        }).ToList()
+            };
         }
 
         #endregion

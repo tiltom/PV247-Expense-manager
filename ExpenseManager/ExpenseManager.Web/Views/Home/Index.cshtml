@@ -75,7 +75,7 @@
                     <div class="container">
                         <h1>No data available :( </h1>
                         <p>
-                            Please add some transactions to display some data.
+                            Please add some transactions so you can see your personal dashboard.
                         </p>
                     </div>
                 </div>
@@ -153,7 +153,6 @@
             if (Model.CategoriesExpenseChart != null)
             {
                 @Html.CreateChart("categoriesExpenseGraph", Model.CategoriesExpenseChart)
-
             }
             if (Model.CategoriesExpenseChart != null)
             {
@@ -167,9 +166,6 @@
             {
                 @Html.CreateChart("yearsGraph", Model.YearSummaryChart)
             }
-            if (Model.ContainsGraphData())
-            {
-                @Html.CreateChart("categoriesIncomeGraph", Model.CategoriesIncomeChart)
                 <script type="text/javascript">
                             // other tabs won't generate without being active and we need to have just single active tab
                             // hence we have to remove active class from other tabs
@@ -177,7 +173,6 @@
                              $('#months').removeClass('active');
                              $('#years').removeClass('active');
                 </script>
-            }
 
         }
     }
