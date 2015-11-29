@@ -55,8 +55,8 @@ namespace ExpenseManager.Web.Controllers
                 // generate pie chart
                 var categoriesExpenseChart = this.GeneratePieChart(categoriesExpense);
                 var categoriesIncomeChart = this.GeneratePieChart(categoriesIncome);
-                var monthSummaryChart = this.GenerateBarChart(monthSummary);
-                var yearSummaryChart = this.GenerateBarChart(yearSummary);
+                var monthSummaryChart = this.GenerateLineChart(monthSummary);
+                var yearSummaryChart = this.GenerateLineChart(yearSummary);
                 return
                     this.View(new DashBoardModel
                     {
@@ -73,7 +73,7 @@ namespace ExpenseManager.Web.Controllers
 
         #region private
 
-        private LineChart GenerateBarChart(GraphWithDescriptionModel data)
+        private LineChart GenerateLineChart(GraphWithDescriptionModel data)
         {
             if (data.GraphData.Count == 0)
             {
