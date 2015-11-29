@@ -9,6 +9,8 @@ namespace ExpenseManager.BusinessLogic.CommonServices
     {
         public const string White = "#FFFFFF";
         public const string Black = "#000000";
+        public const string Transparent= "rgba(0,0,0,0)";
+        
 
         private static readonly string[] ColourValues =
         {

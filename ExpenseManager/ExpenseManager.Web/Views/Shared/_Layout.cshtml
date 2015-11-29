@@ -53,6 +53,8 @@
                     @Scripts.Render("~/bundles/jquery")
                     @Scripts.Render("~/bundles/bootstrap")
                     @Scripts.Render("~/bundles/charts")
+                    @Scripts.Render("~/bundles/chosen")
+                    
                     @RenderSection("scripts", required: false)
                 </div>
             </div>
@@ -96,4 +98,6 @@
     $('#collapseExample').on('hidden.bs.collapse', function () {
         $(".glyphicon").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-right");
     });
+
+    $(".chosen-select").chosen();
 </script>

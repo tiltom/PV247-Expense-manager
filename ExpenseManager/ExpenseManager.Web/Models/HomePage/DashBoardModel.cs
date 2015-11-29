@@ -52,9 +52,9 @@ namespace ExpenseManager.Web.Models.HomePage
         public bool ContainsGraphData()
         {
             return MonthSummaryChart != null
-                   && YearSummaryChart != null
-                   && CategoriesExpenseChart != null
-                   && CategoriesIncomeChart != null;
+                   || YearSummaryChart != null
+                   || CategoriesExpenseChart != null
+                   || CategoriesIncomeChart != null;
         }
 
         public bool ContainsAnyData()

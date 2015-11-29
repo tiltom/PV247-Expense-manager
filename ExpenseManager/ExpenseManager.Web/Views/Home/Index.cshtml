@@ -7,7 +7,29 @@
 @if (Request.IsAuthenticated)
 {
     @Html.ActionLink("Add transaction", "ExpenseIncome", "Transaction", null, new { @class = "btn btn-action" })
-    <div class="medium-margin-top ">
+
+
+    using (Html.BeginForm("IndexWithFilter", "Home", FormMethod.Get, new { @class = "form-horizontal collapse in", @id = "collapsibleSetting" }))
+    {
+        <div class="form-group row medium-margin-top">
+            <h4 class="col-md-2 control-label">
+                Select filter criteria:
+            </h4>
+            <div class="col-md-2">
+                @Html.ListBoxFor(m => m.Filter.Wallets, Model.Filter.WalletsSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = "Select Wallets"})
+            </div>
+            <div class="col-md-2">
+                @Html.ListBoxFor(m => m.Filter.Categories, Model.Filter.CategoriesSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = "Select categories"})
+            </div>
+            <div class="col-md-2">
+                @Html.ListBoxFor(m => m.Filter.Budgets, Model.Filter.BudgetsSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = "Select budgets"})
+            </div>
+            <div class="col-md-2">
+                <input type="submit" class="btn btn-success" value="Filter"/>
+            </div>
+        </div>
+    }
+    <div class="medium-margin-top">
         <div class="row">
             @if (Model.ContainsAnyData())
             {
@@ -84,7 +106,11 @@
             @if (Model.ContainsGraphData())
             {
                 <div class="col-md-5">
-                    <h3> Graph summaries</h3>
+                    <h3> Graph summaries
+                        <a style="text-decoration: none;" role="button" data-toggle="collapse" href="#collapsibleSetting" aria-expanded="false" aria-controls="collapsibleSetting">
+                            <i class="glyphicon glyphicon-cog"></i>
+                        </a>
+                    </h3>
                     <div class="medium-margin-top">
 
                         <ul class="nav nav-tabs" role="tablist">
@@ -117,28 +143,58 @@
 
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="categoriesExpense">
+                                <h4>Expenses by category in last month</h4>
                                 <div class="medium-margin-top">
-                                    <h4>Expenses by category in last month</h4>
-                                    <canvas id="categoriesExpenseGraph" width="300" height="300"></canvas>
+                                    @if (Model.CategoriesExpenseChart == null)
+                                    {
+                                        <h4>Not enough data available</h4>
+                                    }
+                                    else
+                                    {
+                                        <canvas id="categoriesExpenseGraph" width="300" height="300"></canvas>
+                                    }
                                 </div>
                             </div>
                             <div role="tabpanel" class="tab-pane active" id="categoriesIncome">
                                 <div class="medium-margin-top">
                                     <h4>Incomes by category in last month</h4>
-                                    <canvas id="categoriesIncomeGraph" width="300" height="300"></canvas>
+                                    
+                                    @if (Model.CategoriesIncomeChart == null)
+                                    {
+                                        <h4>Not enough data available</h4>
+                                    }
+                                    else
+                                    {
+                                        <canvas id="categoriesIncomeGraph" width="300" height="300"></canvas>
+                                    }
                                 </div>
 
                             </div>
                             <div role="tabpanel" class="tab-pane active" id="months">
                                 <h4>Last Month report</h4>
                                 <div class="medium-margin-top">
-                                    <canvas id="monthsGraph" width="300" height="300"></canvas>
+                                   
+                                    @if (Model.MonthSummaryChart == null)
+                                    {
+                                        <h4>Not enough data available</h4>
+                                    }
+                                    else
+                                    {
+                                        <canvas id="monthsGraph" width="300" height="300"></canvas>
+                                    }
                                 </div>
                             </div>
                             <div role="tabpanel" class="tab-pane active" id="years">
                                 <h4>Last year report</h4>
                                 <div class="medium-margin-top">
-                                    <canvas id="yearsGraph" width="300" height="300"></canvas>
+                                    @if (Model.YearSummaryChart == null)
+                                    {
+                                        <h4>Not enough data available</h4>
+                                    }
+                                    else
+                                    {
+                                        <canvas id="yearsGraph" width="300" height="300"></canvas>
+                                    }
                                 </div>
                             </div>
 
@@ -154,7 +210,7 @@
             {
                 @Html.CreateChart("categoriesExpenseGraph", Model.CategoriesExpenseChart)
             }
-            if (Model.CategoriesExpenseChart != null)
+            if (Model.CategoriesIncomeChart != null)
             {
                 @Html.CreateChart("categoriesIncomeGraph", Model.CategoriesIncomeChart)
             }
@@ -166,13 +222,20 @@
             {
                 @Html.CreateChart("yearsGraph", Model.YearSummaryChart)
             }
-                <script type="text/javascript">
-                            // other tabs won't generate without being active and we need to have just single active tab
-                            // hence we have to remove active class from other tabs
-                             $('#categoriesIncome').removeClass('active');
-                             $('#months').removeClass('active');
-                             $('#years').removeClass('active');
-                </script>
+            <script type="text/javascript">
+                // other tabs won't generate without being active and we need to have just single active tab
+                // hence we have to remove active class from other tabs
+                $('#categoriesIncome').removeClass('active');
+                $('#months').removeClass('active');
+                $('#years').removeClass('active');
+            </script>
+            // show filter if no data displayed and filter is set
+            if ((!Model.Filter.IsFilterSet() && !Model.ContainsAnyData()) || Model.ContainsAnyData())
+             {
+                 <script type="text/javascript">
+                     setTimeout(function() { $('#collapsibleSetting').removeClass('in'); }, 0);
+                 </script>
+            }
 
         }
     }

@@ -162,12 +162,19 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         public async Task<List<SelectListItem>> GetCategoriesSelection(bool expense)
         {
             var transactionType = this.GetCategoryType(expense);
-            return
-                await
-                    this._transactionsProvider.Categories.Where(
-                        m => m.Type == transactionType || m.Type == CategoryType.IncomeAndExpense).Select(
-                            category => new SelectListItem {Value = category.Guid.ToString(), Text = category.Name})
-                        .ToListAsync();
+            var result = this._transactionsProvider.Categories.Where(
+                m => m.Type == transactionType || m.Type == CategoryType.IncomeAndExpense);
+            return await ReturnSelectionForCategory(result);
+        }
+
+
+        /// <summary>
+        ///     Provides selectable list of all categories
+        /// </summary>
+        /// <returns>List of SelectListItem for Categories</returns>
+        public async Task<List<SelectListItem>> GetAllCategoriesSelection()
+        {
+            return await ReturnSelectionForCategory(this._transactionsProvider.Categories);
         }
 
         public async Task<SelectList> GetCategoriesSelectionFilter(Guid walletId, Guid categoryId)
@@ -217,37 +224,51 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return permission != null && permission.Permission != PermissionEnum.Read;
         }
 
-        public async Task<SelectList> GetViewableWalletsSelection(Guid userId, Guid walletId)
-        {
-            var select = await this._walletsProvider.WalletAccessRights.Where(
-                user => user.Permission >= PermissionEnum.Read && user.UserProfile.Guid == userId).Select(w => w.Wallet)
-                .ToListAsync();
-            var selection =
-                select.Select(wallet => new SelectListItem {Value = wallet.Guid.ToString(), Text = wallet.Name});
-            return new SelectList(selection, "Value", "Text", walletId);
-        }
-
         /// <summary>
-        ///     Provides selectable list of Budgets available to UserProfile
+        ///     Provides selectable list of wallets available to user
         /// </summary>
         /// <returns>List of SelectListItem for Budgets</returns>
-        public async Task<List<SelectListItem>> GetBudgetsSelection(Guid userId)
+        public async Task<List<SelectListItem>> GetAllReadableWalletsSelection(Guid userId)
         {
             return
                 await
-                    this._budgetsProvider.BudgetAccessRights.Where(
+                    this._walletsProvider.WalletAccessRights.Where(
                         access =>
-                            access.UserProfile.Guid == userId &&
-                            access.Permission >= PermissionEnum.Write)
+                            access.UserProfile.Guid == userId)
                         .Select(
                             budget =>
                                 new SelectListItem
                                 {
-                                    Value = budget.Budget.Guid.ToString(),
-                                    Text = budget.Budget.Name
+                                    Value = budget.Wallet.Guid.ToString(),
+                                    Text = budget.Wallet.Name
                                 })
                         .ToListAsync();
         }
+
+        public async Task<SelectList> GetViewableWalletsSelection(Guid userId, Guid walletId)
+        {
+            return new SelectList(await this.GetAllReadableWalletsSelection(userId), "Value", "Text", walletId);
+        }
+
+        /// <summary>
+        ///     Provides selectable list of Budgets where can user write transactions
+        /// </summary>
+        /// <returns>List of SelectListItem for Budgets</returns>
+        public async Task<List<SelectListItem>> GetBudgetsSelection(Guid userId)
+        {
+            return await this.GetBudgetsSelection(userId, PermissionEnum.Write);
+        }
+
+
+        /// <summary>
+        ///     Provides selectable list of Budgets which can user read
+        /// </summary>
+        /// <returns>List of SelectListItem for Budgets</returns>
+        public async Task<List<SelectListItem>> GetReadableBudgetsSelection(Guid userId)
+        {
+            return await this.GetBudgetsSelection(userId, PermissionEnum.Read);
+        }
+
 
         public async Task<SelectList> GetBudgetsSelectionFilter(Guid userId, Guid walletId, Guid budgetId)
         {
@@ -272,9 +293,38 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return new SelectList(selectList, "Value", "Text", budgetId);
         }
 
+        #region private
+
         private CategoryType GetCategoryType(bool expense)
         {
             return expense ? CategoryType.Expense : CategoryType.Income;
         }
+
+        private static async Task<List<SelectListItem>> ReturnSelectionForCategory(IQueryable<Category> result)
+        {
+            return await result.Select(
+                category => new SelectListItem {Value = category.Guid.ToString(), Text = category.Name})
+                .ToListAsync();
+        }
+
+        private async Task<List<SelectListItem>> GetBudgetsSelection(Guid userId, PermissionEnum minimalPermission)
+        {
+            return
+                await
+                    this._budgetsProvider.BudgetAccessRights.Where(
+                        access =>
+                            access.UserProfile.Guid == userId &&
+                            access.Permission >= minimalPermission)
+                        .Select(
+                            budget =>
+                                new SelectListItem
+                                {
+                                    Value = budget.Budget.Guid.ToString(),
+                                    Text = budget.Budget.Name
+                                })
+                        .ToListAsync();
+        }
+
+        #endregion
     }
 }

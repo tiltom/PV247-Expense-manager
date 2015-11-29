@@ -10,6 +10,7 @@ using Chart.Mvc.SimpleChart;
 using ExpenseManager.BusinessLogic.CommonServices;
 using ExpenseManager.BusinessLogic.DashboardServices;
 using ExpenseManager.BusinessLogic.DashboardServices.Models;
+using ExpenseManager.BusinessLogic.TransactionServices;
 using ExpenseManager.Database;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.HomePage;
@@ -25,6 +26,10 @@ namespace ExpenseManager.Web.Controllers
         private readonly DashBoardService _dashBoardService =
             new DashBoardService(ProvidersFactory.GetNewTransactionsProviders());
 
+        private readonly TransactionService _transactionService =
+            new TransactionService(ProvidersFactory.GetNewBudgetsProviders(),
+                ProvidersFactory.GetNewTransactionsProviders(), ProvidersFactory.GetNewWalletsProviders());
+
         /// <summary>
         ///     Will display empty page with initialized filter
         /// </summary>
@@ -33,49 +38,74 @@ namespace ExpenseManager.Web.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                var filter = new FilterDataModel();
-                var mappedFilter = Mapper.Map<FilterDataServiceModel>(filter);
-                var userId = await this.CurrentProfileId();
-                // select transactions according to filter
-                var resultMonth = this._dashBoardService.FilterTransactions(mappedFilter.WithMonthFilterValues(), userId);
-                var resultYear = this._dashBoardService.FilterTransactions(mappedFilter.WithYearFilterValues(), userId);
-                var last5Transactions =
-                    await
-                        this._dashBoardService.GetAccessibleResults(userId)
-                            .OrderByDescending(t => t.Date)
-                            .Take(5).ProjectTo<TransactionShowModel>()
-                            .ToListAsync();
-                // prepare data for graphs
-                var categoriesExpense =
-                    await this._dashBoardService.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount < 0));
-                var categoriesIncome =
-                    await this._dashBoardService.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount >= 0));
-                var monthSummary = await this._dashBoardService.GetGraphForDaysLastMonth(resultMonth);
-                var yearSummary = await this._dashBoardService.GetGraphForMonthLastYear(resultYear);
-                // generate pie chart
-                var categoriesExpenseChart = this.GeneratePieChart(categoriesExpense);
-                var categoriesIncomeChart = this.GeneratePieChart(categoriesIncome);
-                var monthSummaryChart = this.GenerateLineChart(monthSummary);
-                var yearSummaryChart = this.GenerateLineChart(yearSummary);
-                return
-                    this.View(new DashBoardModel
-                    {
-                        Filter = filter,
-                        CategoriesExpenseChart = categoriesExpenseChart,
-                        CategoriesIncomeChart = categoriesIncomeChart,
-                        MonthSummaryChart = monthSummaryChart,
-                        YearSummaryChart = yearSummaryChart,
-                        Transactions = last5Transactions
-                    });
+                return this.View(await this.GenerateDataForFilter(new FilterDataModel()));
             }
             return this.View();
+        }
+
+
+        /// <summary>
+        ///     Will display empty page with initialized filter
+        /// </summary>
+        /// <returns>Initialized filter</returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<ViewResult> IndexWithFilter(FilterDataModel filter)
+        {
+            return this.View("Index", await this.GenerateDataForFilter(filter));
+        }
+
+        private async Task<DashBoardModel> GenerateDataForFilter(FilterDataModel filter)
+        {
+            var mappedFilter = Mapper.Map<FilterDataServiceModel>(filter);
+            var fixedFilter = await this.InitFilter(filter);
+            var userId = await this.CurrentProfileId();
+            // select transactions according to filter
+            var resultMonth = this._dashBoardService.FilterTransactions(mappedFilter.WithMonthFilterValues(), userId);
+            var resultYear = this._dashBoardService.FilterTransactions(mappedFilter.WithYearFilterValues(), userId);
+            var last5Transactions =
+                await
+                    this._dashBoardService.GetAccessibleResults(userId)
+                        .OrderByDescending(t => t.Date)
+                        .Take(5).ProjectTo<TransactionShowModel>()
+                        .ToListAsync();
+            // prepare data for graphs
+            var categoriesExpense =
+                await this._dashBoardService.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount < 0));
+            var categoriesIncome =
+                await this._dashBoardService.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount >= 0));
+            var monthSummary = await this._dashBoardService.GetGraphForDaysLastMonth(resultMonth);
+            var yearSummary = await this._dashBoardService.GetGraphForMonthLastYear(resultYear);
+            // generate charts
+            var categoriesExpenseChart = this.GeneratePieChart(categoriesExpense);
+            var categoriesIncomeChart = this.GeneratePieChart(categoriesIncome);
+            var monthSummaryChart = this.GenerateLineChart(monthSummary);
+            var yearSummaryChart = this.GenerateLineChart(yearSummary);
+            return new DashBoardModel
+            {
+                Filter = fixedFilter,
+                CategoriesExpenseChart = categoriesExpenseChart,
+                CategoriesIncomeChart = categoriesIncomeChart,
+                MonthSummaryChart = monthSummaryChart,
+                YearSummaryChart = yearSummaryChart,
+                Transactions = last5Transactions
+            };
+        }
+
+        private async Task<FilterDataModel> InitFilter(FilterDataModel filter)
+        {
+            var userId = await this.CurrentProfileId();
+            filter.BudgetsSelectList = await this._transactionService.GetReadableBudgetsSelection(userId);
+            filter.WalletsSelectList = await this._transactionService.GetAllReadableWalletsSelection(userId);
+            filter.CategoriesSelectList = await this._transactionService.GetAllCategoriesSelection();
+            return filter;
         }
 
         #region private
 
         private LineChart GenerateLineChart(GraphWithDescriptionModel data)
         {
-            if (data.GraphData.Count == 0)
+            if (data.GraphData.Count < 2)
             {
                 return null;
             }
@@ -90,7 +120,7 @@ namespace ExpenseManager.Web.Controllers
                         {
                             Data = data.GraphData.Select(t => Convert.ToDouble(t.Value)).ToList(),
                             Label = data.Description,
-                            FillColor = "rgba(151,187,205,0.2)",
+                            FillColor = ColorGeneratorService.Transparent,
                             StrokeColor = this._colorGenerator.GenerateColor(),
                             PointColor = ColorGeneratorService.Black,
                             PointStrokeColor = ColorGeneratorService.White,
