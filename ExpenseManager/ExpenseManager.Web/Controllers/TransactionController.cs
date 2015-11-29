@@ -66,7 +66,6 @@ namespace ExpenseManager.Web.Controllers
                 list = list.Where(s => s.Budget?.Guid == budget.Value);
             }
 
-            const int pageSize = 5;
             var pageNumber = (page ?? 1);
             var showModels = new List<TransactionShowModel>();
             foreach (var transaction in list)
@@ -76,7 +75,7 @@ namespace ExpenseManager.Web.Controllers
 
             // when user doesn't have permission to manipulate with transaction show view without edit and delete
             ViewBag.editable = permission.Permission != PermissionEnum.Read;
-            return this.View("Index", showModels.OrderByDescending(t => t.Date).ToPagedList(pageNumber, pageSize));
+            return this.View("Index", showModels.OrderByDescending(t => t.Date).ToPagedList(pageNumber, PageSize));
         }
 
 

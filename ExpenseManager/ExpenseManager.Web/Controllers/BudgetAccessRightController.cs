@@ -13,6 +13,7 @@ using PagedList;
 
 namespace ExpenseManager.Web.Controllers
 {
+    [Authorize]
     public class BudgetAccessRightController : AbstractController
     {
         private readonly BudgetAccessRightService _budgetAccessRightService
@@ -32,11 +33,8 @@ namespace ExpenseManager.Web.Controllers
                         .ToListAsync();
 
             accessRightModels.ForEach(model => model.BudgetId = id);
-
-            var pageSize = 5;
             var pageNumber = (page ?? 1);
-
-            return this.View(accessRightModels.ToPagedList(pageNumber, pageSize));
+            return this.View(accessRightModels.ToPagedList(pageNumber, PageSize));
         }
 
         /// <summary>
