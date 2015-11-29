@@ -12,9 +12,11 @@ using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Models.WalletAccessRight;
+using PagedList;
 
 namespace ExpenseManager.Web.Controllers
 {
+    [Authorize]
     public class WalletAccessRightController : AbstractController
     {
         private readonly WalletAccessRightService _walletAccessRightService =
@@ -24,14 +26,14 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <returns></returns>
         // GET: WalletAccessRights
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int? page)
         {
             var id = await this.CurrentProfileId();
 
             var accessRights = this._walletAccessRightService.GetAccessRightsByWalletOwnerId(id);
             var accessRightModels = await accessRights.ProjectTo<WalletAccessRightModel>().ToListAsync();
-
-            return this.View(accessRightModels);
+            var pageNumber = page ?? 1;
+            return this.View(accessRightModels.ToPagedList(pageNumber, PageSize));
         }
 
         /// <summary>
@@ -113,7 +115,7 @@ namespace ExpenseManager.Web.Controllers
 
                 return this.RedirectToAction("Index");
             }
-            
+
             return this.View(walletAccessRight);
         }
 
@@ -162,12 +164,9 @@ namespace ExpenseManager.Web.Controllers
         private async Task<WalletAccessRight> ConvertModelToEntity(WalletAccessRightModel model,
             WalletAccessRight entity)
         {
-            var defaultPermission = PermissionEnum.Read;
-            Enum.TryParse(model.Permission, out defaultPermission);
-
             entity.Wallet = await this._walletAccessRightService.GetWalletById(model.WalletId);
             entity.UserProfile = await this._walletAccessRightService.GetUserProfileById(model.AssignedUserId);
-            entity.Permission = defaultPermission;
+            entity.Permission = this.ConvertPermissionStringToEnum(model.Permission);
             return entity;
         }
 
@@ -211,15 +210,9 @@ namespace ExpenseManager.Web.Controllers
 
         private PermissionEnum ConvertPermissionStringToEnum(string permission)
         {
-            switch (permission)
-            {
-                case "Write":
-                    return PermissionEnum.Write;
-                case "Read":
-                    return PermissionEnum.Read;
-                default:
-                    return PermissionEnum.Owner;
-            }
+            var defaultPermission = PermissionEnum.Read;
+            Enum.TryParse(permission, out defaultPermission);
+            return defaultPermission;
         }
 
         #endregion

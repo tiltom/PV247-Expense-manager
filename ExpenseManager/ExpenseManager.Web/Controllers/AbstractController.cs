@@ -19,6 +19,8 @@ namespace ExpenseManager.Web.Controllers
     public abstract class AbstractController : Controller
     {
         public const string DateFormat = "dd.MM.yyyy";
+        public const int PageSize = 5;
+
 
         #region protected
 
