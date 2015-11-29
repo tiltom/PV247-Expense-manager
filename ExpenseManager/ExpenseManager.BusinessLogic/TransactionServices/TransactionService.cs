@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using ExpenseManager.BusinessLogic.ExchangeRates;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
@@ -32,6 +33,13 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
 
         public async Task AddOrUpdate(Transaction transaction)
         {
+            var walletCurrency = await this.GetDefaultCurrencyInWallet(transaction.Wallet.Guid);
+
+            if (transaction.Currency.Name != walletCurrency.Name)
+            {
+                Transformation.ChangeCurrency(transaction, walletCurrency);
+            }
+
             await this._transactionsProvider.AddOrUpdateAsync(transaction);
         }
 

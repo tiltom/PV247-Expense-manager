@@ -2,6 +2,7 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpenseManager.BusinessLogic.ExchangeRates;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Wallets;
@@ -57,6 +58,11 @@ namespace ExpenseManager.BusinessLogic.WalletServices
 
             if (this.ValidateWallet(wallet))
             {
+                foreach (var transaction in wallet.Transactions)
+                {
+                    Transformation.ChangeCurrency(transaction, currency);
+                }
+
                 await this._db.AddOrUpdateAsync(wallet);
             }
         }
