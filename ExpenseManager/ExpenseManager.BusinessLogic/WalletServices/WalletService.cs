@@ -55,7 +55,10 @@ namespace ExpenseManager.BusinessLogic.WalletServices
             wallet.Name = name;
             wallet.Currency = currency;
 
-            await this._db.AddOrUpdateAsync(wallet);
+            if (this.ValidateWallet(wallet))
+            {
+                await this._db.AddOrUpdateAsync(wallet);
+            }
         }
 
         /// <summary>
@@ -65,6 +68,36 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         public IQueryable<Currency> GetCurrencies()
         {
             return this._db.Currencies;
+        }
+
+        /// <summary>
+        ///     Validates wallet
+        /// </summary>
+        /// <param name="wallet">Wallet to validate</param>
+        /// <returns>True if wallet is valid, false otherwise</returns>
+        public bool ValidateWallet(Wallet wallet)
+        {
+            if (wallet == null)
+            {
+                return false;
+            }
+
+            if (wallet.Currency == null)
+            {
+                return false;
+            }
+
+            if (wallet.Name.Equals(string.Empty))
+            {
+                return false;
+            }
+
+            if (wallet.Owner == null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         #region private

@@ -144,13 +144,29 @@ namespace ExpenseManager.BusinessLogic.WalletServices
             return walletAccessRight.Permission;
         }
 
-        #region private
-
-        private void ValidateWalletAccessRight(WalletAccessRight walletAccessRight)
+        /// <summary>
+        ///     Validates wallet access rights
+        /// </summary>
+        /// <param name="walletAccessRight">Wallet access right to validate</param>
+        /// <returns>True if wallet access right is valid, false otherwise</returns>
+        public bool ValidateWalletAccessRight(WalletAccessRight walletAccessRight)
         {
-            // TODO: Do some epic validation
-        }
+            if (walletAccessRight == null)
+            {
+                return false;
+            }
 
-        #endregion
+            if (walletAccessRight.UserProfile == null)
+            {
+                return false;
+            }
+
+            if (walletAccessRight.Wallet == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

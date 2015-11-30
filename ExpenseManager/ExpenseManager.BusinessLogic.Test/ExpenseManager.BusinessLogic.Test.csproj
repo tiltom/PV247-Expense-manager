@@ -55,10 +55,13 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="BudgetTests\BudgetAccessRightServiceTest.cs" />
     <Compile Include="BudgetTests\BudgetServiceTest.cs" />
     <Compile Include="CategoryTests\CategoryServiceTest.cs" />
     <Compile Include="ColorGeneratorServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WalletTests\WalletAccessRightServiceTest.cs" />
+    <Compile Include="WalletTests\WalletServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,44 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ExpenseManager.BusinessLogic.WalletServices;
+﻿using ExpenseManager.BusinessLogic.WalletServices;
 using ExpenseManager.Entity.Currencies;
-using ExpenseManager.Entity.Providers;
-using Moq;
+using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Entity.Users;
+using ExpenseManager.Entity.Wallets;
 using NUnit.Framework;
 
 namespace ExpenseManager.BusinessLogic.Test.WalletTests
 {
     [TestFixture]
-    public class WalletServiceTest
+    internal class WalletServiceTest
     {
-        [SetUp]
-        public void Init()
+        [Test]
+        public void ValidateWallet_EmptyName_ReturnFalse()
         {
-            var walletsProvider = new Mock<IWalletsProvider>();
+            var wallet = new Wallet
+            {
+                Name = string.Empty,
+                Currency = new Currency(),
+                Owner = new UserProfile()
+            };
+
+            var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());
+            Assert.IsFalse(walletService.ValidateWallet(wallet));
         }
 
-        private WalletService _walletService;
+        [Test]
+        public void ValidateWallet_NullCurrency_ReturnFalse()
+        {
+            var wallet = new Wallet
+            {
+                Name = "Test name",
+                Currency = null,
+                Owner = new UserProfile()
+            };
+
+            var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());
+            Assert.IsFalse(walletService.ValidateWallet(wallet));
+        }
 
         [Test]
-        public void GetCurrencies_ReturnListOfCurrencies()
+        public void ValidateWallet_NullOwner_ReturnFalse()
         {
-            var currency = new List<Currency>
+            var wallet = new Wallet
             {
-                new Currency
-                {
-                    Guid = Guid.Empty,
-                    Name = "Test currency",
-                    Symbol = "Tc"
-                }
-            }.AsQueryable();
+                Name = "Test name",
+                Currency = new Currency(),
+                Owner = null
+            };
 
-            var walletsMock = new Mock<IWalletsProvider>();
-            walletsMock.Setup(m => m.Currencies).Returns(currency);
+            var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());
+            Assert.IsFalse(walletService.ValidateWallet(wallet));
+        }
 
-            this._walletService = new WalletService(walletsMock.Object);
+        [Test]
+        [TestCase(null)]
+        public void ValidateWallet_NullWallet_ReturnFalse(Wallet wallet)
+        {
+            var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());
+            Assert.IsFalse(walletService.ValidateWallet(wallet));
+        }
 
-            Assert.That(this._walletService.GetCurrencies(), Is.Not.Empty);
+        [Test]
+        public void ValidateWallet_ValidWallet_ReturnTrue()
+        {
+            var wallet = new Wallet
+            {
+                Name = "Test name",
+                Currency = new Currency(),
+                Owner = new UserProfile()
+            };
+
+            var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());
+            Assert.IsTrue(walletService.ValidateWallet(wallet));
         }
     }
 }
