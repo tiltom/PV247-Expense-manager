@@ -55,11 +55,10 @@ namespace ExpenseManager.BusinessLogic.Test.CategoryTests
         }
 
         [Test]
-        [TestCase(null)]
-        public void ValidateCategory_NullCategory_ReturnFalse(Category category)
+        public void ValidateCategory_NullCategory_ReturnFalse()
         {
             var categoryService = new CategoryService(ProvidersFactory.GetNewTransactionsProviders());
-            Assert.IsFalse(categoryService.ValidateCategory(category));
+            Assert.IsFalse(categoryService.ValidateCategory(null));
         }
 
         [Test]

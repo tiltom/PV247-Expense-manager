@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using ExpenseManager.Database.Common;
-using ExpenseManager.Entity;
-using ExpenseManager.Entity.Users;
-using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Facebook;
@@ -269,36 +263,6 @@ namespace ExpenseManager.Web.Controllers
             return this.View(model);
         }
 
-        private async Task<UserIdentity> CreateUser(string email, string firstName, string lastName)
-        {
-            var user = new UserIdentity
-            {
-                UserName = email,
-                Email = email,
-                CreationDate = DateTime.Now,
-                Profile = new UserProfile
-                {
-                    PersonalWallet = new Wallet
-                    {
-                        Name = "Default Wallet",
-                        Currency = await this.GetDefaultCurrency()
-                    },
-                    FirstName = firstName,
-                    LastName = lastName
-                }
-            };
-
-            user.Profile.WalletAccessRights = new List<WalletAccessRight>
-            {
-                new WalletAccessRight
-                {
-                    Permission = PermissionEnum.Owner,
-                    UserProfile = user.Profile,
-                    Wallet = user.Profile.PersonalWallet
-                }
-            };
-            return user;
-        }
 
         /// <summary>
         ///     Log off from application

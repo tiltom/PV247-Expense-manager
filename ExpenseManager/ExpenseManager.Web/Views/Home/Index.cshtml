@@ -7,128 +7,241 @@
 @if (Request.IsAuthenticated)
 {
     @Html.ActionLink("Add transaction", "ExpenseIncome", "Transaction", null, new { @class = "btn btn-action" })
+
+
+    using (Html.BeginForm("IndexWithFilter", "Home", FormMethod.Get, new { @class = "form-horizontal collapse in", @id = "collapsibleSetting" }))
+    {
+        <div class="form-group row medium-margin-top">
+            <h4 class="col-md-2 control-label">
+                Select filter criteria:
+            </h4>
+            <div class="col-md-2">
+                @Html.ListBoxFor(m => m.Filter.Wallets, Model.Filter.WalletsSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = "Select Wallets"})
+            </div>
+            <div class="col-md-2">
+                @Html.ListBoxFor(m => m.Filter.Categories, Model.Filter.CategoriesSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = "Select categories"})
+            </div>
+            <div class="col-md-2">
+                @Html.ListBoxFor(m => m.Filter.Budgets, Model.Filter.BudgetsSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = "Select budgets"})
+            </div>
+            <div class="col-md-2">
+                <input type="submit" class="btn btn-success" value="Filter"/>
+            </div>
+        </div>
+    }
     <div class="medium-margin-top">
         <div class="row">
-            <div class="col-md-7">
-                <h3> Last 5 transactions</h3>
-                <div class="medium-margin-top">
-                    <table class="table table-hover table-condensed">
-                        <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().Amount)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().Date)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().Description)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().CategoryName)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().CurrencySymbol)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().BudgetName)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().IsRepeatable)
-                            </th>
-                        </tr>
-
-                        @foreach (var item in Model.Transactions)
-                        {
+            @if (Model.ContainsAnyData())
+            {
+                <div class="col-md-7">
+                    <h3> Last 5 transactions</h3>
+                    <div class="medium-margin-top table-responsive">
+                        <table class="table table-hover table-condensed">
                             <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Amount)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Date)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Description)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CategoryName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CurrencySymbol)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.BudgetName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.IsRepeatable)
-                                </td>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().Amount)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().Date)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().Description)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().CategoryName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().CurrencySymbol)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().BudgetName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().IsRepeatable)
+                                </th>
                             </tr>
-                        }
-                    </table>
+
+                            @foreach (var item in Model.Transactions)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Amount)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Date)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CategoryName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CurrencySymbol)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.BudgetName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.IsRepeatable)
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-5">
-                <h3> Graph summaries</h3>
-                <div class="medium-margin-top">
-                    @if (Model.CategoriesChart != null || Model.MonthSummaryChart != null)
-                {
+            }
+            else
+            {
+                <div class="jumbotron">
+                    <div class="container">
+                        <h1>No data available :( </h1>
+                        <p>
+                            Please add some transactions so you can see your personal dashboard.
+                        </p>
+                    </div>
+                </div>
+            }
+
+            @if (Model.ContainsGraphData())
+            {
+                <div class="col-md-5">
+                    <h3> Graph summaries
+                        <a style="text-decoration: none;" role="button" data-toggle="collapse" href="#collapsibleSetting" aria-expanded="false" aria-controls="collapsibleSetting">
+                            <i class="glyphicon glyphicon-cog"></i>
+                        </a>
+                    </h3>
+                    <div class="medium-margin-top">
+
                         <ul class="nav nav-tabs" role="tablist">
-                            <li role="presentation" class="active"><a href="#category" aria-controls="category" role="tab" data-toggle="tab" id="categoryTab">Category</a></li>
-                            <li role="presentation"><a href="#months" aria-controls="months" role="tab" data-toggle="tab">Last Month report</a></li>
-                            <li role="presentation"><a href="#years" aria-controls="years" role="tab" data-toggle="tab">Last Year report</a></li>
+                            <li role="presentation" class="active">
+                                <a href="#categoriesExpense" aria-controls="categoriesExpense" role="tab" data-toggle="tab" id="categoryTab">
+                                    <span data-toggle="tooltip" data-placement="top" title="Expenses by category in last month">
+                                       Expense
+                                    </span>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#categoriesIncome" aria-controls="categoriesIncome" role="tab" data-toggle="tab">
+                                    <span data-toggle="tooltip" data-placement="top" title="Incomes by category in last month">
+                                        Income
+                                    </span>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#months" aria-controls="months" role="tab" data-toggle="tab">
+                                    <span data-toggle="tooltip" data-placement="top" title="Last month report">Month</span>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#years" aria-controls="years" role="tab" data-toggle="tab">
+                                    <span data-toggle="tooltip" data-placement="top" title="Last year report">Year</span>
+                                </a>
+                            </li>
                         </ul>
 
+
                         <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active" id="category">
-                                <div class="medium-margin-top"></div>
-                                <canvas id="categoriesGraph" width="300" height="300"></canvas>
+                            <div role="tabpanel" class="tab-pane active" id="categoriesExpense">
+                                <h4>Expenses by category in last month</h4>
+                                <div class="medium-margin-top">
+                                    @if (Model.CategoriesExpenseChart == null)
+                                    {
+                                        <h4>Not enough data available</h4>
+                                    }
+                                    else
+                                    {
+                                        <canvas id="categoriesExpenseGraph" width="300" height="300"></canvas>
+                                    }
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane active" id="categoriesIncome">
+                                <div class="medium-margin-top">
+                                    <h4>Incomes by category in last month</h4>
+                                    
+                                    @if (Model.CategoriesIncomeChart == null)
+                                    {
+                                        <h4>Not enough data available</h4>
+                                    }
+                                    else
+                                    {
+                                        <canvas id="categoriesIncomeGraph" width="300" height="300"></canvas>
+                                    }
+                                </div>
 
                             </div>
                             <div role="tabpanel" class="tab-pane active" id="months">
-                                <div class="medium-margin-top"></div>
-                                <canvas id="monthsGraph" width="300" height="300"></canvas>
+                                <h4>Last Month report</h4>
+                                <div class="medium-margin-top">
+                                   
+                                    @if (Model.MonthSummaryChart == null)
+                                    {
+                                        <h4>Not enough data available</h4>
+                                    }
+                                    else
+                                    {
+                                        <canvas id="monthsGraph" width="300" height="300"></canvas>
+                                    }
+                                </div>
                             </div>
                             <div role="tabpanel" class="tab-pane active" id="years">
-                                <div class="medium-margin-top"></div>
-                                <canvas id="yearsGraph" width="300" height="300"></canvas>
+                                <h4>Last year report</h4>
+                                <div class="medium-margin-top">
+                                    @if (Model.YearSummaryChart == null)
+                                    {
+                                        <h4>Not enough data available</h4>
+                                    }
+                                    else
+                                    {
+                                        <canvas id="yearsGraph" width="300" height="300"></canvas>
+                                    }
+                                </div>
                             </div>
 
                         </div>
-                    }
+                    </div>
                 </div>
-            </div>
-            @section Scripts {
-                @{
-                    if (Model.CategoriesChart != null)
-                    {
-                        @Html.CreateChart("categoriesGraph", Model.CategoriesChart)
-
-                    }
-                    if (Model.MonthSummaryChart != null)
-                    {
-                        @Html.CreateChart("monthsGraph", Model.MonthSummaryChart)
-                        <script type="text/javascript">
-                            // other tabs won't generate without being active and we need to have just single active tab
-                            // hence we have to remove active class from other tabs
-                            $('#months').removeClass('active');
-                        </script>
-                    }
-                    if (Model.MonthSummaryChart != null)
-                    {
-                        @Html.CreateChart("yearsGraph", Model.YearSummaryChart)
-                        <script type="text/javascript">
-                            $('#years').removeClass('active');
-                        </script>
-                    }
-
-                }
+            }
+        </div>
+    </div>
+    @section Scripts {
+        @{
+            if (Model.CategoriesExpenseChart != null)
+            {
+                @Html.CreateChart("categoriesExpenseGraph", Model.CategoriesExpenseChart)
+            }
+            if (Model.CategoriesIncomeChart != null)
+            {
+                @Html.CreateChart("categoriesIncomeGraph", Model.CategoriesIncomeChart)
+            }
+            if (Model.MonthSummaryChart != null)
+            {
+                @Html.CreateChart("monthsGraph", Model.MonthSummaryChart)
+            }
+            if (Model.MonthSummaryChart != null)
+            {
+                @Html.CreateChart("yearsGraph", Model.YearSummaryChart)
+            }
+            <script type="text/javascript">
+                // other tabs won't generate without being active and we need to have just single active tab
+                // hence we have to remove active class from other tabs
+                $('#categoriesIncome').removeClass('active');
+                $('#months').removeClass('active');
+                $('#years').removeClass('active');
+            </script>
+            // show filter if no data displayed and filter is set
+            if ((!Model.Filter.IsFilterSet() && !Model.ContainsAnyData()) || Model.ContainsAnyData())
+             {
+                 <script type="text/javascript">
+                     setTimeout(function() { $('#collapsibleSetting').removeClass('in'); }, 0);
+                 </script>
             }
 
-        </div>
-
-    </div>
-                    }
-                    else
-                    {
+        }
+    }
+            }
+            else
+            {
                         <div class="jumbotron">
                             <div class="container">
                                 <h1>Hello anonymous user!</h1>

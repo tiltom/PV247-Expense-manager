@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -52,6 +53,8 @@
                     @Scripts.Render("~/bundles/jquery")
                     @Scripts.Render("~/bundles/bootstrap")
                     @Scripts.Render("~/bundles/charts")
+                    @Scripts.Render("~/bundles/chosen")
+                    
                     @RenderSection("scripts", required: false)
                 </div>
             </div>
@@ -73,7 +76,7 @@
 
     $('.table-responsive').on('hide.bs.dropdown', function () {
         $('.table-responsive').css("overflow", "auto");
-    })
+    });
 
 
     $('.datepicker').datepicker({
@@ -86,6 +89,7 @@
               .click(function () {
                   $(this).datepicker('show');
               });
+    $('[data-toggle="tooltip"]').tooltip();
 
     $('#collapseExample').on('shown.bs.collapse', function () {
         $(".glyphicon").removeClass("glyphicon-chevron-right").addClass("glyphicon-chevron-down");
@@ -94,4 +98,6 @@
     $('#collapseExample').on('hidden.bs.collapse', function () {
         $(".glyphicon").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-right");
     });
+
+    $(".chosen-select").chosen();
 </script>

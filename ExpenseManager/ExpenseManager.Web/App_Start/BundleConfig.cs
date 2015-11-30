@@ -19,6 +19,9 @@ namespace ExpenseManager.Web
             bundles.Add(new ScriptBundle("~/bundles/charts").Include(
                 "~/Scripts/Chart.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/chosen").Include(
+                "~/Scripts/chosen.jquery.min.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                 "~/Scripts/bootstrap.js",
                 "~/Scripts/bootstrap-datepicker.js",
@@ -29,7 +32,8 @@ namespace ExpenseManager.Web
                 "~/Content/bootstrap.css",
                 "~/Content/bootstrap-datepicker3.css",
                 "~/Content/site.css",
-                "~/Content/PagedList.css"));
+                "~/Content/PagedList.css",
+                "~/Content/bootstrap-chosen.css"));
         }
     }
 }

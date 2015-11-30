@@ -76,7 +76,7 @@
     <Compile Include="Contexts\CurrencyContext.cs" />
     <Compile Include="Contexts\ICurrencyContext.cs" />
     <Compile Include="Database.cs" />
-    <Compile Include="Common\UserIdentity.cs" />
+    <Compile Include="UserIdentity.cs" />
     <Compile Include="Contexts\BudgetContext.cs" />
     <Compile Include="Contexts\IBudgetContext.cs" />
     <Compile Include="Contexts\ITransactionContext.cs" />

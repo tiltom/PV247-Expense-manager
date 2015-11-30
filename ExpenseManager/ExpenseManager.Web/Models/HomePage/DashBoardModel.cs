@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Chart.Mvc.ComplexChart;
 using Chart.Mvc.SimpleChart;
 using ExpenseManager.Web.Models.Transaction;
@@ -16,21 +17,26 @@ namespace ExpenseManager.Web.Models.HomePage
         }
 
         /// <summary>
-        ///     categories chart data
+        ///     Income categories chart data
         /// </summary>
-        public PieChart CategoriesChart { get; set; }
+        public PieChart CategoriesIncomeChart { get; set; }
+
+        /// <summary>
+        ///     Exepense categories chart data
+        /// </summary>
+        public PieChart CategoriesExpenseChart { get; set; }
 
 
         /// <summary>
         ///     last month chart data
         /// </summary>
-        public BarChart MonthSummaryChart { get; set; }
+        public LineChart MonthSummaryChart { get; set; }
 
 
         /// <summary>
         ///     last year chart data
         /// </summary>
-        public BarChart YearSummaryChart { get; set; }
+        public LineChart YearSummaryChart { get; set; }
 
         /// <summary>
         ///     filter data model
@@ -41,5 +47,19 @@ namespace ExpenseManager.Web.Models.HomePage
         ///     last 5 transactions
         /// </summary>
         public IEnumerable<TransactionShowModel> Transactions { get; set; }
+
+
+        public bool ContainsGraphData()
+        {
+            return MonthSummaryChart != null
+                   || YearSummaryChart != null
+                   || CategoriesExpenseChart != null
+                   || CategoriesIncomeChart != null;
+        }
+
+        public bool ContainsAnyData()
+        {
+            return this.ContainsGraphData() && Transactions.Any();
+        }
     }
 }

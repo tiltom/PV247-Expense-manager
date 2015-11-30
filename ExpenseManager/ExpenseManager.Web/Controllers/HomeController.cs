@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -11,6 +10,8 @@ using Chart.Mvc.SimpleChart;
 using ExpenseManager.BusinessLogic.CommonServices;
 using ExpenseManager.BusinessLogic.DashboardServices;
 using ExpenseManager.BusinessLogic.DashboardServices.Models;
+using ExpenseManager.BusinessLogic.TransactionServices;
+using ExpenseManager.Database;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.HomePage;
 using ExpenseManager.Web.Models.Transaction;
@@ -25,14 +26,39 @@ namespace ExpenseManager.Web.Controllers
         private readonly DashBoardService _dashBoardService =
             new DashBoardService(ProvidersFactory.GetNewTransactionsProviders());
 
+        private readonly TransactionService _transactionService =
+            new TransactionService(ProvidersFactory.GetNewBudgetsProviders(),
+                ProvidersFactory.GetNewTransactionsProviders(), ProvidersFactory.GetNewWalletsProviders());
+
         /// <summary>
         ///     Will display empty page with initialized filter
         /// </summary>
         /// <returns>Initialized filter</returns>
         public async Task<ViewResult> Index()
         {
-            var filter = new FilterDataModel();
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                return this.View(await this.GenerateDataForFilter(new FilterDataModel()));
+            }
+            return this.View();
+        }
+
+
+        /// <summary>
+        ///     Will display empty page with initialized filter
+        /// </summary>
+        /// <returns>Initialized filter</returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<ViewResult> IndexWithFilter(FilterDataModel filter)
+        {
+            return this.View("Index", await this.GenerateDataForFilter(filter));
+        }
+
+        private async Task<DashBoardModel> GenerateDataForFilter(FilterDataModel filter)
+        {
             var mappedFilter = Mapper.Map<FilterDataServiceModel>(filter);
+            var fixedFilter = await this.InitFilter(filter);
             var userId = await this.CurrentProfileId();
             // select transactions according to filter
             var resultMonth = this._dashBoardService.FilterTransactions(mappedFilter.WithMonthFilterValues(), userId);
@@ -44,59 +70,88 @@ namespace ExpenseManager.Web.Controllers
                         .Take(5).ProjectTo<TransactionShowModel>()
                         .ToListAsync();
             // prepare data for graphs
-            var categories = await this._dashBoardService.GetWrapperValuesForCategories(resultMonth);
+            var categoriesExpense =
+                await this._dashBoardService.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount < 0));
+            var categoriesIncome =
+                await this._dashBoardService.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount >= 0));
             var monthSummary = await this._dashBoardService.GetGraphForDaysLastMonth(resultMonth);
             var yearSummary = await this._dashBoardService.GetGraphForMonthLastYear(resultYear);
-            // generate pie chart
-            var categoriesChart = this.GeneratePieChart(categories);
-            var monthSummaryChart = this.GenerateBarChart(monthSummary);
-            var yearSummaryChart = this.GenerateBarChart(yearSummary);
-            return
-                this.View(new DashBoardModel
-                {
-                    Filter = filter,
-                    CategoriesChart = categoriesChart,
-                    MonthSummaryChart = monthSummaryChart,
-                    YearSummaryChart = yearSummaryChart,
-                    Transactions = last5Transactions
-                });
+            // generate charts
+            var categoriesExpenseChart = this.GeneratePieChart(categoriesExpense);
+            var categoriesIncomeChart = this.GeneratePieChart(categoriesIncome);
+            var monthSummaryChart = this.GenerateLineChart(monthSummary);
+            var yearSummaryChart = this.GenerateLineChart(yearSummary);
+            return new DashBoardModel
+            {
+                Filter = fixedFilter,
+                CategoriesExpenseChart = categoriesExpenseChart,
+                CategoriesIncomeChart = categoriesIncomeChart,
+                MonthSummaryChart = monthSummaryChart,
+                YearSummaryChart = yearSummaryChart,
+                Transactions = last5Transactions
+            };
+        }
+
+        private async Task<FilterDataModel> InitFilter(FilterDataModel filter)
+        {
+            var userId = await this.CurrentProfileId();
+            filter.BudgetsSelectList = await this._transactionService.GetReadableBudgetsSelection(userId);
+            filter.WalletsSelectList = await this._transactionService.GetAllReadableWalletsSelection(userId);
+            filter.CategoriesSelectList = await this._transactionService.GetAllCategoriesSelection();
+            return filter;
         }
 
         #region private
 
-        private BarChart GenerateBarChart(GraphWithDescriptionModel data)
+        private LineChart GenerateLineChart(GraphWithDescriptionModel data)
         {
-            var barChart = new BarChart();
-            barChart.ComplexData.Labels.AddRange(data.GraphData.Select(t => t.Label));
-            barChart.ComplexData.Datasets.AddRange(new List<ComplexDataset>
+            if (data.GraphData.Count < 2)
             {
-                new ComplexDataset
+                return null;
+            }
+            var lineChart = new LineChart
+            {
+                ComplexData =
                 {
-                    Data = data.GraphData.Select(t => Convert.ToDouble(t.Value)).ToList(),
-                    Label = data.Description,
-                    FillColor = this._colorGenerator.GenerateColor(),
-                    StrokeColor = ColorGeneratorService.Black,
-                    PointColor = ColorGeneratorService.Black,
-                    PointStrokeColor = ColorGeneratorService.Black,
-                    PointHighlightFill = ColorGeneratorService.Black,
-                    PointHighlightStroke = ColorGeneratorService.Black
+                    Labels = data.GraphData.Select(t => t.Label).ToList(),
+                    Datasets = new List<ComplexDataset>
+                    {
+                        new ComplexDataset
+                        {
+                            Data = data.GraphData.Select(t => Convert.ToDouble(t.Value)).ToList(),
+                            Label = data.Description,
+                            FillColor = ColorGeneratorService.Transparent,
+                            StrokeColor = this._colorGenerator.GenerateColor(),
+                            PointColor = ColorGeneratorService.Black,
+                            PointStrokeColor = ColorGeneratorService.White,
+                            PointHighlightFill = ColorGeneratorService.White,
+                            PointHighlightStroke = ColorGeneratorService.Black
+                        }
+                    }
                 }
-            });
-            return barChart;
+            };
+            lineChart.ChartConfiguration.ScaleBeginAtZero = false;
+            lineChart.ChartConfiguration.Responsive = true;
+            return lineChart;
         }
 
         private PieChart GeneratePieChart(List<SimpleGraphModel> result)
         {
-            var pieChart = new PieChart();
-            pieChart.Data.AddRange(result.Select(
-                t =>
-                    new SimpleData
-                    {
-                        Label = t.Label,
-                        Value = Convert.ToDouble(t.Value),
-                        Color = this._colorGenerator.GenerateColor()
-                    }));
-            return pieChart;
+            if (result.Count == 0)
+            {
+                return null;
+            }
+            return new PieChart
+            {
+                Data = result.Select(
+                    t =>
+                        new SimpleData
+                        {
+                            Label = t.Label,
+                            Value = Math.Abs(Convert.ToDouble(t.Value)),
+                            Color = this._colorGenerator.GenerateColor()
+                        }).ToList()
+            };
         }
 
         #endregion
