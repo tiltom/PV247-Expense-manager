@@ -20,22 +20,7 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
             var reader = new ExchangeRateReader();
             var rates = reader.LoadExchangeRates(transaction.Date);
 
-            var transformationType = GetCurrencyTransformationType(transaction.Currency, walletCurrency);
-
-            switch (transformationType)
-            {
-                case CurrencyTransformationType.FromCzkToOther:
-                    ConvertCurrencyFromCzk(transaction, walletCurrency, rates);
-                    break;
-
-                case CurrencyTransformationType.FromOtherToCzk:
-                    ConvertCurrencyToCzk(transaction, rates);
-                    break;
-
-                case CurrencyTransformationType.FromOtherToOther:
-                    ConvertCurrencies(transaction, walletCurrency, rates);
-                    break;
-            }
+            ConvertCurrencies(transaction, walletCurrency, rates);
 
             transaction.Currency = walletCurrency;
         }
@@ -58,28 +43,20 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
 
         private static void ConvertCurrencies(Transaction transaction, Currency currency, List<ExchangeRate> rates)
         {
-            ConvertCurrencyToCzk(transaction, rates);
-            ConvertCurrencyFromCzk(transaction, currency, rates);
-        }
-
-        private static CurrencyTransformationType GetCurrencyTransformationType(Currency fromCurrency,
-            Currency toCurrency)
-        {
-            if (fromCurrency.Symbol == CzechCurrencySymbol)
+            if (!IsCzkCurrency(transaction.Currency))
             {
-                return CurrencyTransformationType.FromCzkToOther;
+                ConvertCurrencyToCzk(transaction, rates);
             }
 
-            if (toCurrency.Symbol == CzechCurrencySymbol)
+            if (!IsCzkCurrency(currency))
             {
-                return CurrencyTransformationType.FromOtherToCzk;
+                ConvertCurrencyFromCzk(transaction, currency, rates);
             }
-
-            return CurrencyTransformationType.FromOtherToOther;
         }
 
         private static string GetCurrencyCode(Currency currency)
         {
+            // TODO: change this, so the code and symbols are in db
             switch (currency.Symbol)
             {
                 case "€":
@@ -93,6 +70,11 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
             }
 
             throw new NotSupportedException("This currency is not supported!");
+        }
+
+        private static bool IsCzkCurrency(Currency currency)
+        {
+            return currency.Symbol.Equals(CzechCurrencySymbol);
         }
 
         #endregion

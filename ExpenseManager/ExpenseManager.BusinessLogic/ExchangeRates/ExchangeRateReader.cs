@@ -28,17 +28,12 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
 
             string input;
 
-            // first line defines date, we dont need thid
-            reader.ReadLine();
-            // this is the line with the description, not data, so skip it
-            reader.ReadLine();
-
             while ((input = reader.ReadLine()) != null)
             {
                 lines.Add(input);
             }
 
-            return lines.Select(this.GetExchangeRateFromString).ToList();
+            return lines.Select(this.GetExchangeRateFromLine).ToList();
         }
 
         #region private
@@ -48,16 +43,24 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
             return BasicUrl + date.ToShortDateString();
         }
 
-        private ExchangeRate GetExchangeRateFromString(string exchangeRate)
+        private ExchangeRate GetExchangeRateFromLine(string exchangeRateLine)
         {
-            var fields = exchangeRate.Split('|');
+            var fields = exchangeRateLine.Split('|');
 
-            return new ExchangeRate
+            try
             {
-                Amount = Convert.ToInt32(fields[2]),
-                Code = fields[3],
-                Rate = Convert.ToDecimal(fields[4])
-            };
+                return new ExchangeRate
+                {
+                    Amount = Convert.ToInt32(fields[2]),
+                    Code = fields[3],
+                    Rate = Convert.ToDecimal(fields[4])
+                };
+            }
+            catch
+            {
+                // because first two lines are date and description
+                return new ExchangeRate();
+            }
         }
 
         #endregion
