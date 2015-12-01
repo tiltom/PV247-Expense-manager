@@ -1,5 +1,4 @@
-﻿using ExpenseManager.BusinessLogic.CommonServices;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace ExpenseManager.BusinessLogic.Test
 {

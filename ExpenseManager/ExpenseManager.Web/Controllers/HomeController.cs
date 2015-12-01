@@ -7,7 +7,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Chart.Mvc.ComplexChart;
 using Chart.Mvc.SimpleChart;
-using ExpenseManager.BusinessLogic.CommonServices;
+using ExpenseManager.BusinessLogic;
 using ExpenseManager.BusinessLogic.DashboardServices;
 using ExpenseManager.BusinessLogic.DashboardServices.Models;
 using ExpenseManager.BusinessLogic.TransactionServices;

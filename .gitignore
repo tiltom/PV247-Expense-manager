@@ -216,3 +216,12 @@ Web.config
 AppSettingsSecrets.config
 # Publish profile
 ExpenseManager/ExpenseManager.Web/Properties/PublishProfiles/
+#Content
+!ExpenseManager/ExpenseManager.Web/Content/Site.css
+ExpenseManager/ExpenseManager.Web/Content/*
+#Scripts
+!ExpenseManager/ExpenseManager.Web/Scripts/transactionCheckbox.js
+ExpenseManager/ExpenseManager.Web/Scripts/*
+
+#DB
+ExpenseManager/ExpenseManager.Web/App_Data/ExpenseManager.mdf

@@ -81,7 +81,7 @@
     <Compile Include="BudgetServices\BudgetAccessRightService.cs" />
     <Compile Include="BudgetServices\BudgetService.cs" />
     <Compile Include="CategoryServices\CategoryService.cs" />
-    <Compile Include="CommonServices\ColorGeneratorService.cs" />
+    <Compile Include="ColorGeneratorService.cs" />
     <Compile Include="DashboardServices\DashBoardService.cs" />
     <Compile Include="DashboardServices\Models\FilterDataServiceModel.cs" />
     <Compile Include="DashboardServices\Models\GraphWithDescriptionModel.cs" />
