@@ -82,12 +82,14 @@
     <Compile Include="DashboardServices\Models\FilterDataServiceModel.cs" />
     <Compile Include="DashboardServices\Models\GraphWithDescriptionModel.cs" />
     <Compile Include="DashboardServices\Models\SimpleGraphModel.cs" />
+    <Compile Include="DTOs\TransactionDTO.cs" />
     <Compile Include="ExchangeRates\CurrencyTransformationType.cs" />
     <Compile Include="ExchangeRates\ExchangeRate.cs" />
     <Compile Include="ExchangeRates\ExchangeRateReader.cs" />
     <Compile Include="ExchangeRates\Transformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactionServices\TransactionService.cs" />
+    <Compile Include="ValidationException.cs" />
     <Compile Include="WalletServices\WalletAccessRightService.cs" />
     <Compile Include="WalletServices\WalletService.cs" />
   </ItemGroup>

@@ -6,6 +6,8 @@ using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
+using ExpenseManager.BusinessLogic;
+using ExpenseManager.BusinessLogic.DTOs;
 using ExpenseManager.BusinessLogic.TransactionServices;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers.Factory;
@@ -71,6 +73,7 @@ namespace ExpenseManager.Web.Controllers
             foreach (var transaction in list)
             {
                 showModels.Add(await this.ConvertEntityToTransactionShowModel(transaction));
+                //transaction.ProjectTo<CategoryShowModel>(transaction);
             }
 
             // when user doesn't have permission to manipulate with transaction show view without edit and delete
@@ -127,49 +130,21 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(NewTransactionModel transaction)
         {
-            if (transaction.Amount <= 0)
+            var dto = Mapper.Map<TransactionDTO>(transaction);
+
+            try
             {
-                ModelState.AddModelError("Amount", "Transaction amount must be greater than zero");
+                await this._transactionService.Create(dto);
             }
-            //If transaction is repeatable date of last Occurrence must be set
-            if (transaction.IsRepeatable)
+            catch (ValidationException ex)
             {
-                if (transaction.LastOccurrence == null)
-                {
-                    ModelState.AddModelError("LastOccurrence", "Date of last occurrence must be set");
-                }
-                else if (transaction.Date >= transaction.LastOccurrence.GetValueOrDefault())
-                {
-                    ModelState.AddModelError("LastOccurrence",
-                        "Date until which transaction should be repeated must be after first transaction occurrence");
-                }
-                if (transaction.NextRepeat == null || transaction.NextRepeat <= 0)
-                {
-                    ModelState.AddModelError("NextRepeat", "Frequency must be positive number");
-                }
+                ModelState.AddModelErrors(ex);
             }
 
+
+            //Check server validation
             if (ModelState.IsValid)
             {
-                //create new Transaction entity and fill it from model
-                var transactionEntity =
-                    await this.ConvertNewModelToEntity(transaction, new Transaction {Guid = Guid.NewGuid()});
-                //check if transaction should be repeatable
-                await this._transactionService.AddOrUpdate(transactionEntity);
-                if (transaction.IsRepeatable)
-                {
-                    //create new repeatable transaction entity and fill from model
-                    var repeatableTransaction = new RepeatableTransaction
-
-                    {
-                        FirstTransaction = transactionEntity,
-                        NextRepeat = transaction.NextRepeat.GetValueOrDefault(),
-                        FrequencyType = transaction.FrequencyType,
-                        LastOccurrence = transaction.LastOccurrence.GetValueOrDefault(),
-                        Guid = Guid.NewGuid()
-                    };
-                    await this._transactionService.AddOrUpdate(repeatableTransaction);
-                }
                 return this.RedirectToAction("Index", new {wallet = transaction.WalletId});
             }
             transaction.Currencies = await this._transactionService.GetCurrenciesSelection();
@@ -230,25 +205,15 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(EditTransactionModel transaction)
         {
-            if (transaction.Amount <= 0)
+            var dto = Mapper.Map<TransactionDTO>(transaction);
+            try
             {
-                ModelState.AddModelError("Amount", "Transaction amount must be greater than zero");
+                //TODO HERE SHOULD BE transactionService.edit
+                this._transactionService.ValidateTransaction(dto);
             }
-            if (transaction.IsRepeatable)
+            catch (ValidationException ex)
             {
-                if (transaction.LastOccurrence == null)
-                {
-                    ModelState.AddModelError("LastOccurrence", "Date of last occurrence must be set");
-                }
-                else if (transaction.Date >= transaction.LastOccurrence.GetValueOrDefault())
-                {
-                    ModelState.AddModelError("LastOccurrence",
-                        "Date until which transaction should be repeated must be after first transaction occurrence");
-                }
-                if (transaction.NextRepeat == null || transaction.NextRepeat <= 0)
-                {
-                    ModelState.AddModelError("NextRepeat", "Frequency must be positive number");
-                }
+                ModelState.AddModelErrors(ex);
             }
 
             //check if model is valid
@@ -338,38 +303,6 @@ namespace ExpenseManager.Web.Controllers
                 //this._db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        /// <summary>
-        ///     Converts NewTransactionModel into entity Transaction
-        /// </summary>
-        /// <param name="model">NewTransactionModel</param>
-        /// <param name="entity">entity Transaction</param>
-        /// <returns>Task Transaction</returns>
-        private async Task<Transaction> ConvertNewModelToEntity(NewTransactionModel model, Transaction entity)
-        {
-            //setting properties from model
-
-            entity.Amount = model.Amount;
-            if (model.Expense)
-            {
-                entity.Amount *= -1;
-            }
-            entity.Date = model.Date;
-            entity.Description = model.Description;
-            entity.Wallet =
-                await this._transactionService.GetWalletById(model.WalletId);
-            //check if budget was set to category in model
-            if (model.BudgetId != null)
-            {
-                entity.Budget =
-                    await this._transactionService.GetBudgetById(model.BudgetId.Value);
-            }
-            entity.Currency =
-                await this._transactionService.GetCurrencyById(model.CurrencyId);
-            entity.Category =
-                await this._transactionService.GetCategoryById(model.CategoryId);
-            return entity;
         }
 
         /// <summary>
@@ -463,6 +396,18 @@ namespace ExpenseManager.Web.Controllers
             }
 
             return transactionModel;
+        }
+    }
+
+    public static class MvcValidationExtension
+    {
+        public static void AddModelErrors(this ModelStateDictionary state,
+            ValidationException exception)
+        {
+            foreach (var error in exception.Erorrs)
+            {
+                state.AddModelError(error.Key, error.Value);
+            }
         }
     }
 }
