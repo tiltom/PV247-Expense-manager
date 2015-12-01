@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AutoMapper;
 using ExpenseManager.BusinessLogic.DTOs;
 using ExpenseManager.BusinessLogic.ExchangeRates;
 using ExpenseManager.Entity;
@@ -30,6 +31,20 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             this._budgetsProvider = budgetsProvider;
             this._transactionsProvider = transactionsProvider;
             this._walletsProvider = walletsProvider;
+
+            //TODO MOVE
+            Mapper.CreateMap<Transaction, TransactionDTO>()
+                .ForMember(dto => dto.Id, options => options.MapFrom(entity => entity.Guid))
+                .ForMember(dto => dto.Expense, options => options.MapFrom(entity => entity.Amount < 0))
+                .ForMember(dto => dto.Amount,
+                    options => options.MapFrom(entity => entity.Amount < 0 ? entity.Amount*-1 : entity.Amount))
+                .ForMember(dto => dto.Date, options => options.MapFrom(entity => entity.Date))
+                .ForMember(dto => dto.Description, options => options.MapFrom(entity => entity.Description))
+                .ForMember(dto => dto.WalletId, options => options.MapFrom(entity => entity.Wallet.Guid))
+                .ForMember(dto => dto.BudgetId,
+                    options => options.MapFrom(entity => entity.Budget == null ? Guid.Empty : entity.Budget.Guid))
+                .ForMember(dto => dto.CurrencyId, options => options.MapFrom(entity => entity.Currency.Guid))
+                .ForMember(dto => dto.CategoryId, options => options.MapFrom(entity => entity.Category.Guid));
         }
 
         public async Task Create(TransactionDTO transaction)
@@ -94,7 +109,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 //if exists in DB in repeatable transactions delete it
                 if (repeatableTransaction != null)
                 {
-                    await this.Remove(repeatableTransaction);
+                    await this._transactionsProvider.DeteleAsync(repeatableTransaction);
                 }
             }
         }
@@ -129,21 +144,31 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             if (repeatableTransaction != null)
             {
                 //if true remove it from repeatable transactions first
-                await this.Remove(repeatableTransaction);
+                await this._transactionsProvider.DeteleAsync(repeatableTransaction);
             }
             await this._transactionsProvider.DeteleAsync(transaction);
             return walletId;
         }
 
-        public async Task Remove(RepeatableTransaction repeatableTransaction)
+        public async Task<TransactionDTO> GetTransactionById(Guid transactionId, Guid userId)
         {
-            await this._transactionsProvider.DeteleAsync(repeatableTransaction);
-        }
-
-        public async Task<Transaction> GetTransactionById(Guid transactionId)
-        {
-            return
+            var transaction =
                 await this._transactionsProvider.Transactions.Where(t => t.Guid == transactionId).FirstOrDefaultAsync();
+            if (!await this.HasWritePermission(userId, transaction.Wallet.Guid))
+            {
+                throw new SecurityException();
+            }
+            var dto = Mapper.Map<TransactionDTO>(transaction);
+            var repeatableTransaction =
+                await this.GetRepeatableTransactionByFirstTransactionId(transaction.Guid);
+            if (repeatableTransaction != null)
+            {
+                dto.IsRepeatable = true;
+                dto.NextRepeat = repeatableTransaction.NextRepeat;
+                dto.FrequencyType = repeatableTransaction.FrequencyType;
+                dto.LastOccurrence = repeatableTransaction.LastOccurrence;
+            }
+            return dto;
         }
 
         public async Task<RepeatableTransaction> GetRepeatableTransactionByFirstTransactionId(Guid transactionId)
@@ -385,6 +410,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                                     Text = budget.Budget.Name
                                 })
                         .ToListAsync();
+        }
+
+        private async Task<Transaction> GetTransactionById(Guid transactionId)
+        {
+            return
+                await this._transactionsProvider.Transactions.Where(t => t.Guid == transactionId).FirstOrDefaultAsync();
         }
 
         private async Task<Transaction> FillTransaction(TransactionDTO transaction, Transaction entity)

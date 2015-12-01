@@ -161,29 +161,24 @@ namespace ExpenseManager.Web.Controllers
         // GET: Transactions/Edit/5
         public async Task<ActionResult> Edit(Guid id)
         {
-            //find transaction by it's Id
-            var transaction = await this._transactionService.GetTransactionById(id);
-            if (transaction == null)
-            {
-                return this.HttpNotFound();
-            }
             var userId = await this.CurrentProfileId();
-            // if user doesn't have permission to modify transaction show error
-            if (
-                !await
-                    this._transactionService.HasWritePermission(userId, transaction.Wallet.Guid))
+            TransactionDTO transaction;
+            try
+            {
+                //find transaction by it's Id
+                transaction = await this._transactionService.GetTransactionById(id, userId);
+            }
+            catch (SecurityException)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
                     "You don't have permission to edit this transaction");
             }
-
-            //fill model from DB entity
-            var model = await this.ConvertEntityToTransactionEditModel(transaction);
-            model.Expense = (transaction.Amount < 0);
-            if (model.Expense)
+            if (transaction == null)
             {
-                model.Amount *= -1;
+                return this.HttpNotFound();
             }
+            var model = Mapper.Map<EditTransactionModel>(transaction);
+
             model.Currencies = await this._transactionService.GetCurrenciesSelection();
             model.Categories = await this._transactionService.GetCategoriesSelection(model.Expense);
             model.Budgets = await this._transactionService.GetBudgetsSelection(userId);
@@ -238,7 +233,7 @@ namespace ExpenseManager.Web.Controllers
             try
             {
                 //removing transaction from DB
-                walletId = await this._transactionService.RemoveTransaction(await this.CurrentProfileId(), id);
+                walletId = await this._transactionService.RemoveTransaction(id, await this.CurrentProfileId());
             }
             catch (SecurityException)
             {
@@ -255,35 +250,6 @@ namespace ExpenseManager.Web.Controllers
                 //this._db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        /// <summary>
-        ///     Converts entity of type Transaction into EditTransactionModel
-        /// </summary>
-        /// <param name="entity">entity of type Transaction</param>
-        /// <returns>EditTransactionModel</returns>
-        private async Task<EditTransactionModel> ConvertEntityToTransactionEditModel(Transaction entity)
-        {
-            //get if transaction is repeatable
-            var repeatableTransaction =
-                await this._transactionService.GetRepeatableTransactionByFirstTransactionId(entity.Guid);
-
-            Guid? budgetId = null;
-            if (entity.Budget != null)
-                budgetId = entity.Budget.Guid;
-            //fill model info from entity
-            var transactionModel = Mapper.Map<EditTransactionModel>(entity);
-            transactionModel.BudgetId = budgetId;
-
-            //check if transaction is repeatable and fill it
-            if (repeatableTransaction != null)
-            {
-                transactionModel.IsRepeatable = true;
-                transactionModel.NextRepeat = repeatableTransaction.NextRepeat;
-                transactionModel.FrequencyType = repeatableTransaction.FrequencyType;
-                transactionModel.LastOccurrence = repeatableTransaction.LastOccurrence;
-            }
-            return transactionModel;
         }
 
         /// <summary>
