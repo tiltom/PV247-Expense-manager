@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AutoMapper;
 using ExpenseManager.BusinessLogic.DTOs;
 using ExpenseManager.BusinessLogic.ExchangeRates;
 using ExpenseManager.Entity;
@@ -30,6 +31,19 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             this._budgetsProvider = budgetsProvider;
             this._transactionsProvider = transactionsProvider;
             this._walletsProvider = walletsProvider;
+
+            //TODO MOVE initialization
+            Mapper.CreateMap<TransactionDTO, Transaction>()
+                .ForMember(entity => entity.Guid, options => options.MapFrom(dto => dto.Id))
+                .ForMember(entity => entity.Amount,
+                    options => options.MapFrom(dto => dto.Expense ? dto.Amount*-1 : dto.Amount))
+                .ForMember(entity => entity.Date, options => options.MapFrom(dto => dto.Date))
+                .ForMember(entity => entity.Description, options => options.MapFrom(dto => dto.Description));
+
+            Mapper.CreateMap<TransactionDTO, RepeatableTransaction>()
+                .ForMember(entity => entity.FrequencyType, options => options.MapFrom(dto => dto.FrequencyType))
+                .ForMember(entity => entity.LastOccurrence, options => options.MapFrom(dto => dto.LastOccurrence.Value))
+                .ForMember(entity => entity.NextRepeat, options => options.MapFrom(dto => dto.NextRepeat));
         }
 
         //TODO make private
@@ -73,13 +87,15 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         {
             this.ValidateTransaction(transaction);
             //create new Transaction entity and fill it from DTO
-            var transactionEntity = await this.newTransaction(transaction);
+            var transactionEntity = await this.FillTransaction(transaction);
+            transactionEntity.Guid = new Guid();
             //check if transaction should be repeatable
             await this.AddOrUpdate(transactionEntity);
             if (transaction.IsRepeatable)
             {
                 //create new repeatable transaction entity and fill from DTO
-                var repeatableTransaction = this.newRepeatableTransaction(transaction, transactionEntity);
+                var repeatableTransaction = Mapper.Map<RepeatableTransaction>(transaction);
+                repeatableTransaction.Guid = new Guid();
                 await this.AddOrUpdate(repeatableTransaction);
             }
         }
@@ -378,17 +394,9 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         .ToListAsync();
         }
 
-        //TODO USE MAPPER if possible
-        private async Task<Transaction> newTransaction(TransactionDTO transaction)
+        private async Task<Transaction> FillTransaction(TransactionDTO transaction)
         {
-            var entity = new Transaction {Guid = Guid.NewGuid()};
-            entity.Amount = transaction.Amount;
-            if (transaction.Expense)
-            {
-                entity.Amount *= -1;
-            }
-            entity.Date = transaction.Date;
-            entity.Description = transaction.Description;
+            var entity = Mapper.Map<Transaction>(transaction);
             entity.Wallet =
                 await this.GetWalletById(transaction.WalletId);
             //check if budget was set to category in model
@@ -402,18 +410,6 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             entity.Category =
                 await this.GetCategoryById(transaction.CategoryId);
             return entity;
-        }
-
-        private RepeatableTransaction newRepeatableTransaction(TransactionDTO transaction, Transaction transactionEntity)
-        {
-            return new RepeatableTransaction
-            {
-                FirstTransaction = transactionEntity,
-                NextRepeat = transaction.NextRepeat.GetValueOrDefault(),
-                FrequencyType = transaction.FrequencyType,
-                LastOccurrence = transaction.LastOccurrence.GetValueOrDefault(),
-                Guid = Guid.NewGuid()
-            };
         }
 
         #endregion

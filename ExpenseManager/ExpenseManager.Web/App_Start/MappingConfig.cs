@@ -52,26 +52,9 @@ namespace ExpenseManager.Web
                 .ForMember(view => view.CategoryId,
                     options => options.MapFrom(entity => entity.Category.Guid.ToString()));
 
-            Mapper.CreateMap<NewTransactionModel, TransactionDTO>()
-                .ForMember(view => view.Amount, options => options.MapFrom(entity => entity.Amount))
-                .ForMember(view => view.Date, options => options.MapFrom(entity => entity.Date))
-                .ForMember(view => view.Description, options => options.MapFrom(entity => entity.Description))
-                .ForMember(view => view.WalletId, options => options.MapFrom(entity => entity.WalletId))
-                .ForMember(view => view.CurrencyId,
-                    options => options.MapFrom(entity => entity.CurrencyId))
-                .ForMember(view => view.CategoryId,
-                    options => options.MapFrom(entity => entity.CategoryId));
+            Mapper.CreateMap<NewTransactionModel, TransactionDTO>();
 
-            Mapper.CreateMap<EditTransactionModel, TransactionDTO>()
-                .ForMember(view => view.Id, options => options.MapFrom(entity => entity.Id))
-                .ForMember(view => view.Amount, options => options.MapFrom(entity => entity.Amount))
-                .ForMember(view => view.Date, options => options.MapFrom(entity => entity.Date))
-                .ForMember(view => view.Description, options => options.MapFrom(entity => entity.Description))
-                .ForMember(view => view.WalletId, options => options.MapFrom(entity => entity.WalletId))
-                .ForMember(view => view.CurrencyId,
-                    options => options.MapFrom(entity => entity.CurrencyId))
-                .ForMember(view => view.CategoryId,
-                    options => options.MapFrom(entity => entity.CategoryId));
+            Mapper.CreateMap<EditTransactionModel, TransactionDTO>();
         }
 
         private static void RegisterCategoryMappings()
