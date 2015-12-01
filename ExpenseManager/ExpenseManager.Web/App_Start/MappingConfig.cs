@@ -57,6 +57,8 @@ namespace ExpenseManager.Web
             Mapper.CreateMap<EditTransactionModel, TransactionDTO>();
 
             Mapper.CreateMap<TransactionDTO, EditTransactionModel>();
+
+            Mapper.CreateMap<TransactionShowDTO, TransactionShowModel>();
         }
 
         private static void RegisterCategoryMappings()

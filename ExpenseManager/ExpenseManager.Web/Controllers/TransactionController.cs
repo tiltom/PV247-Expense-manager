@@ -11,7 +11,6 @@ using ExpenseManager.BusinessLogic.DTOs;
 using ExpenseManager.BusinessLogic.TransactionServices;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers.Factory;
-using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Web.Models.Transaction;
 using PagedList;
 
@@ -40,13 +39,9 @@ namespace ExpenseManager.Web.Controllers
             }
             var walletId = wallet.Value;
             // get user permission for selected wallet
+            //TODO this should probably be made in other way
             var permission =
                 await this._transactionService.GetPermission(id, walletId);
-            if (permission == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
-                    "You don't have permission to view this wallet");
-            }
 
             // get all Wallets user has access to
             ViewBag.wallet = await this._transactionService.GetViewableWalletsSelection(id, walletId);
@@ -58,23 +53,29 @@ namespace ExpenseManager.Web.Controllers
                 await this._transactionService.GetBudgetsSelectionFilter(id, walletId, budget.GetValueOrDefault());
             ViewBag.selectedBudgetId = budget;
             // get all Transactions in selected wallet
-            IEnumerable<Transaction> list = await this._transactionService.GetAllTransactionsInWallet(walletId);
+            IEnumerable<TransactionShowDTO> list;
+            try
+            {
+                list =
+                    await this._transactionService.GetAllTransactionsInWallet(id, walletId);
+            }
+            catch (SecurityException)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
+                    "You don't have permission to view this wallet");
+            }
+
             if (category != null)
             {
-                list = list.Where(s => s.Category.Guid == category.Value);
+                list = list.Where(s => s.CategoryId == category.Value);
             }
             if (budget != null)
             {
-                list = list.Where(s => s.Budget?.Guid == budget.Value);
+                list = list.Where(s => s.BudgetId == budget.Value);
             }
 
+            var showModels = Enumerable.ToList(list.Select(Mapper.Map<TransactionShowModel>));
             var pageNumber = (page ?? 1);
-            var showModels = new List<TransactionShowModel>();
-            foreach (var transaction in list)
-            {
-                showModels.Add(await this.ConvertEntityToTransactionShowModel(transaction));
-                //transaction.ProjectTo<CategoryShowModel>(transaction);
-            }
 
             // when user doesn't have permission to manipulate with transaction show view without edit and delete
             ViewBag.editable = permission.Permission != PermissionEnum.Read;
@@ -250,32 +251,6 @@ namespace ExpenseManager.Web.Controllers
                 //this._db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        /// <summary>
-        ///     Converts entity of type Transaction into TransactionShowModel
-        /// </summary>
-        /// <param name="entity">entity of type Transaction</param>
-        /// <returns>TransactionShowModel</returns>
-        private async Task<TransactionShowModel> ConvertEntityToTransactionShowModel(Transaction entity)
-        {
-            string budgetName = null;
-            if (entity.Budget != null)
-                budgetName = entity.Budget.Name;
-            //get if transaction is repeatable
-            var repeatableTransaction = await
-                this._transactionService.GetRepeatableTransactionByFirstTransactionId(entity.Guid);
-            //fill model info from entity
-            var transactionModel = Mapper.Map<TransactionShowModel>(entity);
-            transactionModel.BudgetName = budgetName;
-
-            //check if transaction is repeatable and fill it
-            if (repeatableTransaction != null)
-            {
-                transactionModel.IsRepeatable = true;
-            }
-
-            return transactionModel;
         }
     }
 

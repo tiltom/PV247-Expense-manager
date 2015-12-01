@@ -45,6 +45,21 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     options => options.MapFrom(entity => entity.Budget == null ? Guid.Empty : entity.Budget.Guid))
                 .ForMember(dto => dto.CurrencyId, options => options.MapFrom(entity => entity.Currency.Guid))
                 .ForMember(dto => dto.CategoryId, options => options.MapFrom(entity => entity.Category.Guid));
+
+            Mapper.CreateMap<Transaction, TransactionShowDTO>()
+                .ForMember(dto => dto.Id, options => options.MapFrom(entity => entity.Guid))
+                .ForMember(dto => dto.Amount,
+                    options => options.MapFrom(entity => entity.Amount < 0 ? entity.Amount*-1 : entity.Amount))
+                .ForMember(dto => dto.Date, options => options.MapFrom(entity => entity.Date))
+                .ForMember(dto => dto.Description, options => options.MapFrom(entity => entity.Description))
+                .ForMember(dto => dto.BudgetName,
+                    options => options.MapFrom(entity => entity.Budget == null ? string.Empty : entity.Budget.Name))
+                .ForMember(dto => dto.BudgetId,
+                    options => options.MapFrom(entity => entity.Budget == null ? Guid.Empty : entity.Budget.Guid))
+                .ForMember(dto => dto.CurrencySymbol, options => options.MapFrom(entity => entity.Currency.Symbol))
+                .ForMember(dto => dto.CategoryName, options => options.MapFrom(entity => entity.Category.Name))
+                .ForMember(dto => dto.CategoryId,
+                    options => options.MapFrom(entity => entity.Category.Guid));
         }
 
         public async Task Create(TransactionDTO transaction)
@@ -196,13 +211,24 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 await this._transactionsProvider.Budgets.Where(b => b.Guid == budgetId).FirstOrDefaultAsync();
         }
 
-
-        public async Task<List<Transaction>> GetAllTransactionsInWallet(Guid walletId)
+        public async Task<List<TransactionShowDTO>> GetAllTransactionsInWallet(Guid userId, Guid walletId)
         {
-            return
+            if (await this.GetPermission(userId, walletId) == null)
+            {
+                throw new SecurityException();
+            }
+            var list =
                 await
                     this._transactionsProvider.Transactions.Where(user => user.Wallet.Guid == walletId)
                         .ToListAsync();
+            var listDTO = new List<TransactionShowDTO>();
+            foreach (var transaction in list)
+            {
+                var dto = Mapper.Map<TransactionShowDTO>(transaction);
+                dto.IsRepeatable = await this.GetRepeatableTransactionByFirstTransactionId(transaction.Guid) != null;
+                listDTO.Add(dto);
+            }
+            return listDTO;
         }
 
         public async Task<RepeatableTransaction> GetRepeatableTransaction(Guid transactionId)
@@ -298,17 +324,6 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     .FirstOrDefaultAsync(
                         r =>
                             r.UserProfile.Guid == userId && r.Wallet.Guid == walletId);
-        }
-
-        //TODO will be only private
-        public async Task<bool> HasWritePermission(Guid userId, Guid walletId)
-        {
-            var permission = await this._walletsProvider.WalletAccessRights
-                .FirstOrDefaultAsync(
-                    r =>
-                        r.Wallet.Guid == walletId &&
-                        r.UserProfile.Guid == userId);
-            return permission != null && permission.Permission != PermissionEnum.Read;
         }
 
         /// <summary>
@@ -416,6 +431,24 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         {
             return
                 await this._transactionsProvider.Transactions.Where(t => t.Guid == transactionId).FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Transaction>> GetAllTransactionsInWallet(Guid walletId)
+        {
+            return
+                await
+                    this._transactionsProvider.Transactions.Where(user => user.Wallet.Guid == walletId)
+                        .ToListAsync();
+        }
+
+        private async Task<bool> HasWritePermission(Guid userId, Guid walletId)
+        {
+            var permission = await this._walletsProvider.WalletAccessRights
+                .FirstOrDefaultAsync(
+                    r =>
+                        r.Wallet.Guid == walletId &&
+                        r.UserProfile.Guid == userId);
+            return permission != null && permission.Permission != PermissionEnum.Read;
         }
 
         private async Task<Transaction> FillTransaction(TransactionDTO transaction, Transaction entity)

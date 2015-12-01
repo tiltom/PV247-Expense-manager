@@ -87,6 +87,7 @@
     <Compile Include="DashboardServices\Models\GraphWithDescriptionModel.cs" />
     <Compile Include="DashboardServices\Models\SimpleGraphModel.cs" />
     <Compile Include="DTOs\TransactionDTO.cs" />
+    <Compile Include="DTOs\TransactionShowDTO.cs" />
     <Compile Include="ExchangeRates\CurrencyTransformationType.cs" />
     <Compile Include="ExchangeRates\ExchangeRate.cs" />
     <Compile Include="ExchangeRates\ExchangeRateReader.cs" />
