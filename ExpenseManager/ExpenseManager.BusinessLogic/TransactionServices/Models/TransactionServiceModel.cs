@@ -1,9 +1,9 @@
 ﻿using System;
 using ExpenseManager.Entity.Enums;
 
-namespace ExpenseManager.BusinessLogic.DTOs
+namespace ExpenseManager.BusinessLogic.TransactionServices.Models
 {
-    public class TransactionDTO
+    public class TransactionServiceModel
     {
         /// <summary>
         ///     Unique id of transaction

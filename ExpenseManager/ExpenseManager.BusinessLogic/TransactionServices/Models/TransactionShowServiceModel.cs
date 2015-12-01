@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace ExpenseManager.BusinessLogic.DTOs
+namespace ExpenseManager.BusinessLogic.TransactionServices.Models
 {
-    public class TransactionShowDTO
+    public class TransactionShowServiceModel
     {
         /// <summary>
         ///     Unique id of transaction

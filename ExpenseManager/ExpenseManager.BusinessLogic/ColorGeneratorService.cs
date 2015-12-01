@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExpenseManager.BusinessLogic.CommonServices
+namespace ExpenseManager.BusinessLogic
 {
     /// <summary>
     ///     Simple class for generating nice colors for graphs

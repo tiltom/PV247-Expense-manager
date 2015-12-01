@@ -9,7 +9,7 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
     /// <summary>
     ///     Reads exchange rates from text file at cnb.cz
     /// </summary>
-    public class ExchangeRateReader
+    internal class ExchangeRateReader
     {
         public const string BasicUrl =
             "http://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt?date=";

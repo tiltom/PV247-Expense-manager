@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ExpenseManager.BusinessLogic.DashboardServices.Models;
-using ExpenseManager.BusinessLogic.DTOs;
+using ExpenseManager.BusinessLogic.TransactionServices.Models;
 using ExpenseManager.Database.Common;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
@@ -52,13 +52,13 @@ namespace ExpenseManager.Web
                 .ForMember(view => view.CategoryId,
                     options => options.MapFrom(entity => entity.Category.Guid.ToString()));
 
-            Mapper.CreateMap<NewTransactionModel, TransactionDTO>();
+            Mapper.CreateMap<NewTransactionModel, TransactionServiceModel>();
 
-            Mapper.CreateMap<EditTransactionModel, TransactionDTO>();
+            Mapper.CreateMap<EditTransactionModel, TransactionServiceModel>();
 
-            Mapper.CreateMap<TransactionDTO, EditTransactionModel>();
+            Mapper.CreateMap<TransactionServiceModel, EditTransactionModel>();
 
-            Mapper.CreateMap<TransactionShowDTO, TransactionShowModel>();
+            Mapper.CreateMap<TransactionShowServiceModel, TransactionShowModel>();
         }
 
         private static void RegisterCategoryMappings()

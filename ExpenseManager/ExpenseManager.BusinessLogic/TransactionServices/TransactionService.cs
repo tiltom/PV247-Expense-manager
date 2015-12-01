@@ -6,8 +6,8 @@ using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
-using ExpenseManager.BusinessLogic.DTOs;
 using ExpenseManager.BusinessLogic.ExchangeRates;
+using ExpenseManager.BusinessLogic.TransactionServices.Models;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
@@ -33,7 +33,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             this._walletsProvider = walletsProvider;
 
             //TODO MOVE
-            Mapper.CreateMap<Transaction, TransactionDTO>()
+            Mapper.CreateMap<Transaction, TransactionServiceModel>()
                 .ForMember(dto => dto.Id, options => options.MapFrom(entity => entity.Guid))
                 .ForMember(dto => dto.Expense, options => options.MapFrom(entity => entity.Amount < 0))
                 .ForMember(dto => dto.Amount,
@@ -46,7 +46,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 .ForMember(dto => dto.CurrencyId, options => options.MapFrom(entity => entity.Currency.Guid))
                 .ForMember(dto => dto.CategoryId, options => options.MapFrom(entity => entity.Category.Guid));
 
-            Mapper.CreateMap<Transaction, TransactionShowDTO>()
+            Mapper.CreateMap<Transaction, TransactionShowServiceModel>()
                 .ForMember(dto => dto.Id, options => options.MapFrom(entity => entity.Guid))
                 .ForMember(dto => dto.Amount,
                     options => options.MapFrom(entity => entity.Amount < 0 ? entity.Amount*-1 : entity.Amount))
@@ -62,7 +62,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     options => options.MapFrom(entity => entity.Category.Guid));
         }
 
-        public async Task Create(TransactionDTO transaction)
+        public async Task Create(TransactionServiceModel transaction)
         {
             this.ValidateTransaction(transaction);
             //create new Transaction entity and fill it from DTO
@@ -83,7 +83,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             }
         }
 
-        public async Task Edit(TransactionDTO transaction)
+        public async Task Edit(TransactionServiceModel transaction)
         {
             this.ValidateTransaction(transaction);
             //find transaction by Id
@@ -165,7 +165,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return walletId;
         }
 
-        public async Task<TransactionDTO> GetTransactionById(Guid transactionId, Guid userId)
+        public async Task<TransactionServiceModel> GetTransactionById(Guid transactionId, Guid userId)
         {
             var transaction =
                 await this._transactionsProvider.Transactions.Where(t => t.Guid == transactionId).FirstOrDefaultAsync();
@@ -173,7 +173,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             {
                 throw new SecurityException();
             }
-            var dto = Mapper.Map<TransactionDTO>(transaction);
+            var dto = Mapper.Map<TransactionServiceModel>(transaction);
             var repeatableTransaction =
                 await this.GetRepeatableTransactionByFirstTransactionId(transaction.Guid);
             if (repeatableTransaction != null)
@@ -211,7 +211,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 await this._transactionsProvider.Budgets.Where(b => b.Guid == budgetId).FirstOrDefaultAsync();
         }
 
-        public async Task<List<TransactionShowDTO>> GetAllTransactionsInWallet(Guid userId, Guid walletId)
+        public async Task<List<TransactionShowServiceModel>> GetAllTransactionsInWallet(Guid userId, Guid walletId)
         {
             if (await this.GetPermission(userId, walletId) == null)
             {
@@ -221,10 +221,10 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 await
                     this._transactionsProvider.Transactions.Where(user => user.Wallet.Guid == walletId)
                         .ToListAsync();
-            var listDTO = new List<TransactionShowDTO>();
+            var listDTO = new List<TransactionShowServiceModel>();
             foreach (var transaction in list)
             {
-                var dto = Mapper.Map<TransactionShowDTO>(transaction);
+                var dto = Mapper.Map<TransactionShowServiceModel>(transaction);
                 dto.IsRepeatable = await this.GetRepeatableTransactionByFirstTransactionId(transaction.Guid) != null;
                 listDTO.Add(dto);
             }
@@ -451,7 +451,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return permission != null && permission.Permission != PermissionEnum.Read;
         }
 
-        private async Task<Transaction> FillTransaction(TransactionDTO transaction, Transaction entity)
+        private async Task<Transaction> FillTransaction(TransactionServiceModel transaction, Transaction entity)
         {
             //setting properties from transaction
             entity.Amount = transaction.Amount;
@@ -483,14 +483,14 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return entity;
         }
 
-        private void FillRepeatableTransaction(TransactionDTO transaction, RepeatableTransaction entity)
+        private void FillRepeatableTransaction(TransactionServiceModel transaction, RepeatableTransaction entity)
         {
             entity.NextRepeat = transaction.NextRepeat.GetValueOrDefault();
             entity.FrequencyType = transaction.FrequencyType;
             entity.LastOccurrence = transaction.LastOccurrence.GetValueOrDefault();
         }
 
-        private void ValidateTransaction(TransactionDTO transaction)
+        private void ValidateTransaction(TransactionServiceModel transaction)
         {
             var ex = new ValidationException();
             if (transaction.Amount <= 0)

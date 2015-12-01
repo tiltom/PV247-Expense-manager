@@ -393,9 +393,7 @@
     <Content Include="Views\Category\Index.cshtml" />
     <Content Include="Views\Transaction\ExpenseIncome.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />

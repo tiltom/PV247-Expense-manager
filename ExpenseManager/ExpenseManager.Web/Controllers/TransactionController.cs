@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using ExpenseManager.BusinessLogic;
-using ExpenseManager.BusinessLogic.DTOs;
 using ExpenseManager.BusinessLogic.TransactionServices;
+using ExpenseManager.BusinessLogic.TransactionServices.Models;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Web.Models.Transaction;
@@ -53,7 +53,7 @@ namespace ExpenseManager.Web.Controllers
                 await this._transactionService.GetBudgetsSelectionFilter(id, walletId, budget.GetValueOrDefault());
             ViewBag.selectedBudgetId = budget;
             // get all Transactions in selected wallet
-            IEnumerable<TransactionShowDTO> list;
+            IEnumerable<TransactionShowServiceModel> list;
             try
             {
                 list =
@@ -131,7 +131,7 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(NewTransactionModel transaction)
         {
-            var dto = Mapper.Map<TransactionDTO>(transaction);
+            var dto = Mapper.Map<TransactionServiceModel>(transaction);
 
             try
             {
@@ -163,7 +163,7 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             var userId = await this.CurrentProfileId();
-            TransactionDTO transaction;
+            TransactionServiceModel transaction;
             try
             {
                 //find transaction by it's Id
@@ -200,7 +200,7 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(EditTransactionModel transaction)
         {
-            var dto = Mapper.Map<TransactionDTO>(transaction);
+            var dto = Mapper.Map<TransactionServiceModel>(transaction);
             try
             {
                 await this._transactionService.Edit(dto);
