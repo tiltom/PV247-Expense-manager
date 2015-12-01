@@ -141,7 +141,6 @@ namespace ExpenseManager.Web.Controllers
                 ModelState.AddModelErrors(ex);
             }
 
-
             //Check server validation
             if (ModelState.IsValid)
             {
@@ -196,7 +195,7 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         ///     Editing of transaction
         /// </summary>
-        /// <param name="transaction">Instance od EditTransactionModel</param>
+        /// <param name="transaction">Instance of EditTransactionModel</param>
         /// <returns>Redirect to Index</returns>
         // POST: Transactions/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -208,8 +207,7 @@ namespace ExpenseManager.Web.Controllers
             var dto = Mapper.Map<TransactionDTO>(transaction);
             try
             {
-                //TODO HERE SHOULD BE transactionService.edit
-                this._transactionService.ValidateTransaction(dto);
+                await this._transactionService.Edit(dto);
             }
             catch (ValidationException ex)
             {
@@ -219,52 +217,6 @@ namespace ExpenseManager.Web.Controllers
             //check if model is valid
             if (ModelState.IsValid)
             {
-                //find transaction by Id
-                var transactionEntity = await this._transactionService.GetTransactionById(transaction.Id);
-                //update entity properties from model
-                await this.ConvertEditModelToEntity(transaction, transactionEntity);
-                //find if transaction is repeatable in DB
-                var repeatableTransaction =
-                    await this._transactionService.GetRepeatableTransactionByFirstTransactionId(transaction.Id);
-                //check if transaction was set as repeatable in model
-                if (transaction.IsRepeatable)
-                {
-                    //check if transaction was also set repeatable in model
-                    if (repeatableTransaction == null)
-                    {
-                        //if not create new repeatable transaction entity
-                        repeatableTransaction = new RepeatableTransaction
-                        {
-                            FirstTransaction = transactionEntity,
-                            NextRepeat = transaction.NextRepeat.GetValueOrDefault(),
-                            FrequencyType = transaction.FrequencyType,
-                            LastOccurrence = transaction.LastOccurrence.GetValueOrDefault(),
-                            Guid = Guid.NewGuid()
-                        };
-                        await this._transactionService.AddOrUpdate(repeatableTransaction);
-                    }
-                    // if transaction exists in repeatable transactions in DB update it
-                    else
-                    {
-                        repeatableTransaction.NextRepeat = transaction.NextRepeat.GetValueOrDefault();
-                        repeatableTransaction.FrequencyType = transaction.FrequencyType;
-                        repeatableTransaction.LastOccurrence = transaction.LastOccurrence.GetValueOrDefault();
-                        await this._transactionService.AddOrUpdate(repeatableTransaction);
-                    }
-                }
-                // if transaction was set as not repeatable in model
-                else
-                {
-                    //if exists in DB in repeatable transactions delete it
-                    if (repeatableTransaction != null)
-                    {
-                        await this._transactionService.Remove(repeatableTransaction);
-                    }
-                    else
-                    {
-                        await this._transactionService.AddOrUpdate(transactionEntity);
-                    }
-                }
                 return this.RedirectToAction("Index", new {wallet = transaction.WalletId});
             }
             transaction.Currencies = await this._transactionService.GetCurrenciesSelection();
@@ -303,44 +255,6 @@ namespace ExpenseManager.Web.Controllers
                 //this._db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        /// <summary>
-        ///     Converts EditTransactionModel into entity Transaction
-        /// </summary>
-        /// <param name="model">EditTransactionModel</param>
-        /// <param name="entity">entity Transaction</param>
-        /// <returns>Task Transaction</returns>
-        private async Task<Transaction> ConvertEditModelToEntity(EditTransactionModel model, Transaction entity)
-        {
-            //setting properties from model
-            entity.Amount = model.Amount;
-            if (model.Expense)
-            {
-                entity.Amount *= -1;
-            }
-            entity.Date = model.Date;
-            entity.Description = model.Description;
-            entity.Wallet =
-                await this._transactionService.GetWalletById(model.WalletId);
-            //check if budget was set in model
-            if (model.BudgetId == null)
-            {
-                //remove transaction from Budget if it exists
-                entity.Budget?.Transactions.Remove(entity);
-                entity.Budget = null;
-            }
-            else
-            {
-                entity.Budget = await this._transactionService.GetBudgetById(model.BudgetId.Value);
-            }
-            entity.Currency =
-                await
-                    this._transactionService.GetCurrencyById(model.CurrencyId);
-            entity.Category =
-                await
-                    this._transactionService.GetCategoryById(model.CategoryId);
-            return entity;
         }
 
         /// <summary>

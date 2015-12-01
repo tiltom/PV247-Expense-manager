@@ -5,7 +5,6 @@ using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using AutoMapper;
 using ExpenseManager.BusinessLogic.DTOs;
 using ExpenseManager.BusinessLogic.ExchangeRates;
 using ExpenseManager.Entity;
@@ -31,72 +30,72 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             this._budgetsProvider = budgetsProvider;
             this._transactionsProvider = transactionsProvider;
             this._walletsProvider = walletsProvider;
-
-            //TODO MOVE initialization
-            Mapper.CreateMap<TransactionDTO, Transaction>()
-                .ForMember(entity => entity.Guid, options => options.MapFrom(dto => dto.Id))
-                .ForMember(entity => entity.Amount,
-                    options => options.MapFrom(dto => dto.Expense ? dto.Amount*-1 : dto.Amount))
-                .ForMember(entity => entity.Date, options => options.MapFrom(dto => dto.Date))
-                .ForMember(entity => entity.Description, options => options.MapFrom(dto => dto.Description));
-
-            Mapper.CreateMap<TransactionDTO, RepeatableTransaction>()
-                .ForMember(entity => entity.FrequencyType, options => options.MapFrom(dto => dto.FrequencyType))
-                .ForMember(entity => entity.LastOccurrence, options => options.MapFrom(dto => dto.LastOccurrence.Value))
-                .ForMember(entity => entity.NextRepeat, options => options.MapFrom(dto => dto.NextRepeat));
-        }
-
-        //TODO make private
-        public void ValidateTransaction(TransactionDTO transaction)
-        {
-            var ex = new ValidationException();
-            if (transaction.Amount <= 0)
-            {
-                ex.Erorrs.Add("Amount", "Transaction amount must be greater than zero");
-            }
-            if (transaction.CategoryId == Guid.Empty)
-            {
-                ex.Erorrs.Add("Category", "Category field is required.");
-            }
-            if (transaction.CurrencyId == Guid.Empty)
-            {
-                ex.Erorrs.Add("Currency", "Currency field is required.");
-            }
-            if (transaction.IsRepeatable)
-            {
-                if (transaction.LastOccurrence == null)
-                {
-                    ex.Erorrs.Add("LastOccurrence", "Date of last occurrence must be set");
-                }
-                else if (transaction.Date >= transaction.LastOccurrence.GetValueOrDefault())
-                {
-                    ex.Erorrs.Add("LastOccurrence",
-                        "Date until which transaction should be repeated must be after first transaction occurrence");
-                }
-                if (transaction.NextRepeat == null || transaction.NextRepeat <= 0)
-                {
-                    ex.Erorrs.Add("NextRepeat", "Frequency must be positive number");
-                }
-            }
-
-            if (ex.Erorrs.Count != 0)
-                throw ex;
         }
 
         public async Task Create(TransactionDTO transaction)
         {
             this.ValidateTransaction(transaction);
             //create new Transaction entity and fill it from DTO
-            var transactionEntity = await this.FillTransaction(transaction);
+            var transactionEntity = await this.FillTransaction(transaction, new Transaction {Guid = new Guid()});
             transactionEntity.Guid = new Guid();
             //check if transaction should be repeatable
             await this.AddOrUpdate(transactionEntity);
             if (transaction.IsRepeatable)
             {
                 //create new repeatable transaction entity and fill from DTO
-                var repeatableTransaction = Mapper.Map<RepeatableTransaction>(transaction);
-                repeatableTransaction.Guid = new Guid();
-                await this.AddOrUpdate(repeatableTransaction);
+                var repeatableTransaction = new RepeatableTransaction
+                {
+                    Guid = new Guid(),
+                    FirstTransaction = transactionEntity
+                };
+                this.FillRepeatableTransaction(transaction, repeatableTransaction);
+                await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
+            }
+        }
+
+        public async Task Edit(TransactionDTO transaction)
+        {
+            this.ValidateTransaction(transaction);
+            //find transaction by Id
+            var transactionEntity = await this.GetTransactionById(transaction.Id);
+            //update entity properties from DTO
+            await this.FillTransaction(transaction, transactionEntity);
+
+            await this.AddOrUpdate(transactionEntity);
+
+            //find if transaction is repeatable in DB
+            var repeatableTransaction =
+                await this.GetRepeatableTransactionByFirstTransactionId(transaction.Id);
+            //check if transaction was set as repeatable in model
+            if (transaction.IsRepeatable)
+            {
+                //check if transaction was also set repeatable in model
+                if (repeatableTransaction == null)
+                {
+                    //if not create new repeatable transaction entity
+                    repeatableTransaction = new RepeatableTransaction
+                    {
+                        Guid = new Guid(),
+                        FirstTransaction = transactionEntity
+                    };
+                    this.FillRepeatableTransaction(transaction, repeatableTransaction);
+                    await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
+                }
+                // if transaction exists in repeatable transactions in DB update it
+                else
+                {
+                    this.FillRepeatableTransaction(transaction, repeatableTransaction);
+                    await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
+                }
+            }
+            // if transaction was set as not repeatable in model
+            else
+            {
+                //if exists in DB in repeatable transactions delete it
+                if (repeatableTransaction != null)
+                {
+                    await this.Remove(repeatableTransaction);
+                }
             }
         }
 
@@ -112,17 +111,11 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             await this._transactionsProvider.AddOrUpdateAsync(transaction);
         }
 
-        public async Task AddOrUpdate(RepeatableTransaction repeatableTransaction)
-        {
-            await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
-        }
-
         public async Task<Guid> RemoveTransaction(Guid userId, Guid transactionId)
         {
             //find transaction by its Id
             var transaction =
                 await this.GetTransactionById(transactionId);
-            //if (!await this.HasWritePermission(transaction))
             if (
                 !await
                     this.HasWritePermission(userId, transaction.Wallet.Guid))
@@ -394,22 +387,79 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         .ToListAsync();
         }
 
-        private async Task<Transaction> FillTransaction(TransactionDTO transaction)
+        private async Task<Transaction> FillTransaction(TransactionDTO transaction, Transaction entity)
         {
-            var entity = Mapper.Map<Transaction>(transaction);
+            //setting properties from transaction
+            entity.Amount = transaction.Amount;
+            if (transaction.Expense)
+            {
+                entity.Amount *= -1;
+            }
+            entity.Date = transaction.Date;
+            entity.Description = transaction.Description;
             entity.Wallet =
                 await this.GetWalletById(transaction.WalletId);
-            //check if budget was set to category in model
-            if (transaction.BudgetId != null)
+            //check if budget was set in transaction
+            if (transaction.BudgetId == null)
             {
-                entity.Budget =
-                    await this.GetBudgetById(transaction.BudgetId.Value);
+                //remove transaction from Budget if it exists
+                entity.Budget?.Transactions.Remove(entity);
+                entity.Budget = null;
+            }
+            else
+            {
+                entity.Budget = await this.GetBudgetById(transaction.BudgetId.Value);
             }
             entity.Currency =
-                await this.GetCurrencyById(transaction.CurrencyId);
+                await
+                    this.GetCurrencyById(transaction.CurrencyId);
             entity.Category =
-                await this.GetCategoryById(transaction.CategoryId);
+                await
+                    this.GetCategoryById(transaction.CategoryId);
             return entity;
+        }
+
+        private void FillRepeatableTransaction(TransactionDTO transaction, RepeatableTransaction entity)
+        {
+            entity.NextRepeat = transaction.NextRepeat.GetValueOrDefault();
+            entity.FrequencyType = transaction.FrequencyType;
+            entity.LastOccurrence = transaction.LastOccurrence.GetValueOrDefault();
+        }
+
+        private void ValidateTransaction(TransactionDTO transaction)
+        {
+            var ex = new ValidationException();
+            if (transaction.Amount <= 0)
+            {
+                ex.Erorrs.Add("Amount", "Transaction amount must be greater than zero");
+            }
+            if (transaction.CategoryId == Guid.Empty)
+            {
+                ex.Erorrs.Add("Category", "Category field is required.");
+            }
+            if (transaction.CurrencyId == Guid.Empty)
+            {
+                ex.Erorrs.Add("Currency", "Currency field is required.");
+            }
+            if (transaction.IsRepeatable)
+            {
+                if (transaction.LastOccurrence == null)
+                {
+                    ex.Erorrs.Add("LastOccurrence", "Date of last occurrence must be set");
+                }
+                else if (transaction.Date >= transaction.LastOccurrence.GetValueOrDefault())
+                {
+                    ex.Erorrs.Add("LastOccurrence",
+                        "Date until which transaction should be repeated must be after first transaction occurrence");
+                }
+                if (transaction.NextRepeat == null || transaction.NextRepeat <= 0)
+                {
+                    ex.Erorrs.Add("NextRepeat", "Frequency must be positive number");
+                }
+            }
+
+            if (ex.Erorrs.Count != 0)
+                throw ex;
         }
 
         #endregion
