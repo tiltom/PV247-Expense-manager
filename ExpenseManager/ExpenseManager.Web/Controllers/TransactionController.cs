@@ -74,7 +74,7 @@ namespace ExpenseManager.Web.Controllers
                 list = list.Where(s => s.BudgetId == budget.Value);
             }
 
-            var showModels = Enumerable.ToList(list.Select(Mapper.Map<TransactionShowModel>));
+            var showModels = Enumerable.Reverse(list.Select(Mapper.Map<TransactionShowModel>)).ToList();
             var pageNumber = (page ?? 1);
 
             // when user doesn't have permission to manipulate with transaction show view without edit and delete

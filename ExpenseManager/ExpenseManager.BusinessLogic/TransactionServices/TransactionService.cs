@@ -75,13 +75,17 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             {
                 ex.Erorrs.Add("Amount", "Transaction amount must be greater than zero");
             }
+            if (transaction.Date == DateTime.MinValue)
+            {
+                ex.Erorrs.Add("Date", "Date was not in format dd.MM.yyyy");
+            }
             if (transaction.CategoryId == Guid.Empty)
             {
-                ex.Erorrs.Add("Category", "Category field is required.");
+                ex.Erorrs.Add("CategoryId", "Category field is required.");
             }
             if (transaction.CurrencyId == Guid.Empty)
             {
-                ex.Erorrs.Add("Currency", "Currency field is required.");
+                ex.Erorrs.Add("CurrencyId", "Currency field is required.");
             }
             if (transaction.IsRepeatable)
             {
