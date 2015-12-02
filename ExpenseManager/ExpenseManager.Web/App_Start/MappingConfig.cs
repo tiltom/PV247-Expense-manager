@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using ExpenseManager.BusinessLogic.DashboardServices.Models;
 using ExpenseManager.BusinessLogic.TransactionServices.Models;
 using ExpenseManager.Database.Common;
@@ -28,7 +29,39 @@ namespace ExpenseManager.Web
             RegisterBudgetMappings();
             RegisterCategoryMappings();
             RegisterTransactionMappings();
+            RegisterTransactionServiceMappings();
             RegisterDashBoardMappings();
+        }
+
+        private static void RegisterTransactionServiceMappings()
+        {
+            Mapper.CreateMap<Transaction, TransactionServiceModel>()
+                .ForMember(dto => dto.Id, options => options.MapFrom(entity => entity.Guid))
+                .ForMember(dto => dto.Expense, options => options.MapFrom(entity => entity.Amount < 0))
+                .ForMember(dto => dto.Amount,
+                    options => options.MapFrom(entity => entity.Amount < 0 ? entity.Amount * -1 : entity.Amount))
+                .ForMember(dto => dto.Date, options => options.MapFrom(entity => entity.Date))
+                .ForMember(dto => dto.Description, options => options.MapFrom(entity => entity.Description))
+                .ForMember(dto => dto.WalletId, options => options.MapFrom(entity => entity.Wallet.Guid))
+                .ForMember(dto => dto.BudgetId,
+                    options => options.MapFrom(entity => entity.Budget == null ? Guid.Empty : entity.Budget.Guid))
+                .ForMember(dto => dto.CurrencyId, options => options.MapFrom(entity => entity.Currency.Guid))
+                .ForMember(dto => dto.CategoryId, options => options.MapFrom(entity => entity.Category.Guid));
+
+            Mapper.CreateMap<Transaction, TransactionShowServiceModel>()
+                .ForMember(dto => dto.Id, options => options.MapFrom(entity => entity.Guid))
+                .ForMember(dto => dto.Amount,
+                    options => options.MapFrom(entity => entity.Amount < 0 ? entity.Amount * -1 : entity.Amount))
+                .ForMember(dto => dto.Date, options => options.MapFrom(entity => entity.Date))
+                .ForMember(dto => dto.Description, options => options.MapFrom(entity => entity.Description))
+                .ForMember(dto => dto.BudgetName,
+                    options => options.MapFrom(entity => entity.Budget == null ? string.Empty : entity.Budget.Name))
+                .ForMember(dto => dto.BudgetId,
+                    options => options.MapFrom(entity => entity.Budget == null ? Guid.Empty : entity.Budget.Guid))
+                .ForMember(dto => dto.CurrencySymbol, options => options.MapFrom(entity => entity.Currency.Symbol))
+                .ForMember(dto => dto.CategoryName, options => options.MapFrom(entity => entity.Category.Name))
+                .ForMember(dto => dto.CategoryId,
+                    options => options.MapFrom(entity => entity.Category.Guid));
         }
 
         private static void RegisterTransactionMappings()
