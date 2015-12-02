@@ -62,6 +62,48 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     options => options.MapFrom(entity => entity.Category.Guid));
         }
 
+        public void ValidateTransaction(TransactionServiceModel transaction)
+        {
+            if (transaction == null)
+                throw new ArgumentNullException(nameof(transaction));
+            if (transaction.WalletId == Guid.Empty)
+            {
+                throw new ArgumentException("WalletId must have set Id");
+            }
+            var ex = new ValidationException();
+            if (transaction.Amount <= 0)
+            {
+                ex.Erorrs.Add("Amount", "Transaction amount must be greater than zero");
+            }
+            if (transaction.CategoryId == Guid.Empty)
+            {
+                ex.Erorrs.Add("Category", "Category field is required.");
+            }
+            if (transaction.CurrencyId == Guid.Empty)
+            {
+                ex.Erorrs.Add("Currency", "Currency field is required.");
+            }
+            if (transaction.IsRepeatable)
+            {
+                if (transaction.LastOccurrence == null)
+                {
+                    ex.Erorrs.Add("LastOccurrence", "Date of last occurrence must be set");
+                }
+                else if (transaction.Date >= transaction.LastOccurrence.GetValueOrDefault())
+                {
+                    ex.Erorrs.Add("LastOccurrence",
+                        "Date until which transaction should be repeated must be after first transaction occurrence");
+                }
+                if (transaction.NextRepeat == null || transaction.NextRepeat <= 0)
+                {
+                    ex.Erorrs.Add("NextRepeat", "Frequency must be positive number");
+                }
+            }
+
+            if (ex.Erorrs.Count != 0)
+                throw ex;
+        }
+
         public async Task Create(TransactionServiceModel transaction)
         {
             this.ValidateTransaction(transaction);
@@ -127,18 +169,6 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     await this._transactionsProvider.DeteleAsync(repeatableTransaction);
                 }
             }
-        }
-
-        public async Task AddOrUpdate(Transaction transaction)
-        {
-            var walletCurrency = await this.GetDefaultCurrencyInWallet(transaction.Wallet.Guid);
-
-            if (transaction.Currency.Name != walletCurrency.Name)
-            {
-                Transformation.ChangeCurrency(transaction, walletCurrency);
-            }
-
-            await this._transactionsProvider.AddOrUpdateAsync(transaction);
         }
 
         public async Task<Guid> RemoveTransaction(Guid userId, Guid transactionId)
@@ -221,22 +251,14 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 await
                     this._transactionsProvider.Transactions.Where(user => user.Wallet.Guid == walletId)
                         .ToListAsync();
-            var listDTO = new List<TransactionShowServiceModel>();
+            var modelList = new List<TransactionShowServiceModel>();
             foreach (var transaction in list)
             {
                 var dto = Mapper.Map<TransactionShowServiceModel>(transaction);
                 dto.IsRepeatable = await this.GetRepeatableTransactionByFirstTransactionId(transaction.Guid) != null;
-                listDTO.Add(dto);
+                modelList.Add(dto);
             }
-            return listDTO;
-        }
-
-        public async Task<RepeatableTransaction> GetRepeatableTransaction(Guid transactionId)
-        {
-            return
-                await
-                    this._transactionsProvider.RepeatableTransactions.FirstOrDefaultAsync(
-                        a => a.FirstTransaction.Guid == transactionId);
+            return modelList;
         }
 
         public async Task<Wallet> GetWalletById(Guid walletId)
@@ -402,6 +424,18 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return expense ? CategoryType.Expense : CategoryType.Income;
         }
 
+        private async Task AddOrUpdate(Transaction transaction)
+        {
+            var walletCurrency = await this.GetDefaultCurrencyInWallet(transaction.Wallet.Guid);
+
+            if (transaction.Currency.Name != walletCurrency.Name)
+            {
+                Transformation.ChangeCurrency(transaction, walletCurrency);
+            }
+
+            await this._transactionsProvider.AddOrUpdateAsync(transaction);
+        }
+
         private static async Task<List<SelectListItem>> ReturnSelectionForCategory(IQueryable<Category> result)
         {
             return await result.Select(
@@ -488,42 +522,6 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             entity.NextRepeat = transaction.NextRepeat.GetValueOrDefault();
             entity.FrequencyType = transaction.FrequencyType;
             entity.LastOccurrence = transaction.LastOccurrence.GetValueOrDefault();
-        }
-
-        private void ValidateTransaction(TransactionServiceModel transaction)
-        {
-            var ex = new ValidationException();
-            if (transaction.Amount <= 0)
-            {
-                ex.Erorrs.Add("Amount", "Transaction amount must be greater than zero");
-            }
-            if (transaction.CategoryId == Guid.Empty)
-            {
-                ex.Erorrs.Add("Category", "Category field is required.");
-            }
-            if (transaction.CurrencyId == Guid.Empty)
-            {
-                ex.Erorrs.Add("Currency", "Currency field is required.");
-            }
-            if (transaction.IsRepeatable)
-            {
-                if (transaction.LastOccurrence == null)
-                {
-                    ex.Erorrs.Add("LastOccurrence", "Date of last occurrence must be set");
-                }
-                else if (transaction.Date >= transaction.LastOccurrence.GetValueOrDefault())
-                {
-                    ex.Erorrs.Add("LastOccurrence",
-                        "Date until which transaction should be repeated must be after first transaction occurrence");
-                }
-                if (transaction.NextRepeat == null || transaction.NextRepeat <= 0)
-                {
-                    ex.Erorrs.Add("NextRepeat", "Frequency must be positive number");
-                }
-            }
-
-            if (ex.Erorrs.Count != 0)
-                throw ex;
         }
 
         #endregion
