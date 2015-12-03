@@ -1,4 +1,4 @@
-﻿@model ExpenseManager.Web.Models.User.ExternalLoginConfirmationViewModel
+﻿@model ExpenseManager.Web.Models.User.RegisterViewModel
 @{
     ViewBag.Title = "Register";
 }
@@ -32,10 +32,17 @@
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.Email, new {@class = "col-md-2 control-label"})
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            @Html.TextBoxFor(m => m.Email, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.Email, "", new {@class = "text-danger"})
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.CurrencyId, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.CurrencyId, Model.Currencies, "Select Currency", htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(Model => Model.CurrencyId, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">

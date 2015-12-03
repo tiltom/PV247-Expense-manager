@@ -18,7 +18,7 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
         private const int DescriptionLinesCount = 2;
 
         private static Lazy<Dictionary<Tuple<string, string>, decimal>> _exchangeRatesTable
-            = new Lazy<Dictionary<Tuple<string, string>, decimal>>(PrecomputeExchangeRateTable);
+            = new Lazy<Dictionary<Tuple<string, string>, decimal>>(PreComputeExchangeRateTable);
 
         private static DateTime _lastCacheUpdate;
 
@@ -29,7 +29,7 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
                 if (_lastCacheUpdate.Date != DateTime.Now.Date)
                 {
                     _exchangeRatesTable =
-                        new Lazy<Dictionary<Tuple<string, string>, decimal>>(PrecomputeExchangeRateTable);
+                        new Lazy<Dictionary<Tuple<string, string>, decimal>>(PreComputeExchangeRateTable);
                     _lastCacheUpdate = DateTime.Now;
                 }
 
@@ -72,7 +72,7 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
             return lines.Skip(DescriptionLinesCount).Select(GetExchangeRateFromLine).ToList();
         }
 
-        private static Dictionary<Tuple<string, string>, decimal> PrecomputeExchangeRateTable()
+        private static Dictionary<Tuple<string, string>, decimal> PreComputeExchangeRateTable()
         {
             var exchangeRates = LoadExchangeRates();
             // Add Czech Crown to list, because it was not included in parsed document

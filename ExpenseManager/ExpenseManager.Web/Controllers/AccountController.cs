@@ -108,24 +108,27 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <returns>View</returns>
         [AllowAnonymous]
-        public ActionResult Register()
+        public async Task<ActionResult> Register()
         {
-            return this.View();
+            return this.View(new RegisterWithPasswordViewModel
+            {
+                Currencies = await this.GetCurrencies()
+            });
         }
 
         /// <summary>
         ///     Register UserProfile and create default wallet for him
         /// </summary>
-        /// <param name="model">RegisterViewModel instance</param>
+        /// <param name="model">RegisterWithPasswordViewModel instance</param>
         /// <returns>View</returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterWithPasswordViewModel model)
         {
             if (!ModelState.IsValid) return this.View(model);
 
-            var user = await this.CreateUser(model.Email, model.FirstName, model.LastName);
+            var user = await this.CreateUser(model);
             var result = await UserManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -211,20 +214,24 @@ namespace ExpenseManager.Web.Controllers
                     ViewBag.ReturnUrl = returnUrl;
                     ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
                     return this.View("ExternalLoginConfirmation",
-                        new ExternalLoginConfirmationViewModel {Email = loginInfo.Email});
+                        new RegisterViewModel
+                        {
+                            Email = loginInfo.Email,
+                            Currencies = await this.GetCurrencies()
+                        });
             }
         }
 
         /// <summary>
         ///     Confirm login via external service as Google or FB
         /// </summary>
-        /// <param name="model">ExternalLoginConfirmationViewModel instance</param>
-        /// <param name="returnUrl">return URL after sucessful login</param>
+        /// <param name="model">RegisterViewModel instance</param>
+        /// <param name="returnUrl">return URL after successful login</param>
         /// <returns>View</returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model,
+        public async Task<ActionResult> ExternalLoginConfirmation(RegisterViewModel model,
             string returnUrl)
         {
             if (User.Identity.IsAuthenticated)
@@ -241,7 +248,7 @@ namespace ExpenseManager.Web.Controllers
                     return this.View("ExternalLoginFailure");
                 }
 
-                var user = await this.CreateUser(model.Email, model.FirstName, model.LastName);
+                var user = await this.CreateUser(model);
 
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)

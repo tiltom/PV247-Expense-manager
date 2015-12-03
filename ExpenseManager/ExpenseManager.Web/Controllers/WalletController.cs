@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
+﻿using System.Data.Entity;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper.QueryableExtensions;
@@ -58,19 +56,5 @@ namespace ExpenseManager.Web.Controllers
             wallet.Currencies = await this.GetCurrencies();
             return this.View(wallet);
         }
-
-        #region private
-
-        private async Task<List<SelectListItem>> GetCurrencies()
-        {
-            var currencies = await this._walletService.GetCurrencies().Select(currency => new SelectListItem
-            {
-                Text = currency.Name,
-                Value = currency.Guid.ToString()
-            }).ToListAsync();
-            return currencies;
-        }
-
-        #endregion
     }
 }

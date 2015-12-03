@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 
@@ -7,7 +8,7 @@ namespace ExpenseManager.Web.Models.User
     /// <summary>
     ///     Model for external login to application
     /// </summary>
-    public class ExternalLoginConfirmationViewModel
+    public class RegisterViewModel
     {
         /// <summary>
         ///     Email address of user
@@ -20,13 +21,30 @@ namespace ExpenseManager.Web.Models.User
         ///     First name of user
         /// </summary>
         [Required(AllowEmptyStrings = false)]
+        [Display(Name = "First name")]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
         public string FirstName { get; set; }
 
         /// <summary>
         ///     Last name of user
         /// </summary>
         [Required(AllowEmptyStrings = false)]
+        [Display(Name = "Last name")]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
         public string LastName { get; set; }
+
+        /// <summary>
+        ///     Currency of the wallet
+        /// </summary>
+        [Display(Name = "Currency")]
+        [Required]
+        public Guid CurrencyId { get; set; }
+
+        /// <summary>
+        ///     List of currencies available for the user
+        /// </summary>
+        [Display(Name = "Wallet currency")]
+        public List<SelectListItem> Currencies { get; set; }
     }
 
     public class ExternalLoginListViewModel
@@ -63,15 +81,8 @@ namespace ExpenseManager.Web.Models.User
     /// <summary>
     ///     Model for registration of user
     /// </summary>
-    public class RegisterViewModel
+    public class RegisterWithPasswordViewModel : RegisterViewModel
     {
-        /// <summary>
-        ///     Email of user
-        /// </summary>
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
         /// <summary>
         ///     Password of user
         /// </summary>
@@ -88,22 +99,6 @@ namespace ExpenseManager.Web.Models.User
         [System.ComponentModel.DataAnnotations.Compare("Password",
             ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-
-        /// <summary>
-        ///     First name of user
-        /// </summary>
-        [Required]
-        [Display(Name = "First name")]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
-        public string FirstName { get; set; }
-
-        /// <summary>
-        ///     Last name of user
-        /// </summary>
-        [Required]
-        [Display(Name = "Last name")]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
-        public string LastName { get; set; }
 
         /// <summary>
         ///     List of all roles supported in system

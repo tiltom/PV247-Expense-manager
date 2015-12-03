@@ -90,9 +90,10 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Create()
         {
             //Get the list of SelectedRoles
-            return this.View(new RegisterViewModel
+            return this.View(new RegisterWithPasswordViewModel
             {
-                RolesList = await this.GetAllRolesAsync()
+                RolesList = await this.GetAllRolesAsync(),
+                Currencies = await this.GetCurrencies()
             });
         }
 
@@ -106,45 +107,46 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         ///     Create user
         /// </summary>
-        /// <param name="userViewModel">RegisterViewModel instance</param>
+        /// <param name="userWithPasswordViewModel">RegisterWithPasswordViewModel instance</param>
         /// <returns>View</returns>
         [HttpPost]
-        public async Task<ActionResult> Create(RegisterViewModel userViewModel)
+        public async Task<ActionResult> Create(RegisterWithPasswordViewModel userWithPasswordViewModel)
         {
             if (!ModelState.IsValid)
             {
-                return this.View(userViewModel);
+                return this.View(userWithPasswordViewModel);
             }
 
-            if (userViewModel.SelectedRoles == null)
+            if (userWithPasswordViewModel.SelectedRoles == null)
             {
                 ModelState.AddModelError("", "At least one role has to be selected.");
-                userViewModel.RolesList = await this.GetAllRolesAsync();
-                return this.View(userViewModel);
+                userWithPasswordViewModel.RolesList = await this.GetAllRolesAsync();
+                return this.View(userWithPasswordViewModel);
             }
 
-            var user = await this.CreateUser(userViewModel.Email, userViewModel.FirstName, userViewModel.LastName);
-            var adminresult = await UserManager.CreateAsync(user, userViewModel.Password);
+            var user = await this.CreateUser(userWithPasswordViewModel);
+            var adminresult = await UserManager.CreateAsync(user, userWithPasswordViewModel.Password);
 
 
             //Add User to the selected SelectedRoles 
             if (adminresult.Succeeded)
             {
-                if (userViewModel.SelectedRoles == null) return this.RedirectToAction("Index");
+                if (userWithPasswordViewModel.SelectedRoles == null) return this.RedirectToAction("Index");
 
-                var result = await UserManager.AddToRolesAsync(user.Id, userViewModel.SelectedRoles.ToArray());
+                var result =
+                    await UserManager.AddToRolesAsync(user.Id, userWithPasswordViewModel.SelectedRoles.ToArray());
                 if (!result.Succeeded)
                 {
                     result.Errors.ForEach(e => ModelState.AddModelError("", e));
-                    userViewModel.RolesList = await this.GetAllRolesAsync();
-                    return this.View(userViewModel);
+                    userWithPasswordViewModel.RolesList = await this.GetAllRolesAsync();
+                    return this.View(userWithPasswordViewModel);
                 }
             }
             else
             {
                 adminresult.Errors.ForEach(e => ModelState.AddModelError("", e));
-                userViewModel.RolesList = await this.GetAllRolesAsync();
-                return this.View(userViewModel);
+                userWithPasswordViewModel.RolesList = await this.GetAllRolesAsync();
+                return this.View(userWithPasswordViewModel);
             }
             return this.RedirectToAction("Index");
         }

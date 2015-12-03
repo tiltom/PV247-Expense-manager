@@ -11,6 +11,7 @@ using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
+using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
@@ -20,7 +21,6 @@ namespace ExpenseManager.Web.Controllers
     {
         public const string DateFormat = "dd.MM.yyyy";
         public const int PageSize = 5;
-
 
         #region protected
 
@@ -83,22 +83,34 @@ namespace ExpenseManager.Web.Controllers
             return PermissionSelectList.Value;
         }
 
-        protected async Task<UserIdentity> CreateUser(string email, string firstName, string lastName)
+        protected async Task<List<SelectListItem>> GetCurrencies()
         {
+            var currencies = await UserContext.Currencies.Select(currency => new SelectListItem
+            {
+                Text = currency.Name,
+                Value = currency.Guid.ToString()
+            }).ToListAsync();
+            return currencies;
+        }
+
+        protected async Task<UserIdentity> CreateUser(RegisterViewModel model)
+        {
+            var currency = await UserContext.Currencies.FirstOrDefaultAsync(x => x.Guid == model.CurrencyId);
+
             var user = new UserIdentity
             {
-                UserName = email,
-                Email = email,
+                UserName = model.Email,
+                Email = model.Email,
                 CreationDate = DateTime.Now,
                 Profile = new UserProfile
                 {
                     PersonalWallet = new Wallet
                     {
                         Name = "Default Wallet",
-                        Currency = await this.GetDefaultCurrency()
+                        Currency = currency
                     },
-                    FirstName = firstName,
-                    LastName = lastName
+                    FirstName = model.FirstName,
+                    LastName = model.LastName
                 }
             };
 
