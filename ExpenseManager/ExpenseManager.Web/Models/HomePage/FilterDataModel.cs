@@ -9,12 +9,12 @@ namespace ExpenseManager.Web.Models.HomePage
     {
         public FilterDataModel()
         {
-            Wallets = new List<Guid>();
-            Categories = new List<Guid>();
-            Budgets = new List<Guid>();
-            CategoriesSelectList = new List<SelectListItem>();
-            WalletsSelectList = new List<SelectListItem>();
-            BudgetsSelectList = new List<SelectListItem>();
+            Wallets = Enumerable.Empty<Guid>();
+            Categories = Enumerable.Empty<Guid>();
+            Budgets = Enumerable.Empty<Guid>();
+            CategoriesSelectList = Enumerable.Empty<SelectListItem>();
+            WalletsSelectList = Enumerable.Empty<SelectListItem>();
+            BudgetsSelectList = Enumerable.Empty<SelectListItem>();
         }
 
 

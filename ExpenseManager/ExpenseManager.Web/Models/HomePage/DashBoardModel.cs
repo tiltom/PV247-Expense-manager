@@ -14,6 +14,7 @@ namespace ExpenseManager.Web.Models.HomePage
         public DashBoardModel()
         {
             Filter = new FilterDataModel();
+            Transactions = Enumerable.Empty<TransactionShowModel>();
         }
 
         /// <summary>
