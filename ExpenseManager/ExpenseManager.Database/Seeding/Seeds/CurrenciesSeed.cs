@@ -15,17 +15,20 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 new Currency
                 {
                     Name = "American Dollar",
-                    Symbol = "$"
+                    Symbol = "$",
+                    Code = "USD"
                 },
                 new Currency
                 {
                     Name = "Česká koruna",
-                    Symbol = "Kč"
+                    Symbol = "Kč",
+                    Code = "CZK"
                 },
                 new Currency
                 {
                     Name = "Euro",
-                    Symbol = "€"
+                    Symbol = "€",
+                    Code = "EUR"
                 }
             };
 

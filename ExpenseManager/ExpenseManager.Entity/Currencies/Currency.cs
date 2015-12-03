@@ -11,5 +11,10 @@
         ///     Symbol of currency (e.g. $ or Kč)
         /// </summary>
         public string Symbol { get; set; }
+
+        /// <summary>
+        ///     Official code of currency (e.g. USD, EUR or CZK)
+        /// </summary>
+        public string Code { get; set; }
     }
 }
