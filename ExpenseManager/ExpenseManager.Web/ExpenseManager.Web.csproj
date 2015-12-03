@@ -259,6 +259,8 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\bootstrap-chosen.scss" />
     <Content Include="Content\bootstrap-chosen.less" />
+    <None Include="Properties\PublishProfiles\pv247expensemanager - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\pv247expensemanager - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\chosen.jquery.js" />
@@ -414,6 +416,10 @@
     <ProjectReference Include="..\ExpenseManager.Entity\ExpenseManager.Entity.csproj">
       <Project>{73A4FAB0-96F1-4DC9-92A8-2CC73B4EF776}</Project>
       <Name>ExpenseManager.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExpenseManager.Resources\ExpenseManager.Resources.csproj">
+      <Project>{6a0a6caa-33e6-4d1a-ba9f-759bceba3700}</Project>
+      <Name>ExpenseManager.Resources</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

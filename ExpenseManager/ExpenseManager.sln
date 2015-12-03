@@ -10,7 +10,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseManager.Web", "ExpenseManager.Web\ExpenseManager.Web.csproj", "{82013B01-CD1C-4A54-96D5-EEA35A6CF424}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseManager.BusinessLogic.Test", "ExpenseManager.BusinessLogic.Test\ExpenseManager.BusinessLogic.Test.csproj", "{3DA56145-C7A5-404B-8A3B-4E572F752F11}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseManager.Database", "ExpenseManager.Database\ExpenseManager.Database.csproj", "{472955CB-2479-4304-BC65-A0A375D44B2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseManager.Resources", "ExpenseManager.Resources\ExpenseManager.Resources.csproj", "{6A0A6CAA-33E6-4D1A-BA9F-759BCEBA3700}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +41,10 @@ Global
 		{472955CB-2479-4304-BC65-A0A375D44B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{472955CB-2479-4304-BC65-A0A375D44B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{472955CB-2479-4304-BC65-A0A375D44B2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A0A6CAA-33E6-4D1A-BA9F-759BCEBA3700}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A0A6CAA-33E6-4D1A-BA9F-759BCEBA3700}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A0A6CAA-33E6-4D1A-BA9F-759BCEBA3700}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A0A6CAA-33E6-4D1A-BA9F-759BCEBA3700}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
