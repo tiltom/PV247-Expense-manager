@@ -25,7 +25,12 @@ namespace ExpenseManager.Database.Contexts
 
         IQueryable<Wallet> IWalletsProvider.Wallets
         {
-            get { return Wallets.Include(w => w.Owner); }
+            get
+            {
+                return Wallets.Include(w => w.Owner)
+                    .Include(w => w.Transactions)
+                    .Include(w => w.Transactions.Select(t => t.Category));
+            }
         }
 
         IQueryable<WalletAccessRight> IWalletAccessRightsProvider.WalletAccessRights

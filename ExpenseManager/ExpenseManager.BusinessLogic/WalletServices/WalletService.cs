@@ -42,7 +42,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         }
 
         /// <summary>
-        ///     Edits specifiet wallet
+        ///     Edits specified wallet
         /// </summary>
         /// <param name="id">ID of changed wallet</param>
         /// <param name="name">New name of wallet</param>
@@ -83,12 +83,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         /// <returns>True if wallet is valid, false otherwise</returns>
         public bool ValidateWallet(Wallet wallet)
         {
-            if (wallet == null)
-            {
-                return false;
-            }
-
-            if (wallet.Currency == null)
+            if (wallet?.Currency == null)
             {
                 return false;
             }
