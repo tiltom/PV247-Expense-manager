@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
 
@@ -11,6 +12,14 @@ namespace ExpenseManager.Web.Models.BudgetAccessRight
     /// </summary>
     public class EditBudgetAccessRightModel
     {
+        /// <summary>
+        ///     Constructor for model with initialization of collections.
+        /// </summary>
+        public EditBudgetAccessRightModel()
+        {
+            Permissions = Enumerable.Empty<SelectListItem>();
+        }
+
         /// <summary>
         ///     id of the budget
         /// </summary>
@@ -44,6 +53,6 @@ namespace ExpenseManager.Web.Models.BudgetAccessRight
         /// <summary>
         ///     list of possible permissions
         /// </summary>
-        public List<SelectListItem> Permissions { get; set; }
+        public IEnumerable<SelectListItem> Permissions { get; set; }
     }
 }
