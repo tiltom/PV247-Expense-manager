@@ -23,6 +23,7 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         ///     Shows all budgets for the current UserProfile.
         /// </summary>
+        /// <param name="page">Number of page which user wants to see</param>
         /// <returns>View with model</returns>
         public async Task<ActionResult> Index(int? page)
         {
@@ -114,7 +115,6 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             // find budget by its Id
-
             var budget = await this._budgetService.GetBudgetById(id);
 
             if (budget == null)

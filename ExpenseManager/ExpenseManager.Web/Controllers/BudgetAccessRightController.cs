@@ -23,6 +23,7 @@ namespace ExpenseManager.Web.Controllers
         ///     Display all budget access rights for chosen budget
         /// </summary>
         /// <param name="id">Id of chosen budget</param>
+        /// <param name="page">Number of page which user wants to see</param>
         /// <returns>View with model</returns>
         public async Task<ActionResult> Index(Guid id, int? page)
         {
@@ -103,7 +104,8 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(EditBudgetAccessRightModel model)
         {
-            if (!ModelState.IsValid) // checking if model is valid
+            // checking if model is valid
+            if (!ModelState.IsValid)
                 return this.View(model);
 
             await this._budgetAccessRightService.EditBudgetAccessRight(model.Id, model.Permission, model.AssignedUserId);
