@@ -11,6 +11,7 @@ using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using PagedList;
 using WebGrease.Css.Extensions;
 
 namespace ExpenseManager.Web.Controllers
@@ -57,9 +58,12 @@ namespace ExpenseManager.Web.Controllers
         ///     Display list of available roles
         /// </summary>
         /// <returns>View</returns>
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            return this.View(RoleManager.Roles);
+            var pageSize = 5;
+            var pageNumber = (page ?? 1);
+
+            return this.View(RoleManager.Roles.OrderBy(x => x.Name).ToPagedList(pageNumber, pageSize));
         }
 
         /// <summary>

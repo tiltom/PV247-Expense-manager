@@ -12,6 +12,7 @@ using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using PagedList;
 using WebGrease.Css.Extensions;
 
 namespace ExpenseManager.Web.Controllers
@@ -57,12 +58,16 @@ namespace ExpenseManager.Web.Controllers
         ///     Display all user accounts
         /// </summary>
         /// <returns>View</returns>
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
+            var pageSize = 5;
+            var pageNumber = (page ?? 1);
+
             return
                 this.View(
                     Mapper.Map<IEnumerable<UserViewModel>>(
-                        UserManager.Users.ToList().Where(u => u.Id != User.Identity.GetUserId())));
+                        UserManager.Users.ToList().Where(u => u.Id != User.Identity.GetUserId()))
+                        .ToPagedList(pageNumber, pageSize));
         }
 
         /// <summary>
@@ -114,6 +119,8 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                userWithPasswordViewModel.RolesList = await this.GetAllRolesAsync();
+                userWithPasswordViewModel.Currencies = await this.GetCurrencies();
                 return this.View(userWithPasswordViewModel);
             }
 
@@ -121,6 +128,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 ModelState.AddModelError("", "At least one role has to be selected.");
                 userWithPasswordViewModel.RolesList = await this.GetAllRolesAsync();
+                userWithPasswordViewModel.Currencies = await this.GetCurrencies();
                 return this.View(userWithPasswordViewModel);
             }
 
@@ -146,6 +154,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 adminresult.Errors.ForEach(e => ModelState.AddModelError("", e));
                 userWithPasswordViewModel.RolesList = await this.GetAllRolesAsync();
+                userWithPasswordViewModel.Currencies = await this.GetCurrencies();
                 return this.View(userWithPasswordViewModel);
             }
             return this.RedirectToAction("Index");

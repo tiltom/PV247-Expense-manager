@@ -139,6 +139,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.RedirectToAction("Index", "Home");
             }
             this.AddErrors(result);
+            model.Currencies = await this.GetCurrencies();
 
             // If we got this far, something failed, redisplay form
             return this.View(model);

@@ -61,7 +61,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             // TODO: add error message to layout and display it here
-            return this.View();
+            return this.View(category);
         }
 
         /// <summary>
