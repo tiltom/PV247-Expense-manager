@@ -41,42 +41,42 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             {
                 throw new ArgumentException("WalletId must have set Id");
             }
-            var ex = new ValidationException();
+            var exception = new ValidationException();
             if (transaction.Amount <= 0)
             {
-                ex.Erorrs.Add("Amount", "Transaction amount must be greater than zero");
+                exception.Erorrs.Add("Amount", "Transaction amount must be greater than zero");
             }
             if (transaction.Date == DateTime.MinValue)
             {
-                ex.Erorrs.Add("Date", "Date was not in format dd.MM.yyyy");
+                exception.Erorrs.Add("Date", "Date was not in format dd.MM.yyyy");
             }
             if (transaction.CategoryId == Guid.Empty)
             {
-                ex.Erorrs.Add("CategoryId", "Category field is required.");
+                exception.Erorrs.Add("CategoryId", "Category field is required.");
             }
             if (transaction.CurrencyId == Guid.Empty)
             {
-                ex.Erorrs.Add("CurrencyId", "Currency field is required.");
+                exception.Erorrs.Add("CurrencyId", "Currency field is required.");
             }
             if (transaction.IsRepeatable)
             {
                 if (transaction.LastOccurrence == null)
                 {
-                    ex.Erorrs.Add("LastOccurrence", "Date of last occurrence must be set");
+                    exception.Erorrs.Add("LastOccurrence", "Date of last occurrence must be set");
                 }
                 else if (transaction.Date >= transaction.LastOccurrence.GetValueOrDefault())
                 {
-                    ex.Erorrs.Add("LastOccurrence",
+                    exception.Erorrs.Add("LastOccurrence",
                         "Date until which transaction should be repeated must be after first transaction occurrence");
                 }
                 if (transaction.NextRepeat == null || transaction.NextRepeat <= 0)
                 {
-                    ex.Erorrs.Add("NextRepeat", "Frequency must be positive number");
+                    exception.Erorrs.Add("NextRepeat", "Frequency must be positive number");
                 }
             }
 
-            if (ex.Erorrs.Count != 0)
-                throw ex;
+            if (exception.Erorrs.Count != 0)
+                throw exception;
         }
 
         public async Task Create(TransactionServiceModel transaction)
@@ -172,48 +172,54 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
 
         public async Task<TransactionServiceModel> GetTransactionById(Guid transactionId, Guid userId)
         {
-            var transaction =
-                await this._transactionsProvider.Transactions.Where(t => t.Guid == transactionId).FirstOrDefaultAsync();
-            if (!await this.HasWritePermission(userId, transaction.Wallet.Guid))
+            var entity =
+                await
+                    this._transactionsProvider.Transactions.Where(transaction => transaction.Guid == transactionId)
+                        .FirstOrDefaultAsync();
+            if (!await this.HasWritePermission(userId, entity.Wallet.Guid))
             {
                 throw new SecurityException();
             }
-            var dto = Mapper.Map<TransactionServiceModel>(transaction);
+            var model = Mapper.Map<TransactionServiceModel>(entity);
             var repeatableTransaction =
-                await this.GetRepeatableTransactionByFirstTransactionId(transaction.Guid);
+                await this.GetRepeatableTransactionByFirstTransactionId(entity.Guid);
             if (repeatableTransaction != null)
             {
-                dto.IsRepeatable = true;
-                dto.NextRepeat = repeatableTransaction.NextRepeat;
-                dto.FrequencyType = repeatableTransaction.FrequencyType;
-                dto.LastOccurrence = repeatableTransaction.LastOccurrence;
+                model.IsRepeatable = true;
+                model.NextRepeat = repeatableTransaction.NextRepeat;
+                model.FrequencyType = repeatableTransaction.FrequencyType;
+                model.LastOccurrence = repeatableTransaction.LastOccurrence;
             }
-            return dto;
+            return model;
         }
 
         public async Task<RepeatableTransaction> GetRepeatableTransactionByFirstTransactionId(Guid transactionId)
         {
             return await
                 this._transactionsProvider.RepeatableTransactions.FirstOrDefaultAsync(
-                    a => a.FirstTransaction.Guid == transactionId);
+                    repeatableTransaction => repeatableTransaction.FirstTransaction.Guid == transactionId);
         }
 
         public async Task<Category> GetCategoryById(Guid categoryId)
         {
             return
-                await this._transactionsProvider.Categories.Where(t => t.Guid == categoryId).FirstOrDefaultAsync();
+                await
+                    this._transactionsProvider.Categories.Where(category => category.Guid == categoryId)
+                        .FirstOrDefaultAsync();
         }
 
         public async Task<Currency> GetCurrencyById(Guid currencyId)
         {
             return
-                await this._transactionsProvider.Currencies.Where(t => t.Guid == currencyId).FirstOrDefaultAsync();
+                await
+                    this._transactionsProvider.Currencies.Where(currency => currency.Guid == currencyId)
+                        .FirstOrDefaultAsync();
         }
 
         public async Task<Budget> GetBudgetById(Guid budgetId)
         {
             return
-                await this._transactionsProvider.Budgets.Where(b => b.Guid == budgetId).FirstOrDefaultAsync();
+                await this._transactionsProvider.Budgets.Where(budget => budget.Guid == budgetId).FirstOrDefaultAsync();
         }
 
         public async Task<List<TransactionShowServiceModel>> GetAllTransactionsInWallet(Guid userId, Guid walletId)
@@ -224,14 +230,14 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             }
             var list =
                 await
-                    this._transactionsProvider.Transactions.Where(user => user.Wallet.Guid == walletId)
+                    this._transactionsProvider.Transactions.Where(transaction => transaction.Wallet.Guid == walletId)
                         .ToListAsync();
             var modelList = new List<TransactionShowServiceModel>();
             foreach (var transaction in list)
             {
-                var dto = Mapper.Map<TransactionShowServiceModel>(transaction);
-                dto.IsRepeatable = await this.GetRepeatableTransactionByFirstTransactionId(transaction.Guid) != null;
-                modelList.Add(dto);
+                var model = Mapper.Map<TransactionShowServiceModel>(transaction);
+                model.IsRepeatable = await this.GetRepeatableTransactionByFirstTransactionId(transaction.Guid) != null;
+                modelList.Add(model);
             }
             return modelList;
         }
@@ -239,7 +245,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         public async Task<Wallet> GetWalletById(Guid walletId)
         {
             return
-                await this._transactionsProvider.Wallets.Where(w => w.Guid == walletId).FirstOrDefaultAsync();
+                await this._transactionsProvider.Wallets.Where(wallet => wallet.Guid == walletId).FirstOrDefaultAsync();
         }
 
 
@@ -248,7 +254,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return
                 await
                     this._transactionsProvider.Wallets.Where(wallet => wallet.Guid == walletId)
-                        .Select(w => w.Currency)
+                        .Select(wallet => wallet.Currency)
                         .FirstOrDefaultAsync();
         }
 
@@ -273,7 +279,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         {
             var transactionType = this.GetCategoryType(expense);
             var result = this._transactionsProvider.Categories.Where(
-                m => m.Type == transactionType || m.Type == CategoryType.IncomeAndExpense);
+                category => category.Type == transactionType || category.Type == CategoryType.IncomeAndExpense);
             return await ReturnSelectionForCategory(result);
         }
 
@@ -289,8 +295,9 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
 
         public async Task<SelectList> GetCategoriesSelectionFilter(Guid walletId, Guid categoryId)
         {
-            var usedCategories = (await this.GetAllTransactionsInWallet(walletId)).GroupBy(c => c.Category.Guid)
-                .Select(g => g.First());
+            var usedCategories = (await this.GetAllTransactionsInWallet(walletId)).GroupBy(
+                transaction => transaction.Category.Guid)
+                .Select(transactions => transactions.First());
             var selectList = usedCategories.Select(
                 category =>
                     new SelectListItem
@@ -311,12 +318,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return
                 await
                     this._walletsProvider.Wallets.Select(
-                        w =>
-                            w.WalletAccessRights.Where(
-                                war => war.Permission == PermissionEnum.Owner
-                                       && war.UserProfile.Guid == userId
+                        wallet =>
+                            wallet.WalletAccessRights.Where(
+                                right => right.Permission == PermissionEnum.Owner
+                                         && right.UserProfile.Guid == userId
                                 )
-                                .Select(war => war.Wallet.Guid)
+                                .Select(right => right.Wallet.Guid)
                                 .FirstOrDefault()).FirstOrDefaultAsync();
         }
 
@@ -326,8 +333,8 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return await
                 this._walletsProvider.WalletAccessRights // TODO NOT IMPLEMENTED< SHOULDNT BE IMPLEMENTED FIX THIS
                     .FirstOrDefaultAsync(
-                        r =>
-                            r.UserProfile.Guid == userId && r.Wallet.Guid == walletId);
+                        right =>
+                            right.UserProfile.Guid == userId && right.Wallet.Guid == walletId);
         }
 
         /// <summary>
@@ -387,8 +394,10 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     .ToListAsync();
             var usedBudgets =
                 (await this.GetAllTransactionsInWallet(walletId)).Where(
-                    b => b.Budget != null && allAccessibleBudgetsId.Contains(b.Budget.Guid)).GroupBy(b => b.Budget.Guid)
-                    .Select(g => g.First());
+                    transaction =>
+                        transaction.Budget != null && allAccessibleBudgetsId.Contains(transaction.Budget.Guid))
+                    .GroupBy(transaction => transaction.Budget.Guid)
+                    .Select(transactions => transactions.First());
             var selectList = usedBudgets.Select(
                 budget =>
                     new SelectListItem
@@ -446,14 +455,16 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         private async Task<Transaction> GetTransactionById(Guid transactionId)
         {
             return
-                await this._transactionsProvider.Transactions.Where(t => t.Guid == transactionId).FirstOrDefaultAsync();
+                await
+                    this._transactionsProvider.Transactions.Where(transaction => transaction.Guid == transactionId)
+                        .FirstOrDefaultAsync();
         }
 
         public async Task<List<Transaction>> GetAllTransactionsInWallet(Guid walletId)
         {
             return
                 await
-                    this._transactionsProvider.Transactions.Where(user => user.Wallet.Guid == walletId)
+                    this._transactionsProvider.Transactions.Where(transaction => transaction.Wallet.Guid == walletId)
                         .ToListAsync();
         }
 
@@ -461,9 +472,9 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         {
             var permission = await this._walletsProvider.WalletAccessRights
                 .FirstOrDefaultAsync(
-                    r =>
-                        r.Wallet.Guid == walletId &&
-                        r.UserProfile.Guid == userId);
+                    right =>
+                        right.Wallet.Guid == walletId &&
+                        right.UserProfile.Guid == userId);
             return permission != null && permission.Permission != PermissionEnum.Read;
         }
 

@@ -67,11 +67,11 @@ namespace ExpenseManager.Web.Controllers
 
             if (category != null)
             {
-                list = list.Where(s => s.CategoryId == category.Value);
+                list = list.Where(model => model.CategoryId == category.Value);
             }
             if (budget != null)
             {
-                list = list.Where(s => s.BudgetId == budget.Value);
+                list = list.Where(model => model.BudgetId == budget.Value);
             }
 
             var showModels = Enumerable.Reverse(list.Select(Mapper.Map<TransactionShowModel>)).ToList();
@@ -79,7 +79,7 @@ namespace ExpenseManager.Web.Controllers
 
             // when user doesn't have permission to manipulate with transaction show view without edit and delete
             ViewBag.editable = permission.Permission != PermissionEnum.Read;
-            return this.View("Index", showModels.OrderByDescending(t => t.Date).ToPagedList(pageNumber, PageSize));
+            return this.View("Index", showModels.OrderByDescending(model => model.Date).ToPagedList(pageNumber, PageSize));
         }
 
 
@@ -131,15 +131,15 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(NewTransactionModel transaction)
         {
-            var dto = Mapper.Map<TransactionServiceModel>(transaction);
+            var model = Mapper.Map<TransactionServiceModel>(transaction);
 
             try
             {
-                await this._transactionService.Create(dto);
+                await this._transactionService.Create(model);
             }
-            catch (ValidationException ex)
+            catch (ValidationException exception)
             {
-                ModelState.AddModelErrors(ex);
+                ModelState.AddModelErrors(exception);
             }
 
             //Check server validation
@@ -200,14 +200,14 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(EditTransactionModel transaction)
         {
-            var dto = Mapper.Map<TransactionServiceModel>(transaction);
+            var model = Mapper.Map<TransactionServiceModel>(transaction);
             try
             {
-                await this._transactionService.Edit(dto);
+                await this._transactionService.Edit(model);
             }
-            catch (ValidationException ex)
+            catch (ValidationException exception)
             {
-                ModelState.AddModelErrors(ex);
+                ModelState.AddModelErrors(exception);
             }
 
             //check if model is valid
