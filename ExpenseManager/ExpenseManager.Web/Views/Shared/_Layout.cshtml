@@ -1,4 +1,5 @@
 ﻿@using System
+@using ExpenseManager.Web.Controllers
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,12 +50,36 @@
             </div>
             <div class="panel-body">
                 <div>
+                    @if (TempData[AbstractController.Error] !=null)
+                    {
+                        <div class="alert alert-danger">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            @TempData[AbstractController.Error]
+                        </div>
+                    }
+                    @if (TempData[AbstractController.Success] != null)
+                    {
+                        <div class="alert alert-success">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            @TempData[AbstractController.Success]
+                        </div>
+                    }
+                    @if (ViewData.ModelState.Any(x => x.Value.Errors.Any()))
+                    {
+                        foreach (var error in ViewData.ModelState.SelectMany(x => x.Value.Errors).Select(e => e.ErrorMessage).ToList())
+                        {
+                            <div class="alert alert-danger">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                @error
+                            </div>
+                        }
+                    }
                     @RenderBody()
                     @Scripts.Render("~/bundles/jquery")
                     @Scripts.Render("~/bundles/bootstrap")
                     @Scripts.Render("~/bundles/charts")
                     @Scripts.Render("~/bundles/chosen")
-                    
+
                     @RenderSection("scripts", required: false)
                 </div>
             </div>
@@ -100,4 +125,15 @@
     });
 
     $(".chosen-select").chosen();
+    var page = function () {
+        //Update that validator
+        $.validator.setDefaults({
+            highlight: function (element) {
+                $(element).closest(".control-group").addClass("error");
+            },
+            unhighlight: function (element) {
+                $(element).closest(".control-group").removeClass("error");
+            }
+        });
+    }();
 </script>

@@ -82,6 +82,7 @@
     <Compile Include="BudgetServices\BudgetService.cs" />
     <Compile Include="CategoryServices\CategoryService.cs" />
     <Compile Include="ColorGeneratorService.cs" />
+    <Compile Include="CommonService.cs" />
     <Compile Include="DashboardServices\DashBoardService.cs" />
     <Compile Include="DashboardServices\Models\FilterDataServiceModel.cs" />
     <Compile Include="DashboardServices\Models\GraphWithDescriptionModel.cs" />

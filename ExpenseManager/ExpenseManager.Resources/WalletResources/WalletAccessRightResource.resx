@@ -117,19 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CaptchaField" xml:space="preserve">
-    <value>Captcha</value>
+  <data name="AssignedPermission" xml:space="preserve">
+    <value>Assigned Permission</value>
   </data>
-  <data name="CaptchaValidationFailed" xml:space="preserve">
-    <value>Captcha validation failed.</value>
+  <data name="AssignedUserName" xml:space="preserve">
+    <value>Assigned User Name</value>
   </data>
-  <data name="Refresh" xml:space="preserve">
-    <value>Refresh</value>
-  </data>
-  <data name="TestError" xml:space="preserve">
-    <value>This is some serious error!</value>
-  </data>
-  <data name="UserNotFoundByEmail" xml:space="preserve">
-    <value>User with given email not found</value>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
   </data>
 </root>

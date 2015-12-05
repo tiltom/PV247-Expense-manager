@@ -76,30 +76,6 @@ namespace ExpenseManager.BusinessLogic.WalletServices
             return await this._db.Wallets.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
-        /// <summary>
-        ///     Returns user profile by it's ID
-        /// </summary>
-        /// <param name="id">User profile ID</param>
-        /// <returns>Desired user profile</returns>
-        public async Task<UserProfile> GetUserProfileById(Guid id)
-        {
-            return await this._db.UserProfiles.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
-        }
-
-        /// <summary>
-        ///     Returns user profile by user ID or wallet owner ID
-        /// </summary>
-        /// <param name="userId">User profile ID</param>
-        /// <param name="walletOwnerId">ID of wallet owner</param>
-        /// <returns>Desired user profile</returns>
-        public IQueryable<UserProfile> GetUserProfileByIds(Guid? userId, Guid walletOwnerId)
-        {
-            return this._db.UserProfiles
-                .Where(
-                    u =>
-                        u.WalletAccessRights.All(war => war.Wallet.Owner.Guid != walletOwnerId) ||
-                        u.Guid == userId);
-        }
 
         /// <summary>
         ///     Edits wallet access right
@@ -144,6 +120,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
             return walletAccessRight.Permission;
         }
 
+
         /// <summary>
         ///     Validates wallet access rights
         /// </summary>
@@ -168,5 +145,19 @@ namespace ExpenseManager.BusinessLogic.WalletServices
 
             return true;
         }
+
+        #region private
+
+        /// <summary>
+        ///     Returns user profile by it's ID
+        /// </summary>
+        /// <param name="id">User profile ID</param>
+        /// <returns>Desired user profile</returns>
+        public async Task<UserProfile> GetUserProfileById(Guid id)
+        {
+            return await this._db.UserProfiles.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
+        }
+
+        #endregion
     }
 }

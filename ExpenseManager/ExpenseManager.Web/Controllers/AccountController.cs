@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using CaptchaMvc.HtmlHelpers;
+using ExpenseManager.Resources;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Facebook;
@@ -126,7 +128,9 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterWithPasswordViewModel model)
         {
-            if (!ModelState.IsValid) return this.View(model);
+            this.IsCaptchaValid(SharedResource.CaptchaValidationFailed);
+            if (ModelState.IsValid)
+                if (!ModelState.IsValid) return this.View(model);
 
             var user = await this.CreateUser(model);
             var result = await UserManager.CreateAsync(user, model.Password);
