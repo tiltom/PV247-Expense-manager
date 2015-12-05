@@ -22,7 +22,6 @@ namespace ExpenseManager.Database.Seeding.Seeds
                     Description = "Budget for holiday in Spain",
                     Limit = 400,
                     Transactions = context.Transactions.Where(x => x.Description.Contains("Spain")).ToList(),
-                    Creator = context.UserProfiles.FirstOrDefault(),
                     AccessRights = context.BudgetAccessRights.ToList()
                 }
             };

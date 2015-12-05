@@ -2,6 +2,7 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Users;
@@ -38,9 +39,15 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// </summary>
         /// <param name="userId">User that owns budgets</param>
         /// <returns>All budgets for user</returns>
-        public IQueryable GetBudgetsByUserId(Guid userId)
+        public IQueryable<Budget> GetBudgetsByUserId(Guid userId)
         {
-            return this._db.Budgets.Where(user => user.Creator.Guid.Equals(userId));
+            return
+                this._db.BudgetAccessRights
+                    .Where(
+                        bar => bar.Permission == PermissionEnum.Owner
+                               && bar.UserProfile.Guid == userId
+                    )
+                    .Select(bar => bar.Budget);
         }
 
         /// <summary>
@@ -136,11 +143,6 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         public bool ValidateBudget(Budget budget)
         {
             if (budget == null)
-            {
-                return false;
-            }
-
-            if (budget.Creator == null)
             {
                 return false;
             }

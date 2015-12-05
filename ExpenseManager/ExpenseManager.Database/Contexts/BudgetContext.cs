@@ -30,7 +30,7 @@ namespace ExpenseManager.Database.Contexts
 
         IQueryable<Budget> IBudgetsProvider.Budgets
         {
-            get { return Budgets.Include(w => w.Creator); }
+            get { return Budgets; }
         }
 
         IQueryable<BudgetAccessRight> IBudgetAccessRightsProvider.BudgetAccessRights

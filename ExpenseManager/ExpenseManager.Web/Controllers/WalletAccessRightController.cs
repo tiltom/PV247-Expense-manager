@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using CaptchaMvc.HtmlHelpers;
 using ExpenseManager.BusinessLogic;
 using ExpenseManager.BusinessLogic.WalletServices;
@@ -35,8 +34,8 @@ namespace ExpenseManager.Web.Controllers
         {
             var id = await this.CurrentProfileId();
 
-            var accessRights = this._walletAccessRightService.GetAccessRightsByWalletOwnerId(id);
-            var accessRightModels = await accessRights.ProjectTo<WalletAccessRightModel>().ToListAsync();
+            var accessRights = await this._walletAccessRightService.GetAccessRightsByWalletOwnerId(id);
+            var accessRightModels = accessRights.Select(Mapper.Map<WalletAccessRightModel>);
             var pageNumber = page ?? 1;
             return this.View(accessRightModels.ToPagedList(pageNumber, PageSize));
         }

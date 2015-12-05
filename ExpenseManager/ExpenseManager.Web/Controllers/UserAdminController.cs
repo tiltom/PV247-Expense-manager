@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Web.Helpers;
@@ -301,26 +302,33 @@ namespace ExpenseManager.Web.Controllers
         private async Task DeleteUserDependentEntities(UserProfile profile)
         {
             // Delete WalletAccessRights, Wallet and Transactions connected with Wallet
-            var walletToDelete = profile.PersonalWallet;
-            var warToDelete = walletToDelete.WalletAccessRights.ToList();
-            var transactionsToDelete = walletToDelete.Transactions.ToList();
+            var walletToDelete =
+                profile.WalletAccessRights.FirstOrDefault(war => war.Permission == PermissionEnum.Owner)?.Wallet;
+            var warToDelete = walletToDelete?.WalletAccessRights.ToList();
+            var transactionsToDelete = walletToDelete?.Transactions.ToList();
 
             var transactionsProvider = ProvidersFactory.GetNewTransactionsProviders();
-            foreach (var transaction in transactionsToDelete)
-            {
-                await transactionsProvider.DeteleAsync(transaction);
-            }
+            if (transactionsToDelete != null)
+                foreach (var transaction in transactionsToDelete)
+                {
+                    await transactionsProvider.DeteleAsync(transaction);
+                }
 
             var walletProvider = ProvidersFactory.GetNewWalletsProviders();
-            foreach (var walletAccessRight in warToDelete)
-            {
-                await walletProvider.DeteleAsync(walletAccessRight);
-            }
+            if (warToDelete != null)
+                foreach (var walletAccessRight in warToDelete)
+                {
+                    await walletProvider.DeteleAsync(walletAccessRight);
+                }
             await walletProvider.DeteleAsync(walletToDelete);
 
             // Delete BudgetAccessRights and CreatedBudgets
             var budgetProvider = ProvidersFactory.GetNewBudgetsProviders();
-            foreach (var createdBudget in profile.CreatedBudgets)
+            var userBudgets =
+                profile.BudgetAccessRights
+                    .Where(bar => bar.Permission == PermissionEnum.Owner)
+                    .Select(bar => bar.Budget);
+            foreach (var createdBudget in userBudgets)
             {
                 await budgetProvider.DeteleAsync(createdBudget);
             }

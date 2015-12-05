@@ -308,9 +308,16 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         /// <returns></returns>
         public async Task<Guid> GetDefaultWallet(Guid userId)
         {
-            return await this._walletsProvider.Wallets.Where(w => w.Owner.Guid == userId)
-                .Select(w => w.Guid)
-                .FirstOrDefaultAsync();
+            return
+                await
+                    this._walletsProvider.Wallets.Select(
+                        w =>
+                            w.WalletAccessRights.Where(
+                                war => war.Permission == PermissionEnum.Owner
+                                       && war.UserProfile.Guid == userId
+                                )
+                                .Select(war => war.Wallet.Guid)
+                                .FirstOrDefault()).FirstOrDefaultAsync();
         }
 
         //TODO will be only private

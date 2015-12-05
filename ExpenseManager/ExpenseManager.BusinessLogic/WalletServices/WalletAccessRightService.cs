@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,25 +13,38 @@ namespace ExpenseManager.BusinessLogic.WalletServices
     /// <summary>
     ///     Class that handles logic of WalletAccessRightController
     /// </summary>
-    public class WalletAccessRightService
+    public class WalletAccessRightService : ServiceWithWallet
     {
         private readonly CommonService _commonService;
-        private readonly IWalletsProvider _db;
+        private readonly IWalletsProvider _wallets;
 
         public WalletAccessRightService(IWalletsProvider db, CommonService commonService)
         {
-            this._db = db;
+            this._wallets = db;
             this._commonService = commonService;
         }
+
+        #region protected
+
+        protected override IWalletsProvider WalletsProvider
+        {
+            get { return this._wallets; }
+        }
+
+        #endregion
 
         /// <summary>
         ///     Returns access rights for walled by wallet owner
         /// </summary>
         /// <param name="id">ID of wallet owner</param>
         /// <returns>Access rights for wallet</returns>
-        public IQueryable GetAccessRightsByWalletOwnerId(Guid id)
+        public async Task<IEnumerable<WalletAccessRight>> GetAccessRightsByWalletOwnerId(Guid id)
         {
-            return this._db.WalletAccessRights.Where(right => right.Wallet.Owner.Guid.Equals(id));
+            var result = await this._wallets.Wallets.Where(wallet => wallet.WalletAccessRights.Any(
+                right => right.Permission == PermissionEnum.Owner
+                         && right.UserProfile.Guid == id
+                )).FirstOrDefaultAsync();
+            return result.WalletAccessRights;
         }
 
         /// <summary>
@@ -40,8 +54,11 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         /// <returns>Wallet access right ID</returns>
         public async Task<Guid> GetWalletAccessRightIdByWalletId(Guid id)
         {
-            return await this._db.Wallets
-                .Where(w => w.Owner.Guid.Equals(id))
+            return await this._wallets.Wallets
+                .Where(
+                    w =>
+                        w.WalletAccessRights.Any(
+                            war => war.UserProfile.Guid == id && war.Permission == PermissionEnum.Owner))
                 .Select(w => w.Guid)
                 .FirstOrDefaultAsync();
         }
@@ -53,7 +70,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         /// <returns>Desired wallet access right</returns>
         public async Task<WalletAccessRight> GetWalletAccessRightById(Guid id)
         {
-            return await this._db.WalletAccessRights.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
+            return await this._wallets.WalletAccessRights.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -75,18 +92,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
 
             this.ValidateWalletAccessRight(walletAccessRight);
 
-            await this._db.AddOrUpdateAsync(walletAccessRight);
-        }
-
-
-        /// <summary>
-        ///     Returns wallet by it's ID
-        /// </summary>
-        /// <param name="id">Wallet ID</param>
-        /// <returns>Desired wallet</returns>
-        public async Task<Wallet> GetWalletById(Guid id)
-        {
-            return await this._db.Wallets.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
+            await this._wallets.AddOrUpdateAsync(walletAccessRight);
         }
 
 
@@ -106,7 +112,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
 
             this.ValidateWalletAccessRight(walletAccessRight);
 
-            await this._db.AddOrUpdateAsync(walletAccessRight);
+            await this._wallets.AddOrUpdateAsync(walletAccessRight);
         }
 
         /// <summary>
@@ -118,7 +124,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         {
             var walletAccessRight = await this.GetWalletAccessRightById(id);
 
-            await this._db.DeteleAsync(walletAccessRight);
+            await this._wallets.DeteleAsync(walletAccessRight);
         }
 
         /// <summary>
@@ -159,8 +165,6 @@ namespace ExpenseManager.BusinessLogic.WalletServices
             return true;
         }
 
-        #region private
-
         /// <summary>
         ///     Returns user profile by it's ID
         /// </summary>
@@ -168,9 +172,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         /// <returns>Desired user profile</returns>
         public async Task<UserProfile> GetUserProfileById(Guid id)
         {
-            return await this._db.UserProfiles.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
+            return await this._wallets.UserProfiles.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
         }
-
-        #endregion
     }
 }

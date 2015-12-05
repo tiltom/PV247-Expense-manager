@@ -1,9 +1,7 @@
 ﻿using System;
 using ExpenseManager.BusinessLogic.BudgetServices;
 using ExpenseManager.Entity.Budgets;
-using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers.Factory;
-using ExpenseManager.Entity.Users;
 using NUnit.Framework;
 
 namespace ExpenseManager.BusinessLogic.Test.BudgetTests
@@ -16,7 +14,6 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
         {
             var budget = new Budget
             {
-                Creator = new UserProfile(),
                 Name = string.Empty,
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddDays(1),
@@ -33,7 +30,6 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
         {
             var budget = new Budget
             {
-                Creator = new UserProfile(),
                 Name = "Test Name",
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddDays(1),
@@ -59,7 +55,22 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
         {
             var budget = new Budget
             {
-                Creator = null,
+                Name = "Test name",
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(1),
+                Limit = 10
+            };
+
+            var budgetService = new BudgetService(ProvidersFactory.GetNewBudgetsProviders(),
+                ProvidersFactory.GetNewTransactionsProviders());
+            Assert.IsFalse(budgetService.ValidateBudget(budget));
+        }
+
+        [Test]
+        public void ValidateBudget_NullCurrency_ReturnFalse()
+        {
+            var budget = new Budget
+            {
                 Name = "Test name",
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddDays(1),
@@ -76,7 +87,6 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
         {
             var budget = new Budget
             {
-                Creator = new UserProfile(),
                 Name = "Test Name",
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddDays(1),

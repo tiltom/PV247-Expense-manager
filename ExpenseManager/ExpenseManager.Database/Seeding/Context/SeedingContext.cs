@@ -47,12 +47,6 @@ namespace ExpenseManager.Database.Seeding.Context
                 .HasRequired(transaction => transaction.Wallet)
                 .WithMany(wallet => wallet.Transactions)
                 .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Wallet>()
-                .HasRequired(w => w.Owner)
-                .WithOptional(o => o.PersonalWallet)
-                .Map(m => m.MapKey("Owner_Guid"))
-                .WillCascadeOnDelete(true);
         }
     }
 }

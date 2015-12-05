@@ -127,11 +127,6 @@ namespace ExpenseManager.Web.Controllers
                 CreationDate = DateTime.Now,
                 Profile = new UserProfile
                 {
-                    PersonalWallet = new Wallet
-                    {
-                        Name = "Default Wallet",
-                        Currency = currency
-                    },
                     FirstName = model.FirstName,
                     LastName = model.LastName
                 }
@@ -143,7 +138,11 @@ namespace ExpenseManager.Web.Controllers
                 {
                     Permission = PermissionEnum.Owner,
                     UserProfile = user.Profile,
-                    Wallet = user.Profile.PersonalWallet
+                    Wallet = new Wallet
+                    {
+                        Name = "Default Wallet",
+                        Currency = await this.GetDefaultCurrency()
+                    }
                 }
             };
             return user;

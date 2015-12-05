@@ -154,8 +154,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
             return this._db.UserProfiles
                 .Where(
                     u => // filtering users which don't have owner permission or other permissions
-                        u.BudgetAccessRights.All(war => war.Budget.Creator.Guid != currentUserId) ||
-                        !users.Contains(u.Guid));
+                        u.BudgetAccessRights.All(war => !users.Contains(u.Guid)));
         }
 
         /// <summary>
@@ -165,12 +164,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <returns>True if budget access right is valid, false otherwise</returns>
         public bool ValidateBudgetAccessRight(BudgetAccessRight budgetAccessRight)
         {
-            if (budgetAccessRight == null)
-            {
-                return false;
-            }
-
-            if (budgetAccessRight.UserProfile == null)
+            if (budgetAccessRight?.UserProfile == null)
             {
                 return false;
             }

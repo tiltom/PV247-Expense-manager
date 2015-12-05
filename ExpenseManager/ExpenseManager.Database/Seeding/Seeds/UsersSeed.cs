@@ -74,7 +74,11 @@ namespace ExpenseManager.Database.Seeding.Seeds
             var adminUserProfile = context.UserProfiles.FirstOrDefault(u => u.Guid == admin.Profile.Guid);
 
             var user = userManager.FindByEmail(userInfo.Email);
-            var wallet = context.Wallets.FirstOrDefault(w => w.Owner.Guid == user.Profile.Guid);
+            var wallet =
+                context.WalletAccessRights.FirstOrDefault(
+                    war => war.UserProfile.Guid == user.Profile.Guid
+                           && war.Permission == PermissionEnum.Owner
+                    )?.Wallet;
 
             CreateWalletAccessRight(context, adminUserProfile, wallet, permission);
         }
@@ -84,7 +88,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
         {
             var currency = context.Currencies.FirstOrDefault(c => c.Symbol == "Kč");
             var profile = CreateProfile(context, userInfo.FirstName, userInfo.LastName);
-            var wallet = CreateWallet(context, currency, profile, userInfo.WalletName);
+            var wallet = CreateWallet(context, currency, userInfo.WalletName);
             CreateWalletAccessRight(context, profile, wallet, PermissionEnum.Owner);
 
             var user = CreateUserIdentity(userManager, profile, userInfo.Email, userInfo.Password);
@@ -131,13 +135,12 @@ namespace ExpenseManager.Database.Seeding.Seeds
             context.SaveChanges();
         }
 
-        private static Wallet CreateWallet(TContext context, Currency currency, UserProfile profile, string walletName)
+        private static Wallet CreateWallet(TContext context, Currency currency, string walletName)
         {
             var wallet = new Wallet
             {
                 Name = walletName,
-                Currency = currency,
-                Owner = profile
+                Currency = currency
             };
             wallet = context.Wallets.Add(wallet);
             context.SaveChanges();

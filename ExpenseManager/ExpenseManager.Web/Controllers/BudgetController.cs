@@ -88,7 +88,6 @@ namespace ExpenseManager.Web.Controllers
                 EndDate = model.EndDate,
                 Limit = model.Limit,
                 Description = model.Description ?? string.Empty,
-                Creator = creator,
                 AccessRights =
                     new List<BudgetAccessRight>
                     {

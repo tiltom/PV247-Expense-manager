@@ -27,7 +27,7 @@ namespace ExpenseManager.Database.Contexts
         {
             get
             {
-                return Wallets.Include(w => w.Owner)
+                return Wallets
                     .Include(w => w.Transactions)
                     .Include(w => w.Transactions.Select(t => t.Category));
             }
@@ -37,15 +37,14 @@ namespace ExpenseManager.Database.Contexts
         {
             get
             {
-                return WalletAccessRights
-                    .Include(war => war.Wallet)
-                    .Include(war => war.UserProfile);
+                return
+                    WalletAccessRights.Include(war => war.Wallet).Include(war => war.UserProfile);
             }
         }
 
         IQueryable<UserProfile> IUserProfilesProvider.UserProfiles
         {
-            get { return UserProfiles.Include(up => up.PersonalWallet); }
+            get { return UserProfiles; }
         }
 
         public async Task<bool> AddOrUpdateAsync(Wallet entity)
@@ -142,12 +141,6 @@ namespace ExpenseManager.Database.Contexts
                 .HasRequired(right => right.Wallet)
                 .WithMany(w => w.WalletAccessRights)
                 .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Wallet>()
-                .HasRequired(w => w.Owner)
-                .WithOptional(o => o.PersonalWallet)
-                .Map(m => m.MapKey("Owner_Guid"))
-                .WillCascadeOnDelete(true);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using ExpenseManager.BusinessLogic.WalletServices;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers.Factory;
-using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using NUnit.Framework;
 
@@ -16,8 +15,7 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
             var wallet = new Wallet
             {
                 Name = string.Empty,
-                Currency = new Currency(),
-                Owner = new UserProfile()
+                Currency = new Currency()
             };
 
             var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());
@@ -30,8 +28,7 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
             var wallet = new Wallet
             {
                 Name = "Test name",
-                Currency = null,
-                Owner = new UserProfile()
+                Currency = null
             };
 
             var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());
@@ -44,8 +41,7 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
             var wallet = new Wallet
             {
                 Name = "Test name",
-                Currency = new Currency(),
-                Owner = null
+                Currency = new Currency()
             };
 
             var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());
@@ -66,8 +62,7 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
             var wallet = new Wallet
             {
                 Name = "Test name",
-                Currency = new Currency(),
-                Owner = new UserProfile()
+                Currency = new Currency()
             };
 
             var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());

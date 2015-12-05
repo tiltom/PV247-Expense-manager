@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Transactions;
-using ExpenseManager.Entity.Users;
 
 namespace ExpenseManager.Entity.Wallets
 {
@@ -29,12 +28,6 @@ namespace ExpenseManager.Entity.Wallets
         /// </summary>
         [Required]
         public virtual Currency Currency { get; set; }
-
-        /// <summary>
-        ///     Owner of wallet
-        /// </summary>
-        [Required]
-        public virtual UserProfile Owner { get; set; }
 
         /// <summary>
         ///     Collection of access rights to this wallet

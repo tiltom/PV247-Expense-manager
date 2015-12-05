@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using ExpenseManager.Entity.Transactions;
-using ExpenseManager.Entity.Users;
 
 namespace ExpenseManager.Entity.Budgets
 {
@@ -39,11 +37,6 @@ namespace ExpenseManager.Entity.Budgets
         /// </summary>
         public decimal Limit { get; set; }
 
-        /// <summary>
-        ///     Creator of budget
-        /// </summary>
-        [Required]
-        public virtual UserProfile Creator { get; set; }
 
         /// <summary>
         ///     Transactions made in this budget
