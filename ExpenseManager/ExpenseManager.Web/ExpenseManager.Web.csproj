@@ -394,6 +394,10 @@
     <Content Include="Views\Category\Edit.cshtml" />
     <Content Include="Views\Category\Index.cshtml" />
     <Content Include="Views\Transaction\ExpenseIncome.cshtml" />
+    <Content Include="Views\BudgetAccessRight\Delete.cshtml" />
+    <Content Include="Views\Budget\Delete.cshtml" />
+    <Content Include="Views\Category\Delete.cshtml" />
+    <Content Include="Views\Transaction\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

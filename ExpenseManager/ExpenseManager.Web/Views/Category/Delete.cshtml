@@ -1,0 +1,23 @@
+﻿@model ExpenseManager.Web.Models.Category.CategoryShowModel
+
+@{
+    ViewBag.Title = "Delete category";
+}
+
+<h3>Are you sure you want to delete @Model.Type category @Model.Name?</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.Guid)
+    @Html.HiddenFor(model => model.Name)
+    @Html.HiddenFor(model => model.Type)
+    @Html.HiddenFor(model => model.Description)
+    @Html.HiddenFor(model => model.Icon)
+
+    <div class="form-actions no-color">
+        <input type="submit" value="Delete" class="btn btn-success" />
+        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-danger" })
+    </div>
+}

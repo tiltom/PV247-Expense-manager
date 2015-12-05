@@ -103,13 +103,34 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
+        ///     Method for displaying view with confirmation of deleting category.
+        /// </summary>
+        /// <param name="id">id of category to be deleted</param>
+        /// <returns></returns>
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            // find category by its Id
+            var category = await this._categoryService.GetCategoryByGuid(id);
+
+            return this.View(Mapper.Map<CategoryShowModel>(category));
+        }
+
+        /// <summary>
         ///     Action for deleting categories.
         /// </summary>
-        /// <param name="guid">Id of category to delete</param>
+        /// <param name="model">CategoryShowModel of category to delete</param>
         /// <returns>Redirect to Index</returns>
-        public async Task<ActionResult> Delete(Guid guid)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteConfirmed(CategoryShowModel model)
         {
-            await this._categoryService.DeleteCategory(guid);
+            if (!ModelState.IsValid)
+            {
+                // error
+                return this.RedirectToAction("Index");
+            }
+
+            await this._categoryService.DeleteCategory(model.Guid);
 
             return this.RedirectToAction("Index");
         }

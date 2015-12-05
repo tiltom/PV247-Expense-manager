@@ -113,13 +113,13 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
             var budget = await this._db.Budgets.Where(x => x.Guid.Equals(guid)).FirstOrDefaultAsync();
 
             // delete budget rights
-            foreach (var right in budget.AccessRights)
+            foreach (var right in budget.AccessRights.ToList())
             {
                 await this._db.DeteleAsync(right);
             }
 
             // delete transactions
-            foreach (var transaction in budget.Transactions)
+            foreach (var transaction in budget.Transactions.ToList())
             {
                 await this._transactionsProvider.DeteleAsync(transaction);
             }

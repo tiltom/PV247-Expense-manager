@@ -1,0 +1,19 @@
+﻿@model ExpenseManager.Web.Models.Transaction.EditTransactionModel
+
+@{
+    ViewBag.Title = "Delete transaction";
+}
+
+<h3>Are you sure you want to delete transaction @Model.Description ?</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="form-actions no-color">
+        <input type="submit" value="Delete" class="btn btn-success" />
+        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-danger" })
+    </div>
+}

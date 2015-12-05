@@ -221,20 +221,54 @@ namespace ExpenseManager.Web.Controllers
             return this.View(transaction);
         }
 
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            var userId = await this.CurrentProfileId();
+
+            TransactionServiceModel transaction;
+
+            try
+            {
+                //find transaction by it's Id
+                transaction = await this._transactionService.GetTransactionById(id, userId);
+            }
+            catch (SecurityException)
+            {
+                //error "You don't have permission to edit this transaction"
+                return this.RedirectToAction("Index");
+            }
+            if (transaction == null)
+            {
+                //error "Transaction not found"
+                return this.RedirectToAction("Index");
+            }
+
+            return this.View(Mapper.Map<EditTransactionModel>(transaction));
+        }
 
         /// <summary>
         ///     Deleting transactions
         /// </summary>
-        /// <param name="id">Id of transaction to edit</param>
+        /// <param name="model">
+        ///     TransactionShowModel of transaction to delete<</param>
         /// <returns>Redirect to Index</returns>
         // POST: Transactions/Delete/5
-        public async Task<ActionResult> Delete(Guid id)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteConfirmed([Bind(Include = "Id")] TransactionShowModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                // error
+                return this.RedirectToAction("Index");
+            }
+
             Guid walletId;
+
             try
             {
                 //removing transaction from DB
-                walletId = await this._transactionService.RemoveTransaction(id, await this.CurrentProfileId());
+                walletId = await this._transactionService.RemoveTransaction(await this.CurrentProfileId(), model.Id);
             }
             catch (SecurityException)
             {

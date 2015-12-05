@@ -114,16 +114,39 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Delete budget access right from DB
+        ///     Method for displaying view with confirmation of deleting budget access right.
         /// </summary>
-        /// <param name="id">Id of budget access right to delete</param>
-        /// <param name="budgetId">Id of budget where the budget access right belongs</param>
-        /// <returns>Redirect to Index</returns>
+        /// <param name="id">id of budget access right to delete</param>
+        /// <returns></returns>
         public async Task<ActionResult> Delete(Guid id, Guid budgetId)
         {
-            await this._budgetAccessRightService.DeleteBudgetAccessRight(id);
+            // find BudgetAccessRight by its Id
+            var budgetAccessRight = await this._budgetAccessRightService.GetBudgetAccessRightById(id);
 
-            return this.RedirectToAction("Index", new {id = budgetId});
+            var model = Mapper.Map<ShowBudgetAccessRightModel>(budgetAccessRight);
+            model.BudgetId = budgetId;
+
+            return this.View(model);
+        }
+
+        /// <summary>
+        ///     Delete budget access right from DB
+        /// </summary>
+        /// <param name="model">ShowBudgetAccessRightModel of budget access right to delete</param>
+        /// <returns>Redirect to Index</returns>
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteConfirmed(ShowBudgetAccessRightModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // error
+                return this.RedirectToAction("Index", new {id = model.BudgetId});
+            }
+
+            await this._budgetAccessRightService.DeleteBudgetAccessRight(model.Id);
+
+            return this.RedirectToAction("Index", new {id = model.BudgetId});
         }
 
         #region private

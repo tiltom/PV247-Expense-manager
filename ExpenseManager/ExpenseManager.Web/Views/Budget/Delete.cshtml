@@ -1,0 +1,23 @@
+﻿@model ExpenseManager.Web.Models.Budget.BudgetShowModel
+
+@{
+    ViewBag.Title = "Delete budget";
+}
+
+<h3>Are you sure you want to delete budget @Model.Name?</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.Guid)
+    @Html.HiddenFor(model => model.Name)
+    @Html.HiddenFor(model => model.EndDate)
+    @Html.HiddenFor(model => model.StartDate)
+    @Html.HiddenFor(model => model.Limit)
+
+    <div class="form-actions no-color">
+        <input type="submit" value="Delete" class="btn btn-success" />
+        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-danger" })
+    </div>
+}

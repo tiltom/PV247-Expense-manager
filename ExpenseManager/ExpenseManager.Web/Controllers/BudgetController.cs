@@ -156,13 +156,33 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Deleting budgets.
+        ///     Method for displaying view with confirmation of deleting budget.
         /// </summary>
-        /// <param name="id">Id of budget to delete</param>
-        /// <returns>Redirect to Index</returns>
+        /// <param name="id">id of budget to delete</param>
+        /// <returns></returns>
         public async Task<ActionResult> Delete(Guid id)
         {
-            await this._budgetService.DeleteBudget(id);
+            var budget = await this._budgetService.GetBudgetById(id);
+
+            return this.View(Mapper.Map<BudgetShowModel>(budget));
+        }
+
+        /// <summary>
+        ///     Deleting budgets.
+        /// </summary>
+        /// <param name="model">BudgetShowModel of budget to delete</param>
+        /// <returns>Redirect to Index</returns>
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteConfirmed([Bind(Exclude = "StartDate, EndDate")] BudgetShowModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // error 
+                return this.RedirectToAction("Index");
+            }
+
+            await this._budgetService.DeleteBudget(model.Guid);
 
             return this.RedirectToAction("Index");
         }
