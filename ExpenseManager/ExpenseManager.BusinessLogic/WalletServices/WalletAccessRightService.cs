@@ -14,11 +14,13 @@ namespace ExpenseManager.BusinessLogic.WalletServices
     /// </summary>
     public class WalletAccessRightService
     {
+        private readonly CommonService _commonService;
         private readonly IWalletsProvider _db;
 
-        public WalletAccessRightService(IWalletsProvider db)
+        public WalletAccessRightService(IWalletsProvider db, CommonService commonService)
         {
             this._db = db;
+            this._commonService = commonService;
         }
 
         /// <summary>
@@ -57,14 +59,25 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         /// <summary>
         ///     Creates new wallet access right
         /// </summary>
-        /// <param name="walletAccessRight">Instance of new wallet access right</param>
+        /// <param name="walletId">id of wallet</param>
+        /// <param name="userId">id of user</param>
+        /// <param name="permission">string of permission</param>
         /// <returns></returns>
-        public async Task CreateWalletAccessRight(WalletAccessRight walletAccessRight)
+        public async Task CreateWalletAccessRight(Guid walletId, Guid userId, string permission)
         {
+            var walletAccessRight = new WalletAccessRight
+            {
+                Guid = Guid.NewGuid(),
+                Wallet = await this.GetWalletById(walletId),
+                UserProfile = await this.GetUserProfileById(userId),
+                Permission = this._commonService.ConvertPermissionStringToEnum(permission)
+            };
+
             this.ValidateWalletAccessRight(walletAccessRight);
 
             await this._db.AddOrUpdateAsync(walletAccessRight);
         }
+
 
         /// <summary>
         ///     Returns wallet by it's ID
@@ -76,30 +89,6 @@ namespace ExpenseManager.BusinessLogic.WalletServices
             return await this._db.Wallets.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
-        /// <summary>
-        ///     Returns user profile by it's ID
-        /// </summary>
-        /// <param name="id">User profile ID</param>
-        /// <returns>Desired user profile</returns>
-        public async Task<UserProfile> GetUserProfileById(Guid id)
-        {
-            return await this._db.UserProfiles.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
-        }
-
-        /// <summary>
-        ///     Returns user profile by user ID or wallet owner ID
-        /// </summary>
-        /// <param name="userId">User profile ID</param>
-        /// <param name="walletOwnerId">ID of wallet owner</param>
-        /// <returns>Desired user profile</returns>
-        public IQueryable<UserProfile> GetUserProfileByIds(Guid? userId, Guid walletOwnerId)
-        {
-            return this._db.UserProfiles
-                .Where(
-                    u =>
-                        u.WalletAccessRights.All(war => war.Wallet.Owner.Guid != walletOwnerId) ||
-                        u.Guid == userId);
-        }
 
         /// <summary>
         ///     Edits wallet access right
@@ -144,6 +133,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
             return walletAccessRight.Permission;
         }
 
+
         /// <summary>
         ///     Validates wallet access rights
         /// </summary>
@@ -168,5 +158,19 @@ namespace ExpenseManager.BusinessLogic.WalletServices
 
             return true;
         }
+
+        #region private
+
+        /// <summary>
+        ///     Returns user profile by it's ID
+        /// </summary>
+        /// <param name="id">User profile ID</param>
+        /// <returns>Desired user profile</returns>
+        public async Task<UserProfile> GetUserProfileById(Guid id)
+        {
+            return await this._db.UserProfiles.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
+        }
+
+        #endregion
     }
 }

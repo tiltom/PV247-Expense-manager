@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ExpenseManager.Resources {
+namespace ExpenseManager.Resources.WalletResources {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace ExpenseManager.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class SharedResource {
+    public class WalletAccessRightResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal SharedResource() {
+        internal WalletAccessRightResource() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace ExpenseManager.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ExpenseManager.Resources.SharedResource", typeof(SharedResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ExpenseManager.Resources.WalletResources.WalletAccessRightResource", typeof(WalletAccessRightResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,47 +61,29 @@ namespace ExpenseManager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Captcha.
+        ///   Looks up a localized string similar to Assigned Permission.
         /// </summary>
-        public static string CaptchaField {
+        public static string AssignedPermission {
             get {
-                return ResourceManager.GetString("CaptchaField", resourceCulture);
+                return ResourceManager.GetString("AssignedPermission", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Captcha validation failed..
+        ///   Looks up a localized string similar to Assigned User Name.
         /// </summary>
-        public static string CaptchaValidationFailed {
+        public static string AssignedUserName {
             get {
-                return ResourceManager.GetString("CaptchaValidationFailed", resourceCulture);
+                return ResourceManager.GetString("AssignedUserName", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refresh.
+        ///   Looks up a localized string similar to User.
         /// </summary>
-        public static string Refresh {
+        public static string User {
             get {
-                return ResourceManager.GetString("Refresh", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This is some serious error!.
-        /// </summary>
-        public static string TestError {
-            get {
-                return ResourceManager.GetString("TestError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User with given email not found.
-        /// </summary>
-        public static string UserNotFoundByEmail {
-            get {
-                return ResourceManager.GetString("UserNotFoundByEmail", resourceCulture);
+                return ResourceManager.GetString("User", resourceCulture);
             }
         }
     }

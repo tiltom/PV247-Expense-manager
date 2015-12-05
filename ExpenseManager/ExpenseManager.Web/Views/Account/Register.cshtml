@@ -7,7 +7,6 @@
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary("", new { @class = "text-danger" })
-   
     <div class="form-group">
         @Html.LabelFor(m => m.FirstName, new {@class = "col-md-2 control-label"})
         <div class="col-md-10">
@@ -40,9 +39,14 @@
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.ConfirmPassword, new {@class = "col-md-2 control-label"})
         <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+            @Html.PasswordFor(m => m.ConfirmPassword, new {@class = "form-control"})
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            @Html.Captcha(SharedResource.Refresh, SharedResource.CaptchaField, 4, SharedResource.CaptchaValidationFailed)
         </div>
     </div>
     <div class="form-group">

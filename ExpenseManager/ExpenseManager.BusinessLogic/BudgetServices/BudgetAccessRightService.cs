@@ -59,9 +59,9 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// </summary>
         /// <param name="id">ID of a creator</param>
         /// <returns>Access rights creator</returns>
-        private UserProfile GetAccessRightsCreator(string id)
+        private UserProfile GetAccessRightsCreator(Guid id)
         {
-            return this._db.UserProfiles.FirstOrDefault(user => user.Guid.ToString() == id);
+            return this._db.UserProfiles.FirstOrDefault(user => user.Guid == id);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <param name="assignedUserId">Assigned user's ID</param>
         /// <param name="permission">Permission for right</param>
         /// <returns></returns>
-        public async Task CreateAccessBudgetRight(Guid budgetId, string assignedUserId, PermissionEnum permission)
+        public async Task CreateAccessBudgetRight(Guid budgetId, Guid assignedUserId, PermissionEnum permission)
         {
             // find budget by its Id
             var budget = await this.GetBudgetById(budgetId);

@@ -39,7 +39,7 @@ namespace ExpenseManager.Web
                 .ForMember(dto => dto.Id, options => options.MapFrom(entity => entity.Guid))
                 .ForMember(dto => dto.Expense, options => options.MapFrom(entity => entity.Amount < 0))
                 .ForMember(dto => dto.Amount,
-                    options => options.MapFrom(entity => entity.Amount < 0 ? entity.Amount * -1 : entity.Amount))
+                    options => options.MapFrom(entity => entity.Amount < 0 ? entity.Amount*-1 : entity.Amount))
                 .ForMember(dto => dto.Date, options => options.MapFrom(entity => entity.Date))
                 .ForMember(dto => dto.Description, options => options.MapFrom(entity => entity.Description))
                 .ForMember(dto => dto.WalletId, options => options.MapFrom(entity => entity.Wallet.Guid))
@@ -51,7 +51,7 @@ namespace ExpenseManager.Web
             Mapper.CreateMap<Transaction, TransactionShowServiceModel>()
                 .ForMember(dto => dto.Id, options => options.MapFrom(entity => entity.Guid))
                 .ForMember(dto => dto.Amount,
-                    options => options.MapFrom(entity => entity.Amount < 0 ? entity.Amount * -1 : entity.Amount))
+                    options => options.MapFrom(entity => entity.Amount < 0 ? entity.Amount*-1 : entity.Amount))
                 .ForMember(dto => dto.Date, options => options.MapFrom(entity => entity.Date))
                 .ForMember(dto => dto.Description, options => options.MapFrom(entity => entity.Description))
                 .ForMember(dto => dto.BudgetName,
@@ -181,7 +181,6 @@ namespace ExpenseManager.Web
             Mapper.CreateMap<WalletAccessRight, WalletAccessRightModel>()
                 .ForMember(view => view.Id, options => options.MapFrom(entity => entity.Guid))
                 .ForMember(view => view.Permission, options => options.MapFrom(entity => entity.Permission.ToString()))
-                .ForMember(view => view.AssignedUserId, options => options.MapFrom(entity => entity.UserProfile.Guid))
                 .ForMember(view => view.AssignedUserName,
                     options =>
                         options.MapFrom(entity => entity.UserProfile.FirstName + " " + entity.UserProfile.LastName))

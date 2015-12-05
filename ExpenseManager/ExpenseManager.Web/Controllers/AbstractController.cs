@@ -20,7 +20,19 @@ namespace ExpenseManager.Web.Controllers
     public abstract class AbstractController : Controller
     {
         public const string DateFormat = "dd.MM.yyyy";
+        public const string Error = "Error";
+        public const string Success = "Success";
         public const int PageSize = 5;
+
+        protected void AddSuccess(string message)
+        {
+            TempData[Success] = message;
+        }
+
+        protected void AddError(string message)
+        {
+            TempData[Error] = message;
+        }
 
         #region protected
 
@@ -75,6 +87,17 @@ namespace ExpenseManager.Web.Controllers
             return
                 await
                     UserContext.Currencies.FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        ///     Returns user profile by it's Email
+        /// </summary>
+        /// <param name="email">User mail</param>
+        /// <returns>Desired user profile</returns>
+        protected async Task<Guid> GetUserProfileByEmail(string email)
+        {
+            return
+                await UserContext.Users.Where(x => x.Email == email).Select(u => u.Profile.Guid).FirstOrDefaultAsync();
         }
 
 

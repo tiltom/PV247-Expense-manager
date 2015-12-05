@@ -13,25 +13,20 @@ namespace ExpenseManager.Web.Models.BudgetAccessRight
     public class CreateBudgetAccessRightModel
     {
         /// <summary>
-        /// Constructor for model with initialization of collections.
+        ///     Constructor for model with initialization of collections.
         /// </summary>
         public CreateBudgetAccessRightModel()
         {
-            Users = Enumerable.Empty<SelectListItem>();
             Permissions = Enumerable.Empty<SelectListItem>();
         }
 
         /// <summary>
-        ///     id of the user with this access right
+        ///     email of the user with this access right
         /// </summary>
         [Display(Name = "Assigned user")]
         [Required]
-        public string AssignedUserId { get; set; }
-
-        /// <summary>
-        ///     name of the user with this access right
-        /// </summary>
-        public string AssignedUserName { get; set; }
+        [EmailAddress]
+        public string AssignedUserEmail { get; set; }
 
         /// <summary>
         ///     permission level for the user
@@ -46,10 +41,6 @@ namespace ExpenseManager.Web.Models.BudgetAccessRight
         [Required]
         public Guid BudgetId { get; set; }
 
-        /// <summary>
-        ///     list of users as options for dropdown
-        /// </summary>
-        public IEnumerable<SelectListItem> Users { get; set; }
 
         /// <summary>
         ///     list of permissions as options for dropdown

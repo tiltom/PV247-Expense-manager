@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using ExpenseManager.Resources.WalletResources;
 
 namespace ExpenseManager.Web.Models.WalletAccessRight
 {
@@ -19,14 +20,14 @@ namespace ExpenseManager.Web.Models.WalletAccessRight
         /// <summary>
         ///     id of the assigned user (selected from dropdown)
         /// </summary>
-        [Display(Name = "User")]
+        [Display(ResourceType = typeof (WalletAccessRightResource), Name = "User")]
         [Required]
         public Guid AssignedUserId { get; set; }
 
         /// <summary>
         ///     name of the user with this access right
         /// </summary>
-        [Display(Name = "Assigned User")]
+        [Display(ResourceType = typeof (WalletAccessRightResource), Name = "AssignedUserName")]
         public string AssignedUserName { get; set; }
 
         /// <summary>
@@ -38,7 +39,7 @@ namespace ExpenseManager.Web.Models.WalletAccessRight
         /// <summary>
         ///     permission assigned to user
         /// </summary>
-        [Display(Name = "Assigned permission")]
+        [Display(ResourceType = typeof (WalletAccessRightResource), Name = "AssignedPermission")]
         [Required]
         public string Permission { get; set; }
 
