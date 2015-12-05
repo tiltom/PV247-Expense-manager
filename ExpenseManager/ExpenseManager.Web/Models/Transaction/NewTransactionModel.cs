@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Web.Mvc;
 using ExpenseManager.Entity.Enums;
 
@@ -11,6 +12,16 @@ namespace ExpenseManager.Web.Models.Transaction
     /// </summary>
     public class NewTransactionModel
     {
+        /// <summary>
+        ///     Constructor for model with initialization of collections.
+        /// </summary>
+        public NewTransactionModel()
+        {
+            Categories = Enumerable.Empty<SelectListItem>();
+            Currencies = Enumerable.Empty<SelectListItem>();
+            Budgets = Enumerable.Empty<SelectListItem>();
+        }
+
         /// <summary>
         ///     Bool representing if transaction is expense
         /// </summary>
@@ -86,16 +97,16 @@ namespace ExpenseManager.Web.Models.Transaction
         /// <summary>
         ///     List of all available Categories
         /// </summary>
-        public List<SelectListItem> Categories { get; set; }
+        public IEnumerable<SelectListItem> Categories { get; set; }
 
         /// <summary>
         ///     List of all available Currencies
         /// </summary>
-        public List<SelectListItem> Currencies { get; set; }
+        public IEnumerable<SelectListItem> Currencies { get; set; }
 
         /// <summary>
         ///     List of all available Budgets
         /// </summary>
-        public List<SelectListItem> Budgets { get; set; }
+        public IEnumerable<SelectListItem> Budgets { get; set; }
     }
 }
