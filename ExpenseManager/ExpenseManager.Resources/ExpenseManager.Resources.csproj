@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ExpenseManager.Resources</RootNamespace>
     <AssemblyName>ExpenseManager.Resources</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,6 +57,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SharedResource.resx</DependentUpon>
     </Compile>
+    <Compile Include="TransactionResources\TransactionResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TransactionResource.resx</DependentUpon>
+    </Compile>
     <Compile Include="WalletResources\WalletAccessRightResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -74,6 +80,10 @@
     <EmbeddedResource Include="SharedResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>SharedResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TransactionResources\TransactionResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TransactionResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="WalletResources\WalletAccessRightResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

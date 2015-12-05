@@ -1,17 +1,18 @@
 ﻿@model PagedList.IPagedList<ExpenseManager.Web.Models.Transaction.TransactionShowModel>
+@using ExpenseManager.Resources.TransactionResources
 @using PagedList.Mvc;
 
 @{
-    ViewBag.Title = "Transactions overview";
+    ViewBag.Title = TransactionResource.Overview;
 }
 @if (ViewBag.editable)
 {
     <p>
-        @Html.ActionLink("Create New", "ExpenseIncome", new {wallet = ViewBag.displayedWalletId }, new { @class = "btn btn-action" })
+        @Html.ActionLink(SharedResource.CreateNew, "ExpenseIncome", new {wallet = ViewBag.displayedWalletId }, new { @class = "btn btn-action" })
     </p>
 }
 <p>
-    @using (Html.BeginForm("Index", "Transaction", FormMethod.Get, new {@class = "form-horizontal"}))
+    @using (Html.BeginForm(SharedResource.Index, "Transaction", FormMethod.Get, new {@class = "form-horizontal"}))
     {
         <div class="form-group small-margin-top">
             <div class="col-md-2">
@@ -24,13 +25,13 @@
                 @Html.DropDownList("wallet", null, new {@class = "form-control"})
             </div>
             <div class="col-md-2">
-                @Html.DropDownList("category", null, "Select Category", new {@class = "form-control"})
+                @Html.DropDownList("category", null, TransactionResource.CategorySelection, new {@class = "form-control"})
             </div>
             <div class="col-md-2">
-                @Html.DropDownList("budget", null, "Select Budget", new {@class = "form-control"})
+                @Html.DropDownList("budget", null, TransactionResource.BudgetSelection, new {@class = "form-control"})
             </div>
             <div class="col-md-2">
-                <input type="submit" class="btn btn-success" value="Filter"/>
+                <input type="submit" class="btn btn-success" value=@TransactionResource.Filter />
                 </div>
         </div>
     }
@@ -94,8 +95,8 @@
                         <div class="dropdown">
                             <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li>@Html.ActionLink("Edit", "Edit", new {id = item.Id})</li>
-                                <li>@Html.ActionLink("Delete", "Delete", new {id = item.Id})</li>
+                                <li>@Html.ActionLink(SharedResource.Edit, "Edit", new {id = item.Id})</li>
+                                <li>@Html.ActionLink(SharedResource.Delete, "Delete", new {id = item.Id})</li>
                             </ul>
                         </div>
                     }

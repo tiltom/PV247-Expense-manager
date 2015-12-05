@@ -16,6 +16,7 @@ using ExpenseManager.Entity.Enums;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Wallets;
+using ExpenseManager.Resources.TransactionResources;
 
 namespace ExpenseManager.BusinessLogic.TransactionServices
 {
@@ -39,39 +40,39 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 throw new ArgumentNullException(nameof(transaction));
             if (transaction.WalletId == Guid.Empty)
             {
-                throw new ArgumentException("WalletId must have set Id");
+                throw new ArgumentException(TransactionResource.WalletIdError);
             }
             var exception = new ValidationException();
             if (transaction.Amount <= 0)
             {
-                exception.Erorrs.Add("Amount", "Transaction amount must be greater than zero");
+                exception.Erorrs.Add("Amount", TransactionResource.AmmountError);
             }
             if (transaction.Date == DateTime.MinValue)
             {
-                exception.Erorrs.Add("Date", "Date was not in format dd.MM.yyyy");
+                exception.Erorrs.Add("Date", TransactionResource.DateError);
             }
             if (transaction.CategoryId == Guid.Empty)
             {
-                exception.Erorrs.Add("CategoryId", "Category field is required.");
+                exception.Erorrs.Add("CategoryId", TransactionResource.CategoryError);
             }
             if (transaction.CurrencyId == Guid.Empty)
             {
-                exception.Erorrs.Add("CurrencyId", "Currency field is required.");
+                exception.Erorrs.Add("CurrencyId", TransactionResource.CurrencyError);
             }
             if (transaction.IsRepeatable)
             {
                 if (transaction.LastOccurrence == null)
                 {
-                    exception.Erorrs.Add("LastOccurrence", "Date of last occurrence must be set");
+                    exception.Erorrs.Add("LastOccurrence", TransactionResource.LastOccurrenceNullError);
                 }
                 else if (transaction.Date >= transaction.LastOccurrence.GetValueOrDefault())
                 {
                     exception.Erorrs.Add("LastOccurrence",
-                        "Date until which transaction should be repeated must be after first transaction occurrence");
+                        TransactionResource.LastOccurrenceBeforeDateError);
                 }
                 if (transaction.NextRepeat == null || transaction.NextRepeat <= 0)
                 {
-                    exception.Erorrs.Add("NextRepeat", "Frequency must be positive number");
+                    exception.Erorrs.Add("NextRepeat", TransactionResource.NextRepeatError);
                 }
             }
 

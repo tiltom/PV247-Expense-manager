@@ -11,6 +11,7 @@ using ExpenseManager.BusinessLogic.TransactionServices;
 using ExpenseManager.BusinessLogic.TransactionServices.Models;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Resources.TransactionResources;
 using ExpenseManager.Web.Models.Transaction;
 using PagedList;
 
@@ -62,7 +63,7 @@ namespace ExpenseManager.Web.Controllers
             catch (SecurityException)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
-                    "You don't have permission to view this wallet");
+                    TransactionResource.PermissionError);
             }
 
             if (category != null)
@@ -79,7 +80,8 @@ namespace ExpenseManager.Web.Controllers
 
             // when user doesn't have permission to manipulate with transaction show view without edit and delete
             ViewBag.editable = permission.Permission != PermissionEnum.Read;
-            return this.View("Index", showModels.OrderByDescending(model => model.Date).ToPagedList(pageNumber, PageSize));
+            return this.View("Index",
+                showModels.OrderByDescending(model => model.Date).ToPagedList(pageNumber, PageSize));
         }
 
 
@@ -105,7 +107,7 @@ namespace ExpenseManager.Web.Controllers
             if (permissions == null || PermissionEnum.Read == permissions.Permission)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
-                    "You don't have permission to create transactions in this wallet");
+                    TransactionResource.PermissionErrorCreate);
             }
             //get default currency for wallet
             var currency = await this._transactionService.GetDefaultCurrencyInWallet(wallet);
@@ -172,7 +174,7 @@ namespace ExpenseManager.Web.Controllers
             catch (SecurityException)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
-                    "You don't have permission to edit this transaction");
+                    TransactionResource.PermissionErrorEdit);
             }
             if (transaction == null)
             {
@@ -273,7 +275,7 @@ namespace ExpenseManager.Web.Controllers
             catch (SecurityException)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
-                    "You don't have permission to delete this transaction");
+                    TransactionResource.PermissionErrorDelete);
             }
             return this.RedirectToAction("Index", new {wallet = walletId});
         }

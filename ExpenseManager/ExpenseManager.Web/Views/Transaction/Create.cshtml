@@ -1,8 +1,9 @@
-﻿@using ExpenseManager.Web.Controllers
+﻿@using ExpenseManager.Resources.TransactionResources
+@using ExpenseManager.Web.Controllers
 @model ExpenseManager.Web.Models.Transaction.NewTransactionModel
 
 @{
-    ViewBag.Title = @Model.Expense ? "Add new expense" : "Add new income";
+    ViewBag.Title = @Model.Expense ? TransactionResource.AddExpense : TransactionResource.AddIncome;
     HtmlHelper.ClientValidationEnabled = false;
 }
 
@@ -26,7 +27,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-3">
-                @Html.DropDownListFor(model => model.CategoryId, Model.Categories, "Select Category", htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.CategoryId, Model.Categories, TransactionResource.CategorySelection, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -71,7 +72,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.CurrencyId, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-3">
-                    @Html.DropDownListFor(model => model.CurrencyId, Model.Currencies, "Select Currency", htmlAttributes: new { @class = "form-control" })
+                    @Html.DropDownListFor(model => model.CurrencyId, Model.Currencies, TransactionResource.CurrencySelection, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.CurrencyId, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -80,7 +81,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.BudgetId, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-3">
-                    @Html.DropDownListFor(model => model.BudgetId, Model.Budgets, "Select Budget", htmlAttributes: new { @class = "form-control" })
+                    @Html.DropDownListFor(model => model.BudgetId, Model.Budgets, TransactionResource.BudgetSelection, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.BudgetId, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -111,7 +112,7 @@
                             @Html.ValidationMessageFor(model => model.NextRepeat, "", new { @class = "text-danger" })
                         </div>
                         <div class="col-md-2 col-xs-7">
-                            @Html.EnumDropDownListFor(model => model.FrequencyType, "Select Frequency", htmlAttributes: new { @class = "form-control" })
+                            @Html.EnumDropDownListFor(model => model.FrequencyType, TransactionResource.FrequencySelection, htmlAttributes: new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.FrequencyType, "", new { @class = "text-danger" })
                         </div>
                     
@@ -134,7 +135,7 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create" class="btn btn-success" />
-                @Html.ActionLink("Cancel", "Index", new { wallet = Model.WalletId }, new { @class = "btn btn-danger" })
+                @Html.ActionLink(SharedResource.Cancel, "Index", new { wallet = Model.WalletId }, new { @class = "btn btn-danger" })
             </div>
         </div>
     </div>

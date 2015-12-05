@@ -1,7 +1,8 @@
-﻿@model ExpenseManager.Web.Models.Transaction.EditTransactionModel
+﻿@using ExpenseManager.Resources.TransactionResources
+@model ExpenseManager.Web.Models.Transaction.EditTransactionModel
 
 @{
-    ViewBag.Title = "Delete transaction";
+    ViewBag.Title = TransactionResource.DeleteTransaction;
 }
 
 <h3>Are you sure you want to delete transaction @Model.Description ?</h3>
@@ -14,6 +15,6 @@
 
     <div class="form-actions no-color">
         <input type="submit" value="Delete" class="btn btn-success" />
-        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-danger" })
+        @Html.ActionLink(SharedResource.BackToList, "Index", null, new { @class = "btn btn-danger" })
     </div>
 }

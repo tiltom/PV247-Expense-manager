@@ -104,6 +104,10 @@
       <Project>{73a4fab0-96f1-4dc9-92a8-2cc73b4ef776}</Project>
       <Name>ExpenseManager.Entity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExpenseManager.Resources\ExpenseManager.Resources.csproj">
+      <Project>{6A0A6CAA-33E6-4D1A-BA9F-759BCEBA3700}</Project>
+      <Name>ExpenseManager.Resources</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
