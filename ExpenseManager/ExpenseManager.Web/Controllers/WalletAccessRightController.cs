@@ -23,7 +23,7 @@ namespace ExpenseManager.Web.Controllers
         private readonly CommonService _commonService = new CommonService();
 
         private readonly WalletAccessRightService _walletAccessRightService =
-            new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders());
+            new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders(), new CommonService());
 
 
         /// <summary>
@@ -75,12 +75,12 @@ namespace ExpenseManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 var userId = await this.GetUserProfileByEmail(walletAccessRight.AssignedUserEmail);
-
-                if (userId != null)
+                if (!userId.Equals(Guid.Empty))
                 {
-                    var entity = await this.ConvertModelToEntity(walletAccessRight, userId);
                     await this._walletAccessRightService.CreateWalletAccessRight(
-                        entity
+                        walletAccessRight.WalletId,
+                        userId,
+                        walletAccessRight.Permission
                         );
                     return this.RedirectToAction("Index");
                 }
@@ -176,17 +176,6 @@ namespace ExpenseManager.Web.Controllers
         }
 
         #region private
-
-        private async Task<WalletAccessRight> ConvertModelToEntity(WalletAccessRightModel model, Guid userGuid)
-        {
-            return new WalletAccessRight
-            {
-                Guid = Guid.NewGuid(),
-                Wallet = await this._walletAccessRightService.GetWalletById(model.WalletId),
-                UserProfile = await this._walletAccessRightService.GetUserProfileById(userGuid),
-                Permission = this._commonService.ConvertPermissionStringToEnum(model.Permission)
-            };
-        }
 
         private WalletAccessRightModel ConvertEntityToModelWithComboOptions(WalletAccessRight entity)
         {

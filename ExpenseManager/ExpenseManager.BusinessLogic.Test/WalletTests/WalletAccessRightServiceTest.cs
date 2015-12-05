@@ -20,7 +20,8 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
                 UserProfile = null
             };
 
-            var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders());
+            var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders(),
+                new CommonService());
             Assert.IsFalse(walletAccessRightService.ValidateWalletAccessRight(walletAccessRight));
         }
 
@@ -34,7 +35,8 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
                 UserProfile = new UserProfile()
             };
 
-            var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders());
+            var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders(),
+                new CommonService());
             Assert.IsFalse(walletAccessRightService.ValidateWalletAccessRight(walletAccessRight));
         }
 
@@ -43,7 +45,8 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
         public void ValidateWalletAccessRight_NullWalletAccessRight_ReturnFalse(
             WalletAccessRight walletAccessRight)
         {
-            var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders());
+            var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders(),
+                new CommonService());
             Assert.IsFalse(walletAccessRightService.ValidateWalletAccessRight(walletAccessRight));
         }
 
@@ -57,7 +60,7 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
                 UserProfile = new UserProfile()
             };
 
-            var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders());
+            var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders(),new CommonService());
             Assert.IsTrue(walletAccessRightService.ValidateWalletAccessRight(walletAccessRight));
         }
     }

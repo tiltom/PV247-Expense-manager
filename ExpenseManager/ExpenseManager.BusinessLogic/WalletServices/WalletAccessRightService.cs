@@ -14,11 +14,13 @@ namespace ExpenseManager.BusinessLogic.WalletServices
     /// </summary>
     public class WalletAccessRightService
     {
+        private readonly CommonService _commonService;
         private readonly IWalletsProvider _db;
 
-        public WalletAccessRightService(IWalletsProvider db)
+        public WalletAccessRightService(IWalletsProvider db, CommonService commonService)
         {
             this._db = db;
+            this._commonService = commonService;
         }
 
         /// <summary>
@@ -57,14 +59,25 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         /// <summary>
         ///     Creates new wallet access right
         /// </summary>
-        /// <param name="walletAccessRight">Instance of new wallet access right</param>
+        /// <param name="walletId">id of wallet</param>
+        /// <param name="userId">id of user</param>
+        /// <param name="permission">string of permission</param>
         /// <returns></returns>
-        public async Task CreateWalletAccessRight(WalletAccessRight walletAccessRight)
+        public async Task CreateWalletAccessRight(Guid walletId, Guid userId, string permission)
         {
+            var walletAccessRight = new WalletAccessRight
+            {
+                Guid = Guid.NewGuid(),
+                Wallet = await this.GetWalletById(walletId),
+                UserProfile = await this.GetUserProfileById(userId),
+                Permission = this._commonService.ConvertPermissionStringToEnum(permission)
+            };
+
             this.ValidateWalletAccessRight(walletAccessRight);
 
             await this._db.AddOrUpdateAsync(walletAccessRight);
         }
+
 
         /// <summary>
         ///     Returns wallet by it's ID
