@@ -16,7 +16,6 @@ namespace ExpenseManager.Database.Seeding.Seeds
             {
                 new Budget
                 {
-                    Currency = context.Currencies.FirstOrDefault(),
                     StartDate = new DateTime(2015, 10, 15),
                     EndDate = new DateTime(2015, 10, 25),
                     Name = "Spain Holiday",

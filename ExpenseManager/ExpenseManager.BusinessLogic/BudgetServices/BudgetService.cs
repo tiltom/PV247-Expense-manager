@@ -140,11 +140,6 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
                 return false;
             }
 
-            if (budget.Currency == null)
-            {
-                return false;
-            }
-
             if (budget.Creator == null)
             {
                 return false;

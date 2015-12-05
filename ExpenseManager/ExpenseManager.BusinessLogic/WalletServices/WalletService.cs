@@ -51,6 +51,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         public async Task EditWallet(Guid id, string name, Guid currencyId)
         {
             var wallet = await this.GetWalletById(id);
+            var oldCurrency = wallet.Currency;
             var currency = await this.GetCurrencyById(currencyId);
 
             wallet.Name = name;
@@ -61,6 +62,11 @@ namespace ExpenseManager.BusinessLogic.WalletServices
                 foreach (var transaction in wallet.Transactions)
                 {
                     Transformation.ChangeCurrency(transaction, currency);
+                }
+
+                foreach (var budget in wallet.Owner.CreatedBudgets)
+                {
+                    Transformation.ChangeCurrency(budget, currency, oldCurrency);
                 }
 
                 await this._db.AddOrUpdateAsync(wallet);

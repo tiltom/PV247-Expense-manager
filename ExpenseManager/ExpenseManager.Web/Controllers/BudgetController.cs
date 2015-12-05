@@ -89,7 +89,6 @@ namespace ExpenseManager.Web.Controllers
                 Limit = model.Limit,
                 Description = model.Description ?? string.Empty,
                 Creator = creator,
-                Currency = await this.GetDefaultCurrency(),
                 AccessRights =
                     new List<BudgetAccessRight>
                     {

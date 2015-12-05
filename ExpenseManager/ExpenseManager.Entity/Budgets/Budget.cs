@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Users;
 
@@ -45,12 +44,6 @@ namespace ExpenseManager.Entity.Budgets
         /// </summary>
         [Required]
         public virtual UserProfile Creator { get; set; }
-
-        /// <summary>
-        ///     Currency used for budget. Default value is currency of wallet
-        /// </summary>
-        [Required]
-        public virtual Currency Currency { get; set; }
 
         /// <summary>
         ///     Transactions made in this budget

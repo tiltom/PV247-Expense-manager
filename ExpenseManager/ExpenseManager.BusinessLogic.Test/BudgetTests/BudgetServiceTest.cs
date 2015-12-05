@@ -17,7 +17,6 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
             var budget = new Budget
             {
                 Creator = new UserProfile(),
-                Currency = new Currency(),
                 Name = string.Empty,
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddDays(1),
@@ -35,7 +34,6 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
             var budget = new Budget
             {
                 Creator = new UserProfile(),
-                Currency = new Currency(),
                 Name = "Test Name",
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddDays(1),
@@ -62,25 +60,6 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
             var budget = new Budget
             {
                 Creator = null,
-                Currency = new Currency(),
-                Name = "Test name",
-                StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddDays(1),
-                Limit = 10
-            };
-
-            var budgetService = new BudgetService(ProvidersFactory.GetNewBudgetsProviders(),
-                ProvidersFactory.GetNewTransactionsProviders());
-            Assert.IsFalse(budgetService.ValidateBudget(budget));
-        }
-
-        [Test]
-        public void ValidateBudget_NullCurrency_ReturnFalse()
-        {
-            var budget = new Budget
-            {
-                Creator = new UserProfile(),
-                Currency = null,
                 Name = "Test name",
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddDays(1),
@@ -98,7 +77,6 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
             var budget = new Budget
             {
                 Creator = new UserProfile(),
-                Currency = new Currency(),
                 Name = "Test Name",
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddDays(1),
