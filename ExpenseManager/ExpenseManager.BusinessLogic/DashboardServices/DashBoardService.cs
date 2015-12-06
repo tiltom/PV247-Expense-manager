@@ -4,23 +4,41 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Chart.Mvc.ComplexChart;
+using Chart.Mvc.SimpleChart;
 using ExpenseManager.BusinessLogic.DashboardServices.Models;
+using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.Queryable;
 using ExpenseManager.Entity.Transactions;
 
 namespace ExpenseManager.BusinessLogic.DashboardServices
 {
-    public class DashBoardService
+    public class DashBoardService : ServiceWithWallet
     {
-        private const int WeekInterval = 60;
-        private const int MonthsInterval = 600;
-        private const int DaysInterval = 10;
+        private const int NumberOfTransactionsOnDashBoard = 5;
+        private readonly ColorGeneratorService _colorGenerator;
         private readonly ITransactionsProvider _transactionsProvider;
 
-        public DashBoardService(ITransactionsProvider transactionsProvider)
+        /// <summary>
+        ///     Constructor with services and providers required by this service
+        /// </summary>
+        /// <param name="transactionsProvider"> provider with db access to transactions</param>
+        /// <param name="colorGeneratorService">service which can generate colors</param>
+        public DashBoardService(ITransactionsProvider transactionsProvider, ColorGeneratorService colorGeneratorService)
         {
             this._transactionsProvider = transactionsProvider;
+            this._colorGenerator = colorGeneratorService;
         }
+
+        #region protected
+
+        protected override IWalletsQueryable WalletsProvider
+        {
+            get { return this._transactionsProvider; }
+        }
+
+        #endregion
 
         /// <summary>
         ///     Will return just transaction which can be seen by this user
@@ -113,10 +131,47 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
         /// <summary>
         ///     Filter transactions using filter
         /// </summary>
+        /// <param name="mappedFilter"> filter to be used</param>
+        /// <param name="userId">guid of logged user profile</param>
+        /// <returns>DashBoardServiceModel filled with graphs transactions and so on</returns>
+        public async Task<DashBoardServiceModel> GenerateDataForFilter(FilterDataServiceModel mappedFilter, Guid userId)
+        {
+            // select transactions according to filter
+            var userWallet = await this.GetWalletById(userId);
+            var resultMonth = this.FilterTransactions(mappedFilter.WithMonthFilterValues(), userId, userWallet.Currency);
+            var resultYear = this.FilterTransactions(mappedFilter.WithYearFilterValues(), userId, userWallet.Currency);
+            // prepare data for graphs
+            var categoriesExpense =
+                await this.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount < 0));
+            var categoriesIncome =
+                await this.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount >= 0));
+            var monthSummary = await this.GetGraphForDaysLastMonth(resultMonth);
+            var yearSummary = await this.GetGraphForMonthLastYear(resultYear);
+            // generate charts
+            return new DashBoardServiceModel
+            {
+                CategoriesExpenseChart = this.GeneratePieChart(categoriesExpense),
+                CategoriesIncomeChart = this.GeneratePieChart(categoriesIncome),
+                MonthSummaryChart = this.GenerateLineChart(monthSummary),
+                YearSummaryChart = this.GenerateLineChart(yearSummary),
+                Transactions = await this.LastTransactions(userId)
+            };
+        }
+
+        #region private
+
+        /// <summary>
+        ///     Filter transactions using filter
+        /// </summary>
         /// <param name="filter"> filter to be used</param>
         /// <param name="currentUser">guid of logged user profile</param>
+        /// ///
+        /// <param name="currency">currency of user profile</param>
         /// <returns></returns>
-        public IQueryable<Transaction> FilterTransactions(FilterDataServiceModel filter, Guid currentUser)
+        private IQueryable<Transaction> FilterTransactions(
+            FilterDataServiceModel filter,
+            Guid currentUser,
+            Currency currency)
         {
             return this.GetAccessibleResults(currentUser)
                 .Where(
@@ -127,5 +182,71 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                         && (!filter.Categories.Any() || filter.Categories.Contains(t.Category.Guid))
                 );
         }
+
+        private async Task<List<Transaction>> LastTransactions(Guid userId)
+        {
+            var lastTransactions =
+                await
+                    this.GetAccessibleResults(userId)
+                        .OrderByDescending(t => t.Date)
+                        .Take(NumberOfTransactionsOnDashBoard)
+                        .ToListAsync();
+            return lastTransactions;
+        }
+
+
+        private LineChart GenerateLineChart(GraphWithDescriptionModel data)
+        {
+            if (data.GraphData.Count < 2)
+            {
+                return null;
+            }
+            var lineChart = new LineChart
+            {
+                ComplexData =
+                {
+                    Labels = data.GraphData.Select(t => t.Label).ToList(),
+                    Datasets = new List<ComplexDataset>
+                    {
+                        new ComplexDataset
+                        {
+                            Data = data.GraphData.Select(t => Convert.ToDouble(t.Value)).ToList(),
+                            Label = data.Description,
+                            FillColor = ColorGeneratorService.Transparent,
+                            StrokeColor = this._colorGenerator.GenerateColor(),
+                            PointColor = ColorGeneratorService.Black,
+                            PointStrokeColor = ColorGeneratorService.White,
+                            PointHighlightFill = ColorGeneratorService.White,
+                            PointHighlightStroke = ColorGeneratorService.Black
+                        }
+                    }
+                }
+            };
+            lineChart.ChartConfiguration.ScaleBeginAtZero = false;
+            lineChart.ChartConfiguration.Responsive = true;
+            return lineChart;
+        }
+
+        private PieChart GeneratePieChart(List<SimpleGraphModel> result)
+        {
+            if (result.Count == 0)
+            {
+                return null;
+            }
+            var sum = result.Sum(t => t.Value);
+            return new PieChart
+            {
+                Data = result.Select(
+                    t =>
+                        new SimpleData
+                        {
+                            Label = t.Label,
+                            Value = Math.Round(100*Math.Abs(Convert.ToDouble(t.Value))/Convert.ToDouble(sum), 2),
+                            Color = this._colorGenerator.GenerateColor()
+                        }).ToList()
+            };
+        }
+
+        #endregion
     }
 }

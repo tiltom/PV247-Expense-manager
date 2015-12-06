@@ -7,6 +7,7 @@ using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.infrastructure;
+using ExpenseManager.Entity.Providers.Queryable;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
@@ -36,7 +37,7 @@ namespace ExpenseManager.Database.Contexts
             get { return Categories; }
         }
 
-        IQueryable<Wallet> IWalletsProvider.Wallets
+        IQueryable<Wallet> IWalletsQueryable.Wallets
         {
             get { return Wallets; }
         }

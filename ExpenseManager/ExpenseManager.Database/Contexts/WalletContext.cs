@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.infrastructure;
+using ExpenseManager.Entity.Providers.Queryable;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
@@ -23,7 +24,7 @@ namespace ExpenseManager.Database.Contexts
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
 
-        IQueryable<Wallet> IWalletsProvider.Wallets
+        IQueryable<Wallet> IWalletsQueryable.Wallets
         {
             get
             {

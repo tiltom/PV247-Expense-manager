@@ -201,6 +201,24 @@ namespace ExpenseManager.Web
                 .ForMember(view => view.Categories, options => options.MapFrom(model => model.Categories))
                 .ForMember(view => view.Wallets, options => options.MapFrom(model => model.Wallets))
                 .ForMember(view => view.Budgets, options => options.MapFrom(model => model.Budgets));
+
+            Mapper.CreateMap<FilterDataServiceModel, FilterDataModel>()
+                .ForMember(view => view.Categories, options => options.MapFrom(model => model.Categories))
+                .ForMember(view => view.Wallets, options => options.MapFrom(model => model.Wallets))
+                .ForMember(view => view.Budgets, options => options.MapFrom(model => model.Budgets));
+
+            Mapper.CreateMap<DashBoardServiceModel, DashBoardModel>()
+                .ForMember(
+                    view => view.CategoriesExpenseChart,
+                    options => options.MapFrom(model => model.CategoriesExpenseChart)
+                )
+                .ForMember(view => view.MonthSummaryChart, options => options.MapFrom(model => model.MonthSummaryChart))
+                .ForMember(
+                    view => view.CategoriesIncomeChart,
+                    options => options.MapFrom(model => model.CategoriesIncomeChart)
+                )
+                .ForMember(view => view.Transactions, options => options.MapFrom(model => model.Transactions))
+                .ForMember(view => view.YearSummaryChart, options => options.MapFrom(model => model.YearSummaryChart));
         }
     }
 }

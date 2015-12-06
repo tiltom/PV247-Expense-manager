@@ -18,6 +18,7 @@ using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Enums;
 using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.Queryable;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Resources;
@@ -25,7 +26,7 @@ using ExpenseManager.Resources.TransactionResources;
 
 namespace ExpenseManager.BusinessLogic.TransactionServices
 {
-    public class TransactionService
+    public class TransactionService : ServiceWithWallet
     {
         public const string DateFormat = "dd.MM.yyyy";
         private readonly IBudgetsProvider _budgetsProvider;
@@ -40,6 +41,10 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             this._walletsProvider = walletsProvider;
         }
 
+        protected override IWalletsQueryable WalletsProvider
+        {
+            get { return this._walletsProvider; }
+        }
 
         public void ValidateTransaction(TransactionServiceModel transaction)
         {
@@ -325,13 +330,6 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return modelList;
         }
 
-        public async Task<Wallet> GetWalletById(Guid walletId)
-        {
-            return
-                await this._transactionsProvider.Wallets.Where(wallet => wallet.Guid == walletId).FirstOrDefaultAsync();
-        }
-
-
         public async Task<Currency> GetDefaultCurrencyInWallet(Guid walletId)
         {
             return
@@ -391,24 +389,6 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return new SelectList(selectList, "Value", "Text", categoryId);
         }
 
-        /// <summary>
-        ///     Returns guid of User's default Wallet
-        /// </summary>
-        /// <param name="userId">guid of user</param>
-        /// <returns></returns>
-        public async Task<Guid> GetDefaultWallet(Guid userId)
-        {
-            return
-                await
-                    this._walletsProvider.Wallets.Select(
-                        wallet =>
-                            wallet.WalletAccessRights.Where(
-                                right => right.Permission == PermissionEnum.Owner
-                                         && right.UserProfile.Guid == userId
-                                )
-                                .Select(right => right.Wallet.Guid)
-                                .FirstOrDefault()).FirstOrDefaultAsync();
-        }
 
         //TODO will be only private
         public async Task<WalletAccessRight> GetPermission(Guid userId, Guid walletId)

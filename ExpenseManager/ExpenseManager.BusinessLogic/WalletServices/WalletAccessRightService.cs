@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.Queryable;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 
@@ -26,7 +27,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
 
         #region protected
 
-        protected override IWalletsProvider WalletsProvider
+        protected override IWalletsQueryable WalletsProvider
         {
             get { return this._wallets; }
         }

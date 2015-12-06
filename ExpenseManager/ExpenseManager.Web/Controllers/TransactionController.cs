@@ -39,7 +39,7 @@ namespace ExpenseManager.Web.Controllers
             // If no wallet was given set default wallet
             if (wallet == null)
             {
-                wallet = await this._transactionService.GetDefaultWallet(id);
+                wallet = await this._transactionService.GetWalletIdByUserId(id);
             }
             var walletId = wallet.Value;
             // get user permission for selected wallet
@@ -92,7 +92,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (wallet == null)
             {
-                wallet = await this._transactionService.GetDefaultWallet(await this.CurrentProfileId());
+                wallet = await this._transactionService.GetWalletIdByUserId(await this.CurrentProfileId());
             }
             ViewBag.wallet = wallet;
             return

@@ -6,6 +6,7 @@ using ExpenseManager.BusinessLogic.ExchangeRates;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Providers.Queryable;
 using ExpenseManager.Entity.Wallets;
 
 namespace ExpenseManager.BusinessLogic.WalletServices
@@ -22,7 +23,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
             this._db = db;
         }
 
-        protected override IWalletsProvider WalletsProvider
+        protected override IWalletsQueryable WalletsProvider
         {
             get { return this._db; }
         }

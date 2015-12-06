@@ -1,10 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ExpenseManager.BusinessLogic.DashboardServices.Models
 {
     public class FilterDataServiceModel
     {
+        public FilterDataServiceModel()
+        {
+            Wallets = Enumerable.Empty<Guid>();
+            Categories = Enumerable.Empty<Guid>();
+            Budgets = Enumerable.Empty<Guid>();
+        }
+
         /// <summary>
         ///     start of interval for transactions shown
         /// </summary>

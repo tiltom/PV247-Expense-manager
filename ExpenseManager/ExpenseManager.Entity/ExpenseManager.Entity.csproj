@@ -61,6 +61,7 @@
     <Compile Include="Providers\IUserProfilesProvider.cs" />
     <Compile Include="Providers\IWalletAccessRightsProvider.cs" />
     <Compile Include="Providers\IWalletsProvider.cs" />
+    <Compile Include="Providers\Queryable\IWalletsQueryable.cs" />
     <Compile Include="Wallets\WalletAccessRight.cs" />
     <Compile Include="Budgets\BudgetAccessRight.cs" />
     <Compile Include="Budgets\Budget.cs" />
