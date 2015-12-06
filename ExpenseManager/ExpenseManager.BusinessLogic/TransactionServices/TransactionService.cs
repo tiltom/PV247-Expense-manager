@@ -187,7 +187,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         {
             if (wallet == null)
             {
-                wallet = await this.GetDefaultWallet(userId);
+                wallet = await this.GetWalletIdByUserId(userId);
             }
             var walletId = wallet.Value;
             IEnumerable<TransactionShowServiceModel> list = await this.GetAllTransactionsInWallet(userId, walletId);
@@ -226,7 +226,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     Amount = reader.GetField<decimal>(SharedResource.Amount),
                     Date = DateTime.Parse(reader.GetField<string>(SharedResource.Date)),
                     Description = reader.GetField<string>(SharedResource.Description),
-                    WalletId = await this.GetDefaultWallet(userId)
+                    WalletId = await this.GetWalletIdByUserId(userId)
                 };
                 model.CurrencyId = (await this.GetDefaultCurrencyInWallet(model.WalletId)).Guid;
                 model.CategoryId = (await this.GetCategoryByName(categoryName)).Guid;
