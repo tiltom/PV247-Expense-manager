@@ -113,6 +113,35 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             }
         }
 
+        public async Task<HttpStatusCodeResult> UpdateRepeatableTransactions()
+        {
+            List<RepeatableTransaction> repeatableTransactions = await _transactionsProvider.RepeatableTransactions.ToListAsync();
+            foreach (RepeatableTransaction rt in repeatableTransactions)
+            {
+                DateTime expectedNewOccurance = rt.LastOccurrence.AddDays(rt.NextRepeat);
+
+                while (expectedNewOccurance.Subtract(DateTime.Today).Days < 0)
+                {
+                    Transaction transactionToAdd = new Transaction();
+                    transactionToAdd.Amount = rt.FirstTransaction.Amount;
+                    transactionToAdd.Budget = rt.FirstTransaction.Budget;
+                    transactionToAdd.Category = rt.FirstTransaction.Category;
+                    transactionToAdd.Currency = rt.FirstTransaction.Currency;
+                    transactionToAdd.Date = expectedNewOccurance;
+                    transactionToAdd.Description = rt.FirstTransaction.Description;
+                    transactionToAdd.Wallet = rt.FirstTransaction.Wallet;
+                    await _transactionsProvider.AddOrUpdateAsync(transactionToAdd);
+
+                    rt.LastOccurrence = transactionToAdd.Date;
+                    await _transactionsProvider.AddOrUpdateAsync(rt);
+
+                    expectedNewOccurance = expectedNewOccurance.AddDays(rt.NextRepeat);
+                }
+            }
+
+            return new HttpStatusCodeResult(200);
+        }
+
         public async Task Edit(TransactionServiceModel transaction)
         {
             this.ValidateTransaction(transaction);
@@ -263,6 +292,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 model.FrequencyType = repeatableTransaction.FrequencyType;
                 model.LastOccurrence = repeatableTransaction.LastOccurrence;
             }
+
             return model;
         }
 
@@ -327,6 +357,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 model.IsRepeatable = await this.GetRepeatableTransactionByFirstTransactionId(transaction.Guid) != null;
                 modelList.Add(model);
             }
+            await UpdateRepeatableTransactions();
             return modelList;
         }
 
