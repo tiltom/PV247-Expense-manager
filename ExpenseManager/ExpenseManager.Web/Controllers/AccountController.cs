@@ -198,6 +198,8 @@ namespace ExpenseManager.Web.Controllers
 
             // Sign in the UserProfile with this external login provider if the UserProfile already has a login
             var result = await SignInManager.ExternalSignInAsync(loginInfo, false);
+            var firstName = string.Empty;
+            var lastName = string.Empty;
             switch (result)
             {
                 case SignInStatus.Success:
@@ -213,14 +215,18 @@ namespace ExpenseManager.Web.Controllers
                             AuthenticationManager.GetExternalIdentity(DefaultAuthenticationTypes.ExternalCookie);
                         var access_token = identity.FindFirstValue("FacebookAccessToken");
                         var fb = new FacebookClient(access_token);
-                        dynamic myInfo = fb.Get("/me?fields=email"); // specify the email field
+                        dynamic myInfo = fb.Get("me?fields=first_name, email, last_name"); // specify the email field
                         loginInfo.Email = myInfo.email;
+                        firstName = myInfo.first_name;
+                        lastName = myInfo.last_name;
                     }
                     ViewBag.ReturnUrl = returnUrl;
                     ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
                     return this.View("ExternalLoginConfirmation",
                         new RegisterViewModel
                         {
+                            FirstName = firstName,
+                            LastName = lastName,
                             Email = loginInfo.Email,
                             Currencies = await this.GetCurrencies()
                         });
