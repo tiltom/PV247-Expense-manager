@@ -72,6 +72,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>WalletAccessRightResource.resx</DependentUpon>
     </Compile>
+    <Compile Include="WalletResources\WalletResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WalletResource.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="BudgetResources\BudgetResource.resx">
@@ -98,6 +103,10 @@
     <EmbeddedResource Include="WalletResources\WalletAccessRightResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WalletAccessRightResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WalletResources\WalletResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WalletResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
