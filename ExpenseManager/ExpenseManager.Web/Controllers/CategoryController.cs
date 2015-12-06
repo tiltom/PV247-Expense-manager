@@ -25,7 +25,7 @@ namespace ExpenseManager.Web.Controllers
         {
             var categories = this._categoryService.GetCategories();
             var categoryShowModels = await
-                categories.ProjectTo<CategoryShowModel>(categories).OrderBy(x => x.Name).ToListAsync();
+                categories.ProjectTo<CategoryShowModel>(categories).OrderBy(category => category.Name).ToListAsync();
 
             return this.View(categoryShowModels);
         }

@@ -1,7 +1,8 @@
-﻿@model ExpenseManager.Web.Models.Category.CategoryShowModel
+﻿@using ExpenseManager.Resources.CategoryResources
+@model ExpenseManager.Web.Models.Category.CategoryShowModel
 
 @{
-    ViewBag.Title = "Create category";
+    ViewBag.Title = CategoryResource.CreateCategory;
     var glyphicons = ViewBag.Glyphicons;
 }
 
@@ -52,8 +53,8 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-success"/>
-                @Html.ActionLink("Cancel", "Index", null, new {@class = "btn btn-danger"})
+                <input type="submit" value=@SharedResource.CreateNew class="btn btn-success"/>
+                @Html.ActionLink(SharedResource.CreateNew, "Index", null, new {@class = "btn btn-danger"})
             </div>
         </div>
     </div>

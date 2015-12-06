@@ -1,10 +1,11 @@
-﻿@model ExpenseManager.Web.Models.Category.CategoryShowModel
+﻿@using ExpenseManager.Resources.CategoryResources
+@model ExpenseManager.Web.Models.Category.CategoryShowModel
 
 @{
-    ViewBag.Title = "Delete category";
+    ViewBag.Title = CategoryResource.DeleteCategory;
 }
 
-<h3>Are you sure you want to delete @Model.Type category @Model.Name?</h3>
+<h3>@String.Format(CategoryResource.DeleteConfirmation, Model.Name)</h3>
 
 @using (Html.BeginForm())
 {
@@ -17,7 +18,7 @@
     @Html.HiddenFor(model => model.Icon)
 
     <div class="form-actions no-color">
-        <input type="submit" value="Delete" class="btn btn-success" />
-        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-danger" })
+        <input type="submit" value=@SharedResource.Delete class="btn btn-success" />
+        @Html.ActionLink(SharedResource.BackToList, "Index", null, new { @class = "btn btn-danger" })
     </div>
 }

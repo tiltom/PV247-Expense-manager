@@ -51,6 +51,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BudgetAccessRightResource.resx</DependentUpon>
     </Compile>
+    <Compile Include="CategoryResources\CategoryResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CategoryResource.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SharedResource.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -76,6 +81,10 @@
     <EmbeddedResource Include="BudgetResources\BudgetAccessRightResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>BudgetAccessRightResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CategoryResources\CategoryResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CategoryResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="SharedResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

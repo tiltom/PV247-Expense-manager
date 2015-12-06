@@ -117,70 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Action" xml:space="preserve">
-    <value>Action</value>
+  <data name="CategoriesManagement" xml:space="preserve">
+    <value>Categories Management</value>
   </data>
-  <data name="Amount" xml:space="preserve">
-    <value>Amount</value>
+  <data name="CreateCategory" xml:space="preserve">
+    <value>Create category</value>
   </data>
-  <data name="Back" xml:space="preserve">
-    <value>Back</value>
+  <data name="DeleteCategory" xml:space="preserve">
+    <value>Delete category</value>
   </data>
-  <data name="BackToList" xml:space="preserve">
-    <value>Back to List</value>
+  <data name="DeleteConfirmation" xml:space="preserve">
+    <value>Are you sure you want to delete category {0}?</value>
   </data>
-  <data name="Budget" xml:space="preserve">
-    <value>Budget</value>
+  <data name="EditCategory" xml:space="preserve">
+    <value>Edit category</value>
   </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
+  <data name="Expenses" xml:space="preserve">
+    <value>Expenses</value>
   </data>
-  <data name="CaptchaField" xml:space="preserve">
-    <value>Captcha</value>
+  <data name="Incomes" xml:space="preserve">
+    <value>Incomes</value>
   </data>
-  <data name="CaptchaValidationFailed" xml:space="preserve">
-    <value>Captcha validation failed.</value>
-  </data>
-  <data name="Category" xml:space="preserve">
-    <value>Category</value>
-  </data>
-  <data name="CreateNew" xml:space="preserve">
-    <value>Create New</value>
-  </data>
-  <data name="Currency" xml:space="preserve">
-    <value>Currency</value>
-  </data>
-  <data name="Date" xml:space="preserve">
-    <value>Date</value>
-  </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="Description" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="Edit" xml:space="preserve">
-    <value>Edit</value>
-  </data>
-  <data name="Index" xml:space="preserve">
-    <value>Index</value>
-  </data>
-  <data name="Refresh" xml:space="preserve">
-    <value>Refresh</value>
-  </data>
-  <data name="RepeatableTransaction" xml:space="preserve">
-    <value>Repeatable transaction</value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value>Save</value>
-  </data>
-  <data name="TestError" xml:space="preserve">
-    <value>This is some serious error!</value>
-  </data>
-  <data name="UserNotFoundByEmail" xml:space="preserve">
-    <value>User with given email not found</value>
-  </data>
-  <data name="Wallet" xml:space="preserve">
-    <value>Wallet</value>
+  <data name="IncomesAndExpenses" xml:space="preserve">
+    <value>Incomes and Expenses</value>
   </data>
 </root>
