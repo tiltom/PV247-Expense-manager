@@ -1,10 +1,10 @@
-﻿@model ExpenseManager.Web.Models.BudgetAccessRight.EditBudgetAccessRightModel
+﻿@using ExpenseManager.Resources.BudgetResources
+@model ExpenseManager.Web.Models.BudgetAccessRight.EditBudgetAccessRightModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = BudgetAccessRightResource.EditBudgetAccessRight;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 
 @using (Html.BeginForm())
 {
@@ -32,8 +32,8 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-success"/>
-                @Html.ActionLink("Cancel", "Index", new { id = Model.BudgetId },new {@class="btn btn-danger"})
+                <input type="submit" value=@SharedResource.Save class="btn btn-success"/>
+                @Html.ActionLink(SharedResource.Cancel, "Index", new { id = Model.BudgetId },new {@class="btn btn-danger"})
             </div>
         </div>
     </div>

@@ -59,5 +59,50 @@ namespace ExpenseManager.Resources.BudgetResources {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget access right management.
+        /// </summary>
+        public static string BudgetAccessRightManagement {
+            get {
+                return ResourceManager.GetString("BudgetAccessRightManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create budget access right.
+        /// </summary>
+        public static string CreateBudgetAccessRight {
+            get {
+                return ResourceManager.GetString("CreateBudgetAccessRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete budget access right.
+        /// </summary>
+        public static string DeleteBudgetAccessRight {
+            get {
+                return ResourceManager.GetString("DeleteBudgetAccessRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit budget access right.
+        /// </summary>
+        public static string EditBudgetAccessRight {
+            get {
+                return ResourceManager.GetString("EditBudgetAccessRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete access right {0} for user {1}?.
+        /// </summary>
+        public static string SureOfDelete {
+            get {
+                return ResourceManager.GetString("SureOfDelete", resourceCulture);
+            }
+        }
     }
 }

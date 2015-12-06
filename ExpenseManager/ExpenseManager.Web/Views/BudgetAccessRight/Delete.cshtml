@@ -1,17 +1,18 @@
-﻿@model ExpenseManager.Web.Models.BudgetAccessRight.ShowBudgetAccessRightModel
+﻿@using ExpenseManager.Resources.BudgetResources
+@model ExpenseManager.Web.Models.BudgetAccessRight.ShowBudgetAccessRightModel
 
 @{
-    ViewBag.Title = "Delete budget access right";
+    ViewBag.Title = BudgetAccessRightResource.DeleteBudgetAccessRight;
 }
 
-<h3>Are you sure you want to delete access right @Model.Permission for user @Model.AssignedUserName ?</h3>
+<h3>@String.Format(BudgetAccessRightResource.SureOfDelete, Model.Permission, Model.AssignedUserName)</h3>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
     <div class="form-actions no-color">
-        <input type="submit" value="Delete" class="btn btn-success" />
-        @Html.ActionLink("Back to List", "Index", new { id = Model.BudgetId }, new { @class = "btn btn-danger" })
+        <input type="submit" value=@SharedResource.Delete class="btn btn-success" />
+        @Html.ActionLink(SharedResource.BackToList, "Index", new { id = Model.BudgetId }, new { @class = "btn btn-danger" })
     </div>
 }
