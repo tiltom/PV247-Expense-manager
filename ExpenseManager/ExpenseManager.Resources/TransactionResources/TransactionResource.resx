@@ -126,11 +126,17 @@
   <data name="AmmountError" xml:space="preserve">
     <value>Transaction amount must be greater than zero</value>
   </data>
+  <data name="BudgetName" xml:space="preserve">
+    <value>Budget name</value>
+  </data>
   <data name="BudgetSelection" xml:space="preserve">
     <value>Select Budget</value>
   </data>
   <data name="CategoryError" xml:space="preserve">
     <value>Category field is required</value>
+  </data>
+  <data name="CategoryName" xml:space="preserve">
+    <value>Category name</value>
   </data>
   <data name="CategorySelection" xml:space="preserve">
     <value>Select Category</value>
@@ -159,6 +165,9 @@
   <data name="Expense" xml:space="preserve">
     <value>Expense</value>
   </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
   <data name="Filter" xml:space="preserve">
     <value>Filter</value>
   </data>
@@ -167,6 +176,9 @@
   </data>
   <data name="FrequencySelection" xml:space="preserve">
     <value>Select Frequency</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Import</value>
   </data>
   <data name="Income" xml:space="preserve">
     <value>Income</value>
@@ -206,5 +218,8 @@
   </data>
   <data name="WalletIdError" xml:space="preserve">
     <value>WalletId must have set Id</value>
+  </data>
+  <data name="FileFormatError" xml:space="preserve">
+    <value>CSV file is damaged</value>
   </data>
 </root>

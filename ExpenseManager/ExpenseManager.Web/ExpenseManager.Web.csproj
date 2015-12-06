@@ -404,6 +404,7 @@
     <Content Include="Views\Budget\Delete.cshtml" />
     <Content Include="Views\Category\Delete.cshtml" />
     <Content Include="Views\Transaction\Delete.cshtml" />
+    <Content Include="Views\Transaction\Import.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

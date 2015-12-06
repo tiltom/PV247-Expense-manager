@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
+using CsvHelper;
+using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 using ExpenseManager.BusinessLogic.ExchangeRates;
 using ExpenseManager.BusinessLogic.TransactionServices.Models;
 using ExpenseManager.Entity;
@@ -16,12 +20,14 @@ using ExpenseManager.Entity.Enums;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Transactions;
 using ExpenseManager.Entity.Wallets;
+using ExpenseManager.Resources;
 using ExpenseManager.Resources.TransactionResources;
 
 namespace ExpenseManager.BusinessLogic.TransactionServices
 {
     public class TransactionService
     {
+        public const string DateFormat = "dd.MM.yyyy";
         private readonly IBudgetsProvider _budgetsProvider;
         private readonly ITransactionsProvider _transactionsProvider;
         private readonly IWalletsProvider _walletsProvider;
@@ -33,6 +39,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             this._transactionsProvider = transactionsProvider;
             this._walletsProvider = walletsProvider;
         }
+
 
         public void ValidateTransaction(TransactionServiceModel transaction)
         {
@@ -171,6 +178,66 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return walletId;
         }
 
+        public async Task<string> ExportToCsv(Guid userId, Guid? wallet, Guid? category, Guid? budget)
+        {
+            if (wallet == null)
+            {
+                wallet = await this.GetDefaultWallet(userId);
+            }
+            var walletId = wallet.Value;
+            IEnumerable<TransactionShowServiceModel> list = await this.GetAllTransactionsInWallet(userId, walletId);
+
+            if (category != null)
+            {
+                list = list.Where(model => model.CategoryId == category.Value);
+            }
+            if (budget != null)
+            {
+                list = list.Where(model => model.BudgetId == budget.Value);
+            }
+            TextWriter textWriter = new StringWriter();
+            var writer = new CsvWriter(textWriter);
+            writer.Configuration.RegisterClassMap<MyClassMap>();
+            var options = new TypeConverterOptions
+            {
+                Format = DateFormat
+            };
+            TypeConverterOptionsFactory.AddOptions<DateTime>(options);
+            writer.WriteRecords(list);
+            return textWriter.ToString();
+        }
+
+        public async Task ImportFromCsv(Guid userId, string file)
+        {
+            var reader = new CsvReader(new StringReader(file));
+            reader.Configuration.RegisterClassMap<MyClassMap>();
+            reader.Configuration.HasHeaderRecord = true;
+            while (reader.Read())
+            {
+                var categoryName = reader.GetField<string>(TransactionResource.CategoryName);
+                var budgetName = reader.GetField<string>(TransactionResource.BudgetName);
+                var model = new TransactionServiceModel
+                {
+                    Amount = reader.GetField<decimal>(SharedResource.Amount),
+                    Date = DateTime.Parse(reader.GetField<string>(SharedResource.Date)),
+                    Description = reader.GetField<string>(SharedResource.Description),
+                    WalletId = await this.GetDefaultWallet(userId)
+                };
+                model.CurrencyId = (await this.GetDefaultCurrencyInWallet(model.WalletId)).Guid;
+                model.CategoryId = (await this.GetCategoryByName(categoryName)).Guid;
+                if (budgetName != string.Empty)
+                {
+                    model.BudgetId = (await this.GetBudgetByName(budgetName)).Guid;
+                }
+                if (model.Amount < 0)
+                {
+                    model.Expense = true;
+                    model.Amount *= -1;
+                }
+                await this.Create(model);
+            }
+        }
+
         public async Task<TransactionServiceModel> GetTransactionById(Guid transactionId, Guid userId)
         {
             var entity =
@@ -209,6 +276,14 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         .FirstOrDefaultAsync();
         }
 
+        public async Task<Category> GetCategoryByName(string categoryName)
+        {
+            return
+                await
+                    this._transactionsProvider.Categories.Where(category => category.Name == categoryName)
+                        .FirstOrDefaultAsync();
+        }
+
         public async Task<Currency> GetCurrencyById(Guid currencyId)
         {
             return
@@ -221,6 +296,13 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         {
             return
                 await this._transactionsProvider.Budgets.Where(budget => budget.Guid == budgetId).FirstOrDefaultAsync();
+        }
+
+        public async Task<Budget> GetBudgetByName(string budgetName)
+        {
+            return
+                await
+                    this._transactionsProvider.Budgets.Where(budget => budget.Name == budgetName).FirstOrDefaultAsync();
         }
 
         public async Task<List<TransactionShowServiceModel>> GetAllTransactionsInWallet(Guid userId, Guid walletId)
@@ -407,6 +489,18 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         Text = budget.Budget.Name
                     }).Distinct();
             return new SelectList(selectList, "Value", "Text", budgetId);
+        }
+
+        public sealed class MyClassMap : CsvClassMap<TransactionShowServiceModel>
+        {
+            public MyClassMap()
+            {
+                this.Map(m => m.Amount).Name(SharedResource.Amount);
+                this.Map(m => m.Date).Name(SharedResource.Date);
+                this.Map(m => m.Description).Name(SharedResource.Description);
+                this.Map(m => m.CategoryName).Name(TransactionResource.CategoryName);
+                this.Map(m => m.BudgetName).Name(TransactionResource.BudgetName);
+            }
         }
 
         #region private

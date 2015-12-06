@@ -30,9 +30,12 @@
             <div class="col-md-2">
                 @Html.DropDownList("budget", null, TransactionResource.BudgetSelection, new {@class = "form-control"})
             </div>
-            <div class="col-md-2">
-                <input type="submit" class="btn btn-success" value=@TransactionResource.Filter />
-                </div>
+            <div class="col-md-4">
+                <input type="submit" class="btn btn-success" value=@TransactionResource.Filter>
+                @Html.ActionLink(TransactionResource.Import, "Import", null, new { @class = "btn btn-warning" })
+            @Html.ActionLink(TransactionResource.Export, "Export", new { wallet = ViewBag.displayedWalletId, category = ViewBag.selectedCategoryId, budget = ViewBag.selectedBudgetId}, new { @class = "btn btn-danger" })
+            </div>
+            
         </div>
     }
 

@@ -1,0 +1,24 @@
+﻿@model PagedList.IPagedList<ExpenseManager.Web.Models.Transaction.TransactionShowModel>
+@using ExpenseManager.Resources.TransactionResources
+
+@{
+    ViewBag.Title = TransactionResource.Import;
+}
+
+@using (Html.BeginForm("Import", "Transaction", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        @Html.Label("File", new { @class = "control-label col-md-1" })
+        <div class="col-md-3 col-xs-8">
+           <input type="file" id="file" name="file" />
+        </div>
+    </div>
+    <br>
+    <div class="form-actions no-color">
+            <input type="submit" value=@TransactionResource.Import class="btn btn-success" />
+            @Html.ActionLink(SharedResource.Cancel, "Index", null, new { @class = "btn btn-danger" })
+    </div>
+  }
+
+
