@@ -59,5 +59,50 @@ namespace ExpenseManager.Resources.BudgetResources {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budgets management.
+        /// </summary>
+        public static string BudgetsManagement {
+            get {
+                return ResourceManager.GetString("BudgetsManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create budget.
+        /// </summary>
+        public static string CreateBudget {
+            get {
+                return ResourceManager.GetString("CreateBudget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete budget.
+        /// </summary>
+        public static string DeleteBudget {
+            get {
+                return ResourceManager.GetString("DeleteBudget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit budget.
+        /// </summary>
+        public static string EditBudget {
+            get {
+                return ResourceManager.GetString("EditBudget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete budget {0}?.
+        /// </summary>
+        public static string SureOfDelete {
+            get {
+                return ResourceManager.GetString("SureOfDelete", resourceCulture);
+            }
+        }
     }
 }

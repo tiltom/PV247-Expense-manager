@@ -1,8 +1,9 @@
-﻿@using ExpenseManager.Web.Controllers
+﻿@using ExpenseManager.Resources.BudgetResources
+@using ExpenseManager.Web.Controllers
 @model ExpenseManager.Web.Models.Budget.EditBudgetModel
 
 @{
-    ViewBag.Title = "Edit budget";
+    ViewBag.Title = BudgetResource.EditBudget;
 }
 
 @using (Html.BeginForm("Edit", "Budget", FormMethod.Post, new { @class = "form-horizontal" }))
@@ -52,8 +53,8 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-        <button type="submit" class="btn btn-success">Edit</button>
-        @Html.ActionLink("Cancel", "Index", null, new {@class = "btn btn-danger"})
+        <button type="submit" class="btn btn-success">@SharedResource.Edit</button>
+        @Html.ActionLink(SharedResource.Cancel, "Index", null, new {@class = "btn btn-danger"})
         </div>
     </div>
 }
