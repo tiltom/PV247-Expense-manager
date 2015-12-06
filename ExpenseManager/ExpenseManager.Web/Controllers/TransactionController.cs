@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using ExpenseManager.BusinessLogic;
@@ -278,6 +281,50 @@ namespace ExpenseManager.Web.Controllers
                     TransactionResource.PermissionErrorDelete);
             }
             return this.RedirectToAction("Index", new {wallet = walletId});
+        }
+
+        public async Task<ActionResult> Export(Guid? wallet, Guid? category, Guid? budget)
+        {
+            var id = await this.CurrentProfileId();
+            try
+            {
+                var file = await this._transactionService.ExportToCsv(id, wallet, category, budget);
+                return this.File(new UTF8Encoding().GetBytes(file), "text/csv", "transactions.csv");
+            }
+            catch (SecurityException)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
+                    TransactionResource.PermissionError);
+            }
+        }
+
+        public ActionResult Import()
+        {
+            return this.View();
+        }
+
+        [HttpPost, ActionName("Import")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Import(HttpPostedFileBase file)
+        {
+            var id = await this.CurrentProfileId();
+            try
+            {
+                if (file != null && file.ContentLength > 0)
+                {
+                    using (var reader = new StreamReader(file.InputStream))
+                    {
+                        await this._transactionService.ImportFromCsv(id, reader.ReadToEnd());
+                    }
+                    return this.RedirectToAction("Index");
+                }
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("File", TransactionResource.FileFormatError);
+            }
+
+            return this.View();
         }
 
         protected override void Dispose(bool disposing)

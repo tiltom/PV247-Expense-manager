@@ -50,8 +50,7 @@ namespace ExpenseManager.Web
 
             Mapper.CreateMap<Transaction, TransactionShowServiceModel>()
                 .ForMember(dto => dto.Id, options => options.MapFrom(entity => entity.Guid))
-                .ForMember(dto => dto.Amount,
-                    options => options.MapFrom(entity => entity.Amount < 0 ? entity.Amount*-1 : entity.Amount))
+                .ForMember(dto => dto.Amount, options => options.MapFrom(entity => entity.Amount))
                 .ForMember(dto => dto.Date, options => options.MapFrom(entity => entity.Date))
                 .ForMember(dto => dto.Description, options => options.MapFrom(entity => entity.Description))
                 .ForMember(dto => dto.BudgetName,

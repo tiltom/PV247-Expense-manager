@@ -84,6 +84,7 @@
     <EmbeddedResource Include="TransactionResources\TransactionResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>TransactionResource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="WalletResources\WalletAccessRightResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

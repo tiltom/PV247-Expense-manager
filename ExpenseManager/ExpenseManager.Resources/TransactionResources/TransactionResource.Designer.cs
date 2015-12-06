@@ -88,6 +88,15 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Budget name.
+        /// </summary>
+        public static string BudgetName {
+            get {
+                return ResourceManager.GetString("BudgetName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Budget.
         /// </summary>
         public static string BudgetSelection {
@@ -102,6 +111,15 @@ namespace ExpenseManager.Resources.TransactionResources {
         public static string CategoryError {
             get {
                 return ResourceManager.GetString("CategoryError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category name.
+        /// </summary>
+        public static string CategoryName {
+            get {
+                return ResourceManager.GetString("CategoryName", resourceCulture);
             }
         }
         
@@ -187,6 +205,24 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string Export {
+            get {
+                return ResourceManager.GetString("Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CSV file is damaged.
+        /// </summary>
+        public static string FileFormatError {
+            get {
+                return ResourceManager.GetString("FileFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter.
         /// </summary>
         public static string Filter {
@@ -210,6 +246,15 @@ namespace ExpenseManager.Resources.TransactionResources {
         public static string FrequencySelection {
             get {
                 return ResourceManager.GetString("FrequencySelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        public static string Import {
+            get {
+                return ResourceManager.GetString("Import", resourceCulture);
             }
         }
         
