@@ -1,8 +1,9 @@
 ﻿@using ExpenseManager.Entity
+@using ExpenseManager.Resources.WalletResources
 @model ExpenseManager.Web.Models.WalletAccessRight.WalletAccessRightModel
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = WalletAccessRightResource.DeleteWalletAccessRight;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -31,10 +32,10 @@
         <div class="form-actions no-color">
             @if (!PermissionEnum.Owner.ToString().Equals(Model.Permission))
             {
-                <input type="submit" value="Delete" class="btn btn-success" />
+                <input type="submit" value=@SharedResource.Delete class="btn btn-success" />
             }
 
-            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-danger" })
+            @Html.ActionLink(SharedResource.Cancel, "Index", null, new { @class = "btn btn-danger" })
         </div>
     }
 </div>

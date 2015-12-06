@@ -1,7 +1,8 @@
-﻿@model ExpenseManager.Web.Models.WalletAccessRight.WalletAccessRightModel
+﻿@using ExpenseManager.Resources.WalletResources
+@model ExpenseManager.Web.Models.WalletAccessRight.WalletAccessRightModel
 
 @{
-    ViewBag.Title = "Create Wallet Access Right";
+    ViewBag.Title = WalletAccessRightResource.CreateWalletAccessRight;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -14,7 +15,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Permission, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.Permission, Model.Permissions, "Select Permission", htmlAttributes: new {@class = "form-control"})
+                @Html.DropDownListFor(model => model.Permission, Model.Permissions, WalletAccessRightResource.SelectPermission, htmlAttributes: new {@class = "form-control"})
                 @Html.ValidationMessageFor(model => model.Permission, "", new {@class = "text-danger"})
             </div>
         </div>
@@ -33,8 +34,8 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-success"/>
-                @Html.ActionLink("Cancel", "Index",null, new {@class="btn btn-danger"})
+                <input type="submit" value=@SharedResource.Create class="btn btn-success"/>
+                @Html.ActionLink(SharedResource.Cancel, "Index",null, new {@class="btn btn-danger"})
             </div>
         </div>
     </div>

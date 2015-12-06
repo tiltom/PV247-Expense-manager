@@ -79,6 +79,51 @@ namespace ExpenseManager.Resources.WalletResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create wallet access right.
+        /// </summary>
+        public static string CreateWalletAccessRight {
+            get {
+                return ResourceManager.GetString("CreateWalletAccessRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete wallet access right.
+        /// </summary>
+        public static string DeleteWalletAccessRight {
+            get {
+                return ResourceManager.GetString("DeleteWalletAccessRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit wallet access right.
+        /// </summary>
+        public static string EditWalletAccessRight {
+            get {
+                return ResourceManager.GetString("EditWalletAccessRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage wallet access rights.
+        /// </summary>
+        public static string ManageWalletAccessRights {
+            get {
+                return ResourceManager.GetString("ManageWalletAccessRights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select permission.
+        /// </summary>
+        public static string SelectPermission {
+            get {
+                return ResourceManager.GetString("SelectPermission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User.
         /// </summary>
         public static string User {

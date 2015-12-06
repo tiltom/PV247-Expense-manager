@@ -123,6 +123,21 @@
   <data name="AssignedUserName" xml:space="preserve">
     <value>Assigned User Name</value>
   </data>
+  <data name="CreateWalletAccessRight" xml:space="preserve">
+    <value>Create wallet access right</value>
+  </data>
+  <data name="DeleteWalletAccessRight" xml:space="preserve">
+    <value>Delete wallet access right</value>
+  </data>
+  <data name="EditWalletAccessRight" xml:space="preserve">
+    <value>Edit wallet access right</value>
+  </data>
+  <data name="ManageWalletAccessRights" xml:space="preserve">
+    <value>Manage wallet access rights</value>
+  </data>
+  <data name="SelectPermission" xml:space="preserve">
+    <value>Select permission</value>
+  </data>
   <data name="User" xml:space="preserve">
     <value>User</value>
   </data>
