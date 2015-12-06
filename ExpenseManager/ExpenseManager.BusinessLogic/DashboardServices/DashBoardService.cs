@@ -137,7 +137,7 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
         public async Task<DashBoardServiceModel> GenerateDataForFilter(FilterDataServiceModel mappedFilter, Guid userId)
         {
             // select transactions according to filter
-            var userWallet = await this.GetWalletById(userId);
+            var userWallet = await this.GetWalletByUserId(userId);
             var resultMonth = this.FilterTransactions(mappedFilter.WithMonthFilterValues(), userId, userWallet.Currency);
             var resultYear = this.FilterTransactions(mappedFilter.WithYearFilterValues(), userId, userWallet.Currency);
             // prepare data for graphs
