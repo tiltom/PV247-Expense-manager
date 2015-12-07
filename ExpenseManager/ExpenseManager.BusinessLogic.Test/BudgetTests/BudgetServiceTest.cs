@@ -51,38 +51,6 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
         }
 
         [Test]
-        public void ValidateBudget_NullCreator_ReturnFalse()
-        {
-            var budget = new Budget
-            {
-                Name = "Test name",
-                StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddDays(1),
-                Limit = 10
-            };
-
-            var budgetService = new BudgetService(ProvidersFactory.GetNewBudgetsProviders(),
-                ProvidersFactory.GetNewTransactionsProviders());
-            Assert.IsFalse(budgetService.ValidateBudget(budget));
-        }
-
-        [Test]
-        public void ValidateBudget_NullCurrency_ReturnFalse()
-        {
-            var budget = new Budget
-            {
-                Name = "Test name",
-                StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddDays(1),
-                Limit = 10
-            };
-
-            var budgetService = new BudgetService(ProvidersFactory.GetNewBudgetsProviders(),
-                ProvidersFactory.GetNewTransactionsProviders());
-            Assert.IsFalse(budgetService.ValidateBudget(budget));
-        }
-
-        [Test]
         public void ValidateBudget_ValidBudget_ReturnTrue()
         {
             var budget = new Budget

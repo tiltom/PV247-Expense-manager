@@ -36,19 +36,6 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
         }
 
         [Test]
-        public void ValidateWallet_NullOwner_ReturnFalse()
-        {
-            var wallet = new Wallet
-            {
-                Name = "Test name",
-                Currency = new Currency()
-            };
-
-            var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());
-            Assert.IsFalse(walletService.ValidateWallet(wallet));
-        }
-
-        [Test]
         [TestCase(null)]
         public void ValidateWallet_NullWallet_ReturnFalse(Wallet wallet)
         {
@@ -62,7 +49,12 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
             var wallet = new Wallet
             {
                 Name = "Test name",
-                Currency = new Currency()
+                Currency = new Currency
+                {
+                    Name = "Default currency",
+                    Code = "DC",
+                    Symbol = "C"
+                }
             };
 
             var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());

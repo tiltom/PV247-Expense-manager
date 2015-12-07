@@ -2,6 +2,7 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpenseManager.BusinessLogic.Validators;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers;
@@ -16,11 +17,13 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
     {
         private readonly IBudgetsProvider _db;
         private readonly ITransactionsProvider _transactionsProvider;
+        private readonly BudgetValidator _validator;
 
         public BudgetService(IBudgetsProvider db, ITransactionsProvider transactionsProvider)
         {
             this._db = db;
             this._transactionsProvider = transactionsProvider;
+            this._validator = new BudgetValidator();
         }
 
         /// <summary>
@@ -142,27 +145,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <returns>True if budget is valid, false otherwise</returns>
         public bool ValidateBudget(Budget budget)
         {
-            if (budget == null)
-            {
-                return false;
-            }
-
-            if (budget.Name.Equals(string.Empty))
-            {
-                return false;
-            }
-
-            if (!ValidateModel(budget.StartDate, budget.EndDate))
-            {
-                return false;
-            }
-
-            if (budget.Limit <= 0)
-            {
-                return false;
-            }
-
-            return true;
+            return budget != null && this._validator.Validate(budget).IsValid;
         }
     }
 }

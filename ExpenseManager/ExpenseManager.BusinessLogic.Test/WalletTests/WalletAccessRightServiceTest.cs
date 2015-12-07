@@ -1,5 +1,6 @@
 ﻿using ExpenseManager.BusinessLogic.WalletServices;
 using ExpenseManager.Entity;
+using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
@@ -55,12 +56,22 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
         {
             var walletAccessRight = new WalletAccessRight
             {
-                Wallet = new Wallet(),
+                Wallet = new Wallet
+                {
+                    Name = "Default Wallet",
+                    Currency = new Currency
+                    {
+                        Name = "Default currency",
+                        Code = "DC",
+                        Symbol = "C"
+                    }
+                },
                 Permission = PermissionEnum.Read,
                 UserProfile = new UserProfile()
             };
 
-            var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders(),new CommonService());
+            var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders(),
+                new CommonService());
             Assert.IsTrue(walletAccessRightService.ValidateWalletAccessRight(walletAccessRight));
         }
     }

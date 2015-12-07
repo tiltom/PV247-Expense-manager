@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpenseManager.BusinessLogic.Validators;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Providers;
 
@@ -14,10 +15,12 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
     public class CategoryService
     {
         private readonly ITransactionsProvider _db;
+        private readonly CategoryValidator _validator;
 
         public CategoryService(ITransactionsProvider db)
         {
             this._db = db;
+            this._validator = new CategoryValidator();
         }
 
         /// <summary>
@@ -98,27 +101,7 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         /// <returns>True if category is valid, false otherwise</returns>
         public bool ValidateCategory(Category category)
         {
-            if (category == null)
-            {
-                return false;
-            }
-
-            if (string.Empty.Equals(category.Name))
-            {
-                return false;
-            }
-
-            if (string.Empty.Equals(category.Description))
-            {
-                return false;
-            }
-
-            if (!GetGlyphicons().Contains(category.IconPath))
-            {
-                return false;
-            }
-
-            return true;
+            return category != null && this._validator.Validate(category).IsValid;
         }
 
         /// <summary>

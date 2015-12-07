@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpenseManager.BusinessLogic.Validators;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers;
@@ -16,10 +17,12 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
     public class BudgetAccessRightService
     {
         private readonly IBudgetsProvider _db;
+        private readonly BudgetAccessRightValidator _validator;
 
         public BudgetAccessRightService(IBudgetsProvider db)
         {
             this._db = db;
+            this._validator = new BudgetAccessRightValidator();
         }
 
         /// <summary>
@@ -164,17 +167,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <returns>True if budget access right is valid, false otherwise</returns>
         public bool ValidateBudgetAccessRight(BudgetAccessRight budgetAccessRight)
         {
-            if (budgetAccessRight?.UserProfile == null)
-            {
-                return false;
-            }
-
-            if (budgetAccessRight.Budget == null)
-            {
-                return false;
-            }
-
-            return true;
+            return budgetAccessRight != null && this._validator.Validate(budgetAccessRight).IsValid;
         }
 
         #region private

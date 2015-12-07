@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpenseManager.BusinessLogic.Validators;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Queryable;
@@ -17,12 +18,14 @@ namespace ExpenseManager.BusinessLogic.WalletServices
     public class WalletAccessRightService : ServiceWithWallet
     {
         private readonly CommonService _commonService;
+        private readonly WalletAccessRightValidator _validator;
         private readonly IWalletsProvider _wallets;
 
         public WalletAccessRightService(IWalletsProvider db, CommonService commonService)
         {
             this._wallets = db;
             this._commonService = commonService;
+            this._validator = new WalletAccessRightValidator();
         }
 
         #region protected
@@ -148,22 +151,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         /// <returns>True if wallet access right is valid, false otherwise</returns>
         public bool ValidateWalletAccessRight(WalletAccessRight walletAccessRight)
         {
-            if (walletAccessRight == null)
-            {
-                return false;
-            }
-
-            if (walletAccessRight.UserProfile == null)
-            {
-                return false;
-            }
-
-            if (walletAccessRight.Wallet == null)
-            {
-                return false;
-            }
-
-            return true;
+            return walletAccessRight != null && this._validator.Validate(walletAccessRight).IsValid;
         }
 
         /// <summary>

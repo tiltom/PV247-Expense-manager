@@ -12,6 +12,8 @@ using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using ExpenseManager.BusinessLogic.ExchangeRates;
 using ExpenseManager.BusinessLogic.TransactionServices.Models;
+using ExpenseManager.BusinessLogic.Validators;
+using ExpenseManager.BusinessLogic.Validators.Extensions;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
@@ -31,6 +33,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         public const string DateFormat = "dd.MM.yyyy";
         private readonly IBudgetsProvider _budgetsProvider;
         private readonly ITransactionsProvider _transactionsProvider;
+        private readonly TransactionValidator _validator;
         private readonly IWalletsProvider _walletsProvider;
 
         public TransactionService(IBudgetsProvider budgetsProvider, ITransactionsProvider transactionsProvider,
@@ -39,6 +42,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             this._budgetsProvider = budgetsProvider;
             this._transactionsProvider = transactionsProvider;
             this._walletsProvider = walletsProvider;
+            this._validator = new TransactionValidator();
         }
 
         protected override IWalletsQueryable WalletsProvider
@@ -50,46 +54,8 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         {
             if (transaction == null)
                 throw new ArgumentNullException(nameof(transaction));
-            if (transaction.WalletId == Guid.Empty)
-            {
-                throw new ArgumentException(TransactionResource.WalletIdError);
-            }
-            var exception = new ValidationException();
-            if (transaction.Amount <= 0)
-            {
-                exception.Erorrs.Add("Amount", TransactionResource.AmmountError);
-            }
-            if (transaction.Date == DateTime.MinValue)
-            {
-                exception.Erorrs.Add("Date", TransactionResource.DateError);
-            }
-            if (transaction.CategoryId == Guid.Empty)
-            {
-                exception.Erorrs.Add("CategoryId", TransactionResource.CategoryError);
-            }
-            if (transaction.CurrencyId == Guid.Empty)
-            {
-                exception.Erorrs.Add("CurrencyId", TransactionResource.CurrencyError);
-            }
-            if (transaction.IsRepeatable)
-            {
-                if (transaction.LastOccurrence == null)
-                {
-                    exception.Erorrs.Add("LastOccurrence", TransactionResource.LastOccurrenceNullError);
-                }
-                else if (transaction.Date >= transaction.LastOccurrence.GetValueOrDefault())
-                {
-                    exception.Erorrs.Add("LastOccurrence",
-                        TransactionResource.LastOccurrenceBeforeDateError);
-                }
-                if (transaction.NextRepeat == null || transaction.NextRepeat <= 0)
-                {
-                    exception.Erorrs.Add("NextRepeat", TransactionResource.NextRepeatError);
-                }
-            }
 
-            if (exception.Erorrs.Count != 0)
-                throw exception;
+            this._validator.ValidateAndThrowCustomException(transaction);
         }
 
         public async Task Create(TransactionServiceModel transaction)

@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using ExpenseManager.BusinessLogic.ExchangeRates;
+using ExpenseManager.BusinessLogic.Validators;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers;
@@ -17,10 +18,12 @@ namespace ExpenseManager.BusinessLogic.WalletServices
     public class WalletService : ServiceWithWallet
     {
         private readonly IWalletsProvider _db;
+        private readonly WalletValidator _validator;
 
         public WalletService(IWalletsProvider db)
         {
             this._db = db;
+            this._validator = new WalletValidator();
         }
 
         protected override IWalletsQueryable WalletsProvider
@@ -88,17 +91,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         /// <returns>True if wallet is valid, false otherwise</returns>
         public bool ValidateWallet(Wallet wallet)
         {
-            if (wallet?.Currency == null)
-            {
-                return false;
-            }
-
-            if (wallet.Name.Equals(string.Empty))
-            {
-                return false;
-            }
-
-            return true;
+            return wallet != null && this._validator.Validate(wallet).IsValid;
         }
 
         #region private

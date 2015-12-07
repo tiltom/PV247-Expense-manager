@@ -142,7 +142,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 await this._transactionService.Create(model);
             }
-            catch (ValidationException exception)
+            catch (ServiceValidationException exception)
             {
                 ModelState.AddModelErrors(exception);
             }
@@ -210,7 +210,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 await this._transactionService.Edit(model);
             }
-            catch (ValidationException exception)
+            catch (ServiceValidationException exception)
             {
                 ModelState.AddModelErrors(exception);
             }
@@ -340,9 +340,9 @@ namespace ExpenseManager.Web.Controllers
     public static class MvcValidationExtension
     {
         public static void AddModelErrors(this ModelStateDictionary state,
-            ValidationException exception)
+            ServiceValidationException exception)
         {
-            foreach (var error in exception.Erorrs)
+            foreach (var error in exception.Errors)
             {
                 state.AddModelError(error.Key, error.Value);
             }

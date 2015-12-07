@@ -45,7 +45,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         }
 
         [Test]
-        [ExpectedException(typeof (ArgumentException))]
+        [ExpectedException(typeof (ServiceValidationException))]
         public void Create_Empty_Transaction()
         {
             this._transactionService.ValidateTransaction(new TransactionServiceModel());
@@ -64,7 +64,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         }
 
         [Test]
-        [ExpectedException(typeof (ValidationException))]
+        [ExpectedException(typeof (ServiceValidationException))]
         public void Validate_NegativeNextRepeat_RepeatableTransaction()
         {
             this._repeatableModel.NextRepeat = -1;
@@ -79,7 +79,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         }
 
         [Test]
-        [ExpectedException(typeof (ValidationException))]
+        [ExpectedException(typeof (ServiceValidationException))]
         public void Validate_NoCategoryId_Transaction()
         {
             this._model.CategoryId = Guid.Empty;
@@ -87,7 +87,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         }
 
         [Test]
-        [ExpectedException(typeof (ValidationException))]
+        [ExpectedException(typeof (ServiceValidationException))]
         public void Validate_NoCurrencyId_Transaction()
         {
             this._model.CurrencyId = Guid.Empty;
@@ -95,7 +95,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         }
 
         [Test]
-        [ExpectedException(typeof (ArgumentException))]
+        [ExpectedException(typeof (ServiceValidationException))]
         public void Validate_NoWalletId_Transaction()
         {
             this._model.WalletId = Guid.Empty;
@@ -104,8 +104,8 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
 
         [Test]
         [TestCase(null)]
-        [ExpectedException(typeof (ValidationException))]
-        public void Validate_NullLastOccurence_RepeatableTransaction(DateTime? lastOccurrence)
+        [ExpectedException(typeof (ServiceValidationException))]
+        public void Validate_NullLastOccurrence_RepeatableTransaction(DateTime? lastOccurrence)
         {
             this._repeatableModel.LastOccurrence = lastOccurrence;
             this._transactionService.ValidateTransaction(this._repeatableModel);
@@ -113,7 +113,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
 
         [Test]
         [TestCase(null)]
-        [ExpectedException(typeof (ValidationException))]
+        [ExpectedException(typeof (ServiceValidationException))]
         public void Validate_NullNextRepeat_RepeatableTransaction(int? nextRepeat)
         {
             this._repeatableModel.NextRepeat = nextRepeat;
@@ -121,15 +121,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         }
 
         [Test]
-        [ExpectedException(typeof (ValidationException))]
-        public void Validate_WrongLastOccurence_RepeatableTransaction()
-        {
-            this._repeatableModel.LastOccurrence = DateTime.Now.AddDays(-3);
-            this._transactionService.ValidateTransaction(this._repeatableModel);
-        }
-
-        [Test]
-        [ExpectedException(typeof(ValidationException))]
+        [ExpectedException(typeof (ServiceValidationException))]
         public void Validate_SameLastOccurenceAsDate_RepeatableTransaction()
         {
             this._repeatableModel.LastOccurrence = DateTime.Now;
@@ -137,7 +129,15 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         }
 
         [Test]
-        [ExpectedException(typeof (ValidationException))]
+        [ExpectedException(typeof (ServiceValidationException))]
+        public void Validate_WrongLastOccurence_RepeatableTransaction()
+        {
+            this._repeatableModel.LastOccurrence = DateTime.Now.AddDays(-3);
+            this._transactionService.ValidateTransaction(this._repeatableModel);
+        }
+
+        [Test]
+        [ExpectedException(typeof (ServiceValidationException))]
         public void Validate_ZeroNextRepeat_RepeatableTransaction()
         {
             this._repeatableModel.NextRepeat = 0;
