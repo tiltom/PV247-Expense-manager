@@ -120,7 +120,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             {
                 DateTime expectedNewOccurance = rt.LastOccurrence.AddDays(rt.NextRepeat);
 
-                while (expectedNewOccurance.Subtract(DateTime.Today).Days < 0)
+                while (expectedNewOccurance.Subtract(DateTime.Today).Days <= 0)
                 {
                     Transaction transactionToAdd = new Transaction();
                     transactionToAdd.Amount = rt.FirstTransaction.Amount;
@@ -357,7 +357,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 model.IsRepeatable = await this.GetRepeatableTransactionByFirstTransactionId(transaction.Guid) != null;
                 modelList.Add(model);
             }
-            await UpdateRepeatableTransactions();
+
             return modelList;
         }
 
