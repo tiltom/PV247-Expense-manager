@@ -117,136 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AccountLockedOut" xml:space="preserve">
-    <value>This account has been locked out, please try again later</value>
+  <data name="ChangeWalletAccessRights" xml:space="preserve">
+    <value>Change wallet access rights</value>
   </data>
-  <data name="Action" xml:space="preserve">
-    <value>Action</value>
+  <data name="EditWallet" xml:space="preserve">
+    <value>Edit wallet</value>
   </data>
-  <data name="Amount" xml:space="preserve">
-    <value>Amount</value>
+  <data name="LogIn" xml:space="preserve">
+    <value>Log in</value>
   </data>
-  <data name="ApplicationName" xml:space="preserve">
-    <value>Expense Manager</value>
+  <data name="LogOff" xml:space="preserve">
+    <value>Log off</value>
   </data>
-  <data name="Back" xml:space="preserve">
-    <value>Back</value>
+  <data name="ManageAccount" xml:space="preserve">
+    <value>Manage account</value>
   </data>
-  <data name="BackToList" xml:space="preserve">
-    <value>Back to List</value>
-  </data>
-  <data name="Budget" xml:space="preserve">
-    <value>Budget</value>
-  </data>
-  <data name="Budgets" xml:space="preserve">
-    <value>Budgets</value>
-  </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="CaptchaField" xml:space="preserve">
-    <value>Captcha</value>
-  </data>
-  <data name="CaptchaValidationFailed" xml:space="preserve">
-    <value>Captcha validation failed.</value>
-  </data>
-  <data name="Categories" xml:space="preserve">
-    <value>Categories</value>
-  </data>
-  <data name="Category" xml:space="preserve">
-    <value>Category</value>
-  </data>
-  <data name="Create" xml:space="preserve">
-    <value>Create</value>
-  </data>
-  <data name="CreateNew" xml:space="preserve">
-    <value>Create New</value>
-  </data>
-  <data name="Currency" xml:space="preserve">
-    <value>Currency</value>
-  </data>
-  <data name="Date" xml:space="preserve">
-    <value>Date</value>
-  </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="Description" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="Details" xml:space="preserve">
-    <value>Details</value>
-  </data>
-  <data name="Edit" xml:space="preserve">
-    <value>Edit</value>
-  </data>
-  <data name="Error" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="ErrorOccured" xml:space="preserve">
-    <value>An error occurred while processing your request</value>
-  </data>
-  <data name="Filter" xml:space="preserve">
-    <value>Filter</value>
-  </data>
-  <data name="Index" xml:space="preserve">
-    <value>Index</value>
-  </data>
-  <data name="LockedOut" xml:space="preserve">
-    <value>Locked out</value>
-  </data>
-  <data name="Manage" xml:space="preserve">
-    <value>Manage</value>
-  </data>
-  <data name="ManageRoles" xml:space="preserve">
-    <value>Manage Roles</value>
-  </data>
-  <data name="ManageUsers" xml:space="preserve">
-    <value>Manage Users</value>
-  </data>
-  <data name="Pager" xml:space="preserve">
-    <value>Page {0} of {1}</value>
-  </data>
-  <data name="Permissions" xml:space="preserve">
-    <value>Permissions</value>
-  </data>
-  <data name="Refresh" xml:space="preserve">
-    <value>Refresh</value>
-  </data>
-  <data name="Remove" xml:space="preserve">
-    <value>Remove</value>
-  </data>
-  <data name="RepeatableTransaction" xml:space="preserve">
-    <value>Repeatable transaction</value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value>Save</value>
-  </data>
-  <data name="SelectBudgets" xml:space="preserve">
-    <value>Select budgets</value>
-  </data>
-  <data name="SelectCategories" xml:space="preserve">
-    <value>Select categories</value>
-  </data>
-  <data name="SelectWallets" xml:space="preserve">
-    <value>Select wallets</value>
-  </data>
-  <data name="Success" xml:space="preserve">
-    <value>Success</value>
-  </data>
-  <data name="TestError" xml:space="preserve">
-    <value>This is some serious error!</value>
-  </data>
-  <data name="Transactions" xml:space="preserve">
-    <value>Transactions</value>
-  </data>
-  <data name="UserEmail" xml:space="preserve">
-    <value>User e-mail</value>
-  </data>
-  <data name="UserNotFoundByEmail" xml:space="preserve">
-    <value>User with given email not found</value>
-  </data>
-  <data name="Wallet" xml:space="preserve">
-    <value>Wallet</value>
+  <data name="Register" xml:space="preserve">
+    <value>Register</value>
   </data>
 </root>

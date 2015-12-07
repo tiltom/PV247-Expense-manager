@@ -1,7 +1,8 @@
-﻿@model ExpenseManager.Web.Models.User.UserDetailViewModel
+﻿@using ExpenseManager.Resources.UsersAdminResources
+@model ExpenseManager.Web.Models.User.UserDetailViewModel
 
 @{
-    ViewBag.Title = "User details";
+    ViewBag.Title = UsersAdminResource.UserDetails;
 }
 
 <div>
@@ -26,7 +27,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4>
-            List of roles for this user
+            @UsersAdminResource.ListOfRoles
             <span class="badge">@Model.RolesList.Count()</span>
         </h4>
     </div>
@@ -35,7 +36,7 @@
         @if (!Model.RolesList.Any())
         {
             <li class="list-group-item">
-                No roles found for this User.
+                @UsersAdminResource.NoRoles
             </li>
         }
         @foreach (var item in Model.RolesList)
@@ -48,8 +49,8 @@
 </div>
 
     <p>
-        @Html.ActionLink("Edit User", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
-        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-danger" })
+        @Html.ActionLink(UsersAdminResource.EditUser, "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+        @Html.ActionLink(SharedResource.Cancel, "Index", null, new { @class = "btn btn-danger" })
     </p>
 
 

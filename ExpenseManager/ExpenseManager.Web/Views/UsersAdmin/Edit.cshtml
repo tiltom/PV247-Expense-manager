@@ -1,7 +1,8 @@
-﻿@model ExpenseManager.Web.Models.User.UserEditViewModel
+﻿@using ExpenseManager.Resources.UsersAdminResources
+@model ExpenseManager.Web.Models.User.UserEditViewModel
 
 @{
-    ViewBag.Title = "Edit user";
+    ViewBag.Title = UsersAdminResource.EditUser;
 }
 @using (Html.BeginForm())
 {
@@ -48,8 +49,8 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-success" />
-                @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-danger" })
+                <input type="submit" value=@SharedResource.Save class="btn btn-success" />
+                @Html.ActionLink(SharedResource.Cancel, "Index", null, new { @class = "btn btn-danger" })
             </div>
         </div>
     </div>

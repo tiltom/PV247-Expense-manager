@@ -1,27 +1,28 @@
-﻿@model ExpenseManager.Web.Models.User.IndexViewModel
+﻿@using ExpenseManager.Resources.ManageResources
+@model ExpenseManager.Web.Models.User.IndexViewModel
 @{
-    ViewBag.Title = "Manage account";
+    ViewBag.Title = ManageResource.ManageAccount;
 }
 
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div>
     <dl class="dl-horizontal">
-        <dt>Password:</dt>
+        <dt>@ManageResource.Password:</dt>
         <dd>
             @if (Model.HasPassword)
             {
-                @Html.ActionLink("Change your password", "ChangePassword", null, new {@class = "btn btn-primary"})
+                @Html.ActionLink(ManageResource.ChangeYourPassword, "ChangePassword", null, new {@class = "btn btn-primary"})
             }
             else
             {
-                @Html.ActionLink("Create", "SetPassword", null, new {@class = "btn btn-primary"})
+                @Html.ActionLink(SharedResource.Create, "SetPassword", null, new {@class = "btn btn-primary"})
             }
         </dd>
         <div class="medium-margin-top" /> 
-        <dt>External Logins:</dt>
+        <dt>@ManageResource.ExternalLogins:</dt>
         <dd>
             @Model.Logins.Count
-            @Html.ActionLink("Manage", "ManageLogins", null, new {@class = "btn btn-primary"})
+            @Html.ActionLink(SharedResource.Manage, "ManageLogins", null, new {@class = "btn btn-primary"})
         </dd>
         
     </dl>

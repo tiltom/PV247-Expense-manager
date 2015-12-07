@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using ExpenseManager.Resources.ManageResources;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -54,17 +55,17 @@ namespace ExpenseManager.Web.Controllers
         {
             ViewBag.StatusMessage =
                 message == ManageMessageId.ChangePasswordSuccess
-                    ? "Your password has been changed."
+                    ? ManageResource.PasswordChanged
                     : message == ManageMessageId.SetPasswordSuccess
-                        ? "Your password has been set."
+                        ? ManageResource.PasswordSet
                         : message == ManageMessageId.SetTwoFactorSuccess
-                            ? "Your two-factor authentication provider has been set."
+                            ? ManageResource.TwoFactorAuthProviderSet
                             : message == ManageMessageId.Error
-                                ? "An error has occurred."
+                                ? ManageResource.ErrorOccured
                                 : message == ManageMessageId.AddPhoneSuccess
-                                    ? "Your phone number was added."
+                                    ? ManageResource.PhoneNumberAdded
                                     : message == ManageMessageId.RemovePhoneSuccess
-                                        ? "Your phone number was removed."
+                                        ? ManageResource.PhoneNumberRemoved
                                         : "";
 
             var userId = User.Identity.GetUserId();
@@ -193,9 +194,9 @@ namespace ExpenseManager.Web.Controllers
         {
             ViewBag.StatusMessage =
                 message == ManageMessageId.RemoveLoginSuccess
-                    ? "The external login was removed."
+                    ? ManageResource.ExternalLoginRemoved
                     : message == ManageMessageId.Error
-                        ? "An error has occurred."
+                        ? ManageResource.ErrorOccured
                         : "";
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
             if (user == null)

@@ -1,6 +1,7 @@
-﻿@model ExpenseManager.Web.Models.User.RegisterWithPasswordViewModel
+﻿@using ExpenseManager.Resources.AccountResources
+@model ExpenseManager.Web.Models.User.RegisterWithPasswordViewModel
 @{
-    ViewBag.Title = "Register";
+    ViewBag.Title = AccountResource.Register;
 }
 
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -51,7 +52,7 @@
     </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-success" value="Register" />
+            <input type="submit" class="btn btn-success" value=@AccountResource.Register />
         </div>
     </div>
 }

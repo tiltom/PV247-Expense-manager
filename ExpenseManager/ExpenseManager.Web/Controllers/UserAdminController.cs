@@ -9,6 +9,7 @@ using ExpenseManager.Database;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
+using ExpenseManager.Resources.UsersAdminResources;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
@@ -107,7 +108,7 @@ namespace ExpenseManager.Web.Controllers
         private Task<List<SelectListItem>> GetAllRolesAsync()
         {
             return QueryableExtensions.ToListAsync(RoleManager.Roles.Select(
-                    r => new SelectListItem {Value = r.Id, Text = r.Name}));
+                r => new SelectListItem {Value = r.Id, Text = r.Name}));
         }
 
         /// <summary>
@@ -127,7 +128,7 @@ namespace ExpenseManager.Web.Controllers
 
             if (userWithPasswordViewModel.SelectedRoles == null)
             {
-                ModelState.AddModelError("", "At least one role has to be selected.");
+                ModelState.AddModelError("", UsersAdminResource.OneRoleMustBeSelected);
                 userWithPasswordViewModel.RolesList = await this.GetAllRolesAsync();
                 userWithPasswordViewModel.Currencies = await this.GetCurrencies();
                 return this.View(userWithPasswordViewModel);
@@ -202,13 +203,13 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Something failed.");
+                ModelState.AddModelError("", UsersAdminResource.SomethingFailed);
                 return this.View();
             }
 
             if (editUser.SelectedRoles == null)
             {
-                ModelState.AddModelError("", "At least one role has to be selected.");
+                ModelState.AddModelError("", UsersAdminResource.OneRoleMustBeSelected);
                 editUser.RolesList = await this.GetAllRolesAsync();
                 return this.View(editUser);
             }
