@@ -59,6 +59,17 @@ namespace ExpenseManager.Web.Controllers
             return result;
         }
 
+        /// <summary>
+        ///     Action for adding new repeatable transactions
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>View with model</returns>
+        // GET: Home/UpdateRepeatable
+        public async Task<ActionResult> UpdateRepeatable()
+        {
+            return await this._transactionService.UpdateRepeatableTransactions();
+        }
+
 
         private async Task<FilterDataModel> InitFilter(FilterDataModel filter)
         {
