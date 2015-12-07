@@ -1,7 +1,8 @@
-﻿@model ExpenseManager.Web.Models.Role.RoleDetailViewModel
+﻿@using ExpenseManager.Resources.RolesAdmin
+@model ExpenseManager.Web.Models.Role.RoleDetailViewModel
 
 @{
-    ViewBag.Title = "Role details";
+    ViewBag.Title = RolesAdminResource.RoleDetails;
 }
 <div>
     <dl class="dl-horizontal">
@@ -16,7 +17,7 @@
 <div class="panel panel-default">
 <div class="panel-heading">
     <h4>
-        List of users in this role
+        @RolesAdminResource.ListOfUsers
         <span class="badge">@Model.Users.Count</span>
     </h4>
 </div>
@@ -24,20 +25,20 @@
         @if (Model.Users.Count == 0)
         {
             <li class="list-group-item">
-                No users found in this role.
+                @RolesAdminResource.NoUsersFound
             </li>
         }
 
         @foreach (var item in Model.Users)
         {
-                @Html.ActionLink(item.UserName, "Edit", "UsersAdmin", new {id = item.Id}, new {@class= "list-group-item btn btn-default" })
+                @Html.ActionLink(item.UserName, SharedResource.Edit, "UsersAdmin", new {id = item.Id}, new {@class= "list-group-item btn btn-default" })
         }
     </ul>
 </div>
 
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
-    @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-danger" })
+    @Html.ActionLink(SharedResource.Edi, "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink(SharedResource.Cancel, "Index", null, new { @class = "btn btn-danger" })
 </p>
 
 

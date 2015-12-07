@@ -1,17 +1,18 @@
-﻿@model Microsoft.AspNet.Identity.EntityFramework.IdentityRole
+﻿@using ExpenseManager.Resources.RolesAdmin
+@model Microsoft.AspNet.Identity.EntityFramework.IdentityRole
 
 @{
-    ViewBag.Title = "Delete role?";
+    ViewBag.Title = RolesAdminResource.DeleteRole;
 }
 
-<h3>Are you sure you want to delete "@Html.DisplayFor(model => model.Name)" Role? </h3>
-<p>Deleting this Role will remove all users from this role. It will not delete the users.</p>
+<h3>@String.Format(RolesAdminResource.SureOfDelete, @Html.DisplayFor(model => model.Name))</h3>
+<p>@RolesAdminResource.DeletingRole</p>
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-success" /> 
-            @Html.ActionLink("Cancel", "Index",null,new {@class="btn btn-danger"})
+            <input type="submit" value=@SharedResource.Delete class="btn btn-success" /> 
+            @Html.ActionLink(SharedResource.Cancel, "Index",null,new {@class="btn btn-danger"})
         </div>
     }
