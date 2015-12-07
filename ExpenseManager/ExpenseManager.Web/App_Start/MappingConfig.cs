@@ -95,14 +95,14 @@ namespace ExpenseManager.Web
 
         private static void RegisterCategoryMappings()
         {
-            Mapper.CreateMap<Category, CategoryShowModel>()
+            Mapper.CreateMap<Category, CategoryModel>()
                 .ForMember(view => view.Guid, options => options.MapFrom(entity => entity.Guid))
                 .ForMember(view => view.Name, options => options.MapFrom(entity => entity.Name))
                 .ForMember(view => view.Icon, options => options.MapFrom(entity => entity.IconPath))
                 .ForMember(view => view.Type, options => options.MapFrom(entity => entity.Type))
                 .ForMember(view => view.Description, options => options.MapFrom(entity => entity.Description));
 
-            Mapper.CreateMap<CategoryShowModel, Category>()
+            Mapper.CreateMap<CategoryModel, Category>()
                 .ForMember(entity => entity.Guid, options => options.MapFrom(view => view.Guid))
                 .ForMember(entity => entity.Name, options => options.MapFrom(view => view.Name))
                 .ForMember(entity => entity.IconPath, options => options.MapFrom(view => view.Icon))

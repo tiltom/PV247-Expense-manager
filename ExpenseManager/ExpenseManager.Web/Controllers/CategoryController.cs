@@ -27,7 +27,7 @@ namespace ExpenseManager.Web.Controllers
         {
             var categories = this._categoryService.GetCategories();
             var categoryShowModels = await
-                categories.ProjectTo<CategoryShowModel>(categories).OrderBy(category => category.Name).ToListAsync();
+                categories.ProjectTo<CategoryModel>(categories).OrderBy(category => category.Name).ToListAsync();
 
             return this.View(categoryShowModels);
         }
@@ -40,8 +40,11 @@ namespace ExpenseManager.Web.Controllers
         public ActionResult Create()
         {
             var glyphicons = CategoryService.GetGlyphicons();
-            ViewBag.Glyphicons = glyphicons;
-            return this.View();
+            return this.View(new CategoryModel
+            {
+                Glyphicons = glyphicons,
+                Icon = glyphicons.ElementAt(0)
+            });
         }
 
         /// <summary>
@@ -51,11 +54,14 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>Redirect to Index</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(CategoryShowModel category)
+        public async Task<ActionResult> Create(CategoryModel category)
         {
             // first, check if model is valid
             if (!ModelState.IsValid)
+            {
+                category.Glyphicons = CategoryService.GetGlyphicons();
                 return this.View(category);
+            }
 
             var newCategory = Mapper.Map<Category>(category);
 
@@ -66,6 +72,7 @@ namespace ExpenseManager.Web.Controllers
             catch (ServiceValidationException exception)
             {
                 ModelState.AddModelErrors(exception);
+                category.Glyphicons = CategoryService.GetGlyphicons();
                 return this.View(category);
             }
 
@@ -83,10 +90,10 @@ namespace ExpenseManager.Web.Controllers
             // find category by its Id
             var category = await this._categoryService.GetCategoryByGuid(guid);
 
-            var glyphicons = CategoryService.GetGlyphicons();
-            ViewBag.Glyphicons = glyphicons;
+            var viewModel = Mapper.Map<CategoryModel>(category);
+            viewModel.Glyphicons = CategoryService.GetGlyphicons();
 
-            return this.View(Mapper.Map<CategoryShowModel>(category));
+            return this.View(viewModel);
         }
 
         /// <summary>
@@ -96,11 +103,14 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>Redirect to Index</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(CategoryShowModel category)
+        public async Task<ActionResult> Edit(CategoryModel category)
         {
             // check if model is valid
             if (!ModelState.IsValid)
+            {
+                category.Glyphicons = CategoryService.GetGlyphicons();
                 return this.View(category);
+            }
 
             var editedCategory = Mapper.Map<Category>(category);
 
@@ -111,6 +121,7 @@ namespace ExpenseManager.Web.Controllers
             catch (ServiceValidationException exception)
             {
                 ModelState.AddModelErrors(exception);
+                category.Glyphicons = CategoryService.GetGlyphicons();
                 return this.View(category);
             }
 
@@ -127,7 +138,7 @@ namespace ExpenseManager.Web.Controllers
             // find category by its Id
             var category = await this._categoryService.GetCategoryByGuid(id);
 
-            return this.View(Mapper.Map<CategoryShowModel>(category));
+            return this.View(Mapper.Map<CategoryModel>(category));
         }
 
         /// <summary>
@@ -137,7 +148,7 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>Redirect to Index</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(CategoryShowModel model)
+        public async Task<ActionResult> DeleteConfirmed(CategoryModel model)
         {
             if (!ModelState.IsValid)
             {
