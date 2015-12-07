@@ -239,6 +239,7 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
             // graph settings for dynamic charts
             lineChart.ChartConfiguration.ScaleBeginAtZero = false;
             lineChart.ChartConfiguration.Responsive = true;
+            lineChart.ChartConfiguration.BezierCurve = false;
             return lineChart;
         }
 

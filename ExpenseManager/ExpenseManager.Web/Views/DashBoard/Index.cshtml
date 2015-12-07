@@ -146,8 +146,8 @@
 
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="categoriesExpense">
-                                <h4>@DashBoardResource.ExpensesByCategoryInLastMonth</h4>
                                 <div class="medium-margin-top">
+                                    <h4>@DashBoardResource.ExpensesByCategoryInLastMonth</h4>
                                     @if (Model.CategoriesExpenseChart == null)
                                     {
                                         <h4>@DashBoardResource.NotEnoughDataAvailable</h4>
@@ -161,7 +161,6 @@
                             <div role="tabpanel" class="tab-pane active" id="categoriesIncome">
                                 <div class="medium-margin-top">
                                     <h4>@DashBoardResource.IncomesByCategoryInLastMonth</h4>
-                                    
                                     @if (Model.CategoriesIncomeChart == null)
                                     {
                                         <h4>@DashBoardResource.NotEnoughDataAvailable</h4>
@@ -174,9 +173,9 @@
 
                             </div>
                             <div role="tabpanel" class="tab-pane active" id="months">
-                                <h4>@DashBoardResource.LastMonthReport</h4>
+                              
                                 <div class="medium-margin-top">
-                                   
+                                    <h4>@DashBoardResource.LastMonthReport</h4>
                                     @if (Model.MonthSummaryChart == null)
                                     {
                                         <h4>@DashBoardResource.NotEnoughDataAvailable</h4>
@@ -188,8 +187,8 @@
                                 </div>
                             </div>
                             <div role="tabpanel" class="tab-pane active" id="years">
-                                <h4>@DashBoardResource.LastYearReport</h4>
                                 <div class="medium-margin-top">
+                                    <h4>@DashBoardResource.LastYearReport</h4>
                                     @if (Model.YearSummaryChart == null)
                                     {
                                         <h4>@DashBoardResource.NotEnoughDataAvailable</h4>
