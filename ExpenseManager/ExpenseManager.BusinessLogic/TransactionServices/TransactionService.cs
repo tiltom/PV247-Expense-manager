@@ -43,7 +43,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
 
         protected override IWalletsQueryable WalletsProvider
         {
-            get { return this._walletsProvider; }
+            get { return this._transactionsProvider; }
         }
 
         public void ValidateTransaction(TransactionServiceModel transaction)
@@ -115,14 +115,14 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
 
         public async Task<HttpStatusCodeResult> UpdateRepeatableTransactions()
         {
-            List<RepeatableTransaction> repeatableTransactions = await _transactionsProvider.RepeatableTransactions.ToListAsync();
-            foreach (RepeatableTransaction rt in repeatableTransactions)
+            var repeatableTransactions = await this._transactionsProvider.RepeatableTransactions.ToListAsync();
+            foreach (var rt in repeatableTransactions)
             {
-                DateTime expectedNewOccurance = rt.LastOccurrence.AddDays(rt.NextRepeat);
+                var expectedNewOccurance = rt.LastOccurrence.AddDays(rt.NextRepeat);
 
                 while (expectedNewOccurance.Subtract(DateTime.Today).Days <= 0)
                 {
-                    Transaction transactionToAdd = new Transaction();
+                    var transactionToAdd = new Transaction();
                     transactionToAdd.Amount = rt.FirstTransaction.Amount;
                     transactionToAdd.Budget = rt.FirstTransaction.Budget;
                     transactionToAdd.Category = rt.FirstTransaction.Category;
@@ -130,10 +130,10 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     transactionToAdd.Date = expectedNewOccurance;
                     transactionToAdd.Description = rt.FirstTransaction.Description;
                     transactionToAdd.Wallet = rt.FirstTransaction.Wallet;
-                    await _transactionsProvider.AddOrUpdateAsync(transactionToAdd);
+                    await this._transactionsProvider.AddOrUpdateAsync(transactionToAdd);
 
                     rt.LastOccurrence = transactionToAdd.Date;
-                    await _transactionsProvider.AddOrUpdateAsync(rt);
+                    await this._transactionsProvider.AddOrUpdateAsync(rt);
 
                     expectedNewOccurance = expectedNewOccurance.AddDays(rt.NextRepeat);
                 }
