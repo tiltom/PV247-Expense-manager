@@ -41,6 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountResources\AccountResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AccountResource.resx</DependentUpon>
+    </Compile>
     <Compile Include="BudgetResources\BudgetResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -60,6 +65,16 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DashBoardResource.resx</DependentUpon>
+    </Compile>
+    <Compile Include="LayoutResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LayoutResource.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ManageResources\ManageResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ManageResource.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SharedResource.Designer.cs">
@@ -84,6 +99,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AccountResources\AccountResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AccountResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="BudgetResources\BudgetResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>BudgetResource.Designer.cs</LastGenOutput>
@@ -99,6 +118,14 @@
     <EmbeddedResource Include="DashboardResources\DashBoardResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>DashBoardResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LayoutResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>LayoutResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageResources\ManageResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ManageResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="SharedResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

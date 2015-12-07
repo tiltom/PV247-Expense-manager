@@ -10,17 +10,17 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@User.Identity.GetUserName() <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li>
-                        @Html.ActionLink("Manage account", "Index", "Manage")
+                        @Html.ActionLink(LayoutResource.ManageAccount, "Index", "Manage")
                     </li>
                     <li>
-                        @Html.ActionLink("Edit wallet", "Edit", "Wallet")
+                        @Html.ActionLink(LayoutResource.EditWallet, "Edit", "Wallet")
                     </li>
                     <li>
-                        @Html.ActionLink("Change wallet access rights", "Index", "WalletAccessRight")
+                        @Html.ActionLink(LayoutResource.ChangeWalletAccessRights, "Index", "WalletAccessRight")
                     </li>
                     <li role="separator" class="divider"></li>
                     <li>
-                        <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+                        <a href="javascript:document.getElementById('logoutForm').submit()">@LayoutResource.LogOff</a>
                     </li>
                 </ul>
         </li>
@@ -31,7 +31,7 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        <li>@Html.ActionLink(LayoutResource.Register, "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink(LayoutResource.LogIn, "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
     </ul>
 }
