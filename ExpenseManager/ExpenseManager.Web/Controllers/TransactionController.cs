@@ -15,6 +15,7 @@ using ExpenseManager.BusinessLogic.TransactionServices.Models;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Resources.TransactionResources;
+using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Transaction;
 using PagedList;
 
@@ -334,18 +335,6 @@ namespace ExpenseManager.Web.Controllers
                 //this._db.Dispose();
             }
             base.Dispose(disposing);
-        }
-    }
-
-    public static class MvcValidationExtension
-    {
-        public static void AddModelErrors(this ModelStateDictionary state,
-            ServiceValidationException exception)
-        {
-            foreach (var error in exception.Errors)
-            {
-                state.AddModelError(error.Key, error.Value);
-            }
         }
     }
 }

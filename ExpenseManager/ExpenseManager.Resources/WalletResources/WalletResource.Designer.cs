@@ -79,6 +79,15 @@ namespace ExpenseManager.Resources.WalletResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name can not be empty!.
+        /// </summary>
+        public static string NameNotNullOrEmpty {
+            get {
+                return ResourceManager.GetString("NameNotNullOrEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select currency.
         /// </summary>
         public static string SelectCurrency {

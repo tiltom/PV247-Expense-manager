@@ -1,4 +1,6 @@
 ﻿using ExpenseManager.Entity.Budgets;
+using ExpenseManager.Resources;
+using ExpenseManager.Resources.BudgetResources;
 using FluentValidation;
 
 namespace ExpenseManager.BusinessLogic.Validators
@@ -7,8 +9,12 @@ namespace ExpenseManager.BusinessLogic.Validators
     {
         public BudgetAccessRightValidator()
         {
-            this.RuleFor(right => right.UserProfile).NotNull();
-            this.RuleFor(right => right.Budget).NotNull();
+            this.RuleFor(right => right.UserProfile)
+                .NotNull()
+                .WithLocalizedMessage(() => SharedResource.UserNotFoundByEmail);
+            this.RuleFor(right => right.Budget)
+                .NotNull()
+                .WithLocalizedMessage(() => BudgetAccessRightResource.BudgetNotFoundById);
         }
     }
 }

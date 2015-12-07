@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using ExpenseManager.BusinessLogic;
 using ExpenseManager.BusinessLogic.BudgetServices;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Budget;
 using PagedList;
 
@@ -34,10 +36,9 @@ namespace ExpenseManager.Web.Controllers
             var budgets = this._budgetService.GetBudgetsByUserId(userId);
             var budgetShowModels = await budgets.ProjectTo<BudgetShowModel>().ToListAsync();
 
-            var pageSize = 5;
             var pageNumber = (page ?? 1);
 
-            return this.View(budgetShowModels.ToPagedList(pageNumber, pageSize));
+            return this.View(budgetShowModels.ToPagedList(pageNumber, PageSize));
         }
 
         /// <summary>
@@ -62,13 +63,6 @@ namespace ExpenseManager.Web.Controllers
         {
             // check if model is valid
             if (!ModelState.IsValid)
-            {
-                // TODO: add error message to layout and display it here
-                return this.View(model);
-            }
-
-            // check if model is valid
-            if (!BudgetService.ValidateModel(model.StartDate, model.EndDate))
             {
                 // TODO: add error message to layout and display it here
                 return this.View(model);
@@ -100,7 +94,15 @@ namespace ExpenseManager.Web.Controllers
             };
 
             // write budget to DB
-            await this._budgetService.CreateBudget(budget);
+            try
+            {
+                await this._budgetService.CreateBudget(budget);
+            }
+            catch (ServiceValidationException exception)
+            {
+                ModelState.AddModelErrors(exception);
+                return this.View(model);
+            }
 
             return this.RedirectToAction("Index");
         }
@@ -138,16 +140,19 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(model);
             }
 
-            // check if model is valid
-            if (!BudgetService.ValidateModel(model.StartDate, model.EndDate))
+            try
             {
-                // TODO: add error message to layout and display it here
+                await
+                    this._budgetService.EditBudget(model.Guid, model.Name, model.Description, model.Limit,
+                        model.StartDate,
+                        model.EndDate);
+            }
+            catch (ServiceValidationException exception)
+            {
+                ModelState.AddModelErrors(exception);
                 return this.View(model);
             }
 
-            await
-                this._budgetService.EditBudget(model.Guid, model.Name, model.Description, model.Limit, model.StartDate,
-                    model.EndDate);
 
             // Add OK message
             return this.RedirectToAction("Index");

@@ -97,11 +97,38 @@ namespace ExpenseManager.Resources.BudgetResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Limit of budget has to be greater than 0!.
+        /// </summary>
+        public static string LimitGreaterThanZero {
+            get {
+                return ResourceManager.GetString("LimitGreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name of the budget can not be empty!.
+        /// </summary>
+        public static string NameNotNull {
+            get {
+                return ResourceManager.GetString("NameNotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete budget {0}?.
         /// </summary>
         public static string SureOfDelete {
             get {
                 return ResourceManager.GetString("SureOfDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start date has to be before end date!.
+        /// </summary>
+        public static string WrongDateSpan {
+            get {
+                return ResourceManager.GetString("WrongDateSpan", resourceCulture);
             }
         }
     }

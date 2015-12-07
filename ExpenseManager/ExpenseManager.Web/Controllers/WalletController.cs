@@ -2,8 +2,10 @@
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper.QueryableExtensions;
+using ExpenseManager.BusinessLogic;
 using ExpenseManager.BusinessLogic.WalletServices;
 using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Wallet;
 
 namespace ExpenseManager.Web.Controllers
@@ -46,15 +48,23 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(WalletEditModel wallet)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                await this._walletService.EditWallet(wallet.Guid, wallet.Name, wallet.CurrencyId);
-
-                return this.RedirectToAction("Index", "DashBoard");
+                wallet.Currencies = await this.GetCurrencies();
+                return this.View(wallet);
             }
 
-            wallet.Currencies = await this.GetCurrencies();
-            return this.View(wallet);
+            try
+            {
+                await this._walletService.EditWallet(wallet.Guid, wallet.Name, wallet.CurrencyId);
+            }
+            catch (ServiceValidationException exception)
+            {
+                ModelState.AddModelErrors(exception);
+                wallet.Currencies = await this.GetCurrencies();
+                return this.View(wallet);
+            }
+            return this.RedirectToAction("Index", "DashBoard");
         }
     }
 }

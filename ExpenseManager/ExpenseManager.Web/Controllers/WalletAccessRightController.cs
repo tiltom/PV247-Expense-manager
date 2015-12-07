@@ -11,6 +11,7 @@ using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Resources;
+using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.WalletAccessRight;
 using PagedList;
 
@@ -71,22 +72,28 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Create(WalletAccessRightModel walletAccessRight)
         {
             this.IsCaptchaValid(SharedResource.CaptchaValidationFailed);
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var userId = await this.GetUserProfileByEmail(walletAccessRight.AssignedUserEmail);
-                if (!userId.Equals(Guid.Empty))
-                {
-                    await this._walletAccessRightService.CreateWalletAccessRight(
-                        walletAccessRight.WalletId,
-                        userId,
-                        walletAccessRight.Permission
-                        );
-                    return this.RedirectToAction("Index");
-                }
-                ModelState.AddModelError("UserProfile", SharedResource.UserNotFoundByEmail);
+                walletAccessRight.Permissions = this.GetPermissions();
+                return this.View(walletAccessRight);
             }
-            walletAccessRight.Permissions = this.GetPermissions();
-            return this.View(walletAccessRight);
+            var userId = await this.GetUserProfileByEmail(walletAccessRight.AssignedUserEmail);
+
+            try
+            {
+                await this._walletAccessRightService.CreateWalletAccessRight(
+                    walletAccessRight.WalletId,
+                    userId,
+                    walletAccessRight.Permission
+                    );
+            }
+            catch (ServiceValidationException exception)
+            {
+                ModelState.AddModelErrors(exception);
+                walletAccessRight.Permissions = this.GetPermissions();
+                return this.View(walletAccessRight);
+            }
+            return this.RedirectToAction("Index");
         }
 
 
@@ -118,20 +125,29 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(WalletAccessRightEditModel walletAccessRight)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var permission = this._commonService.ConvertPermissionStringToEnum(walletAccessRight.Permission);
+                walletAccessRight.Permissions = this.GetPermissions();
+                return this.View(walletAccessRight);
+            }
+
+            var permission = this._commonService.ConvertPermissionStringToEnum(walletAccessRight.Permission);
+            try
+            {
                 await
                     this._walletAccessRightService.EditWalletAccessRight(
                         walletAccessRight.Id,
                         permission,
                         walletAccessRight.AssignedUserId
                         );
-
-                return this.RedirectToAction("Index");
             }
-
-            return this.View(walletAccessRight);
+            catch (ServiceValidationException exception)
+            {
+                ModelState.AddModelErrors(exception);
+                walletAccessRight.Permissions = this.GetPermissions();
+                return this.View(walletAccessRight);
+            }
+            return this.RedirectToAction("Index");
         }
 
         /// <summary>

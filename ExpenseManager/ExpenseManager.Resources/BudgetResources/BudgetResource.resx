@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="LimitGreaterThanZero" xml:space="preserve">
+    <value>Limit of budget has to be greater than 0!</value>
+  </data>
+  <data name="NameNotNull" xml:space="preserve">
+    <value>Name of the budget can not be empty!</value>
+  </data>
   <data name="BudgetsManagement" xml:space="preserve">
     <value>Budgets management</value>
+  </data>
+  <data name="WrongDateSpan" xml:space="preserve">
+    <value>Start date has to be before end date!</value>
   </data>
   <data name="CreateBudget" xml:space="preserve">
     <value>Create budget</value>

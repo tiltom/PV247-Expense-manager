@@ -1,5 +1,6 @@
 ﻿using ExpenseManager.BusinessLogic.CategoryServices;
 using ExpenseManager.Entity.Categories;
+using ExpenseManager.Resources.CategoryResources;
 using FluentValidation;
 
 namespace ExpenseManager.BusinessLogic.Validators
@@ -8,10 +9,17 @@ namespace ExpenseManager.BusinessLogic.Validators
     {
         public CategoryValidator()
         {
-            this.RuleFor(category => category.Name).NotNull().NotEmpty();
-            this.RuleFor(category => category.Description).NotNull().NotEmpty();
+            this.RuleFor(category => category.Name)
+                .NotNull()
+                .NotEmpty()
+                .WithLocalizedMessage(() => CategoryResource.NameNotNullOrEmpty);
+            this.RuleFor(category => category.Description)
+                .NotNull()
+                .NotEmpty()
+                .WithLocalizedMessage(() => CategoryResource.DescriptionNotNullOrEmpty);
             this.RuleFor(category => category.IconPath)
-                .Must(iconPath => CategoryService.GetGlyphicons().Contains(iconPath));
+                .Must(iconPath => CategoryService.GetGlyphicons().Contains(iconPath))
+                .WithLocalizedMessage(() => CategoryResource.GlyphiconIconInList);
         }
     }
 }

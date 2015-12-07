@@ -97,6 +97,15 @@ namespace ExpenseManager.Resources.CategoryResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description can not be empty!.
+        /// </summary>
+        public static string DescriptionNotNullOrEmpty {
+            get {
+                return ResourceManager.GetString("DescriptionNotNullOrEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit category.
         /// </summary>
         public static string EditCategory {
@@ -115,6 +124,15 @@ namespace ExpenseManager.Resources.CategoryResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selected glyphicon is not in supported!.
+        /// </summary>
+        public static string GlyphiconIconInList {
+            get {
+                return ResourceManager.GetString("GlyphiconIconInList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Incomes.
         /// </summary>
         public static string Incomes {
@@ -129,6 +147,15 @@ namespace ExpenseManager.Resources.CategoryResources {
         public static string IncomesAndExpenses {
             get {
                 return ResourceManager.GetString("IncomesAndExpenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name can not be empty!.
+        /// </summary>
+        public static string NameNotNullOrEmpty {
+            get {
+                return ResourceManager.GetString("NameNotNullOrEmpty", resourceCulture);
             }
         }
     }

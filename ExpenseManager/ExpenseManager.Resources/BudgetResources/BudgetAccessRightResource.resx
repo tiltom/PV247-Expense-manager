@@ -120,6 +120,9 @@
   <data name="BudgetAccessRightManagement" xml:space="preserve">
     <value>Budget access right management</value>
   </data>
+  <data name="BudgetNotFoundById" xml:space="preserve">
+    <value>Budget wasn't found for given budget access right</value>
+  </data>
   <data name="CreateBudgetAccessRight" xml:space="preserve">
     <value>Create budget access right</value>
   </data>

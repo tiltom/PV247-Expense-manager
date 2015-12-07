@@ -70,6 +70,15 @@ namespace ExpenseManager.Resources.BudgetResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Budget wasn&apos;t found for given budget access right.
+        /// </summary>
+        public static string BudgetNotFoundById {
+            get {
+                return ResourceManager.GetString("BudgetNotFoundById", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create budget access right.
         /// </summary>
         public static string CreateBudgetAccessRight {

@@ -212,6 +212,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\MvcValidationExtension.cs" />
     <Compile Include="Models\BudgetAccessRight\CreateBudgetAccessRightModel.cs" />
     <Compile Include="Models\BudgetAccessRight\EditBudgetAccessRightModel.cs" />
     <Compile Include="Models\BudgetAccessRight\ShowBudgetAccessRightModel.cs" />

@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using ExpenseManager.BusinessLogic;
 using ExpenseManager.BusinessLogic.CategoryServices;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Category;
 
 namespace ExpenseManager.Web.Controllers
@@ -52,16 +54,22 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Create(CategoryShowModel category)
         {
             // first, check if model is valid
-            if (ModelState.IsValid)
-            {
-                var newCategory = Mapper.Map<Category>(category);
-                await this._categoryService.CreateCategory(newCategory);
+            if (!ModelState.IsValid)
+                return this.View(category);
 
-                return this.RedirectToAction("Index");
+            var newCategory = Mapper.Map<Category>(category);
+
+            try
+            {
+                await this._categoryService.CreateCategory(newCategory);
+            }
+            catch (ServiceValidationException exception)
+            {
+                ModelState.AddModelErrors(exception);
+                return this.View(category);
             }
 
-            // TODO: add error message to layout and display it here
-            return this.View(category);
+            return this.RedirectToAction("Index");
         }
 
         /// <summary>
@@ -91,15 +99,22 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Edit(CategoryShowModel category)
         {
             // check if model is valid
-            if (ModelState.IsValid)
-            {
-                var editedCategory = Mapper.Map<Category>(category);
-                await this._categoryService.EditCategory(editedCategory);
+            if (!ModelState.IsValid)
+                return this.View(category);
 
-                return this.RedirectToAction("Index");
+            var editedCategory = Mapper.Map<Category>(category);
+
+            try
+            {
+                await this._categoryService.EditCategory(editedCategory);
+            }
+            catch (ServiceValidationException exception)
+            {
+                ModelState.AddModelErrors(exception);
+                return this.View(category);
             }
 
-            return this.View();
+            return this.RedirectToAction("Index");
         }
 
         /// <summary>

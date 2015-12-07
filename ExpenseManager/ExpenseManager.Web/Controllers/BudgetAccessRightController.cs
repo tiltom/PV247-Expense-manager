@@ -7,9 +7,11 @@ using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CaptchaMvc.HtmlHelpers;
+using ExpenseManager.BusinessLogic;
 using ExpenseManager.BusinessLogic.BudgetServices;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Resources;
+using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.BudgetAccessRight;
 using PagedList;
 
@@ -68,23 +70,30 @@ namespace ExpenseManager.Web.Controllers
         {
             this.IsCaptchaValid(SharedResource.CaptchaValidationFailed);
             // checking if model is valid
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var userId = await this.GetUserProfileByEmail(model.AssignedUserEmail);
-                if (!userId.Equals(Guid.Empty))
-                {
-                    await
-                        this._budgetAccessRightService.CreateAccessBudgetRight(
-                            model.BudgetId,
-                            userId,
-                            model.Permission
-                            );
-                    return this.RedirectToAction("Index", new {id = model.BudgetId});
-                }
-                ModelState.AddModelError("UserProfile", SharedResource.UserNotFoundByEmail);
+                model.Permissions = this.GetPermissions();
+                return this.View(model);
             }
-            model.Permissions = this.GetPermissions();
-            return this.View(model);
+
+            var userId = await this.GetUserProfileByEmail(model.AssignedUserEmail);
+            try
+            {
+                await
+                    this._budgetAccessRightService.CreateAccessBudgetRight(
+                        model.BudgetId,
+                        userId,
+                        model.Permission
+                        );
+            }
+            catch (ServiceValidationException exception)
+            {
+                ModelState.AddModelErrors(exception);
+
+                model.Permissions = this.GetPermissions();
+                return this.View(model);
+            }
+            return this.RedirectToAction("Index", new {id = model.BudgetId});
         }
 
         /// <summary>
@@ -117,7 +126,18 @@ namespace ExpenseManager.Web.Controllers
             if (!ModelState.IsValid)
                 return this.View(model);
 
-            await this._budgetAccessRightService.EditBudgetAccessRight(model.Id, model.Permission, model.AssignedUserId);
+            try
+            {
+                await
+                    this._budgetAccessRightService.EditBudgetAccessRight(model.Id, model.Permission,
+                        model.AssignedUserId);
+            }
+            catch (ServiceValidationException exception)
+            {
+                ModelState.AddModelErrors(exception);
+                model.Permissions = this.GetPermissions();
+                return this.View(model);
+            }
 
             return this.RedirectToAction("Index", new {id = model.BudgetId});
         }

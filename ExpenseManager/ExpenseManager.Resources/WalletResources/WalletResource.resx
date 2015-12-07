@@ -123,6 +123,9 @@
   <data name="ManageAccessRights" xml:space="preserve">
     <value>Manage access rights</value>
   </data>
+  <data name="NameNotNullOrEmpty" xml:space="preserve">
+    <value>Name can not be empty!</value>
+  </data>
   <data name="SelectCurrency" xml:space="preserve">
     <value>Select currency</value>
   </data>

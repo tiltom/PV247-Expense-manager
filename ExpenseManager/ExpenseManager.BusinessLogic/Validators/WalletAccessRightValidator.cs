@@ -1,4 +1,5 @@
 ﻿using ExpenseManager.Entity.Wallets;
+using ExpenseManager.Resources;
 using FluentValidation;
 
 namespace ExpenseManager.BusinessLogic.Validators
@@ -7,8 +8,12 @@ namespace ExpenseManager.BusinessLogic.Validators
     {
         public WalletAccessRightValidator()
         {
-            this.RuleFor(right => right.UserProfile).NotNull();
-            this.RuleFor(right => right.Wallet).NotNull().SetValidator(new WalletValidator());
+            this.RuleFor(right => right.UserProfile)
+                .NotNull()
+                .WithLocalizedMessage(() => SharedResource.UserNotFoundByEmail);
+            this.RuleFor(right => right.Wallet)
+                .NotNull()
+                .SetValidator(new WalletValidator());
         }
     }
 }
