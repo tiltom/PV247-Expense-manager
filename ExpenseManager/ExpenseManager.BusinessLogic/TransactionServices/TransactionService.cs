@@ -197,7 +197,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             }
             TextWriter textWriter = new StringWriter();
             var writer = new CsvWriter(textWriter);
-            writer.Configuration.RegisterClassMap<MyClassMap>();
+            writer.Configuration.RegisterClassMap<TransactionExportMap>();
             var options = new TypeConverterOptions
             {
                 Format = DateFormat
@@ -210,7 +210,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         public async Task ImportFromCsv(Guid userId, string file)
         {
             var reader = new CsvReader(new StringReader(file));
-            reader.Configuration.RegisterClassMap<MyClassMap>();
+            reader.Configuration.RegisterClassMap<TransactionExportMap>();
             reader.Configuration.HasHeaderRecord = true;
             while (reader.Read())
             {
@@ -468,9 +468,9 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return new SelectList(selectList, "Value", "Text", budgetId);
         }
 
-        public sealed class MyClassMap : CsvClassMap<TransactionShowServiceModel>
+        public sealed class TransactionExportMap : CsvClassMap<TransactionShowServiceModel>
         {
-            public MyClassMap()
+            public TransactionExportMap()
             {
                 this.Map(m => m.Amount).Name(SharedResource.Amount);
                 this.Map(m => m.Date).Name(SharedResource.Date);
