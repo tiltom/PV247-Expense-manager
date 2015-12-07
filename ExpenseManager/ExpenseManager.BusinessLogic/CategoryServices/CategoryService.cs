@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using ExpenseManager.BusinessLogic.Validators;
+using ExpenseManager.BusinessLogic.Validators.Extensions;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Providers;
 
@@ -12,7 +13,7 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
     /// <summary>
     ///     Class that handles logic of CategoryController
     /// </summary>
-    public class CategoryService
+    public class CategoryService : IServiceValidation<Category>
     {
         private readonly ITransactionsProvider _db;
         private readonly CategoryValidator _validator;
@@ -21,6 +22,19 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         {
             this._db = db;
             this._validator = new CategoryValidator();
+        }
+
+        /// <summary>
+        ///     Validates category
+        /// </summary>
+        /// <param name="category">Category to validate</param>
+        /// <returns>True if category is valid, false otherwise</returns>
+        public void Validate(Category category)
+        {
+            if (category == null)
+                throw new ArgumentNullException(nameof(category));
+
+            this._validator.ValidateAndThrowCustomException(category);
         }
 
         /// <summary>
@@ -39,10 +53,8 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         /// <returns></returns>
         public async Task CreateCategory(Category category)
         {
-            if (this.ValidateCategory(category))
-            {
-                await this._db.AddOrUpdateAsync(category);
-            }
+            this.Validate(category);
+            await this._db.AddOrUpdateAsync(category);
         }
 
         /// <summary>
@@ -62,15 +74,13 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         /// <returns></returns>
         public async Task EditCategory(Category category)
         {
-            if (this.ValidateCategory(category))
-            {
-                var categoryToEdit = await this.GetCategoryByGuid(category.Guid);
-                categoryToEdit.Name = category.Name;
-                categoryToEdit.Description = category.Description;
-                categoryToEdit.IconPath = category.IconPath;
+            this.Validate(category);
+            var categoryToEdit = await this.GetCategoryByGuid(category.Guid);
+            categoryToEdit.Name = category.Name;
+            categoryToEdit.Description = category.Description;
+            categoryToEdit.IconPath = category.IconPath;
 
-                await this._db.AddOrUpdateAsync(categoryToEdit);
-            }
+            await this._db.AddOrUpdateAsync(categoryToEdit);
         }
 
         /// <summary>
@@ -92,16 +102,6 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
                 .ForEach(t => t.Category = defaultCategory);
 
             await this._db.DeteleAsync(categoryToDelete);
-        }
-
-        /// <summary>
-        ///     Validates category
-        /// </summary>
-        /// <param name="category">Category to validate</param>
-        /// <returns>True if category is valid, false otherwise</returns>
-        public bool ValidateCategory(Category category)
-        {
-            return category != null && this._validator.Validate(category).IsValid;
         }
 
         /// <summary>

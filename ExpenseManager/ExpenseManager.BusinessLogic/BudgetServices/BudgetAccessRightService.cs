@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using ExpenseManager.BusinessLogic.Validators;
+using ExpenseManager.BusinessLogic.Validators.Extensions;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers;
@@ -14,7 +15,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
     /// <summary>
     ///     Class that handles logic of BudgetAccessRightController
     /// </summary>
-    public class BudgetAccessRightService
+    public class BudgetAccessRightService : IServiceValidation<BudgetAccessRight>
     {
         private readonly IBudgetsProvider _db;
         private readonly BudgetAccessRightValidator _validator;
@@ -23,6 +24,19 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         {
             this._db = db;
             this._validator = new BudgetAccessRightValidator();
+        }
+
+        /// <summary>
+        ///     Validates budget access rights
+        /// </summary>
+        /// <param name="budgetAccessRight">Budget access right to validate</param>
+        /// <returns>True if budget access right is valid, false otherwise</returns>
+        public void Validate(BudgetAccessRight budgetAccessRight)
+        {
+            if (budgetAccessRight == null)
+                throw new ArgumentNullException(nameof(budgetAccessRight));
+
+            this._validator.ValidateAndThrowCustomException(budgetAccessRight);
         }
 
         /// <summary>
@@ -88,7 +102,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
                 UserProfile = assignedUser
             };
 
-            this.ValidateBudgetAccessRight(budgetAccessRight);
+            this.Validate(budgetAccessRight);
 
             // creating new budget access right
             await this._db.AddOrUpdateAsync(budgetAccessRight);
@@ -119,7 +133,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
             accessRightToEdit.Permission = permission;
             accessRightToEdit.UserProfile = await this.GetUserProfileById(userProfileId);
 
-            this.ValidateBudgetAccessRight(accessRightToEdit);
+            this.Validate(accessRightToEdit);
 
             await this._db.AddOrUpdateAsync(accessRightToEdit);
         }
@@ -158,16 +172,6 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
                 .Where(
                     u => // filtering users which don't have owner permission or other permissions
                         u.BudgetAccessRights.All(war => !users.Contains(u.Guid)));
-        }
-
-        /// <summary>
-        ///     Validates budget access rights
-        /// </summary>
-        /// <param name="budgetAccessRight">Budget access right to validate</param>
-        /// <returns>True if budget access right is valid, false otherwise</returns>
-        public bool ValidateBudgetAccessRight(BudgetAccessRight budgetAccessRight)
-        {
-            return budgetAccessRight != null && this._validator.Validate(budgetAccessRight).IsValid;
         }
 
         #region private

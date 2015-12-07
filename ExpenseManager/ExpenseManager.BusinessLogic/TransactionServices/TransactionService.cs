@@ -28,7 +28,7 @@ using ExpenseManager.Resources.TransactionResources;
 
 namespace ExpenseManager.BusinessLogic.TransactionServices
 {
-    public class TransactionService : ServiceWithWallet
+    public class TransactionService : ServiceWithWallet, IServiceValidation<TransactionServiceModel>
     {
         public const string DateFormat = "dd.MM.yyyy";
         private readonly IBudgetsProvider _budgetsProvider;
@@ -50,7 +50,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             get { return this._transactionsProvider; }
         }
 
-        public void ValidateTransaction(TransactionServiceModel transaction)
+        public void Validate(TransactionServiceModel transaction)
         {
             if (transaction == null)
                 throw new ArgumentNullException(nameof(transaction));
@@ -60,7 +60,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
 
         public async Task Create(TransactionServiceModel transaction)
         {
-            this.ValidateTransaction(transaction);
+            this.Validate(transaction);
             //create new Transaction entity and fill it from DTO
             var transactionEntity = await this.FillTransaction(transaction, new Transaction {Guid = new Guid()});
             transactionEntity.Guid = new Guid();
@@ -110,7 +110,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
 
         public async Task Edit(TransactionServiceModel transaction)
         {
-            this.ValidateTransaction(transaction);
+            this.Validate(transaction);
             //find transaction by Id
             var transactionEntity = await this.GetTransactionById(transaction.Id);
             //update entity properties from DTO

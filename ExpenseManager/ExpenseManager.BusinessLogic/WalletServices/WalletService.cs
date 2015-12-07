@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ExpenseManager.BusinessLogic.ExchangeRates;
 using ExpenseManager.BusinessLogic.Validators;
+using ExpenseManager.BusinessLogic.Validators.Extensions;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers;
@@ -15,7 +16,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
     /// <summary>
     ///     Class that handles logic of WalletController
     /// </summary>
-    public class WalletService : ServiceWithWallet
+    public class WalletService : ServiceWithWallet, IServiceValidation<Wallet>
     {
         private readonly IWalletsProvider _db;
         private readonly WalletValidator _validator;
@@ -29,6 +30,19 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         protected override IWalletsQueryable WalletsProvider
         {
             get { return this._db; }
+        }
+
+        /// <summary>
+        ///     Validates wallet
+        /// </summary>
+        /// <param name="wallet">Wallet to validate</param>
+        /// <returns>True if wallet is valid, false otherwise</returns>
+        public void Validate(Wallet wallet)
+        {
+            if (wallet == null)
+                throw new ArgumentNullException(nameof(wallet));
+
+            this._validator.ValidateAndThrowCustomException(wallet);
         }
 
 
@@ -64,15 +78,13 @@ namespace ExpenseManager.BusinessLogic.WalletServices
             wallet.Name = name;
             wallet.Currency = currency;
 
-            if (this.ValidateWallet(wallet))
+            this.Validate(wallet);
+            foreach (var transaction in wallet.Transactions)
             {
-                foreach (var transaction in wallet.Transactions)
-                {
-                    Transformation.ChangeCurrency(transaction, currency);
-                }
-                // TODO change budget limit currency
-                await this._db.AddOrUpdateAsync(wallet);
+                Transformation.ChangeCurrency(transaction, currency);
             }
+            // TODO change budget limit currency
+            await this._db.AddOrUpdateAsync(wallet);
         }
 
         /// <summary>
@@ -82,16 +94,6 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         public IQueryable<Currency> GetCurrencies()
         {
             return this._db.Currencies;
-        }
-
-        /// <summary>
-        ///     Validates wallet
-        /// </summary>
-        /// <param name="wallet">Wallet to validate</param>
-        /// <returns>True if wallet is valid, false otherwise</returns>
-        public bool ValidateWallet(Wallet wallet)
-        {
-            return wallet != null && this._validator.Validate(wallet).IsValid;
         }
 
         #region private

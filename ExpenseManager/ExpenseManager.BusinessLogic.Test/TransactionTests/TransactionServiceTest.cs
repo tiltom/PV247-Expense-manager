@@ -48,19 +48,19 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         [ExpectedException(typeof (ServiceValidationException))]
         public void Create_Empty_Transaction()
         {
-            this._transactionService.ValidateTransaction(new TransactionServiceModel());
+            this._transactionService.Validate(new TransactionServiceModel());
         }
 
         [Test]
         public void Validate_Good_RepeatableTransaction()
         {
-            this._transactionService.ValidateTransaction(this._repeatableModel);
+            this._transactionService.Validate(this._repeatableModel);
         }
 
         [Test]
         public void Validate_Good_Transaction()
         {
-            this._transactionService.ValidateTransaction(this._model);
+            this._transactionService.Validate(this._model);
         }
 
         [Test]
@@ -68,14 +68,14 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         public void Validate_NegativeNextRepeat_RepeatableTransaction()
         {
             this._repeatableModel.NextRepeat = -1;
-            this._transactionService.ValidateTransaction(this._repeatableModel);
+            this._transactionService.Validate(this._repeatableModel);
         }
 
         [Test]
         public void Validate_NoBudgetId_Transaction()
         {
             this._model.BudgetId = Guid.Empty;
-            this._transactionService.ValidateTransaction(this._model);
+            this._transactionService.Validate(this._model);
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         public void Validate_NoCategoryId_Transaction()
         {
             this._model.CategoryId = Guid.Empty;
-            this._transactionService.ValidateTransaction(this._model);
+            this._transactionService.Validate(this._model);
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         public void Validate_NoCurrencyId_Transaction()
         {
             this._model.CurrencyId = Guid.Empty;
-            this._transactionService.ValidateTransaction(this._model);
+            this._transactionService.Validate(this._model);
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         public void Validate_NoWalletId_Transaction()
         {
             this._model.WalletId = Guid.Empty;
-            this._transactionService.ValidateTransaction(this._model);
+            this._transactionService.Validate(this._model);
         }
 
         [Test]
@@ -108,7 +108,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         public void Validate_NullLastOccurrence_RepeatableTransaction(DateTime? lastOccurrence)
         {
             this._repeatableModel.LastOccurrence = lastOccurrence;
-            this._transactionService.ValidateTransaction(this._repeatableModel);
+            this._transactionService.Validate(this._repeatableModel);
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         public void Validate_NullNextRepeat_RepeatableTransaction(int? nextRepeat)
         {
             this._repeatableModel.NextRepeat = nextRepeat;
-            this._transactionService.ValidateTransaction(this._repeatableModel);
+            this._transactionService.Validate(this._repeatableModel);
         }
 
         [Test]
@@ -125,7 +125,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         public void Validate_SameLastOccurenceAsDate_RepeatableTransaction()
         {
             this._repeatableModel.LastOccurrence = DateTime.Now;
-            this._transactionService.ValidateTransaction(this._repeatableModel);
+            this._transactionService.Validate(this._repeatableModel);
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         public void Validate_WrongLastOccurence_RepeatableTransaction()
         {
             this._repeatableModel.LastOccurrence = DateTime.Now.AddDays(-3);
-            this._transactionService.ValidateTransaction(this._repeatableModel);
+            this._transactionService.Validate(this._repeatableModel);
         }
 
         [Test]
@@ -141,7 +141,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         public void Validate_ZeroNextRepeat_RepeatableTransaction()
         {
             this._repeatableModel.NextRepeat = 0;
-            this._transactionService.ValidateTransaction(this._repeatableModel);
+            this._transactionService.Validate(this._repeatableModel);
         }
 
         [Test]
@@ -149,7 +149,7 @@ namespace ExpenseManager.BusinessLogic.Test.TransactionTests
         [ExpectedException(typeof (ArgumentNullException))]
         public void ValidateTransaction_Null(TransactionServiceModel serviceModel)
         {
-            this._transactionService.ValidateTransaction(serviceModel);
+            this._transactionService.Validate(serviceModel);
         }
     }
 }

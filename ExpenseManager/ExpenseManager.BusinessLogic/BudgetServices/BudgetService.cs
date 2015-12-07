@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using ExpenseManager.BusinessLogic.Validators;
+using ExpenseManager.BusinessLogic.Validators.Extensions;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers;
@@ -13,7 +14,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
     /// <summary>
     ///     Class that handles logic of BudgetController
     /// </summary>
-    public class BudgetService
+    public class BudgetService : IServiceValidation<Budget>
     {
         private readonly IBudgetsProvider _db;
         private readonly ITransactionsProvider _transactionsProvider;
@@ -24,6 +25,19 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
             this._db = db;
             this._transactionsProvider = transactionsProvider;
             this._validator = new BudgetValidator();
+        }
+
+        /// <summary>
+        ///     Validates budget
+        /// </summary>
+        /// <param name="budget">Budget to validate</param>
+        /// <returns>True if budget is valid, false otherwise</returns>
+        public void Validate(Budget budget)
+        {
+            if (budget == null)
+                throw new ArgumentNullException(nameof(budget));
+
+            this._validator.ValidateAndThrowCustomException(budget);
         }
 
         /// <summary>
@@ -70,10 +84,8 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <returns></returns>
         public async Task CreateBudget(Budget budget)
         {
-            if (this.ValidateBudget(budget))
-            {
-                await this._db.AddOrUpdateAsync(budget);
-            }
+            this.Validate(budget);
+            await this._db.AddOrUpdateAsync(budget);
         }
 
         /// <summary>
@@ -107,10 +119,8 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
             originalBudget.Description = description;
             originalBudget.Limit = limit;
 
-            if (this.ValidateBudget(originalBudget))
-            {
-                await this._db.AddOrUpdateAsync(originalBudget);
-            }
+            this.Validate(originalBudget);
+            await this._db.AddOrUpdateAsync(originalBudget);
         }
 
         /// <summary>
@@ -136,16 +146,6 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
 
             // delete budget itself
             await this._db.DeteleAsync(budget);
-        }
-
-        /// <summary>
-        ///     Validates budget
-        /// </summary>
-        /// <param name="budget">Budget to validate</param>
-        /// <returns>True if budget is valid, false otherwise</returns>
-        public bool ValidateBudget(Budget budget)
-        {
-            return budget != null && this._validator.Validate(budget).IsValid;
         }
     }
 }

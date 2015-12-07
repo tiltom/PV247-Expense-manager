@@ -10,7 +10,8 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
     public class BudgetServiceTest
     {
         [Test]
-        public void ValidateBudget_EmptyName_ReturnFalse()
+        [ExpectedException(typeof (ServiceValidationException))]
+        public void ValidateBudget_EmptyName_ThrowException()
         {
             var budget = new Budget
             {
@@ -22,11 +23,12 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
 
             var budgetService = new BudgetService(ProvidersFactory.GetNewBudgetsProviders(),
                 ProvidersFactory.GetNewTransactionsProviders());
-            Assert.IsFalse(budgetService.ValidateBudget(budget));
+            budgetService.Validate(budget);
         }
 
         [Test]
-        public void ValidateBudget_LimitLessThanZero_ReturnFalse()
+        [ExpectedException(typeof (ServiceValidationException))]
+        public void ValidateBudget_LimitLessThanZero_ThrowException()
         {
             var budget = new Budget
             {
@@ -38,16 +40,17 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
 
             var budgetService = new BudgetService(ProvidersFactory.GetNewBudgetsProviders(),
                 ProvidersFactory.GetNewTransactionsProviders());
-            Assert.IsFalse(budgetService.ValidateBudget(budget));
+            budgetService.Validate(budget);
         }
 
         [Test]
         [TestCase(null)]
-        public void ValidateBudget_NullBudget_ReturnFalse(Budget budget)
+        [ExpectedException(typeof (ArgumentNullException))]
+        public void ValidateBudget_NullBudget_ThrowException(Budget budget)
         {
             var budgetService = new BudgetService(ProvidersFactory.GetNewBudgetsProviders(),
                 ProvidersFactory.GetNewTransactionsProviders());
-            Assert.IsFalse(budgetService.ValidateBudget(budget));
+            budgetService.Validate(budget);
         }
 
         [Test]
@@ -63,7 +66,7 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
 
             var budgetService = new BudgetService(ProvidersFactory.GetNewBudgetsProviders(),
                 ProvidersFactory.GetNewTransactionsProviders());
-            Assert.IsTrue(budgetService.ValidateBudget(budget));
+            Assert.DoesNotThrow(() => budgetService.Validate(budget));
         }
 
         [Test]

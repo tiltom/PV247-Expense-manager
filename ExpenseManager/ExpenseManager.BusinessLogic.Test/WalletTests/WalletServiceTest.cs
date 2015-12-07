@@ -1,4 +1,5 @@
-﻿using ExpenseManager.BusinessLogic.WalletServices;
+﻿using System;
+using ExpenseManager.BusinessLogic.WalletServices;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Wallets;
@@ -10,7 +11,8 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
     internal class WalletServiceTest
     {
         [Test]
-        public void ValidateWallet_EmptyName_ReturnFalse()
+        [ExpectedException(typeof (ServiceValidationException))]
+        public void ValidateWallet_EmptyName_ThrowException()
         {
             var wallet = new Wallet
             {
@@ -19,11 +21,12 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
             };
 
             var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());
-            Assert.IsFalse(walletService.ValidateWallet(wallet));
+            walletService.Validate(wallet);
         }
 
         [Test]
-        public void ValidateWallet_NullCurrency_ReturnFalse()
+        [ExpectedException(typeof (ServiceValidationException))]
+        public void ValidateWallet_NullCurrency_ThrowException()
         {
             var wallet = new Wallet
             {
@@ -32,15 +35,16 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
             };
 
             var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());
-            Assert.IsFalse(walletService.ValidateWallet(wallet));
+            walletService.Validate(wallet);
         }
 
         [Test]
         [TestCase(null)]
-        public void ValidateWallet_NullWallet_ReturnFalse(Wallet wallet)
+        [ExpectedException(typeof (ArgumentNullException))]
+        public void ValidateWallet_NullWallet_ThrowException(Wallet wallet)
         {
             var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());
-            Assert.IsFalse(walletService.ValidateWallet(wallet));
+            walletService.Validate(wallet);
         }
 
         [Test]
@@ -58,7 +62,7 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
             };
 
             var walletService = new WalletService(ProvidersFactory.GetNewWalletsProviders());
-            Assert.IsTrue(walletService.ValidateWallet(wallet));
+            Assert.DoesNotThrow(() => walletService.Validate(wallet));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using ExpenseManager.BusinessLogic.WalletServices;
+﻿using System;
+using ExpenseManager.BusinessLogic.WalletServices;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers.Factory;
@@ -12,7 +13,8 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
     internal class WalletAccessRightServiceTest
     {
         [Test]
-        public void ValidateWalletAccessRight_NullUserProfile_ReturnFalse()
+        [ExpectedException(typeof (ServiceValidationException))]
+        public void ValidateWalletAccessRight_NullUserProfile_ThrowException()
         {
             var walletAccessRight = new WalletAccessRight
             {
@@ -23,11 +25,12 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
 
             var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders(),
                 new CommonService());
-            Assert.IsFalse(walletAccessRightService.ValidateWalletAccessRight(walletAccessRight));
+            walletAccessRightService.Validate(walletAccessRight);
         }
 
         [Test]
-        public void ValidateWalletAccessRight_NullWallet_ReturnFalse()
+        [ExpectedException(typeof (ServiceValidationException))]
+        public void ValidateWalletAccessRight_NullWallet_ThrowException()
         {
             var walletAccessRight = new WalletAccessRight
             {
@@ -38,17 +41,18 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
 
             var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders(),
                 new CommonService());
-            Assert.IsFalse(walletAccessRightService.ValidateWalletAccessRight(walletAccessRight));
+            walletAccessRightService.Validate(walletAccessRight);
         }
 
         [Test]
         [TestCase(null)]
-        public void ValidateWalletAccessRight_NullWalletAccessRight_ReturnFalse(
+        [ExpectedException(typeof (ArgumentNullException))]
+        public void ValidateWalletAccessRight_NullWalletAccessRight_ThrowException(
             WalletAccessRight walletAccessRight)
         {
             var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders(),
                 new CommonService());
-            Assert.IsFalse(walletAccessRightService.ValidateWalletAccessRight(walletAccessRight));
+            walletAccessRightService.Validate(walletAccessRight);
         }
 
         [Test]
@@ -72,7 +76,7 @@ namespace ExpenseManager.BusinessLogic.Test.WalletTests
 
             var walletAccessRightService = new WalletAccessRightService(ProvidersFactory.GetNewWalletsProviders(),
                 new CommonService());
-            Assert.IsTrue(walletAccessRightService.ValidateWalletAccessRight(walletAccessRight));
+            Assert.DoesNotThrow(() => walletAccessRightService.Validate(walletAccessRight));
         }
     }
 }

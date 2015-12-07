@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using ExpenseManager.BusinessLogic.Validators;
+using ExpenseManager.BusinessLogic.Validators.Extensions;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Queryable;
@@ -15,7 +16,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
     /// <summary>
     ///     Class that handles logic of WalletAccessRightController
     /// </summary>
-    public class WalletAccessRightService : ServiceWithWallet
+    public class WalletAccessRightService : ServiceWithWallet, IServiceValidation<WalletAccessRight>
     {
         private readonly CommonService _commonService;
         private readonly WalletAccessRightValidator _validator;
@@ -36,6 +37,19 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         }
 
         #endregion
+
+        /// <summary>
+        ///     Validates wallet access rights
+        /// </summary>
+        /// <param name="walletAccessRight">Wallet access right to validate</param>
+        /// <returns>True if wallet access right is valid, false otherwise</returns>
+        public void Validate(WalletAccessRight walletAccessRight)
+        {
+            if (walletAccessRight == null)
+                throw new ArgumentNullException(nameof(walletAccessRight));
+
+            this._validator.ValidateAndThrowCustomException(walletAccessRight);
+        }
 
         /// <summary>
         ///     Returns access rights for walled by wallet owner
@@ -94,7 +108,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
                 Permission = this._commonService.ConvertPermissionStringToEnum(permission)
             };
 
-            this.ValidateWalletAccessRight(walletAccessRight);
+            this.Validate(walletAccessRight);
 
             await this._wallets.AddOrUpdateAsync(walletAccessRight);
         }
@@ -114,7 +128,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
             walletAccessRight.UserProfile = await this.GetUserProfileById(userId);
             walletAccessRight.Permission = permission;
 
-            this.ValidateWalletAccessRight(walletAccessRight);
+            this.Validate(walletAccessRight);
 
             await this._wallets.AddOrUpdateAsync(walletAccessRight);
         }
@@ -141,17 +155,6 @@ namespace ExpenseManager.BusinessLogic.WalletServices
             var walletAccessRight = await this.GetWalletAccessRightById(id);
 
             return walletAccessRight.Permission;
-        }
-
-
-        /// <summary>
-        ///     Validates wallet access rights
-        /// </summary>
-        /// <param name="walletAccessRight">Wallet access right to validate</param>
-        /// <returns>True if wallet access right is valid, false otherwise</returns>
-        public bool ValidateWalletAccessRight(WalletAccessRight walletAccessRight)
-        {
-            return walletAccessRight != null && this._validator.Validate(walletAccessRight).IsValid;
         }
 
         /// <summary>

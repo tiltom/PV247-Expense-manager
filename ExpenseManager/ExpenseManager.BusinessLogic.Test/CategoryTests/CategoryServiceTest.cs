@@ -1,4 +1,5 @@
-﻿using ExpenseManager.BusinessLogic.CategoryServices;
+﻿using System;
+using ExpenseManager.BusinessLogic.CategoryServices;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Enums;
 using ExpenseManager.Entity.Providers.Factory;
@@ -10,7 +11,8 @@ namespace ExpenseManager.BusinessLogic.Test.CategoryTests
     internal class CategoryServiceTest
     {
         [Test]
-        public void ValidateCategory_EmptyDescription_ReturnFalse()
+        [ExpectedException(typeof (ServiceValidationException))]
+        public void ValidateCategory_EmptyDescription_ThrowException()
         {
             var category = new Category
             {
@@ -21,11 +23,12 @@ namespace ExpenseManager.BusinessLogic.Test.CategoryTests
             };
 
             var categoryService = new CategoryService(ProvidersFactory.GetNewTransactionsProviders());
-            Assert.IsFalse(categoryService.ValidateCategory(category));
+            categoryService.Validate(category);
         }
 
         [Test]
-        public void ValidateCategory_EmptyName_ReturnFalse()
+        [ExpectedException(typeof (ServiceValidationException))]
+        public void ValidateCategory_EmptyName_ThrowException()
         {
             var category = new Category
             {
@@ -36,11 +39,12 @@ namespace ExpenseManager.BusinessLogic.Test.CategoryTests
             };
 
             var categoryService = new CategoryService(ProvidersFactory.GetNewTransactionsProviders());
-            Assert.IsFalse(categoryService.ValidateCategory(category));
+            categoryService.Validate(category);
         }
 
         [Test]
-        public void ValidateCategory_NotSupportedGlyphicon_ReturnFalse()
+        [ExpectedException(typeof (ServiceValidationException))]
+        public void ValidateCategory_NotSupportedGlyphicon_ThrowException()
         {
             var category = new Category
             {
@@ -51,14 +55,15 @@ namespace ExpenseManager.BusinessLogic.Test.CategoryTests
             };
 
             var categoryService = new CategoryService(ProvidersFactory.GetNewTransactionsProviders());
-            Assert.IsFalse(categoryService.ValidateCategory(category));
+            categoryService.Validate(category);
         }
 
         [Test]
-        public void ValidateCategory_NullCategory_ReturnFalse()
+        [ExpectedException(typeof (ArgumentNullException))]
+        public void ValidateCategory_NullCategory_ThrowException()
         {
             var categoryService = new CategoryService(ProvidersFactory.GetNewTransactionsProviders());
-            Assert.IsFalse(categoryService.ValidateCategory(null));
+            categoryService.Validate(null);
         }
 
         [Test]
@@ -73,7 +78,7 @@ namespace ExpenseManager.BusinessLogic.Test.CategoryTests
             };
 
             var categoryService = new CategoryService(ProvidersFactory.GetNewTransactionsProviders());
-            Assert.IsTrue(categoryService.ValidateCategory(category));
+            Assert.DoesNotThrow(() => categoryService.Validate(category));
         }
     }
 }

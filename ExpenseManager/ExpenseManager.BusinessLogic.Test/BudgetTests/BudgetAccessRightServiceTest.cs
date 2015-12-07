@@ -1,4 +1,5 @@
-﻿using ExpenseManager.BusinessLogic.BudgetServices;
+﻿using System;
+using ExpenseManager.BusinessLogic.BudgetServices;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers.Factory;
@@ -11,7 +12,8 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
     internal class BudgetAccessRightServiceTest
     {
         [Test]
-        public void ValidateBudgetBudgetAccessRight_NullBudget_ReturnsFalse()
+        [ExpectedException(typeof (ServiceValidationException))]
+        public void ValidateBudgetBudgetAccessRight_NullBudget_ThrowException()
         {
             var budgetAccessRight = new BudgetAccessRight
             {
@@ -21,20 +23,22 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
             };
 
             var budgetAccessRightService = new BudgetAccessRightService(ProvidersFactory.GetNewBudgetsProviders());
-            Assert.IsFalse(budgetAccessRightService.ValidateBudgetAccessRight(budgetAccessRight));
+            budgetAccessRightService.Validate(budgetAccessRight);
         }
 
         [Test]
         [TestCase(null)]
-        public void ValidateBudgetBudgetAccessRight_NullBudgetAccessRight_ReturnFalse(
+        [ExpectedException(typeof (ArgumentNullException))]
+        public void ValidateBudgetBudgetAccessRight_NullBudgetAccessRight_ThrowException(
             BudgetAccessRight budgetAccessRight)
         {
             var budgetAccessRightService = new BudgetAccessRightService(ProvidersFactory.GetNewBudgetsProviders());
-            Assert.IsFalse(budgetAccessRightService.ValidateBudgetAccessRight(budgetAccessRight));
+            budgetAccessRightService.Validate(budgetAccessRight);
         }
 
         [Test]
-        public void ValidateBudgetBudgetAccessRight_NullUserProfile_ReturnsFalse()
+        [ExpectedException(typeof (ServiceValidationException))]
+        public void ValidateBudgetBudgetAccessRight_NullUserProfile_ThrowException()
         {
             var budgetAccessRight = new BudgetAccessRight
             {
@@ -44,7 +48,7 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
             };
 
             var budgetAccessRightService = new BudgetAccessRightService(ProvidersFactory.GetNewBudgetsProviders());
-            Assert.IsFalse(budgetAccessRightService.ValidateBudgetAccessRight(budgetAccessRight));
+            budgetAccessRightService.Validate(budgetAccessRight);
         }
 
         [Test]
@@ -58,7 +62,7 @@ namespace ExpenseManager.BusinessLogic.Test.BudgetTests
             };
 
             var budgetAccessRightService = new BudgetAccessRightService(ProvidersFactory.GetNewBudgetsProviders());
-            Assert.IsTrue(budgetAccessRightService.ValidateBudgetAccessRight(budgetAccessRight));
+            Assert.DoesNotThrow(() => budgetAccessRightService.Validate(budgetAccessRight));
         }
     }
 }
