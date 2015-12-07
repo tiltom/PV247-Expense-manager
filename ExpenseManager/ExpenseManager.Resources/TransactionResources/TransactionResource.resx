@@ -225,4 +225,10 @@
   <data name="AddNew" xml:space="preserve">
     <value>Add new transaction</value>
   </data>
+  <data name="ChooseYourWallet" xml:space="preserve">
+    <value>Choose your wallet</value>
+  </data>
+  <data name="SureOfDelete" xml:space="preserve">
+    <value>Are you sure you want to delete transaction {0}?</value>
+  </data>
 </root>

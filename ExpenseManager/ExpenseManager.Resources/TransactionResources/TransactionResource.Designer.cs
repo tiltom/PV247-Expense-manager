@@ -79,6 +79,15 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add more details.
+        /// </summary>
+        public static string AddMoreDetails {
+            get {
+                return ResourceManager.GetString("AddMoreDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add new transaction.
         /// </summary>
         public static string AddNew {
@@ -147,6 +156,15 @@ namespace ExpenseManager.Resources.TransactionResources {
         public static string ChooseType {
             get {
                 return ResourceManager.GetString("ChooseType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose your wallet.
+        /// </summary>
+        public static string ChooseYourWallet {
+            get {
+                return ResourceManager.GetString("ChooseYourWallet", resourceCulture);
             }
         }
         
@@ -372,6 +390,15 @@ namespace ExpenseManager.Resources.TransactionResources {
         public static string PermissionErrorEdit {
             get {
                 return ResourceManager.GetString("PermissionErrorEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete transaction {0}?.
+        /// </summary>
+        public static string SureOfDelete {
+            get {
+                return ResourceManager.GetString("SureOfDelete", resourceCulture);
             }
         }
         

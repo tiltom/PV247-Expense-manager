@@ -160,6 +160,15 @@ namespace ExpenseManager.Resources.DashboardResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Overview page.
+        /// </summary>
+        public static string OverviewPage {
+            get {
+                return ResourceManager.GetString("OverviewPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Welcome to Expense manager - best money management application. You have to login to show more functionality..
         /// </summary>
         public static string WelcomeDescription {

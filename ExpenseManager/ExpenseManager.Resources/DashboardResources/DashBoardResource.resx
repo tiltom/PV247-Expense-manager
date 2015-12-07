@@ -150,6 +150,9 @@
   <data name="NotEnoughDataAvailable" xml:space="preserve">
     <value>Not enough data available.</value>
   </data>
+  <data name="OverviewPage" xml:space="preserve">
+    <value>Overview page</value>
+  </data>
   <data name="WelcomeDescription" xml:space="preserve">
     <value>Welcome to Expense manager - best money management application. You have to login to show more functionality.</value>
   </data>
