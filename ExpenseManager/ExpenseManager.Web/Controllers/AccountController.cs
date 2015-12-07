@@ -3,6 +3,7 @@ using System.Web;
 using System.Web.Mvc;
 using CaptchaMvc.HtmlHelpers;
 using ExpenseManager.Resources;
+using ExpenseManager.Resources.AccountResources;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Facebook;
@@ -100,7 +101,7 @@ namespace ExpenseManager.Web.Controllers
                     return this.View("Lockout");
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
+                    ModelState.AddModelError("", AccountResource.InvalidLoginAttempt);
                     return this.View(model);
             }
         }

@@ -117,49 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AssociateYourAccount" xml:space="preserve">
-    <value>Associate your {0} account</value>
+  <data name="CreateNewUser" xml:space="preserve">
+    <value>Create new user</value>
   </data>
-  <data name="AssociationForm" xml:space="preserve">
-    <value>Association form</value>
+  <data name="EditUser" xml:space="preserve">
+    <value>Edit user</value>
   </data>
-  <data name="ClickHereToLogIn" xml:space="preserve">
-    <value>Click here to Log in</value>
+  <data name="ListOfRoles" xml:space="preserve">
+    <value>List of roles for this user</value>
   </data>
-  <data name="ConfirmEmail" xml:space="preserve">
-    <value>Confirm Email</value>
+  <data name="NoRoles" xml:space="preserve">
+    <value>No roles found for this User</value>
   </data>
-  <data name="LogIn" xml:space="preserve">
-    <value>Log in</value>
+  <data name="OneRoleMustBeSelected" xml:space="preserve">
+    <value>At least one role has to be selected</value>
   </data>
-  <data name="LoginFailure" xml:space="preserve">
-    <value>Login failure</value>
+  <data name="SelectUserRole" xml:space="preserve">
+    <value>Select user role</value>
   </data>
-  <data name="LogInUsingAccount" xml:space="preserve">
-    <value>Log in using your {0} account</value>
+  <data name="SomethingFailed" xml:space="preserve">
+    <value>Something failed</value>
   </data>
-  <data name="NoExternalAuthServices" xml:space="preserve">
-    <value>There are no external authentication services configured. See &lt;a href="http://go.microsoft.com/fwlink/?LinkId=403804"&gt;this article&lt;/a&gt; for details on setting up this ASP.NET application to support logging in via external services.</value>
+  <data name="SureOfDelete" xml:space="preserve">
+    <value>Are you sure you want to delete user {0}?</value>
   </data>
-  <data name="Register" xml:space="preserve">
-    <value>Register</value>
+  <data name="UserDetails" xml:space="preserve">
+    <value>User details</value>
   </data>
-  <data name="SuccessfullyAuthenticated" xml:space="preserve">
-    <value>You've successfully authenticated with {0}. Please enter a User name for this site below and click the Register button to finish logging in.</value>
-  </data>
-  <data name="ThankYouForConfirming" xml:space="preserve">
-    <value>Thank you for confirming your email. Please</value>
-  </data>
-  <data name="UnsuccessfulLogin" xml:space="preserve">
-    <value>Unsuccessful login with service</value>
-  </data>
-  <data name="UseAnotherService" xml:space="preserve">
-    <value>Use another service to log in</value>
-  </data>
-  <data name="UseLocalAccount" xml:space="preserve">
-    <value>Use a local account to log in</value>
-  </data>
-  <data name="InvalidLoginAttempt" xml:space="preserve">
-    <value>Invalid login attempt</value>
+  <data name="UserManagement" xml:space="preserve">
+    <value>User Management</value>
   </data>
 </root>

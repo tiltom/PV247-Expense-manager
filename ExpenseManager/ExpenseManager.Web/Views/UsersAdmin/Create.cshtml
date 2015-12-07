@@ -1,6 +1,7 @@
-﻿@model ExpenseManager.Web.Models.User.RegisterWithPasswordViewModel
+﻿@using ExpenseManager.Resources.UsersAdminResources
+@model ExpenseManager.Web.Models.User.RegisterWithPasswordViewModel
 @{
-    ViewBag.Title = "Create new user";
+    ViewBag.Title = UsersAdminResource.CreateNewUser;
 }
 
 
@@ -47,7 +48,7 @@
     </div>
     <div class="form-group">
         <label class="col-md-2 control-label">
-            Select user Role
+            @UsersAdminResource.SelectUserRole
         </label>
         <div class="row col-md-offset-2">
             @foreach (var item in Model.RolesList)
@@ -61,8 +62,8 @@
     </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-success" value="Create" />
-            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-danger" })
+            <input type="submit" class="btn btn-success" value=@SharedResource.Create />
+            @Html.ActionLink(SharedResource.Cancel, "Index", null, new { @class = "btn btn-danger" })
         </div>
     </div>
 }

@@ -97,6 +97,24 @@ namespace ExpenseManager.Resources.ManageResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error has occurred.
+        /// </summary>
+        public static string ErrorOccured {
+            get {
+                return ResourceManager.GetString("ErrorOccured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The external login was removed.
+        /// </summary>
+        public static string ExternalLoginRemoved {
+            get {
+                return ResourceManager.GetString("ExternalLoginRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to External Logins.
         /// </summary>
         public static string ExternalLogins {
@@ -160,6 +178,42 @@ namespace ExpenseManager.Resources.ManageResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your password has been changed.
+        /// </summary>
+        public static string PasswordChanged {
+            get {
+                return ResourceManager.GetString("PasswordChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your password has been set.
+        /// </summary>
+        public static string PasswordSet {
+            get {
+                return ResourceManager.GetString("PasswordSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your phone number was added.
+        /// </summary>
+        public static string PhoneNumberAdded {
+            get {
+                return ResourceManager.GetString("PhoneNumberAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your phone number was removed.
+        /// </summary>
+        public static string PhoneNumberRemoved {
+            get {
+                return ResourceManager.GetString("PhoneNumberRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Registered logins.
         /// </summary>
         public static string RegisteredLogins {
@@ -183,6 +237,15 @@ namespace ExpenseManager.Resources.ManageResources {
         public static string SetPassword {
             get {
                 return ResourceManager.GetString("SetPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your two-factor authentication provider has been set.
+        /// </summary>
+        public static string TwoFactorAuthProviderSet {
+            get {
+                return ResourceManager.GetString("TwoFactorAuthProviderSet", resourceCulture);
             }
         }
     }
