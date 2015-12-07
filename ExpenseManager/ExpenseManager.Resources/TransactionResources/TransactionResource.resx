@@ -222,4 +222,7 @@
   <data name="FileFormatError" xml:space="preserve">
     <value>CSV file is damaged</value>
   </data>
+  <data name="AddNew" xml:space="preserve">
+    <value>Add new transaction</value>
+  </data>
 </root>

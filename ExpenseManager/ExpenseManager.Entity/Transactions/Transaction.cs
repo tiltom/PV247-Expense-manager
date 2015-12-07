@@ -12,6 +12,22 @@ namespace ExpenseManager.Entity.Transactions
     /// </summary>
     public class Transaction : BaseEntity
     {
+        public Transaction()
+        {
+        }
+
+        public Transaction(Transaction transaction)
+        {
+            Amount = transaction.Amount;
+            Budget = transaction.Budget;
+            Category = transaction.Category;
+            Currency = transaction.Currency;
+            Wallet = transaction.Wallet;
+            Guid = transaction.Guid;
+            Date = transaction.Date;
+            Description = transaction.Description;
+        }
+
         /// <summary>
         ///     Amount of money in transaction
         /// </summary>

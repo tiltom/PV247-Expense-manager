@@ -7,16 +7,18 @@ using System.Web.Mvc;
 using Chart.Mvc.ComplexChart;
 using Chart.Mvc.SimpleChart;
 using ExpenseManager.BusinessLogic.DashboardServices.Models;
+using ExpenseManager.BusinessLogic.ExchangeRates;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Queryable;
 using ExpenseManager.Entity.Transactions;
+using ExpenseManager.Resources.DashboardResources;
 
 namespace ExpenseManager.BusinessLogic.DashboardServices
 {
     public class DashBoardService : ServiceWithWallet
     {
-        private const int NumberOfTransactionsOnDashBoard = 5;
+        public const int NumberOfTransactionsOnDashBoard = 5;
         private readonly ColorGeneratorService _colorGenerator;
         private readonly ITransactionsProvider _transactionsProvider;
 
@@ -74,11 +76,15 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
         /// <summary>
         ///     Generate wrapper values using categories
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="collection"> transaction collection</param>
+        /// <param name="currency"> currency of user wallet</param>
         /// <returns> non negative values for all categories</returns>
-        public async Task<List<SimpleGraphModel>> GetWrapperValuesForCategories(IQueryable<Transaction> collection)
+        public async Task<List<SimpleGraphModel>> GetWrapperValuesForCategories(
+            IQueryable<Transaction> collection,
+            Currency currency)
         {
-            return await collection
+            var data = await collection.ToListAsync();
+            return data.Select(t => Transformation.ChangeCurrencyForNewTransaction(t, currency))
                 .GroupBy(t => t.Category.Name)
                 .Select(
                     x =>
@@ -87,45 +93,55 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                             Label = x.Key,
                             Value = x.Sum(f => Math.Abs(f.Amount))
                         })
-                .ToListAsync();
+                .ToList();
         }
 
         /// <summary>
         ///     Returns graph data for months in last year
         /// </summary>
         /// <param name="collection"></param>
-        /// <returns></returns>
-        public async Task<GraphWithDescriptionModel> GetGraphForMonthLastYear(IQueryable<Transaction> collection)
+        /// <param name="currency"> currency of user wallet</param>
+        /// <returns>Graph data for every month in last year</returns>
+        public async Task<GraphWithDescriptionModel> GetGraphForMonthLastYear(
+            IQueryable<Transaction> collection,
+            Currency currency)
         {
-            var result = await
-                collection.GroupBy(t => new {t.Date.Month, t.Date.Year}).Select(
+            var data = await collection.ToListAsync();
+            var result = data.Select(t => Transformation.ChangeCurrencyForNewTransaction(t, currency))
+                .GroupBy(t => new {t.Date.Month, t.Date.Year}).Select(
                     x =>
                         new SimpleGraphModel
                         {
-                            Label = x.Key.Month + ". " + x.Key.Year,
+                            Label = x.Key.Month + DashBoardResource.MonthDelimiter + x.Key.Year,
                             Value = x.Sum(f => f.Amount)
                         })
-                    .ToListAsync();
-            return new GraphWithDescriptionModel {Description = "Last year report", GraphData = result};
+                .ToList();
+            return new GraphWithDescriptionModel {Description = DashBoardResource.LastYearReport, GraphData = result};
         }
 
         /// <summary>
         ///     Returns graph data for days in last month
         /// </summary>
         /// <param name="collection"></param>
-        /// <returns></returns>
-        public async Task<GraphWithDescriptionModel> GetGraphForDaysLastMonth(IQueryable<Transaction> collection)
+        /// <param name="currency"> currency of user wallet</param>
+        /// <returns> graph for every day for last month</returns>
+        public async Task<GraphWithDescriptionModel> GetGraphForDaysLastMonth(
+            IQueryable<Transaction> collection,
+            Currency currency)
         {
-            var result = await
-                collection.GroupBy(t => new {t.Date.Day, t.Date.Month}).Select(
-                    x =>
-                        new SimpleGraphModel
-                        {
-                            Label = x.Key.Day + ". " + x.Key.Month + ".",
-                            Value = x.Sum(f => f.Amount)
-                        })
-                    .ToListAsync();
-            return new GraphWithDescriptionModel {Description = "Last Month Report", GraphData = result};
+            var data = await collection.ToListAsync();
+            var result =
+                data.Select(t => Transformation.ChangeCurrencyForNewTransaction(t, currency))
+                    .GroupBy(t => new {t.Date.Day, t.Date.Month})
+                    .Select(
+                        x =>
+                            new SimpleGraphModel
+                            {
+                                Label = x.Key.Day + DashBoardResource.MonthDelimiter + x.Key.Month,
+                                Value = x.Sum(f => f.Amount)
+                            })
+                    .ToList();
+            return new GraphWithDescriptionModel {Description = DashBoardResource.LastMonthReport, GraphData = result};
         }
 
         /// <summary>
@@ -133,20 +149,20 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
         /// </summary>
         /// <param name="mappedFilter"> filter to be used</param>
         /// <param name="userId">guid of logged user profile</param>
-        /// <returns>DashBoardServiceModel filled with graphs transactions and so on</returns>
+        /// <returns>DashBoardServiceModel filled with graphs transactions and other data </returns>
         public async Task<DashBoardServiceModel> GenerateDataForFilter(FilterDataServiceModel mappedFilter, Guid userId)
         {
             // select transactions according to filter
             var userWallet = await this.GetWalletByUserId(userId);
-            var resultMonth = this.FilterTransactions(mappedFilter.WithMonthFilterValues(), userId, userWallet.Currency);
-            var resultYear = this.FilterTransactions(mappedFilter.WithYearFilterValues(), userId, userWallet.Currency);
+            var resultMonth = this.FilterTransactions(mappedFilter.WithMonthFilterValues(), userId);
+            var resultYear = this.FilterTransactions(mappedFilter.WithYearFilterValues(), userId);
             // prepare data for graphs
             var categoriesExpense =
-                await this.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount < 0));
+                await this.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount < 0), userWallet.Currency);
             var categoriesIncome =
-                await this.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount >= 0));
-            var monthSummary = await this.GetGraphForDaysLastMonth(resultMonth);
-            var yearSummary = await this.GetGraphForMonthLastYear(resultYear);
+                await this.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount >= 0), userWallet.Currency);
+            var monthSummary = await this.GetGraphForDaysLastMonth(resultMonth, userWallet.Currency);
+            var yearSummary = await this.GetGraphForMonthLastYear(resultYear, userWallet.Currency);
             // generate charts
             return new DashBoardServiceModel
             {
@@ -165,13 +181,10 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
         /// </summary>
         /// <param name="filter"> filter to be used</param>
         /// <param name="currentUser">guid of logged user profile</param>
-        /// ///
-        /// <param name="currency">currency of user profile</param>
-        /// <returns></returns>
+        /// <returns>Transaction filling criteria in filter</returns>
         private IQueryable<Transaction> FilterTransactions(
             FilterDataServiceModel filter,
-            Guid currentUser,
-            Currency currency)
+            Guid currentUser)
         {
             return this.GetAccessibleResults(currentUser)
                 .Where(
@@ -197,6 +210,7 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
 
         private LineChart GenerateLineChart(GraphWithDescriptionModel data)
         {
+            // check if  enough data for line chart (with one point the chart is broken)
             if (data.GraphData.Count < 2)
             {
                 return null;
@@ -222,6 +236,7 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                     }
                 }
             };
+            // graph settings for dynamic charts
             lineChart.ChartConfiguration.ScaleBeginAtZero = false;
             lineChart.ChartConfiguration.Responsive = true;
             return lineChart;
@@ -229,6 +244,7 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
 
         private PieChart GeneratePieChart(List<SimpleGraphModel> result)
         {
+            // check if enough data for displaying pie chart
             if (result.Count == 0)
             {
                 return null;
@@ -241,7 +257,8 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                         new SimpleData
                         {
                             Label = t.Label,
-                            Value = Math.Round(100*Math.Abs(Convert.ToDouble(t.Value))/Convert.ToDouble(sum), 2),
+                            // compute part in percents and with two decimal
+                            Value = Math.Round(Math.Abs(Convert.ToDouble(100*t.Value/sum)), 2),
                             Color = this._colorGenerator.GenerateColor()
                         }).ToList()
             };

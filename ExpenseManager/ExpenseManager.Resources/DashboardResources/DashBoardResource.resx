@@ -117,97 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Action" xml:space="preserve">
-    <value>Action</value>
+  <data name="ExpensesByCategoryInLastMonth" xml:space="preserve">
+    <value>Expenses by category in last month</value>
   </data>
-  <data name="Amount" xml:space="preserve">
-    <value>Amount</value>
+  <data name="FilterCriteriaDescription" xml:space="preserve">
+    <value>Select filter criteria:</value>
   </data>
-  <data name="Back" xml:space="preserve">
-    <value>Back</value>
+  <data name="GraphSummaries" xml:space="preserve">
+    <value>Graph summaries</value>
   </data>
-  <data name="BackToList" xml:space="preserve">
-    <value>Back to List</value>
+  <data name="IncomesByCategoryInLastMonth" xml:space="preserve">
+    <value>Incomes by category in last month</value>
   </data>
-  <data name="Budget" xml:space="preserve">
-    <value>Budget</value>
+  <data name="LastMonthReport" xml:space="preserve">
+    <value>Last month report</value>
   </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
+  <data name="LastXTransaction" xml:space="preserve">
+    <value>Last {0} transactions.</value>
   </data>
-  <data name="CaptchaField" xml:space="preserve">
-    <value>Captcha</value>
+  <data name="LastYearReport" xml:space="preserve">
+    <value>Last year report</value>
   </data>
-  <data name="CaptchaValidationFailed" xml:space="preserve">
-    <value>Captcha validation failed.</value>
+  <data name="MonthDelimiter" xml:space="preserve">
+    <value> .</value>
   </data>
-  <data name="Category" xml:space="preserve">
-    <value>Category</value>
+  <data name="NoDataDescription" xml:space="preserve">
+    <value>Please add some transactions so you can see your personal dashboard.</value>
   </data>
-  <data name="Create" xml:space="preserve">
-    <value>Create</value>
+  <data name="NoDataHeader" xml:space="preserve">
+    <value>No data available  :(</value>
   </data>
-  <data name="CreateNew" xml:space="preserve">
-    <value>Create New</value>
+  <data name="NotEnoughDataAvailable" xml:space="preserve">
+    <value>Not enough data available.</value>
   </data>
-  <data name="Currency" xml:space="preserve">
-    <value>Currency</value>
+  <data name="WelcomeDescription" xml:space="preserve">
+    <value>Welcome to Expense manager - best money management application. You have to login to show more functionality.</value>
   </data>
-  <data name="Date" xml:space="preserve">
-    <value>Date</value>
-  </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="Description" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="Edit" xml:space="preserve">
-    <value>Edit</value>
-  </data>
-  <data name="Error" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="Filter" xml:space="preserve">
-    <value>Filter</value>
-  </data>
-  <data name="Index" xml:space="preserve">
-    <value>Index</value>
-  </data>
-  <data name="Pager" xml:space="preserve">
-    <value>Page {0} of {1}</value>
-  </data>
-  <data name="Permissions" xml:space="preserve">
-    <value>Permissions</value>
-  </data>
-  <data name="Refresh" xml:space="preserve">
-    <value>Refresh</value>
-  </data>
-  <data name="RepeatableTransaction" xml:space="preserve">
-    <value>Repeatable transaction</value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value>Save</value>
-  </data>
-  <data name="SelectBudgets" xml:space="preserve">
-    <value>Select budgets</value>
-  </data>
-  <data name="SelectCategories" xml:space="preserve">
-    <value>Select categories</value>
-  </data>
-  <data name="SelectWallets" xml:space="preserve">
-    <value>Select wallets</value>
-  </data>
-  <data name="Success" xml:space="preserve">
-    <value>Success</value>
-  </data>
-  <data name="TestError" xml:space="preserve">
-    <value>This is some serious error!</value>
-  </data>
-  <data name="UserNotFoundByEmail" xml:space="preserve">
-    <value>User with given email not found</value>
-  </data>
-  <data name="Wallet" xml:space="preserve">
-    <value>Wallet</value>
+  <data name="WelcomeHeader" xml:space="preserve">
+    <value>Hello anonymous user!</value>
   </data>
 </root>

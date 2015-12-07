@@ -11,7 +11,7 @@ using ExpenseManager.Web.Models.HomePage;
 namespace ExpenseManager.Web.Controllers
 {
     [RequireHttps]
-    public class HomeController : AbstractController
+    public class DashBoardController : AbstractController
     {
         private readonly DashBoardService _dashBoardService =
             new DashBoardService(ProvidersFactory.GetNewTransactionsProviders(), new ColorGeneratorService());

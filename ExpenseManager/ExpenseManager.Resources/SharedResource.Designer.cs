@@ -214,6 +214,15 @@ namespace ExpenseManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        public static string Filter {
+            get {
+                return ResourceManager.GetString("Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Index.
         /// </summary>
         public static string Index {
@@ -264,6 +273,33 @@ namespace ExpenseManager.Resources {
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select budgets.
+        /// </summary>
+        public static string SelectBudgets {
+            get {
+                return ResourceManager.GetString("SelectBudgets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select categories.
+        /// </summary>
+        public static string SelectCategories {
+            get {
+                return ResourceManager.GetString("SelectCategories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select wallets.
+        /// </summary>
+        public static string SelectWallets {
+            get {
+                return ResourceManager.GetString("SelectWallets", resourceCulture);
             }
         }
         

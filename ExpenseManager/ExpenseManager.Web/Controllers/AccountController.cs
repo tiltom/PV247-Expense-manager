@@ -140,7 +140,7 @@ namespace ExpenseManager.Web.Controllers
                 var userRole = await RoleManager.FindByNameAsync("User");
                 await UserManager.AddToRoleAsync(user.Id, userRole.Name);
 
-                return this.RedirectToAction("Index", "Home");
+                return this.RedirectToAction("Index", "DashBoard");
             }
             this.AddErrors(result);
             model.Currencies = await this.GetCurrencies();
@@ -291,7 +291,7 @@ namespace ExpenseManager.Web.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return this.RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Index", "DashBoard");
         }
 
         /// <summary>
@@ -354,7 +354,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 return this.Redirect(returnUrl);
             }
-            return this.RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Index", "DashBoard");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult

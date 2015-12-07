@@ -1,4 +1,7 @@
 ﻿@using Chart.Mvc.Extensions
+@using ExpenseManager.BusinessLogic.DashboardServices
+@using ExpenseManager.Resources.DashboardResources
+@using ExpenseManager.Resources.TransactionResources
 @using ExpenseManager.Web.Controllers
 @model ExpenseManager.Web.Models.HomePage.DashBoardModel
 @{
@@ -6,26 +9,26 @@
 }
 @if (Request.IsAuthenticated)
 {
-    @Html.ActionLink("Add transaction", "ExpenseIncome", "Transaction", null, new { @class = "btn btn-action" })
+    @Html.ActionLink(TransactionResource.AddNew, "ExpenseIncome", "Transaction", null, new { @class = "btn btn-action" })
 
 
-    using (Html.BeginForm("IndexWithFilter", "Home", FormMethod.Get, new { @class = "form-horizontal collapse in", @id = "collapsibleSetting" }))
+    using (Html.BeginForm("IndexWithFilter", "DashBoard", FormMethod.Get, new { @class = "form-horizontal collapse in", @id = "collapsibleSetting" }))
     {
         <div class="form-group row medium-margin-top">
             <h4 class="col-md-2 control-label">
-                Select filter criteria:
+               @DashBoardResource.FilterCriteriaDescription
             </h4>
             <div class="col-md-2">
-                @Html.ListBoxFor(m => m.Filter.Wallets, Model.Filter.WalletsSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = "Select Wallets"})
+                @Html.ListBoxFor(m => m.Filter.Wallets, Model.Filter.WalletsSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = SharedResource.SelectWallets})
             </div>
             <div class="col-md-2">
-                @Html.ListBoxFor(m => m.Filter.Categories, Model.Filter.CategoriesSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = "Select categories"})
+                @Html.ListBoxFor(m => m.Filter.Categories, Model.Filter.CategoriesSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = SharedResource.SelectCategories })
             </div>
             <div class="col-md-2">
-                @Html.ListBoxFor(m => m.Filter.Budgets, Model.Filter.BudgetsSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = "Select budgets"})
+                @Html.ListBoxFor(m => m.Filter.Budgets, Model.Filter.BudgetsSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = SharedResource.SelectBudgets })
             </div>
             <div class="col-md-2">
-                <input type="submit" class="btn btn-success" value="Filter"/>
+                <input type="submit" class="btn btn-success" value="@SharedResource.Filter"/>
             </div>
         </div>
     }
@@ -34,7 +37,7 @@
             @if (Model.ContainsAnyData())
             {
                 <div class="col-md-7">
-                    <h3> Last 5 transactions</h3>
+                    <h3> @String.Format(DashBoardResource.LastXTransaction, DashBoardService.NumberOfTransactionsOnDashBoard)</h3>
                     <div class="medium-margin-top table-responsive">
                         <table class="table table-hover table-condensed">
                             <tr>
@@ -95,9 +98,9 @@
             {
                 <div class="jumbotron">
                     <div class="container">
-                        <h1>No data available :( </h1>
+                        <h1>@DashBoardResource.NoDataHeader</h1>
                         <p>
-                            Please add some transactions so you can see your personal dashboard.
+                           @DashBoardResource.NoDataDescription
                         </p>
                     </div>
                 </div>
@@ -106,7 +109,7 @@
             @if (Model.ContainsGraphData())
             {
                 <div class="col-md-5">
-                    <h3> Graph summaries
+                    <h3> @DashBoardResource.GraphSummaries
                         <a style="text-decoration: none;" role="button" data-toggle="collapse" href="#collapsibleSetting" aria-expanded="false" aria-controls="collapsibleSetting">
                             <i class="glyphicon glyphicon-cog"></i>
                         </a>
@@ -116,26 +119,26 @@
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active">
                                 <a href="#categoriesExpense" aria-controls="categoriesExpense" role="tab" data-toggle="tab" id="categoryTab">
-                                    <span data-toggle="tooltip" data-placement="top" title="Expenses by category in last month">
-                                       Expense
+                                    <span data-toggle="tooltip" data-placement="top" title="@DashBoardResource.ExpensesByCategoryInLastMonth">
+                                        @TransactionResource.Expense
                                     </span>
                                 </a>
                             </li>
                             <li role="presentation">
                                 <a href="#categoriesIncome" aria-controls="categoriesIncome" role="tab" data-toggle="tab">
-                                    <span data-toggle="tooltip" data-placement="top" title="Incomes by category in last month">
-                                        Income
+                                    <span data-toggle="tooltip" data-placement="top" title="@DashBoardResource.IncomesByCategoryInLastMonth">
+                                        @TransactionResource.Income
                                     </span>
                                 </a>
                             </li>
                             <li role="presentation">
                                 <a href="#months" aria-controls="months" role="tab" data-toggle="tab">
-                                    <span data-toggle="tooltip" data-placement="top" title="Last month report">Month</span>
+                                    <span data-toggle="tooltip" data-placement="top" title="@DashBoardResource.LastMonthReport">Month</span>
                                 </a>
                             </li>
                             <li role="presentation">
                                 <a href="#years" aria-controls="years" role="tab" data-toggle="tab">
-                                    <span data-toggle="tooltip" data-placement="top" title="Last year report">Year</span>
+                                    <span data-toggle="tooltip" data-placement="top" title="@DashBoardResource.LastYearReport">Year</span>
                                 </a>
                             </li>
                         </ul>
@@ -143,11 +146,11 @@
 
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="categoriesExpense">
-                                <h4>Expenses by category in last month</h4>
+                                <h4>@DashBoardResource.ExpensesByCategoryInLastMonth</h4>
                                 <div class="medium-margin-top">
                                     @if (Model.CategoriesExpenseChart == null)
                                     {
-                                        <h4>Not enough data available</h4>
+                                        <h4>@DashBoardResource.NotEnoughDataAvailable</h4>
                                     }
                                     else
                                     {
@@ -157,11 +160,11 @@
                             </div>
                             <div role="tabpanel" class="tab-pane active" id="categoriesIncome">
                                 <div class="medium-margin-top">
-                                    <h4>Incomes by category in last month</h4>
+                                    <h4>@DashBoardResource.IncomesByCategoryInLastMonth</h4>
                                     
                                     @if (Model.CategoriesIncomeChart == null)
                                     {
-                                        <h4>Not enough data available</h4>
+                                        <h4>@DashBoardResource.NotEnoughDataAvailable</h4>
                                     }
                                     else
                                     {
@@ -171,12 +174,12 @@
 
                             </div>
                             <div role="tabpanel" class="tab-pane active" id="months">
-                                <h4>Last Month report</h4>
+                                <h4>@DashBoardResource.LastMonthReport</h4>
                                 <div class="medium-margin-top">
                                    
                                     @if (Model.MonthSummaryChart == null)
                                     {
-                                        <h4>Not enough data available</h4>
+                                        <h4>@DashBoardResource.NotEnoughDataAvailable</h4>
                                     }
                                     else
                                     {
@@ -185,11 +188,11 @@
                                 </div>
                             </div>
                             <div role="tabpanel" class="tab-pane active" id="years">
-                                <h4>Last year report</h4>
+                                <h4>@DashBoardResource.LastYearReport</h4>
                                 <div class="medium-margin-top">
                                     @if (Model.YearSummaryChart == null)
                                     {
-                                        <h4>Not enough data available</h4>
+                                        <h4>@DashBoardResource.NotEnoughDataAvailable</h4>
                                     }
                                     else
                                     {
@@ -244,9 +247,9 @@
             {
                         <div class="jumbotron">
                             <div class="container">
-                                <h1>Hello anonymous user!</h1>
+                                <h1>@DashBoardResource.WelcomeHeader</h1>
                                 <p>
-                                    Welcome to Expense manager - best money management application. You have to login to show more functionality.
+                                   @DashBoardResource.WelcomeDescription
                                 </p>
                             </div>
                         </div>

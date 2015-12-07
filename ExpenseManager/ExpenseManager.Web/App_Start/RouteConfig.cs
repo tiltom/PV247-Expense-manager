@@ -14,7 +14,7 @@ namespace ExpenseManager.Web
                 );
 
             routes.MapRoute("Default", "{controller}/{action}",
-                new {controller = "Home", action = "Index"}
+                new {controller = "DashBoard", action = "Index"}
                 );
         }
     }

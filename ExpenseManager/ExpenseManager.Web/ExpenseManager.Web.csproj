@@ -202,7 +202,7 @@
     <Compile Include="Controllers\BudgetAccessRightController.cs" />
     <Compile Include="Controllers\BudgetController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\DashBoardController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\RolesAdminController.cs" />
     <Compile Include="Controllers\TransactionController.cs" />
@@ -358,7 +358,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\DashBoard\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
@@ -405,7 +405,7 @@
     <Content Include="Views\Category\Delete.cshtml" />
     <Content Include="Views\Transaction\Delete.cshtml" />
     <Content Include="Views\Transaction\Import.cshtml" />
-    <Content Include="Views\Home\UpdateRepeatable.cshtml" />
+    <Content Include="Views\DashBoard\UpdateRepeatable.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

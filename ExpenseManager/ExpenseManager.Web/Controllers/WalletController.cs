@@ -50,7 +50,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 await this._walletService.EditWallet(wallet.Guid, wallet.Name, wallet.CurrencyId);
 
-                return this.RedirectToAction("Index", "Home");
+                return this.RedirectToAction("Index", "DashBoard");
             }
 
             wallet.Currencies = await this.GetCurrencies();

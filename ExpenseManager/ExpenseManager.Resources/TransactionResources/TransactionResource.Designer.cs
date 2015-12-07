@@ -79,6 +79,15 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add new transaction.
+        /// </summary>
+        public static string AddNew {
+            get {
+                return ResourceManager.GetString("AddNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transaction amount must be greater than zero.
         /// </summary>
         public static string AmmountError {
