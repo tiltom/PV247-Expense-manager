@@ -1,4 +1,5 @@
 ﻿@using System
+@using ExpenseManager.Database
 @using ExpenseManager.Web.Controllers
 <!DOCTYPE html>
 <html>
@@ -22,20 +23,20 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    @Html.ActionLink("Expense Manager", "Index", "DashBoard", new {area = ""}, new {@class = "navbar-brand"})
+                    @Html.ActionLink(SharedResource.ApplicationName, "Index", "DashBoard", new {area = ""}, new {@class = "navbar-brand"})
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         @if (Request.IsAuthenticated)
                         {
-                            <li>@Html.ActionLink("Transactions", "Index", "Transaction")</li>
-                            <li>@Html.ActionLink("Categories", "Index", "Category")</li>
-                            <li>@Html.ActionLink("Budgets", "Index", "Budget")</li>
-                            <li>@Html.ActionLink("Wallet", "Edit", "Wallet")</li>
-                            if (User.IsInRole("Admin"))
+                            <li>@Html.ActionLink(SharedResource.Transactions, "Index", "Transaction")</li>
+                            <li>@Html.ActionLink(SharedResource.Categories, "Index", "Category")</li>
+                            <li>@Html.ActionLink(SharedResource.Budgets, "Index", "Budget")</li>
+                            <li>@Html.ActionLink(SharedResource.Wallet, "Edit", "Wallet")</li>
+                            if (User.IsInRole(UserIdentity.AdminRole))
                             {
-                                <li>@Html.ActionLink("Manage roles", "Index", "RolesAdmin")</li>
-                                <li>@Html.ActionLink("Manage users", "Index", "UsersAdmin")</li>
+                                <li>@Html.ActionLink(SharedResource.ManageRoles, "Index", "RolesAdmin")</li>
+                                <li>@Html.ActionLink(SharedResource.ManageUsers, "Index", "UsersAdmin")</li>
                             }
                         }
                     </ul>
@@ -88,7 +89,7 @@
         </div>
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Expense Manager</p>
+            <p>&copy; @DateTime.Now.Year - @SharedResource.ApplicationName</p>
         </footer>
     </div>
 

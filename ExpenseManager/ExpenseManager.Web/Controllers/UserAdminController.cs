@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using ExpenseManager.Database;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
@@ -15,10 +15,11 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using PagedList;
 using WebGrease.Css.Extensions;
+using QueryableExtensions = System.Data.Entity.QueryableExtensions;
 
 namespace ExpenseManager.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = UserIdentity.AdminRole)]
     public class UsersAdminController : AbstractController
     {
         private ApplicationRoleManager _roleManager;
@@ -105,9 +106,8 @@ namespace ExpenseManager.Web.Controllers
 
         private Task<List<SelectListItem>> GetAllRolesAsync()
         {
-            return RoleManager.Roles.Select(
-                r => new SelectListItem {Value = r.Id, Text = r.Name})
-                .ToListAsync();
+            return QueryableExtensions.ToListAsync(RoleManager.Roles.Select(
+                    r => new SelectListItem {Value = r.Id, Text = r.Name}));
         }
 
         /// <summary>

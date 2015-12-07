@@ -138,7 +138,7 @@
   <data name="SelectPermission" xml:space="preserve">
     <value>Select permission</value>
   </data>
-  <data name="User" xml:space="preserve">
-    <value>User</value>
+  <data name="UserEmail" xml:space="preserve">
+    <value>User e-mail</value>
   </data>
 </root>

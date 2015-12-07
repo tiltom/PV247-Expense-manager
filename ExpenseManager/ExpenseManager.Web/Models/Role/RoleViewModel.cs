@@ -1,6 +1,6 @@
-using ExpenseManager.Database.Common;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using ExpenseManager.Database;
 
 namespace ExpenseManager.Web.Models.Role
 {

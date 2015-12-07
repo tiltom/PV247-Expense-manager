@@ -123,6 +123,9 @@
   <data name="Amount" xml:space="preserve">
     <value>Amount</value>
   </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>Expense Manager</value>
+  </data>
   <data name="Back" xml:space="preserve">
     <value>Back</value>
   </data>
@@ -132,6 +135,9 @@
   <data name="Budget" xml:space="preserve">
     <value>Budget</value>
   </data>
+  <data name="Budgets" xml:space="preserve">
+    <value>Budgets</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -140,6 +146,9 @@
   </data>
   <data name="CaptchaValidationFailed" xml:space="preserve">
     <value>Captcha validation failed.</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Categories</value>
   </data>
   <data name="Category" xml:space="preserve">
     <value>Category</value>
@@ -174,6 +183,12 @@
   <data name="Index" xml:space="preserve">
     <value>Index</value>
   </data>
+  <data name="ManageRoles" xml:space="preserve">
+    <value>Manage Roles</value>
+  </data>
+  <data name="ManageUsers" xml:space="preserve">
+    <value>Manage Users</value>
+  </data>
   <data name="Pager" xml:space="preserve">
     <value>Page {0} of {1}</value>
   </data>
@@ -203,6 +218,12 @@
   </data>
   <data name="TestError" xml:space="preserve">
     <value>This is some serious error!</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>Transactions</value>
+  </data>
+  <data name="UserEmail" xml:space="preserve">
+    <value>User e-mail</value>
   </data>
   <data name="UserNotFoundByEmail" xml:space="preserve">
     <value>User with given email not found</value>

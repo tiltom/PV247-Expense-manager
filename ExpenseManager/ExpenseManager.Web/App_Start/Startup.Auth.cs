@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Configuration;
-using ExpenseManager.Database.Common;
+using ExpenseManager.Database;
 using ExpenseManager.Database.Contexts;
 using ExpenseManager.Web.Helpers;
 using Microsoft.AspNet.Identity;

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using ExpenseManager.Database.Common;
+using ExpenseManager.Database;
 using ExpenseManager.Database.Contexts;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
@@ -14,6 +14,7 @@ using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using QueryableExtensions = System.Data.Entity.QueryableExtensions;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -108,11 +109,12 @@ namespace ExpenseManager.Web.Controllers
 
         protected async Task<List<SelectListItem>> GetCurrencies()
         {
-            var currencies = await UserContext.Currencies.Select(currency => new SelectListItem
-            {
-                Text = currency.Name,
-                Value = currency.Guid.ToString()
-            }).ToListAsync();
+            var currencies =
+                await QueryableExtensions.ToListAsync(UserContext.Currencies.Select(currency => new SelectListItem
+                {
+                    Text = currency.Name,
+                    Value = currency.Guid.ToString()
+                }));
             return currencies;
         }
 

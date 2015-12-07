@@ -124,11 +124,11 @@ namespace ExpenseManager.Resources.WalletResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User.
+        ///   Looks up a localized string similar to User e-mail.
         /// </summary>
-        public static string User {
+        public static string UserEmail {
             get {
-                return ResourceManager.GetString("User", resourceCulture);
+                return ResourceManager.GetString("UserEmail", resourceCulture);
             }
         }
     }

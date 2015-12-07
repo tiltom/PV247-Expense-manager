@@ -4,7 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using ExpenseManager.Database.Common;
+using ExpenseManager.Database;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Role;
 using ExpenseManager.Web.Models.User;
@@ -16,7 +16,7 @@ using WebGrease.Css.Extensions;
 
 namespace ExpenseManager.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = UserIdentity.AdminRole)]
     public class RolesAdminController : Controller
     {
         private ApplicationRoleManager _roleManager;

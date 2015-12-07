@@ -1,5 +1,4 @@
 ﻿using System.Data.Entity;
-using ExpenseManager.Database.Common;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Transactions;

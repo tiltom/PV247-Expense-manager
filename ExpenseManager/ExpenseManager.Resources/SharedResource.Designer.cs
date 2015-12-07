@@ -79,6 +79,15 @@ namespace ExpenseManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expense Manager.
+        /// </summary>
+        public static string ApplicationName {
+            get {
+                return ResourceManager.GetString("ApplicationName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Back.
         /// </summary>
         public static string Back {
@@ -106,6 +115,15 @@ namespace ExpenseManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Budgets.
+        /// </summary>
+        public static string Budgets {
+            get {
+                return ResourceManager.GetString("Budgets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
@@ -129,6 +147,15 @@ namespace ExpenseManager.Resources {
         public static string CaptchaValidationFailed {
             get {
                 return ResourceManager.GetString("CaptchaValidationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Categories.
+        /// </summary>
+        public static string Categories {
+            get {
+                return ResourceManager.GetString("Categories", resourceCulture);
             }
         }
         
@@ -232,6 +259,24 @@ namespace ExpenseManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Roles.
+        /// </summary>
+        public static string ManageRoles {
+            get {
+                return ResourceManager.GetString("ManageRoles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Users.
+        /// </summary>
+        public static string ManageUsers {
+            get {
+                return ResourceManager.GetString("ManageUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Page {0} of {1}.
         /// </summary>
         public static string Pager {
@@ -318,6 +363,24 @@ namespace ExpenseManager.Resources {
         public static string TestError {
             get {
                 return ResourceManager.GetString("TestError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transactions.
+        /// </summary>
+        public static string Transactions {
+            get {
+                return ResourceManager.GetString("Transactions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User e-mail.
+        /// </summary>
+        public static string UserEmail {
+            get {
+                return ResourceManager.GetString("UserEmail", resourceCulture);
             }
         }
         

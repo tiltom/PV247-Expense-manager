@@ -2,7 +2,7 @@
 using AutoMapper;
 using ExpenseManager.BusinessLogic.DashboardServices.Models;
 using ExpenseManager.BusinessLogic.TransactionServices.Models;
-using ExpenseManager.Database.Common;
+using ExpenseManager.Database;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Transactions;

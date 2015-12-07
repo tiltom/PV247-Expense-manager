@@ -5,10 +5,12 @@ using ExpenseManager.Entity.Users;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace ExpenseManager.Database.Common
+namespace ExpenseManager.Database
 {
     public class UserIdentity : IdentityUser
     {
+        public const string AdminRole = "Admin";
+        public const string UserRole = "User";
         public virtual UserProfile Profile { get; set; }
         public DateTime CreationDate { get; set; }
 

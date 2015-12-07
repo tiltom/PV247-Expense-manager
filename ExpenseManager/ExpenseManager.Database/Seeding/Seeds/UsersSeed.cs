@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Linq;
-using ExpenseManager.Database.Common;
 using ExpenseManager.Database.Contexts;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
@@ -17,8 +16,6 @@ namespace ExpenseManager.Database.Seeding.Seeds
     {
         private const string AdminEmail = "admin@example.com";
 
-        private const string AdminRole = "Admin";
-        private const string UserRole = "User";
 
         private readonly RegisterUserInfo _adminUserInfo = new RegisterUserInfo
         {
@@ -26,7 +23,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
             LastName = "admin",
             Email = "admin@example.com",
             WalletName = "Default Wallet",
-            RoleName = AdminRole,
+            RoleName = UserIdentity.AdminRole,
             Password = "password1"
         };
 
@@ -36,7 +33,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
             LastName = "user",
             Email = "userread@example.com",
             WalletName = "Read Wallet",
-            RoleName = UserRole,
+            RoleName = UserIdentity.UserRole,
             Password = "password1"
         };
 
@@ -46,7 +43,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
             LastName = "user",
             Email = "userwrite@example.com",
             WalletName = "Write Wallet",
-            RoleName = UserRole,
+            RoleName = UserIdentity.UserRole,
             Password = "password1"
         };
 
@@ -57,8 +54,8 @@ namespace ExpenseManager.Database.Seeding.Seeds
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
 
             //Create Role Admin if it does not exist
-            CreateRole(roleManager, AdminRole);
-            CreateRole(roleManager, UserRole);
+            CreateRole(roleManager, UserIdentity.AdminRole);
+            CreateRole(roleManager, UserIdentity.UserRole);
 
             CreateUser(context, userManager, roleManager, this._adminUserInfo);
             CreateUserWithPermission(context, userManager, roleManager, this._readUserInfo, PermissionEnum.Read);
