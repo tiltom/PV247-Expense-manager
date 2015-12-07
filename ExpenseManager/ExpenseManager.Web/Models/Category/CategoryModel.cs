@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ExpenseManager.Entity.Enums;
+using ExpenseManager.Resources.CategoryResources;
 
 namespace ExpenseManager.Web.Models.Category
 {
     /// <summary>
     ///     View model for category entity
     /// </summary>
-    public class CategoryShowModel
+    public class CategoryModel
     {
         public Guid Guid { get; set; }
 
@@ -15,28 +17,30 @@ namespace ExpenseManager.Web.Models.Category
         ///     Description of the category
         /// </summary>
         [Required]
-        [Display(Name = "Description")]
+        [Display(ResourceType = typeof (CategoryResource), Name = "Description")]
         public string Description { get; set; }
 
         /// <summary>
         ///     Name of the category
         /// </summary>
         [Required]
-        [Display(Name = "Name")]
+        [Display(ResourceType = typeof (CategoryResource), Name = "Name")]
         public string Name { get; set; }
 
         /// <summary>
         ///     Glyphicons icon for category
         /// </summary>
         [Required]
-        [Display(Name = "Icon")]
+        [Display(ResourceType = typeof (CategoryResource), Name = "Icon")]
         public string Icon { get; set; }
 
         /// <summary>
         ///     Type of the category
         /// </summary>
         [Required]
-        [Display(Name = "Type")]
+        [Display(ResourceType = typeof (CategoryResource), Name = "Type")]
         public CategoryType Type { get; set; }
+
+        public IEnumerable<string> Glyphicons { get; set; }
     }
 }

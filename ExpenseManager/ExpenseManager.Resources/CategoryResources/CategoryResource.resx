@@ -129,6 +129,9 @@
   <data name="DeleteConfirmation" xml:space="preserve">
     <value>Are you sure you want to delete category {0}?</value>
   </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
   <data name="DescriptionNotNullOrEmpty" xml:space="preserve">
     <value>Description can not be empty!</value>
   </data>
@@ -141,13 +144,22 @@
   <data name="GlyphiconIconInList" xml:space="preserve">
     <value>Selected glyphicon is not in supported!</value>
   </data>
+  <data name="Icon" xml:space="preserve">
+    <value>Icon</value>
+  </data>
   <data name="Incomes" xml:space="preserve">
     <value>Incomes</value>
   </data>
   <data name="IncomesAndExpenses" xml:space="preserve">
     <value>Incomes and Expenses</value>
   </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
   <data name="NameNotNullOrEmpty" xml:space="preserve">
     <value>Name can not be empty!</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
   </data>
 </root>

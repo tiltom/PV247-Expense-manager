@@ -120,6 +120,9 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
             glyphicons.Add("glyphicon-heart");
             glyphicons.Add("glyphicon-stats");
             glyphicons.Add("glyphicon-leaf");
+            glyphicons.Add("glyphicon-plane");
+            glyphicons.Add("glyphicon-usd");
+            glyphicons.Add("glyphicon-question-sign");
 
             return glyphicons;
         }

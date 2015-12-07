@@ -97,6 +97,15 @@ namespace ExpenseManager.Resources.CategoryResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string Description {
+            get {
+                return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Description can not be empty!.
         /// </summary>
         public static string DescriptionNotNullOrEmpty {
@@ -133,6 +142,15 @@ namespace ExpenseManager.Resources.CategoryResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Icon.
+        /// </summary>
+        public static string Icon {
+            get {
+                return ResourceManager.GetString("Icon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Incomes.
         /// </summary>
         public static string Incomes {
@@ -151,11 +169,29 @@ namespace ExpenseManager.Resources.CategoryResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name can not be empty!.
         /// </summary>
         public static string NameNotNullOrEmpty {
             get {
                 return ResourceManager.GetString("NameNotNullOrEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
             }
         }
     }

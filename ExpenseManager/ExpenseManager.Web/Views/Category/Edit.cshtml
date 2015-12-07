@@ -1,9 +1,8 @@
 ﻿@using ExpenseManager.Resources.CategoryResources
-@model ExpenseManager.Web.Models.Category.CategoryShowModel
+@model ExpenseManager.Web.Models.Category.CategoryModel
 
 @{
     ViewBag.Title = CategoryResource.EditCategory;
-    var glyphicons = ViewBag.Glyphicons;
 }
 @using (Html.BeginForm())
 {
@@ -34,7 +33,7 @@
             @Html.LabelFor(model => model.Icon, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <div class="btn-group" data-toggle="buttons">
-                    @foreach (string glyphicon in glyphicons)
+                    @foreach (var glyphicon in Model.Glyphicons)
                     {
                         var active = Model.Icon == glyphicon ? "active" : "";
                         <label class="pdsa-radiobutton btn btn-default @active">
