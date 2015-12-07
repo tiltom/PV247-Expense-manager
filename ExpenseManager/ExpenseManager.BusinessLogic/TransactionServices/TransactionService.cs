@@ -185,8 +185,8 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 wallet = await this.GetWalletIdByUserId(userId);
             }
             var walletId = wallet.Value;
-            IEnumerable<TransactionShowServiceModel> list = await this.GetAllTransactionsInWallet(userId, walletId);
-
+            IEnumerable<TransactionShowServiceModel> list =
+                await this.GetAllTransactionsInWalletWithCurrency(userId, walletId);
             if (category != null)
             {
                 list = list.Where(model => model.CategoryId == category.Value);
@@ -216,6 +216,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             {
                 var categoryName = reader.GetField<string>(TransactionResource.CategoryName);
                 var budgetName = reader.GetField<string>(TransactionResource.BudgetName);
+                var currencyCode = reader.GetField<string>(SharedResource.Currency);
                 var model = new TransactionServiceModel
                 {
                     Amount = reader.GetField<decimal>(SharedResource.Amount),
@@ -223,7 +224,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     Description = reader.GetField<string>(SharedResource.Description),
                     WalletId = await this.GetWalletIdByUserId(userId)
                 };
-                model.CurrencyId = (await this.GetDefaultCurrencyInWallet(model.WalletId)).Guid;
+                model.CurrencyId = (await this.GetCurrencyByCode(currencyCode)).Guid;
                 model.CategoryId = (await this.GetCategoryByName(categoryName)).Guid;
                 if (budgetName != string.Empty)
                 {
@@ -293,6 +294,14 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         .FirstOrDefaultAsync();
         }
 
+        private async Task<Currency> GetCurrencyByCode(string currencyCode)
+        {
+            return
+                await
+                    this._transactionsProvider.Currencies.Where(currency => currency.Code == currencyCode)
+                        .FirstOrDefaultAsync();
+        }
+
         public async Task<Budget> GetBudgetById(Guid budgetId)
         {
             return
@@ -308,23 +317,14 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
 
         public async Task<List<TransactionShowServiceModel>> GetAllTransactionsInWallet(Guid userId, Guid walletId)
         {
-            if (await this.GetPermission(userId, walletId) == null)
-            {
-                throw new SecurityException();
-            }
-            var list =
-                await
-                    this._transactionsProvider.Transactions.Where(transaction => transaction.Wallet.Guid == walletId)
-                        .ToListAsync();
-            var modelList = new List<TransactionShowServiceModel>();
-            foreach (var transaction in list)
-            {
-                var model = Mapper.Map<TransactionShowServiceModel>(transaction);
-                model.IsRepeatable = await this.GetRepeatableTransactionByFirstTransactionId(transaction.Guid) != null;
-                modelList.Add(model);
-            }
+            var modelList = await this.GetAllTransactionsInWalletLoader(userId, walletId);
+            return new List<TransactionShowServiceModel>(modelList);
+        }
 
-            return modelList;
+        public async Task<List<TransactionServiceExportModel>> GetAllTransactionsInWalletWithCurrency(Guid userId,
+            Guid walletId)
+        {
+            return await this.GetAllTransactionsInWalletLoader(userId, walletId);
         }
 
         public async Task<Currency> GetDefaultCurrencyInWallet(Guid walletId)
@@ -468,15 +468,37 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return new SelectList(selectList, "Value", "Text", budgetId);
         }
 
-        public sealed class TransactionExportMap : CsvClassMap<TransactionShowServiceModel>
+        private async Task<List<TransactionServiceExportModel>> GetAllTransactionsInWalletLoader(Guid userId,
+            Guid walletId)
+        {
+            if (await this.GetPermission(userId, walletId) == null)
+            {
+                throw new SecurityException();
+            }
+            var list =
+                await
+                    this._transactionsProvider.Transactions.Where(transaction => transaction.Wallet.Guid == walletId)
+                        .ToListAsync();
+            var modelList = new List<TransactionServiceExportModel>();
+            foreach (var transaction in list)
+            {
+                var model = Mapper.Map<TransactionServiceExportModel>(transaction);
+                model.IsRepeatable = await this.GetRepeatableTransactionByFirstTransactionId(transaction.Guid) != null;
+                modelList.Add(model);
+            }
+            return modelList;
+        }
+
+        public sealed class TransactionExportMap : CsvClassMap<TransactionServiceExportModel>
         {
             public TransactionExportMap()
             {
-                this.Map(m => m.Amount).Name(SharedResource.Amount);
-                this.Map(m => m.Date).Name(SharedResource.Date);
-                this.Map(m => m.Description).Name(SharedResource.Description);
-                this.Map(m => m.CategoryName).Name(TransactionResource.CategoryName);
-                this.Map(m => m.BudgetName).Name(TransactionResource.BudgetName);
+                this.Map(model => model.Amount).Name(SharedResource.Amount);
+                this.Map(model => model.CurrencyCode).Name(SharedResource.Currency);
+                this.Map(model => model.Date).Name(SharedResource.Date);
+                this.Map(model => model.Description).Name(SharedResource.Description);
+                this.Map(model => model.CategoryName).Name(TransactionResource.CategoryName);
+                this.Map(model => model.BudgetName).Name(TransactionResource.BudgetName);
             }
         }
 
@@ -560,8 +582,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             }
             entity.Date = transaction.Date;
             entity.Description = transaction.Description;
-            entity.Wallet =
-                await this.GetWalletById(transaction.WalletId);
+            entity.Wallet = await this.GetWalletById(transaction.WalletId);
             //check if budget was set in transaction
             if (transaction.BudgetId == null)
             {

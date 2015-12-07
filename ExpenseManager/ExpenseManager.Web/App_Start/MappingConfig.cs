@@ -48,7 +48,7 @@ namespace ExpenseManager.Web
                 .ForMember(dto => dto.CurrencyId, options => options.MapFrom(entity => entity.Currency.Guid))
                 .ForMember(dto => dto.CategoryId, options => options.MapFrom(entity => entity.Category.Guid));
 
-            Mapper.CreateMap<Transaction, TransactionShowServiceModel>()
+            Mapper.CreateMap<Transaction, TransactionServiceExportModel>()
                 .ForMember(dto => dto.Id, options => options.MapFrom(entity => entity.Guid))
                 .ForMember(dto => dto.Amount, options => options.MapFrom(entity => entity.Amount))
                 .ForMember(dto => dto.Date, options => options.MapFrom(entity => entity.Date))
@@ -60,7 +60,9 @@ namespace ExpenseManager.Web
                 .ForMember(dto => dto.CurrencySymbol, options => options.MapFrom(entity => entity.Currency.Symbol))
                 .ForMember(dto => dto.CategoryName, options => options.MapFrom(entity => entity.Category.Name))
                 .ForMember(dto => dto.CategoryId,
-                    options => options.MapFrom(entity => entity.Category.Guid));
+                    options => options.MapFrom(entity => entity.Category.Guid))
+                .ForMember(dto => dto.CurrencyCode,
+                    options => options.MapFrom(entity => entity.Currency.Code));
         }
 
         private static void RegisterTransactionMappings()

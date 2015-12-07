@@ -108,6 +108,7 @@
     <Compile Include="ExchangeRates\Transformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceWithWallet.cs" />
+    <Compile Include="TransactionServices\Models\TransactionServiceExportModel.cs" />
     <Compile Include="TransactionServices\Models\TransactionServiceModel.cs" />
     <Compile Include="TransactionServices\Models\TransactionShowServiceModel.cs" />
     <Compile Include="TransactionServices\TransactionService.cs" />
