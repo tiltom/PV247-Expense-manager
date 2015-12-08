@@ -378,11 +378,10 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         }
 
 
-        //TODO will be only private
         public async Task<WalletAccessRight> GetPermission(Guid userId, Guid walletId)
         {
             return await
-                this._walletsProvider.WalletAccessRights // TODO NOT IMPLEMENTED< SHOULDNT BE IMPLEMENTED FIX THIS
+                this._walletsProvider.WalletAccessRights
                     .FirstOrDefaultAsync(
                         right =>
                             right.UserProfile.Guid == userId && right.Wallet.Guid == walletId);
