@@ -408,7 +408,6 @@
     <Content Include="Views\Category\Delete.cshtml" />
     <Content Include="Views\Transaction\Delete.cshtml" />
     <Content Include="Views\Transaction\Import.cshtml" />
-    <Content Include="Views\DashBoard\UpdateRepeatable.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
