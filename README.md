@@ -10,3 +10,6 @@ More details can be found in wiki https://github.com/tiltom/PV247-Expense-manage
 - Coding rules - https://github.com/tiltom/PV247-Expense-manager/wiki/Coding-rules
 - Wireframes - https://github.com/tiltom/PV247-Expense-manager/wiki/Wireframes
 - Database scheme - https://github.com/tiltom/PV247-Expense-manager/wiki/Database-scheme
+
+
+Project is licensed under MIT License
