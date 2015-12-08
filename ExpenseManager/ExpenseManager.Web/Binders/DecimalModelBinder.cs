@@ -15,17 +15,7 @@ namespace ExpenseManager.Web.Binders
             var attemptedValue =
                 bindingContext.ValueProvider.GetValue(modelName).AttemptedValue;
 
-            // Depending on CultureInfo, the NumberDecimalSeparator can be "," or "."
-            // Both "." and "," should be accepted, but aren't.
-            var wantedSeperator = NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;
-            var alternateSeperator = (wantedSeperator == "," ? "." : ",");
-
-            if (attemptedValue.IndexOf(wantedSeperator) == -1
-                && attemptedValue.IndexOf(alternateSeperator) != -1)
-            {
-                attemptedValue =
-                    attemptedValue.Replace(alternateSeperator, wantedSeperator);
-            }
+            attemptedValue = UniversalSeparator(attemptedValue);
 
             try
             {
@@ -43,7 +33,29 @@ namespace ExpenseManager.Web.Binders
                 bindingContext.ModelState.AddModelError(modelName, e);
             }
 
+            catch (OverflowException e)
+            {
+                result = base.BindModel(controllerContext, bindingContext);
+                bindingContext.ModelState.AddModelError(modelName, e);
+            }
+
             return result;
+        }
+
+        private static string UniversalSeparator(string attemptedValue)
+        {
+            // Depending on CultureInfo, the NumberDecimalSeparator can be "," or "."
+            // Both "." and "," should be accepted, but aren't.
+            var wantedSeperator = NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;
+            var alternateSeperator = (wantedSeperator == "," ? "." : ",");
+
+            if (attemptedValue.IndexOf(wantedSeperator, StringComparison.Ordinal) == -1
+                && attemptedValue.IndexOf(alternateSeperator, StringComparison.Ordinal) != -1)
+            {
+                attemptedValue =
+                    attemptedValue.Replace(alternateSeperator, wantedSeperator);
+            }
+            return attemptedValue;
         }
     }
 }
