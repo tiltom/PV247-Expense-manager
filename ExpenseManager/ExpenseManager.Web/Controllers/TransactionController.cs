@@ -36,27 +36,13 @@ namespace ExpenseManager.Web.Controllers
         {
             // get Id of currently logged UserProfile from HttpContext
             var id = await this.CurrentProfileId();
-
             // If no wallet was given set default wallet
             if (wallet == null)
             {
                 wallet = await this._transactionService.GetWalletIdByUserId(id);
             }
             var walletId = wallet.Value;
-            // get user permission for selected wallet
-            //TODO this should probably be made in other way
-            var permission =
-                await this._transactionService.GetPermission(id, walletId);
-
-            // get all Wallets user has access to
-            ViewBag.wallet = await this._transactionService.GetViewableWalletsSelection(id, walletId);
-            ViewBag.displayedWalletId = walletId;
-            ViewBag.category =
-                await this._transactionService.GetCategoriesSelectionFilter(walletId, category.GetValueOrDefault());
-            ViewBag.selectedCategoryId = category;
-            ViewBag.budget =
-                await this._transactionService.GetBudgetsSelectionFilter(id, walletId, budget.GetValueOrDefault());
-            ViewBag.selectedBudgetId = budget;
+            await this.SetIndexViewData(category, budget, walletId);
             // get all Transactions in selected wallet
             IEnumerable<TransactionShowServiceModel> list;
             try
@@ -69,25 +55,13 @@ namespace ExpenseManager.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
                     TransactionResource.PermissionError);
             }
-
-            if (category != null)
-            {
-                list = list.Where(model => model.CategoryId == category.Value);
-            }
-            if (budget != null)
-            {
-                list = list.Where(model => model.BudgetId == budget.Value);
-            }
+            list = TransactionService.FilterTransactions(category, budget, list);
 
             var showModels = Enumerable.Reverse(list.Select(Mapper.Map<TransactionShowModel>)).ToList();
             var pageNumber = (page ?? 1);
-
-            // when user doesn't have permission to manipulate with transaction show view without edit and delete
-            ViewBag.editable = permission.Permission != PermissionEnum.Read;
             return this.View("Index",
                 showModels.OrderByDescending(model => model.Date).ToPagedList(pageNumber, PageSize));
         }
-
 
         public async Task<ActionResult> ExpenseIncome(Guid? wallet)
         {
@@ -335,6 +309,23 @@ namespace ExpenseManager.Web.Controllers
                 //this._db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private async Task SetIndexViewData(Guid? category, Guid? budget, Guid walletId)
+        {
+            var id = await this.CurrentProfileId();
+            // get all Wallets user has access to
+            ViewBag.wallet = await this._transactionService.GetViewableWalletsSelection(id, walletId);
+            ViewBag.displayedWalletId = walletId;
+            ViewBag.category =
+                await this._transactionService.GetCategoriesSelectionFilter(walletId, category.GetValueOrDefault());
+            ViewBag.selectedCategoryId = category;
+            ViewBag.budget =
+                await this._transactionService.GetBudgetsSelectionFilter(id, walletId, budget.GetValueOrDefault());
+            ViewBag.selectedBudgetId = budget;
+            // when user doesn't have permission to manipulate with transaction show view without edit and delete
+            ViewBag.editable = (await this._transactionService.GetPermission(id, walletId)).Permission !=
+                               PermissionEnum.Read;
         }
     }
 }

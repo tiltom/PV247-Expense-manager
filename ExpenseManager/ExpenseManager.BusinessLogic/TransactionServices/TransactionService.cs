@@ -58,6 +58,21 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             this._validator.ValidateAndThrowCustomException(transaction);
         }
 
+        public static IEnumerable<TransactionShowServiceModel> FilterTransactions(Guid? category, Guid? budget,
+            IEnumerable<TransactionShowServiceModel> list)
+        {
+            var filteredList = list;
+            if (category != null)
+            {
+                filteredList = filteredList.Where(model => model.CategoryId == category.Value);
+            }
+            if (budget != null)
+            {
+                filteredList = filteredList.Where(model => model.BudgetId == budget.Value);
+            }
+            return filteredList;
+        }
+
         public async Task Create(TransactionServiceModel transaction)
         {
             this.Validate(transaction);
@@ -124,24 +139,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             //check if transaction was set as repeatable in model
             if (transaction.IsRepeatable)
             {
-                //check if transaction was also set repeatable in model
-                if (repeatableTransaction == null)
-                {
-                    //if not create new repeatable transaction entity
-                    repeatableTransaction = new RepeatableTransaction
-                    {
-                        Guid = new Guid(),
-                        FirstTransaction = transactionEntity
-                    };
-                    this.FillRepeatableTransaction(transaction, repeatableTransaction);
-                    await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
-                }
-                // if transaction exists in repeatable transactions in DB update it
-                else
-                {
-                    this.FillRepeatableTransaction(transaction, repeatableTransaction);
-                    await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
-                }
+                await this.EditRepeatableTransaction(transaction, repeatableTransaction, transactionEntity);
             }
             // if transaction was set as not repeatable in model
             else
@@ -187,14 +185,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             var walletId = wallet.Value;
             IEnumerable<TransactionShowServiceModel> list =
                 await this.GetAllTransactionsInWalletWithCurrency(userId, walletId);
-            if (category != null)
-            {
-                list = list.Where(model => model.CategoryId == category.Value);
-            }
-            if (budget != null)
-            {
-                list = list.Where(model => model.BudgetId == budget.Value);
-            }
+            list = FilterTransactions(category, budget, list);
             TextWriter textWriter = new StringWriter();
             var writer = new CsvWriter(textWriter);
             writer.Configuration.RegisterClassMap<TransactionExportMap>();
@@ -608,6 +599,29 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             entity.NextRepeat = transaction.NextRepeat.GetValueOrDefault();
             entity.FrequencyType = transaction.FrequencyType;
             entity.LastOccurrence = transaction.LastOccurrence.GetValueOrDefault();
+        }
+
+        private async Task EditRepeatableTransaction(TransactionServiceModel transaction,
+            RepeatableTransaction repeatableTransaction, Transaction transactionEntity)
+        {
+            //check if transaction was also set repeatable in model
+            if (repeatableTransaction == null)
+            {
+                //if not create new repeatable transaction entity
+                repeatableTransaction = new RepeatableTransaction
+                {
+                    Guid = new Guid(),
+                    FirstTransaction = transactionEntity
+                };
+                this.FillRepeatableTransaction(transaction, repeatableTransaction);
+                await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
+            }
+            // if transaction exists in repeatable transactions in DB update it
+            else
+            {
+                this.FillRepeatableTransaction(transaction, repeatableTransaction);
+                await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
+            }
         }
 
         #endregion
