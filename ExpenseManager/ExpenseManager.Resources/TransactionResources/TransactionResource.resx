@@ -225,6 +225,9 @@
   <data name="AddNew" xml:space="preserve">
     <value>Add new transaction</value>
   </data>
+  <data name="AddMoreDetails" xml:space="preserve">
+    <value>Add more details</value>
+  </data>
   <data name="ChooseYourWallet" xml:space="preserve">
     <value>Choose your wallet</value>
   </data>
