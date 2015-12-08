@@ -28,6 +28,9 @@ using ExpenseManager.Resources.TransactionResources;
 
 namespace ExpenseManager.BusinessLogic.TransactionServices
 {
+    /// <summary>
+    ///     Class that handles logic of TransactionController
+    /// </summary>
     public class TransactionService : ServiceWithWallet, IServiceValidation<TransactionServiceModel>
     {
         public const string DateFormat = "dd.MM.yyyy";
@@ -50,6 +53,10 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             get { return this._transactionsProvider; }
         }
 
+        /// <summary>
+        ///     Validates transaction service model
+        /// </summary>
+        /// <param name="transaction">Transaction to be validated</param>
         public void Validate(TransactionServiceModel transaction)
         {
             if (transaction == null)
@@ -58,21 +65,33 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             this._validator.ValidateAndThrowCustomException(transaction);
         }
 
-        public static IEnumerable<TransactionShowServiceModel> FilterTransactions(Guid? category, Guid? budget,
+        /// <summary>
+        ///     Removes transactions without specified category and budgets, if they are not null, from list
+        /// </summary>
+        /// <param name="categoryId">Id of category</param>
+        /// <param name="budgetId">Id of budget</param>
+        /// <param name="list">List to be updated</param>
+        /// <returns></returns>
+        public static IEnumerable<TransactionShowServiceModel> FilterTransactions(Guid? categoryId, Guid? budgetId,
             IEnumerable<TransactionShowServiceModel> list)
         {
             var filteredList = list;
-            if (category != null)
+            if (categoryId != null)
             {
-                filteredList = filteredList.Where(model => model.CategoryId == category.Value);
+                filteredList = filteredList.Where(model => model.CategoryId == categoryId.Value);
             }
-            if (budget != null)
+            if (budgetId != null)
             {
-                filteredList = filteredList.Where(model => model.BudgetId == budget.Value);
+                filteredList = filteredList.Where(model => model.BudgetId == budgetId.Value);
             }
             return filteredList;
         }
 
+        /// <summary>
+        ///     Creates new transaction
+        /// </summary>
+        /// <param name="transaction">New transaction</param>
+        /// <returns></returns>
         public async Task Create(TransactionServiceModel transaction)
         {
             this.Validate(transaction);
@@ -94,6 +113,10 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             }
         }
 
+        /// <summary>
+        ///     Adds new transaction if it's next repetition occurred
+        /// </summary>
+        /// <returns>HTTP status code OK if no error occurred</returns>
         public async Task<HttpStatusCodeResult> UpdateRepeatableTransactions()
         {
             var repeatableTransactions = await this._transactionsProvider.RepeatableTransactions.ToListAsync();
@@ -123,6 +146,11 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return new HttpStatusCodeResult(200);
         }
 
+        /// <summary>
+        ///     Edit transaction
+        /// </summary>
+        /// <param name="transaction">Edited transaction</param>
+        /// <returns></returns>
         public async Task Edit(TransactionServiceModel transaction)
         {
             this.Validate(transaction);
@@ -152,6 +180,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             }
         }
 
+        /// <summary>
+        ///     Remove transaction
+        /// </summary>
+        /// <param name="userId">Id of user</param>
+        /// <param name="transactionId">Id of transaction</param>
+        /// <returns>Id of wallet which contained transaction</returns>
         public async Task<Guid> RemoveTransaction(Guid userId, Guid transactionId)
         {
             //find transaction by its Id
@@ -176,6 +210,14 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return walletId;
         }
 
+        /// <summary>
+        ///     Export of transaction
+        /// </summary>
+        /// <param name="userId">Id of user</param>
+        /// <param name="wallet">Wallet from which transactions should be exported</param>
+        /// <param name="category">Category from which transactions should be exported</param>
+        /// <param name="budget">Budget from which transactions should be exported</param>
+        /// <returns>Exported transactions</returns>
         public async Task<string> ExportToCsv(Guid userId, Guid? wallet, Guid? category, Guid? budget)
         {
             if (wallet == null)
@@ -198,6 +240,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return textWriter.ToString();
         }
 
+        /// <summary>
+        ///     Import of transaction
+        /// </summary>
+        /// <param name="userId">Id of user</param>
+        /// <param name="file">File from which transactions will be imported</param>
+        /// <returns></returns>
         public async Task ImportFromCsv(Guid userId, string file)
         {
             var reader = new CsvReader(new StringReader(file));
@@ -230,6 +278,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             }
         }
 
+        /// <summary>
+        ///     Returns transaction by it's Id
+        /// </summary>
+        /// <param name="transactionId">Id of transaction</param>
+        /// <param name="userId">Id of user</param>
+        /// <returns>Desired transaction</returns>
         public async Task<TransactionServiceModel> GetTransactionById(Guid transactionId, Guid userId)
         {
             var entity =
@@ -254,6 +308,11 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return model;
         }
 
+        /// <summary>
+        ///     Returns repeatable transaction by first transaction Id
+        /// </summary>
+        /// <param name="transactionId">Id of transaction</param>
+        /// <returns>Desired repeatable transaction</returns>
         public async Task<RepeatableTransaction> GetRepeatableTransactionByFirstTransactionId(Guid transactionId)
         {
             return await
@@ -261,6 +320,11 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     repeatableTransaction => repeatableTransaction.FirstTransaction.Guid == transactionId);
         }
 
+        /// <summary>
+        ///     Returns category by it's Id
+        /// </summary>
+        /// <param name="categoryId">Id of category</param>
+        /// <returns>Desired category</returns>
         public async Task<Category> GetCategoryById(Guid categoryId)
         {
             return
@@ -269,6 +333,11 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         .FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        ///     Returns category by it's name
+        /// </summary>
+        /// <param name="categoryName">Name of Category</param>
+        /// <returns>Desired category</returns>
         public async Task<Category> GetCategoryByName(string categoryName)
         {
             return
@@ -277,6 +346,11 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         .FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        ///     Returns currency by it's Id
+        /// </summary>
+        /// <param name="currencyId">Id of currency</param>
+        /// <returns>Desired currency</returns>
         public async Task<Currency> GetCurrencyById(Guid currencyId)
         {
             return
@@ -285,6 +359,11 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         .FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        ///     Returns currency by it's code
+        /// </summary>
+        /// <param name="currencyCode">Code of currency</param>
+        /// <returns>Desired currency</returns>
         private async Task<Currency> GetCurrencyByCode(string currencyCode)
         {
             return
@@ -293,12 +372,22 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         .FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        ///     Returns budget by it's Id
+        /// </summary>
+        /// <param name="budgetId">Id of budget</param>
+        /// <returns>Desired budget</returns>
         public async Task<Budget> GetBudgetById(Guid budgetId)
         {
             return
                 await this._transactionsProvider.Budgets.Where(budget => budget.Guid == budgetId).FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        ///     Returns budget by it's name
+        /// </summary>
+        /// <param name="budgetName">Name of budget</param>
+        /// <returns>Desired budget</returns>
         public async Task<Budget> GetBudgetByName(string budgetName)
         {
             return
@@ -306,18 +395,35 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     this._transactionsProvider.Budgets.Where(budget => budget.Name == budgetName).FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        ///     Returns all transactions in wallet
+        /// </summary>
+        /// <param name="userId">Id of user</param>
+        /// <param name="walletId">Id of wallet</param>
+        /// <returns>List of all transactions in wallet</returns>
         public async Task<List<TransactionShowServiceModel>> GetAllTransactionsInWallet(Guid userId, Guid walletId)
         {
             var modelList = await this.GetAllTransactionsInWalletLoader(userId, walletId);
             return new List<TransactionShowServiceModel>(modelList);
         }
 
+        /// <summary>
+        ///     Returns all transactions with currency code in wallet
+        /// </summary>
+        /// <param name="userId">Id of user</param>
+        /// <param name="walletId">Id of wallet</param>
+        /// <returns>List of all transactions in wallet</returns>
         public async Task<List<TransactionServiceExportModel>> GetAllTransactionsInWalletWithCurrency(Guid userId,
             Guid walletId)
         {
             return await this.GetAllTransactionsInWalletLoader(userId, walletId);
         }
 
+        /// <summary>
+        ///     Returns default currency in wallet
+        /// </summary>
+        /// <param name="walletId">Id of wallet</param>
+        /// <returns>Desired currency</returns>
         public async Task<Currency> GetDefaultCurrencyInWallet(Guid walletId)
         {
             return
@@ -341,9 +447,10 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         }
 
         /// <summary>
-        ///     Provides selectable list of Categories which are available
+        ///     Provides selectable list of Currencies which are available for specified parameter
         /// </summary>
-        /// <returns>List of SelectListItem for Categories</returns>
+        /// <param name="expense">Bool if categories should be for expense or income</param>
+        /// <returns>List of SelectListItem for Currencies</returns>
         public async Task<List<SelectListItem>> GetCategoriesSelection(bool expense)
         {
             var transactionType = this.GetCategoryType(expense);
@@ -362,6 +469,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return await ReturnSelectionForCategory(this._transactionsProvider.Categories);
         }
 
+        /// <summary>
+        ///     Provides selectable list of all categories with selected category
+        /// </summary>
+        /// <param name="walletId">Id of wallet</param>
+        /// <param name="categoryId">Id of category to be selected</param>
+        /// <returns>List of SelectListItem for Categories</returns>
         public async Task<SelectList> GetCategoriesSelectionFilter(Guid walletId, Guid categoryId)
         {
             var usedCategories = (await this.GetAllTransactionsInWallet(walletId)).GroupBy(
@@ -377,7 +490,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return new SelectList(selectList, "Value", "Text", categoryId);
         }
 
-
+        /// <summary>
+        ///     Returns user permission for wallet
+        /// </summary>
+        /// <param name="userId">Id of user</param>
+        /// <param name="walletId">Id of wallet</param>
+        /// <returns>Access right to wallet</returns>
         public async Task<WalletAccessRight> GetPermission(Guid userId, Guid walletId)
         {
             return await
@@ -390,6 +508,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         /// <summary>
         ///     Provides selectable list of wallets available to user
         /// </summary>
+        /// <param name="userId">Id of user</param>
         /// <returns>List of SelectListItem for Budgets</returns>
         public async Task<List<SelectListItem>> GetAllReadableWalletsSelection(Guid userId)
         {
@@ -408,6 +527,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         .ToListAsync();
         }
 
+        /// <summary>
+        ///     Provides selectable list of all wallets with selected wallet
+        /// </summary>
+        /// <param name="userId">Id of user</param>
+        /// <param name="walletId">Id of wallet</param>
+        /// <returns>List of SelectListItem for Wallet</returns>
         public async Task<SelectList> GetViewableWalletsSelection(Guid userId, Guid walletId)
         {
             return new SelectList(await this.GetAllReadableWalletsSelection(userId), "Value", "Text", walletId);
@@ -416,6 +541,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         /// <summary>
         ///     Provides selectable list of Budgets where can user write transactions
         /// </summary>
+        /// <param name="userId">Id of user</param>
         /// <returns>List of SelectListItem for Budgets</returns>
         public async Task<List<SelectListItem>> GetBudgetsSelection(Guid userId)
         {
@@ -426,13 +552,20 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         /// <summary>
         ///     Provides selectable list of Budgets which can user read
         /// </summary>
+        /// <param name="userId">Id of user</param>
         /// <returns>List of SelectListItem for Budgets</returns>
         public async Task<List<SelectListItem>> GetReadableBudgetsSelection(Guid userId)
         {
             return await this.GetBudgetsSelection(userId, PermissionEnum.Read);
         }
 
-
+        /// <summary>
+        ///     Provides selectable list of all budgets with selected budget
+        /// </summary>
+        /// <param name="userId">Id of user</param>
+        /// <param name="walletId">Id of wallet</param>
+        /// <param name="budgetId">Id of budget to be selected</param>
+        /// <returns>List of SelectListItem for Budgets</returns>
         public async Task<SelectList> GetBudgetsSelectionFilter(Guid userId, Guid walletId, Guid budgetId)
         {
             var allAccessibleBudgetsId = await
@@ -458,6 +591,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return new SelectList(selectList, "Value", "Text", budgetId);
         }
 
+        /// <summary>
+        ///     Loads all transactions in wallet for database
+        /// </summary>
+        /// <param name="userId">Id of user</param>
+        /// <param name="walletId">Id of wallet</param>
+        /// <returns>List of all transactions in wallet</returns>
         private async Task<List<TransactionServiceExportModel>> GetAllTransactionsInWalletLoader(Guid userId,
             Guid walletId)
         {
@@ -479,6 +618,9 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return modelList;
         }
 
+        /// <summary>
+        ///     Map for transaction exportation
+        /// </summary>
         public sealed class TransactionExportMap : CsvClassMap<TransactionServiceExportModel>
         {
             public TransactionExportMap()
@@ -494,11 +636,21 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
 
         #region private
 
+        /// <summary>
+        ///     Returns category type
+        /// </summary>
+        /// <param name="expense">Bool if transaction is expense</param>
+        /// <returns>Desired Category type</returns>
         private CategoryType GetCategoryType(bool expense)
         {
             return expense ? CategoryType.Expense : CategoryType.Income;
         }
 
+        /// <summary>
+        ///     Stores transaction in database and updates converts currency if needed
+        /// </summary>
+        /// <param name="transaction">Transaction to save</param>
+        /// <returns></returns>
         private async Task AddOrUpdate(Transaction transaction)
         {
             var walletCurrency = await this.GetDefaultCurrencyInWallet(transaction.Wallet.Guid);
@@ -511,6 +663,11 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             await this._transactionsProvider.AddOrUpdateAsync(transaction);
         }
 
+        /// <summary>
+        ///     Transforms collection of categories to select list
+        /// </summary>
+        /// <param name="result">Categories to transform</param>
+        /// <returns>List of SelectListItem for Budgets</returns>
         private static async Task<List<SelectListItem>> ReturnSelectionForCategory(IQueryable<Category> result)
         {
             return await result.Select(
@@ -518,6 +675,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 .ToListAsync();
         }
 
+        /// <summary>
+        ///     Provides selectable list of Budgets where has at least specified permission
+        /// </summary>
+        /// <param name="userId">Id of permission</param>
+        /// <param name="minimalPermission">Minimal permission to have</param>
+        /// <returns>List of SelectListItem for Budgets</returns>
         private async Task<List<SelectListItem>> GetBudgetsSelection(Guid userId, PermissionEnum minimalPermission)
         {
             return
@@ -536,6 +699,11 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         .ToListAsync();
         }
 
+        /// <summary>
+        ///     Returns transaction by it's Id
+        /// </summary>
+        /// <param name="transactionId">Id of transaction</param>
+        /// <returns>Desired transaction</returns>
         private async Task<Transaction> GetTransactionById(Guid transactionId)
         {
             return
@@ -544,7 +712,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         .FirstOrDefaultAsync();
         }
 
-        public async Task<List<Transaction>> GetAllTransactionsInWallet(Guid walletId)
+        /// <summary>
+        ///     Returns all transactions in wallet
+        /// </summary>
+        /// <param name="walletId">Id of wallet</param>
+        /// <returns>List of all transactions</returns>
+        private async Task<List<Transaction>> GetAllTransactionsInWallet(Guid walletId)
         {
             return
                 await
@@ -552,6 +725,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         .ToListAsync();
         }
 
+        /// <summary>
+        ///     Returns if user has permission to write for wallet
+        /// </summary>
+        /// <param name="userId">Id of user</param>
+        /// <param name="walletId">Id of wallet</param>
+        /// <returns>True if user can write to wallet or false if not</returns>
         private async Task<bool> HasWritePermission(Guid userId, Guid walletId)
         {
             var permission = await this._walletsProvider.WalletAccessRights
@@ -562,6 +741,12 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return permission != null && permission.Permission != PermissionEnum.Read;
         }
 
+        /// <summary>
+        ///     Fills transaction entity from service model
+        /// </summary>
+        /// <param name="transaction">Transaction service model</param>
+        /// <param name="entity">Transaction to be filled</param>
+        /// <returns>Filled transaction</returns>
         private async Task<Transaction> FillTransaction(TransactionServiceModel transaction, Transaction entity)
         {
             //setting properties from transaction
@@ -593,6 +778,11 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return entity;
         }
 
+        /// <summary>
+        ///     Fills repeatable transaction from service model
+        /// </summary>
+        /// <param name="transaction">Transaction service model</param>
+        /// <param name="entity">Repeatable transaction to be filled</param>
         private void FillRepeatableTransaction(TransactionServiceModel transaction, RepeatableTransaction entity)
         {
             entity.NextRepeat = transaction.NextRepeat.GetValueOrDefault();
@@ -600,8 +790,15 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             entity.LastOccurrence = transaction.LastOccurrence.GetValueOrDefault();
         }
 
+        /// <summary>
+        ///     Updates transaction in database according to transaction service model
+        /// </summary>
+        /// <param name="transaction">Transaction service model</param>
+        /// <param name="repeatableTransaction">Repeatable transaction to be edited</param>
+        /// <param name="firstTransaction">First transaction of repeatable transaction</param>
+        /// <returns></returns>
         private async Task EditRepeatableTransaction(TransactionServiceModel transaction,
-            RepeatableTransaction repeatableTransaction, Transaction transactionEntity)
+            RepeatableTransaction repeatableTransaction, Transaction firstTransaction)
         {
             //check if transaction was also set repeatable in model
             if (repeatableTransaction == null)
@@ -610,7 +807,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 repeatableTransaction = new RepeatableTransaction
                 {
                     Guid = new Guid(),
-                    FirstTransaction = transactionEntity
+                    FirstTransaction = firstTransaction
                 };
                 this.FillRepeatableTransaction(transaction, repeatableTransaction);
                 await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);

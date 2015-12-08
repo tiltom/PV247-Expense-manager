@@ -31,7 +31,7 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         ///     Shows transactions for users Wallet
         /// </summary>
-        /// <returns>View with transaction</returns>
+        /// <returns>View with transactions</returns>
         public async Task<ActionResult> Index(Guid? wallet, Guid? category, Guid? budget, int? page)
         {
             // get Id of currently logged UserProfile from HttpContext
@@ -63,6 +63,11 @@ namespace ExpenseManager.Web.Controllers
                 showModels.OrderByDescending(model => model.Date).ToPagedList(pageNumber, PageSize));
         }
 
+        /// <summary>
+        ///     Provides selection whether transaction is expense or income
+        /// </summary>
+        /// <param name="wallet">Id of wallet where transaction will be added</param>
+        /// <returns>>View with expense or income selection</returns>
         public async Task<ActionResult> ExpenseIncome(Guid? wallet)
         {
             if (wallet == null)
@@ -201,6 +206,11 @@ namespace ExpenseManager.Web.Controllers
             return this.View(transaction);
         }
 
+        /// <summary>
+        ///     Deleting transactions
+        /// </summary>
+        /// <param name="id">Id of transaction</param>
+        /// <returns>View with delete confirmation</returns>
         public async Task<ActionResult> Delete(Guid id)
         {
             var userId = await this.CurrentProfileId();
@@ -227,7 +237,7 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Deleting transactions
+        ///     Deleting transactions confirmation
         /// </summary>
         /// <param name="model">
         ///     TransactionShowModel of transaction to delete<</param>
@@ -258,6 +268,13 @@ namespace ExpenseManager.Web.Controllers
             return this.RedirectToAction("Index", new {wallet = walletId});
         }
 
+        /// <summary>
+        ///     Export of all transactions with specified parameters
+        /// </summary>
+        /// <param name="wallet">Id of wallet</param>
+        /// <param name="category">Id of category</param>
+        /// <param name="budget">Id of budgets</param>
+        /// <returns>File with all transactions</returns>
         public async Task<ActionResult> Export(Guid? wallet, Guid? category, Guid? budget)
         {
             var id = await this.CurrentProfileId();
@@ -273,11 +290,20 @@ namespace ExpenseManager.Web.Controllers
             }
         }
 
+        /// <summary>
+        ///     Import of transaction
+        /// </summary>
+        /// <returns>Import transaction view</returns>
         public ActionResult Import()
         {
             return this.View();
         }
 
+        /// <summary>
+        ///     Importation of uploaded file with transactions
+        /// </summary>
+        /// <param name="file">File to import transactions from</param>
+        /// <returns>Redirect to Index</returns>
         [HttpPost, ActionName("Import")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Import(HttpPostedFileBase file)
@@ -311,6 +337,12 @@ namespace ExpenseManager.Web.Controllers
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        ///     Sets data in drop down lists and if transactions are editable for index view
+        /// </summary>
+        /// <param name="category">Id of category</param>
+        /// <param name="budget">Id of budget</param>
+        /// <param name="walletId">Id of wallet</param>
         private async Task SetIndexViewData(Guid? category, Guid? budget, Guid walletId)
         {
             var id = await this.CurrentProfileId();
