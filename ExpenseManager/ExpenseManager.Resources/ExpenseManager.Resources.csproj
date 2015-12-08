@@ -77,6 +77,11 @@
       <DependentUpon>ManageResource.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RolesAdmin\RolesAdminResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RolesAdminResource.resx</DependentUpon>
+    </Compile>
     <Compile Include="SharedResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -86,6 +91,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TransactionResource.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UsersAdminResources\UsersAdminResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UsersAdminResource.resx</DependentUpon>
     </Compile>
     <Compile Include="WalletResources\WalletAccessRightResource.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -127,6 +137,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ManageResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="RolesAdmin\RolesAdminResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RolesAdminResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="SharedResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>SharedResource.Designer.cs</LastGenOutput>
@@ -135,6 +149,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>TransactionResource.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UsersAdminResources\UsersAdminResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UsersAdminResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="WalletResources\WalletAccessRightResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
