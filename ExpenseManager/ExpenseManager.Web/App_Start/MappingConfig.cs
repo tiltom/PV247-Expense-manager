@@ -30,6 +30,7 @@ namespace ExpenseManager.Web
             RegisterCategoryMappings();
             RegisterTransactionMappings();
             RegisterTransactionServiceMappings();
+            RegisterTransactionServiceExportMappings();
             RegisterDashBoardMappings();
         }
 
@@ -47,7 +48,10 @@ namespace ExpenseManager.Web
                     options => options.MapFrom(entity => entity.Budget == null ? Guid.Empty : entity.Budget.Guid))
                 .ForMember(dto => dto.CurrencyId, options => options.MapFrom(entity => entity.Currency.Guid))
                 .ForMember(dto => dto.CategoryId, options => options.MapFrom(entity => entity.Category.Guid));
+        }
 
+        private static void RegisterTransactionServiceExportMappings()
+        {
             Mapper.CreateMap<Transaction, TransactionServiceExportModel>()
                 .ForMember(dto => dto.Id, options => options.MapFrom(entity => entity.Guid))
                 .ForMember(dto => dto.Amount, options => options.MapFrom(entity => entity.Amount))
