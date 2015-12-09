@@ -16,6 +16,7 @@ using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Resources;
 using ExpenseManager.Resources.TransactionResources;
+using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Transaction;
 using PagedList;
@@ -61,7 +62,7 @@ namespace ExpenseManager.Web.Controllers
             var showModels = Enumerable.Reverse(list.Select(Mapper.Map<TransactionShowModel>)).ToList();
             var pageNumber = (page ?? 1);
             return this.View("Index",
-                showModels.OrderByDescending(model => model.Date).ToPagedList(pageNumber, PageSize));
+                showModels.OrderByDescending(model => model.Date).ToPagedList(pageNumber, SharedConstant.PageSize));
         }
 
         /// <summary>

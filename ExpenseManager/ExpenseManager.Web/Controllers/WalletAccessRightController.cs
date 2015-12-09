@@ -11,6 +11,7 @@ using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Resources;
+using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.WalletAccessRight;
 using PagedList;
@@ -38,7 +39,7 @@ namespace ExpenseManager.Web.Controllers
             var accessRights = await this._walletAccessRightService.GetAccessRightsByWalletOwnerId(id);
             var accessRightModels = accessRights.Select(Mapper.Map<WalletAccessRightModel>);
             var pageNumber = page ?? 1;
-            return this.View(accessRightModels.ToPagedList(pageNumber, PageSize));
+            return this.View(accessRightModels.ToPagedList(pageNumber, SharedConstant.PageSize));
         }
 
         /// <summary>

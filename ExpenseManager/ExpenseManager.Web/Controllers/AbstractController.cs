@@ -11,6 +11,7 @@ using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
+using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -20,19 +21,14 @@ namespace ExpenseManager.Web.Controllers
 {
     public abstract class AbstractController : Controller
     {
-        public const string DateFormat = "dd.MM.yyyy";
-        public const string Error = "Error";
-        public const string Success = "Success";
-        public const int PageSize = 5;
-
         protected void AddSuccess(string message)
         {
-            TempData[Success] = message;
+            TempData[SharedConstant.Success] = message;
         }
 
         protected void AddError(string message)
         {
-            TempData[Error] = message;
+            TempData[SharedConstant.Error] = message;
         }
 
         #region protected
