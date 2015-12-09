@@ -15,7 +15,6 @@
         @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -23,7 +22,6 @@
         @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control datepicker", @Value = Model.StartDate.ToString(AbstractController.DateFormat) })
-            @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -31,7 +29,6 @@
         @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
            @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control datepicker", @Value = Model.EndDate.ToString(AbstractController.DateFormat) })
-            @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -39,7 +36,6 @@
         @Html.LabelFor(model => model.Limit, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.TextBoxFor(model => model.Limit, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Limit, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -47,7 +43,6 @@
         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @rows = 5 })
-            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -57,8 +52,4 @@
         @Html.ActionLink(SharedResource.Cancel, "Index", null, new {@class = "btn btn-danger"})
         </div>
     </div>
-}
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
 }
