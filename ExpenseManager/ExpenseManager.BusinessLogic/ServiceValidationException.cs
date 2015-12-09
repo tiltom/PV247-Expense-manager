@@ -7,8 +7,6 @@ namespace ExpenseManager.BusinessLogic
 {
     public class ServiceValidationException : Exception
     {
-        public Dictionary<string, string> _errors = new Dictionary<string, string>();
-
         public ServiceValidationException()
         {
         }
@@ -16,20 +14,10 @@ namespace ExpenseManager.BusinessLogic
         public ServiceValidationException(IEnumerable<ValidationFailure> errors)
             : base(BuildErrorMesage(errors))
         {
-            foreach (var error in errors)
-            {
-                if (this._errors.ContainsKey(error.PropertyName))
-                {
-                    this._errors[error.PropertyName] =
-                        this._errors[error.PropertyName] +
-                        Environment.NewLine +
-                        error.ErrorMessage;
-                }
-                else
-                {
-                    this._errors.Add(error.PropertyName, error.ErrorMessage);
-                }
-            }
+            errors
+                .GroupBy(error => error.PropertyName)
+                .Select(error => Errors[error.Key] = string.Join(Environment.NewLine,
+                    error.Select(failure => failure.ErrorMessage)));
         }
 
         public ServiceValidationException(string message)
@@ -42,10 +30,7 @@ namespace ExpenseManager.BusinessLogic
         {
         }
 
-        public Dictionary<string, string> Errors
-        {
-            get { return this._errors; }
-        }
+        public Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
 
         private static string BuildErrorMesage(IEnumerable<ValidationFailure> errors)
         {

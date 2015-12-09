@@ -139,7 +139,7 @@ namespace ExpenseManager.Web.Controllers
                     Wallet = new Wallet
                     {
                         Name = "Default Wallet",
-                        Currency = await this.GetDefaultCurrency()
+                        Currency = currency
                     }
                 }
             };
