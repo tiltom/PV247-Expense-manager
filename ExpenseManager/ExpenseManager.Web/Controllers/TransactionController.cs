@@ -14,6 +14,7 @@ using ExpenseManager.BusinessLogic.TransactionServices;
 using ExpenseManager.BusinessLogic.TransactionServices.Models;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Resources;
 using ExpenseManager.Resources.TransactionResources;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Transaction;
@@ -249,7 +250,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // error
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.RedirectToAction("Index");
             }
 

@@ -87,6 +87,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.View(model);
             }
 
@@ -130,8 +131,11 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Register(RegisterWithPasswordViewModel model)
         {
             this.IsCaptchaValid(SharedResource.CaptchaValidationFailed);
-            if (ModelState.IsValid)
-                if (!ModelState.IsValid) return this.View(model);
+            if (!ModelState.IsValid)
+            {
+                this.AddError(SharedResource.ModelStateIsNotValid);
+                return this.View(model);
+            }
 
             var user = await this.CreateUser(model);
             var result = await UserManager.CreateAsync(user, model.Password);

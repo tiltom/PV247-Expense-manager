@@ -115,6 +115,33 @@ namespace ExpenseManager.Resources.BudgetResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Budget {0} was successfully created!.
+        /// </summary>
+        public static string SuccessfullCreation {
+            get {
+                return ResourceManager.GetString("SuccessfullCreation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget {0} was successfully deleted!.
+        /// </summary>
+        public static string SuccessfullDelete {
+            get {
+                return ResourceManager.GetString("SuccessfullDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget {0} was successfully edited!.
+        /// </summary>
+        public static string SuccessfullEdit {
+            get {
+                return ResourceManager.GetString("SuccessfullEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete budget {0}?.
         /// </summary>
         public static string SureOfDelete {

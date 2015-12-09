@@ -11,6 +11,7 @@ using ExpenseManager.BusinessLogic;
 using ExpenseManager.BusinessLogic.BudgetServices;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Resources;
+using ExpenseManager.Resources.BudgetResources;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.BudgetAccessRight;
 using PagedList;
@@ -72,6 +73,7 @@ namespace ExpenseManager.Web.Controllers
             // checking if model is valid
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 model.Permissions = this.GetPermissions();
                 return this.View(model);
             }
@@ -93,6 +95,9 @@ namespace ExpenseManager.Web.Controllers
                 model.Permissions = this.GetPermissions();
                 return this.View(model);
             }
+
+            this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullCreation, model.Permission,
+                model.AssignedUserEmail));
             return this.RedirectToAction("Index", new {id = model.BudgetId});
         }
 
@@ -124,7 +129,10 @@ namespace ExpenseManager.Web.Controllers
         {
             // checking if model is valid
             if (!ModelState.IsValid)
+            {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.View(model);
+            }
 
             try
             {
@@ -139,6 +147,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(model);
             }
 
+            this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullEdit, model.AssignedUserName));
             return this.RedirectToAction("Index", new {id = model.BudgetId});
         }
 
@@ -169,12 +178,14 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // error
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.RedirectToAction("Index", new {id = model.BudgetId});
             }
 
             await this._budgetAccessRightService.DeleteBudgetAccessRight(model.Id);
 
+            this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullDelete, model.Permission,
+                model.AssignedUserName));
             return this.RedirectToAction("Index", new {id = model.BudgetId});
         }
 

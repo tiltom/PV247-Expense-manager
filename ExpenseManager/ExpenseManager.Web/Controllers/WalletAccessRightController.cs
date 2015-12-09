@@ -74,6 +74,7 @@ namespace ExpenseManager.Web.Controllers
             this.IsCaptchaValid(SharedResource.CaptchaValidationFailed);
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 walletAccessRight.Permissions = this.GetPermissions();
                 return this.View(walletAccessRight);
             }
@@ -127,6 +128,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 walletAccessRight.Permissions = this.GetPermissions();
                 return this.View(walletAccessRight);
             }

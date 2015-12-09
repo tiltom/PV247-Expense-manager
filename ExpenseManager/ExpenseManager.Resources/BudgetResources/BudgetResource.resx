@@ -141,4 +141,13 @@
   <data name="SureOfDelete" xml:space="preserve">
     <value>Are you sure you want to delete budget {0}?</value>
   </data>
+  <data name="SuccessfullCreation" xml:space="preserve">
+    <value>Budget {0} was successfully created!</value>
+  </data>
+  <data name="SuccessfullDelete" xml:space="preserve">
+    <value>Budget {0} was successfully deleted!</value>
+  </data>
+  <data name="SuccessfullEdit" xml:space="preserve">
+    <value>Budget {0} was successfully edited!</value>
+  </data>
 </root>

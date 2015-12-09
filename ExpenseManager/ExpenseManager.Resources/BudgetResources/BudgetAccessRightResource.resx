@@ -132,6 +132,15 @@
   <data name="EditBudgetAccessRight" xml:space="preserve">
     <value>Edit budget access right</value>
   </data>
+  <data name="SuccessfullCreation" xml:space="preserve">
+    <value>Access right {0} for user {1} was successfully granted!</value>
+  </data>
+  <data name="SuccessfullDelete" xml:space="preserve">
+    <value>Access right {0} for user {1} was successfully deleted!</value>
+  </data>
+  <data name="SuccessfullEdit" xml:space="preserve">
+    <value>Access right for user {0} was successfully edited!</value>
+  </data>
   <data name="SureOfDelete" xml:space="preserve">
     <value>Are you sure you want to delete access right {0} for user {1}?</value>
   </data>

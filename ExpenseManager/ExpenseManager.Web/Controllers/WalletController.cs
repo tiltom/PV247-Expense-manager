@@ -5,6 +5,7 @@ using AutoMapper.QueryableExtensions;
 using ExpenseManager.BusinessLogic;
 using ExpenseManager.BusinessLogic.WalletServices;
 using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Resources;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Wallet;
 
@@ -50,6 +51,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 wallet.Currencies = await this.GetCurrencies();
                 return this.View(wallet);
             }

@@ -10,6 +10,8 @@ using ExpenseManager.BusinessLogic.BudgetServices;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Resources;
+using ExpenseManager.Resources.BudgetResources;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Budget;
 using PagedList;
@@ -64,7 +66,7 @@ namespace ExpenseManager.Web.Controllers
             // check if model is valid
             if (!ModelState.IsValid)
             {
-                // TODO: add error message to layout and display it here
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.View(model);
             }
 
@@ -104,6 +106,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(model);
             }
 
+            this.AddSuccess(string.Format(BudgetResource.SuccessfullCreation, budget.Name));
             return this.RedirectToAction("Index");
         }
 
@@ -134,9 +137,10 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(EditBudgetModel model)
         {
-            // check if model is valid, if not, return View with it (and error message later)
+            // check if model is valid, if not, return View with it
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.View(model);
             }
 
@@ -154,7 +158,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
 
-            // Add OK message
+            this.AddSuccess(string.Format(BudgetResource.SuccessfullEdit, model.Name));
             return this.RedirectToAction("Index");
         }
 
@@ -181,12 +185,13 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // error 
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.RedirectToAction("Index");
             }
 
             await this._budgetService.DeleteBudget(model.Guid);
 
+            this.AddSuccess(string.Format(BudgetResource.SuccessfullDelete, model.Name));
             return this.RedirectToAction("Index");
         }
     }

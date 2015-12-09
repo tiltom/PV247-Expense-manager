@@ -106,6 +106,33 @@ namespace ExpenseManager.Resources.BudgetResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access right {0} for user {1} was successfully granted!.
+        /// </summary>
+        public static string SuccessfullCreation {
+            get {
+                return ResourceManager.GetString("SuccessfullCreation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access right {0} for user {1} was successfully deleted!.
+        /// </summary>
+        public static string SuccessfullDelete {
+            get {
+                return ResourceManager.GetString("SuccessfullDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access right for user {0} was successfully edited!.
+        /// </summary>
+        public static string SuccessfullEdit {
+            get {
+                return ResourceManager.GetString("SuccessfullEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete access right {0} for user {1}?.
         /// </summary>
         public static string SureOfDelete {

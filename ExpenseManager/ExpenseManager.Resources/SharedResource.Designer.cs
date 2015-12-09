@@ -322,6 +322,15 @@ namespace ExpenseManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Provided model is incorrect, please check data in all your fields again.
+        /// </summary>
+        public static string ModelStateIsNotValid {
+            get {
+                return ResourceManager.GetString("ModelStateIsNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Page {0} of {1}.
         /// </summary>
         public static string Pager {
@@ -408,15 +417,6 @@ namespace ExpenseManager.Resources {
         public static string Success {
             get {
                 return ResourceManager.GetString("Success", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This is some serious error!.
-        /// </summary>
-        public static string TestError {
-            get {
-                return ResourceManager.GetString("TestError", resourceCulture);
             }
         }
         

@@ -9,6 +9,7 @@ using ExpenseManager.BusinessLogic;
 using ExpenseManager.BusinessLogic.CategoryServices;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Resources;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Category;
 
@@ -59,6 +60,7 @@ namespace ExpenseManager.Web.Controllers
             // first, check if model is valid
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 category.Glyphicons = CategoryService.GetGlyphicons();
                 return this.View(category);
             }
@@ -108,6 +110,7 @@ namespace ExpenseManager.Web.Controllers
             // check if model is valid
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 category.Glyphicons = CategoryService.GetGlyphicons();
                 return this.View(category);
             }
@@ -152,7 +155,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // error
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.RedirectToAction("Index");
             }
 

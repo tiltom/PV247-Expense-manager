@@ -9,6 +9,7 @@ using ExpenseManager.Database;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
+using ExpenseManager.Resources;
 using ExpenseManager.Resources.UsersAdminResources;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
@@ -121,6 +122,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 userWithPasswordViewModel.RolesList = await this.GetAllRolesAsync();
                 userWithPasswordViewModel.Currencies = await this.GetCurrencies();
                 return this.View(userWithPasswordViewModel);
@@ -203,7 +205,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", UsersAdminResource.SomethingFailed);
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.View();
             }
 
@@ -272,7 +274,11 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(string id)
         {
-            if (!ModelState.IsValid) return this.View();
+            if (!ModelState.IsValid)
+            {
+                this.AddError(SharedResource.ModelStateIsNotValid);
+                return this.View();
+            }
 
             if (id == null)
             {
