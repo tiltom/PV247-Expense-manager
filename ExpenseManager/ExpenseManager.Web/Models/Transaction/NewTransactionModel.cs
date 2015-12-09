@@ -63,13 +63,13 @@ namespace ExpenseManager.Web.Models.Transaction
         ///     Id of currency which was used for transaction
         /// </summary>
         [Display(Name = "Currency", ResourceType = typeof (SharedResource))]
-        public Guid CurrencyId { get; set; }
+        public Guid? CurrencyId { get; set; }
 
         /// <summary>
         ///     Id of category where transaction belongs
         /// </summary>
         [Display(Name = "Category", ResourceType = typeof (SharedResource))]
-        public Guid CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
 
         /// <summary>
         ///     Bool representing if transaction is repeatable
