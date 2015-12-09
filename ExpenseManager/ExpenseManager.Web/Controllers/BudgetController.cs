@@ -10,6 +10,7 @@ using ExpenseManager.BusinessLogic.BudgetServices;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Entity.Users;
 using ExpenseManager.Resources;
 using ExpenseManager.Resources.BudgetResources;
 using ExpenseManager.Web.Constants;
@@ -79,23 +80,7 @@ namespace ExpenseManager.Web.Controllers
             var creator = await this._budgetService.GetBudgetCreator(userId);
 
             // creating new Budget by filling it from model
-            var budget = new Budget
-            {
-                Name = model.Name,
-                StartDate = model.StartDate,
-                EndDate = model.EndDate,
-                Limit = model.Limit,
-                Description = model.Description ?? string.Empty,
-                AccessRights =
-                    new List<BudgetAccessRight>
-                    {
-                        new BudgetAccessRight
-                        {
-                            Permission = PermissionEnum.Owner,
-                            UserProfile = creator
-                        }
-                    }
-            };
+            var budget = this.NewBudgetInstanceFromNewBudgetModel(model, creator);
 
             // write budget to DB
             try
@@ -196,5 +181,36 @@ namespace ExpenseManager.Web.Controllers
             this.AddSuccess(string.Format(BudgetResource.SuccessfullDelete, model.Name));
             return this.RedirectToAction(SharedConstant.Index);
         }
+
+        #region private
+
+        /// <summary>
+        ///     Creates instance of Budget from NewBudgetModel and UserProfile of creator
+        /// </summary>
+        /// <param name="model">NewBudgetModel instance</param>
+        /// <param name="creator">Creator of the budget</param>
+        /// <returns></returns>
+        private Budget NewBudgetInstanceFromNewBudgetModel(NewBudgetModel model, UserProfile creator)
+        {
+            return new Budget
+            {
+                Name = model.Name,
+                StartDate = model.StartDate,
+                EndDate = model.EndDate,
+                Limit = model.Limit,
+                Description = model.Description ?? string.Empty,
+                AccessRights =
+                    new List<BudgetAccessRight>
+                    {
+                        new BudgetAccessRight
+                        {
+                            Permission = PermissionEnum.Owner,
+                            UserProfile = creator
+                        }
+                    }
+            };
+        }
+
+        #endregion
     }
 }
