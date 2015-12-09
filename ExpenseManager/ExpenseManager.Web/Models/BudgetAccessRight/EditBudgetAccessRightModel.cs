@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using ExpenseManager.Entity;
+using ExpenseManager.Resources;
+using ExpenseManager.Resources.BudgetResources;
 
 namespace ExpenseManager.Web.Models.BudgetAccessRight
 {
@@ -28,7 +30,7 @@ namespace ExpenseManager.Web.Models.BudgetAccessRight
         /// <summary>
         ///     id of the user with this access right
         /// </summary>
-        [Display(Name = "Assigned user")]
+        [Display(Name = "AssignedUser", ResourceType = typeof (BudgetAccessRightResource))]
         [Required]
         public Guid AssignedUserId { get; set; }
 
@@ -41,7 +43,7 @@ namespace ExpenseManager.Web.Models.BudgetAccessRight
         ///     permission level for the user
         /// </summary>
         [Required]
-        [Display(Name = "Permission")]
+        [Display(Name = "Permission", ResourceType = typeof (SharedResource))]
         public PermissionEnum Permission { get; set; }
 
         /// <summary>

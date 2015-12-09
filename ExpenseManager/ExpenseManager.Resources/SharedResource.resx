@@ -210,6 +210,9 @@
   <data name="Pager" xml:space="preserve">
     <value>Page {0} of {1}</value>
   </data>
+  <data name="Permission" xml:space="preserve">
+    <value>Permission</value>
+  </data>
   <data name="Permissions" xml:space="preserve">
     <value>Permissions</value>
   </data>
@@ -239,6 +242,9 @@
   </data>
   <data name="Transactions" xml:space="preserve">
     <value>Transactions</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
   </data>
   <data name="UserEmail" xml:space="preserve">
     <value>User e-mail</value>

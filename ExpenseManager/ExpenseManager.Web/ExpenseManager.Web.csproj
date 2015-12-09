@@ -197,7 +197,8 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Binders\DateModelBinder.cs" />
     <Compile Include="Binders\DecimalModelBinder.cs" />
-    <Compile Include="Constants\SharedConstants.cs" />
+    <Compile Include="Constants\BudgetConstants\BudgetConstant.cs" />
+    <Compile Include="Constants\SharedConstant.cs" />
     <Compile Include="Controllers\AbstractController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BudgetAccessRightController.cs" />

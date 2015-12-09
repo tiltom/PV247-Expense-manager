@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using ExpenseManager.Resources.BudgetResources;
+using ExpenseManager.Web.Constants;
 
 namespace ExpenseManager.Web.Models.Budget
 {
@@ -18,7 +20,7 @@ namespace ExpenseManager.Web.Models.Budget
         ///     name of the budget
         /// </summary>
         [Required]
-        [Display(Name = "Name")]
+        [Display(Name = "Name", ResourceType = typeof (BudgetResource))]
         public string Name { get; set; }
 
         /// <summary>
@@ -26,8 +28,8 @@ namespace ExpenseManager.Web.Models.Budget
         /// </summary>
         [Required]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
-        [Display(Name = "Start date")]
+        [DisplayFormat(DataFormatString = SharedConstant.DateFormatModels)]
+        [Display(Name = "StartDate", ResourceType = typeof (BudgetResource))]
         public DateTime StartDate { get; set; }
 
         /// <summary>
@@ -35,15 +37,15 @@ namespace ExpenseManager.Web.Models.Budget
         /// </summary>
         [Required]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
-        [Display(Name = "End date")]
+        [DisplayFormat(DataFormatString = SharedConstant.DateFormatModels)]
+        [Display(Name = "EndDate", ResourceType = typeof (BudgetResource))]
         public DateTime EndDate { get; set; }
 
         /// <summary>
         ///     Limit of the budget
         /// </summary>
         [Required]
-        [Display(Name = "Limit")]
+        [Display(Name = "Limit", ResourceType = typeof (BudgetResource))]
         public decimal Limit { get; set; }
     }
 }

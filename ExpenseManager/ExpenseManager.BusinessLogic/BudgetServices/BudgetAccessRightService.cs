@@ -88,7 +88,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <param name="assignedUserId">Assigned user's ID</param>
         /// <param name="permission">Permission for right</param>
         /// <returns></returns>
-        public async Task CreateAccessBudgetRight(Guid budgetId, Guid assignedUserId, PermissionEnum permission)
+        public async Task CreateBudgetAccessRight(Guid budgetId, Guid assignedUserId, PermissionEnum permission)
         {
             // find budget by its Id
             var budget = await this.GetBudgetById(budgetId);
@@ -128,7 +128,6 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         public async Task EditBudgetAccessRight(Guid budgetAccessRightId, PermissionEnum permission, Guid userProfileId)
         {
             var accessRightToEdit = await this.GetBudgetAccessRightById(budgetAccessRightId);
-
 
             accessRightToEdit.Permission = permission;
             accessRightToEdit.UserProfile = await this.GetUserProfileById(userProfileId);

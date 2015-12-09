@@ -12,6 +12,8 @@ using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Resources;
 using ExpenseManager.Resources.BudgetResources;
+using ExpenseManager.Web.Constants;
+using ExpenseManager.Web.Constants.BudgetConstants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Budget;
 using PagedList;
@@ -38,9 +40,9 @@ namespace ExpenseManager.Web.Controllers
             var budgets = this._budgetService.GetBudgetsByUserId(userId);
             var budgetShowModels = await budgets.ProjectTo<BudgetShowModel>().ToListAsync();
 
-            var pageNumber = (page ?? 1);
+            var pageNumber = (page ?? SharedConstant.DefaultStartPage);
 
-            return this.View(budgetShowModels.ToPagedList(pageNumber, PageSize));
+            return this.View(budgetShowModels.ToPagedList(pageNumber, SharedConstant.PageSize));
         }
 
         /// <summary>
@@ -107,7 +109,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             this.AddSuccess(string.Format(BudgetResource.SuccessfullCreation, budget.Name));
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction(SharedConstant.Index);
         }
 
         /// <summary>
@@ -157,9 +159,8 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(model);
             }
 
-
             this.AddSuccess(string.Format(BudgetResource.SuccessfullEdit, model.Name));
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction(SharedConstant.Index);
         }
 
         /// <summary>
@@ -179,20 +180,21 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="model">BudgetShowModel of budget to delete</param>
         /// <returns>Redirect to Index</returns>
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName(SharedConstant.Delete)]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed([Bind(Exclude = "StartDate, EndDate")] BudgetShowModel model)
+        public async Task<ActionResult> DeleteConfirmed(
+            [Bind(Exclude = BudgetConstant.DeleteConfirmedExcluding)] BudgetShowModel model)
         {
             if (!ModelState.IsValid)
             {
                 this.AddError(SharedResource.ModelStateIsNotValid);
-                return this.RedirectToAction("Index");
+                return this.RedirectToAction(SharedConstant.Index);
             }
 
             await this._budgetService.DeleteBudget(model.Guid);
 
             this.AddSuccess(string.Format(BudgetResource.SuccessfullDelete, model.Name));
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction(SharedConstant.Index);
         }
     }
 }
