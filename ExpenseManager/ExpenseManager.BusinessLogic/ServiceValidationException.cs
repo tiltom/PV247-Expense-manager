@@ -14,10 +14,19 @@ namespace ExpenseManager.BusinessLogic
         public ServiceValidationException(IEnumerable<ValidationFailure> errors)
             : base(BuildErrorMesage(errors))
         {
-            errors
+            var errorsWithMessages = errors
                 .GroupBy(error => error.PropertyName)
-                .Select(error => Errors[error.Key] = string.Join(Environment.NewLine,
-                    error.Select(failure => failure.ErrorMessage)));
+                .Select(error => new
+                {
+                    PropertyName = error.Key,
+                    ErrorMessage = string.Join(Environment.NewLine,
+                        error.Select(failure => failure.ErrorMessage))
+                });
+
+            foreach (var errorsWithMessage in errorsWithMessages)
+            {
+                Errors[errorsWithMessage.PropertyName] = errorsWithMessage.ErrorMessage;
+            }
         }
 
         public ServiceValidationException(string message)
