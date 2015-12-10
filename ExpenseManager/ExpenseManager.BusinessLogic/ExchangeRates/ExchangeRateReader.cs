@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -127,7 +128,7 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
             {
                 Amount = Convert.ToInt32(fields[2]),
                 Code = fields[3],
-                Rate = Convert.ToDecimal(fields[4])
+                Rate = Convert.ToDecimal(fields[4], new NumberFormatInfo {NumberDecimalSeparator = ","})
             };
         }
 
