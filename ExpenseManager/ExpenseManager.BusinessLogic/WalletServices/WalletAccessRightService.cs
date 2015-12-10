@@ -16,7 +16,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
     /// <summary>
     ///     Class that handles logic of WalletAccessRightController
     /// </summary>
-    public class WalletAccessRightService : ServiceWithWallet, IServiceValidation<WalletAccessRight>
+    public class WalletAccessRightService : ServiceWithWallet
     {
         private readonly CommonService _commonService;
         private readonly WalletAccessRightValidator _validator;

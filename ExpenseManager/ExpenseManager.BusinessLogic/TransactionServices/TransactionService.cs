@@ -31,7 +31,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
     /// <summary>
     ///     Class that handles logic of TransactionController
     /// </summary>
-    public class TransactionService : ServiceWithWallet, IServiceValidation<TransactionServiceModel>
+    public class TransactionService : ServiceWithWallet
     {
         public const string DateFormat = "dd.MM.yyyy";
         private readonly IBudgetsProvider _budgetsProvider;

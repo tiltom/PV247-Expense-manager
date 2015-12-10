@@ -15,7 +15,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
     /// <summary>
     ///     Class that handles logic of BudgetAccessRightController
     /// </summary>
-    public class BudgetAccessRightService : IServiceValidation<BudgetAccessRight>
+    public class BudgetAccessRightService
     {
         private readonly IBudgetsProvider _db;
         private readonly BudgetAccessRightValidator _validator;

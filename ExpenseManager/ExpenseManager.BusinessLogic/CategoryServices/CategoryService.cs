@@ -13,7 +13,7 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
     /// <summary>
     ///     Class that handles logic of CategoryController
     /// </summary>
-    public class CategoryService : IServiceValidation<Category>
+    public class CategoryService
     {
         private readonly ITransactionsProvider _db;
         private readonly CategoryValidator _validator;

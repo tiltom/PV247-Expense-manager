@@ -16,7 +16,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
     /// <summary>
     ///     Class that handles logic of WalletController
     /// </summary>
-    public class WalletService : ServiceWithWallet, IServiceValidation<Wallet>
+    public class WalletService : ServiceWithWallet
     {
         private readonly IWalletsProvider _db;
         private readonly WalletValidator _validator;

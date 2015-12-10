@@ -118,7 +118,6 @@
     <Compile Include="Validators\CategoryValidator.cs" />
     <Compile Include="Validators\CurrencyValidator.cs" />
     <Compile Include="Validators\Extensions\ValidatorExtensions.cs" />
-    <Compile Include="Validators\IServiceValidation.cs" />
     <Compile Include="Validators\TransactionValidator.cs" />
     <Compile Include="Validators\WalletAccessRightValidator.cs" />
     <Compile Include="Validators\WalletValidator.cs" />
