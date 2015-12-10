@@ -157,9 +157,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             //find transaction by Id
             var transactionEntity = await this.GetTransactionById(transaction.Id);
             //update entity properties from DTO
-            await this.FillTransaction(transaction, transactionEntity);
-
-            await this.AddOrUpdate(transactionEntity);
+            await this.AddOrUpdate(await this.FillTransaction(transaction, transactionEntity));
 
             //find if transaction is repeatable in DB
             var repeatableTransaction =
@@ -653,14 +651,15 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         /// <returns></returns>
         private async Task AddOrUpdate(Transaction transaction)
         {
+            this._transactionsProvider.AddModifiedTransaction(transaction);
             var walletCurrency = await this.GetDefaultCurrencyInWallet(transaction.Wallet.Guid);
-
+            var recomputedTransaction = transaction;
             if (transaction.Currency.Name != walletCurrency.Name)
             {
-                Transformation.ChangeCurrency(transaction, walletCurrency);
+                recomputedTransaction = Transformation.ChangeCurrency(transaction, walletCurrency);
             }
 
-            await this._transactionsProvider.AddOrUpdateAsync(transaction);
+            await this._transactionsProvider.AddOrUpdateAsync(recomputedTransaction);
         }
 
         /// <summary>

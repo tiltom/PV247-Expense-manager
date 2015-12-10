@@ -43,6 +43,11 @@ namespace ExpenseManager.Entity.Providers.Factory
             get { return Enumerable.Empty<Transaction>().AsQueryable(); }
         }
 
+        public void AttachTransaction(Transaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
         public IQueryable<UserProfile> UserProfiles
         {
             get { throw new NotImplementedException(); }

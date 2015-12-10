@@ -8,5 +8,7 @@ namespace ExpenseManager.Entity.Providers
         IWalletsProvider, IRepeatableTransactionsProvider, ICurrenciesProvider, IBudgetsProvider
     {
         IQueryable<Transaction> Transactions { get; }
+
+        void AttachTransaction(Transaction transaction);
     }
 }

@@ -22,6 +22,11 @@ namespace ExpenseManager.Database.Contexts
         }
 
         public DbSet<Transaction> Transactions { get; set; }
+        public void AddModifiedTransaction(Transaction transaction)
+        {
+            Transactions.Attach(transaction);
+        }
+
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Budget> Budgets { get; set; }
         public DbSet<Category> Categories { get; set; }
