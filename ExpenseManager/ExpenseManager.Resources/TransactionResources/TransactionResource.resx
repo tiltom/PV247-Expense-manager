@@ -166,7 +166,7 @@
     <value>Expense</value>
   </data>
   <data name="Export" xml:space="preserve">
-    <value>Export</value>
+    <value>Export CSV</value>
   </data>
   <data name="Filter" xml:space="preserve">
     <value>Filter</value>
@@ -178,7 +178,7 @@
     <value>Select Frequency</value>
   </data>
   <data name="Import" xml:space="preserve">
-    <value>Import</value>
+    <value>Import CSV</value>
   </data>
   <data name="Income" xml:space="preserve">
     <value>Income</value>

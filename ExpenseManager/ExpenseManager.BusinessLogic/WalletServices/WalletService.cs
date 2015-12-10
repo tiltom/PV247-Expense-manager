@@ -83,7 +83,14 @@ namespace ExpenseManager.BusinessLogic.WalletServices
             {
                 Transformation.ChangeCurrency(transaction, currency);
             }
-            // TODO change budget limit currency
+            var budgetAccessRights = wallet.WalletAccessRights.Where(right => right.Permission == PermissionEnum.Owner)
+                .SelectMany(right => right.UserProfile.BudgetAccessRights).ToList();
+
+            foreach (var budget in budgetAccessRights.Where(right => right.Permission == PermissionEnum.Owner)
+                .Select(permission => permission.Budget))
+            {
+                Transformation.ChangeCurrency(budget, currency, oldCurrency);
+            }
             await this._db.AddOrUpdateAsync(wallet);
         }
 

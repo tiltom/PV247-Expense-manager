@@ -7,9 +7,15 @@
 }
 @if (ViewBag.editable)
 {
-    <p>
-        @Html.ActionLink(SharedResource.CreateNew, "ExpenseIncome", new {wallet = ViewBag.displayedWalletId }, new { @class = "btn btn-action" })
-    </p>
+    <div class="row" id="actionContainer">
+        <div class="col-md-2">
+            @Html.ActionLink(SharedResource.CreateNew, "ExpenseIncome", new { wallet = ViewBag.displayedWalletId }, new { @class = "btn btn-action" })
+        </div>
+        <div class=" col-md-5" id="csvButtons"   >
+            <a href="@Url.Action("Import")" class="btn btn-action-small"><i class="glyphicon glyphicon-upload"></i> @TransactionResource.Import</a>
+            <a href="@Url.Action("Export", new {wallet = ViewBag.displayedWalletId, category = ViewBag.selectedCategoryId, budget = ViewBag.selectedBudgetId})" class="btn btn-action-small"><i class="glyphicon glyphicon-download"></i> @TransactionResource.Export</a>
+        </div>
+    </div>
 }
 <p>
     @using (Html.BeginForm(SharedResource.Index, "Transaction", FormMethod.Get, new {@class = "form-horizontal"}))
@@ -30,12 +36,12 @@
             <div class="col-md-2">
                 @Html.DropDownList("budget", null, TransactionResource.BudgetSelection, new {@class = "form-control"})
             </div>
-            <div class="col-md-4">
-                <input type="submit" class="btn btn-success" value=@TransactionResource.Filter>
-                @Html.ActionLink(TransactionResource.Import, "Import", null, new { @class = "btn btn-warning" })
-            @Html.ActionLink(TransactionResource.Export, "Export", new { wallet = ViewBag.displayedWalletId, category = ViewBag.selectedCategoryId, budget = ViewBag.selectedBudgetId}, new { @class = "btn btn-danger" })
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-search"></i> @TransactionResource.Filter</button>
+
             </div>
-            
+           
+
         </div>
     }
 

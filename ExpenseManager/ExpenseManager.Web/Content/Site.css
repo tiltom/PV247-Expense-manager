@@ -23,7 +23,7 @@ textarea { max-width: 280px; }
 
 textarea { resize: none; }
 
-.btn-action {
+.btn-action, .btn-action:focus  {
     background: none;
     border: 1px solid #428bca;
     border-radius: 5px;
@@ -35,6 +35,25 @@ textarea { resize: none; }
 }
 
 .btn-action:hover {
+    background-color: #428bca;
+    border-color: #428bca;
+    box-shadow: none;
+    color: white;
+    text-shadow: none;
+}
+
+.btn-action-small, .btn-action-small:focus {
+    background: none;
+    border: 1px solid #428bca;
+    border-radius: 5px;
+    color: #428bca;
+    font-size: 14px;
+    font-weight: 400;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.btn-action-small:hover {
     background-color: #428bca;
     border-color: #428bca;
     box-shadow: none;
@@ -131,4 +150,12 @@ textarea { resize: none; }
     #ExpenseIncome {
         height: 90px;
     }
+}
+
+#actionContainer {
+  display: flex;
+}
+
+#csvButtons {
+  align-self: center;
 }

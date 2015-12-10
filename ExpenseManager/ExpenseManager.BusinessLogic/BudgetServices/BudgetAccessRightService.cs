@@ -155,7 +155,6 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         public async Task DeleteBudgetAccessRight(Guid id)
         {
             var budgetAccessRight = await this.GetBudgetAccessRightById(id);
-            // TODO: add check for permissions
             await this._db.DeteleAsync(budgetAccessRight);
         }
 

@@ -227,7 +227,8 @@ namespace ExpenseManager.Web.Controllers
                         lastName = myInfo.last_name;
                     }
                     ViewBag.ReturnUrl = returnUrl;
-                    ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
+                    this.AddSuccess(string.Format(AccountResource.SuccessfullyAuthenticated,
+                        loginInfo.Login.LoginProvider));
                     return this.View("ExternalLoginConfirmation",
                         new RegisterViewModel
                         {

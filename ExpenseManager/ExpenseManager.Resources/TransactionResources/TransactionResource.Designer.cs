@@ -232,7 +232,7 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export.
+        ///   Looks up a localized string similar to Export CSV.
         /// </summary>
         public static string Export {
             get {
@@ -277,7 +277,7 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import.
+        ///   Looks up a localized string similar to Import CSV.
         /// </summary>
         public static string Import {
             get {
