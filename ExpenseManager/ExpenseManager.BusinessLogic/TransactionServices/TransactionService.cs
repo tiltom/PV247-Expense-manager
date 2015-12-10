@@ -651,7 +651,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         /// <returns></returns>
         private async Task AddOrUpdate(Transaction transaction)
         {
-            this._transactionsProvider.AddModifiedTransaction(transaction);
+            this._transactionsProvider.AttachTransaction(transaction);
             var walletCurrency = await this.GetDefaultCurrencyInWallet(transaction.Wallet.Guid);
             var recomputedTransaction = transaction;
             if (transaction.Currency.Name != walletCurrency.Name)
