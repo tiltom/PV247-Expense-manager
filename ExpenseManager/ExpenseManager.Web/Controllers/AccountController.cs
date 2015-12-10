@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Mvc;
 using CaptchaMvc.HtmlHelpers;
+using ExpenseManager.Database;
 using ExpenseManager.Resources;
 using ExpenseManager.Resources.AccountResources;
 using ExpenseManager.Web.Helpers;
@@ -272,7 +273,7 @@ namespace ExpenseManager.Web.Controllers
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
-                    var userRole = await RoleManager.FindByNameAsync("User");
+                    var userRole = await RoleManager.FindByNameAsync(UserIdentity.UserRole);
                     await UserManager.AddToRoleAsync(user.Id, userRole.Name);
 
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
@@ -284,7 +285,7 @@ namespace ExpenseManager.Web.Controllers
                 }
                 this.AddErrors(result);
             }
-
+            model.Currencies = await this.GetCurrencies();
             ViewBag.ReturnUrl = returnUrl;
             return this.View(model);
         }
