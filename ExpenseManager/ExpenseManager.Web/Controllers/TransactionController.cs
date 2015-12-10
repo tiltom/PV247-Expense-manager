@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -46,17 +45,8 @@ namespace ExpenseManager.Web.Controllers
             var walletId = wallet.Value;
             await this.SetIndexViewData(category, budget, walletId);
             // get all Transactions in selected wallet
-            IEnumerable<TransactionShowServiceModel> list;
-            try
-            {
-                list =
-                    await this._transactionService.GetAllTransactionsInWallet(id, walletId);
-            }
-            catch (SecurityException)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
-                    TransactionResource.PermissionError);
-            }
+            IEnumerable<TransactionShowServiceModel> list =
+                await this._transactionService.GetAllTransactionsInWallet(id, walletId);
             list = TransactionService.FilterTransactions(category, budget, list);
 
             var showModels = Enumerable.Reverse(list.Select(Mapper.Map<TransactionShowModel>)).ToList();
@@ -147,17 +137,7 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             var userId = await this.CurrentProfileId();
-            TransactionServiceModel transaction;
-            try
-            {
-                //find transaction by it's Id
-                transaction = await this._transactionService.GetTransactionById(id, userId);
-            }
-            catch (SecurityException)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
-                    TransactionResource.PermissionErrorEdit);
-            }
+            var transaction = await this._transactionService.GetTransactionById(id, userId);
             if (transaction == null)
             {
                 return this.HttpNotFound();
@@ -209,19 +189,9 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Delete(Guid id)
         {
             var userId = await this.CurrentProfileId();
+            //find transaction by it's Id
+            var transaction = await this._transactionService.GetTransactionById(id, userId);
 
-            TransactionServiceModel transaction;
-
-            try
-            {
-                //find transaction by it's Id
-                transaction = await this._transactionService.GetTransactionById(id, userId);
-            }
-            catch (SecurityException)
-            {
-                //error "You don't have permission to edit this transaction"
-                return this.RedirectToAction("Index");
-            }
             if (transaction == null)
             {
                 //error "Transaction not found"
@@ -247,19 +217,9 @@ namespace ExpenseManager.Web.Controllers
                 this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.RedirectToAction("Index");
             }
+            //removing transaction from DB
+            var walletId = await this._transactionService.RemoveTransaction(await this.CurrentProfileId(), model.Id);
 
-            Guid walletId;
-
-            try
-            {
-                //removing transaction from DB
-                walletId = await this._transactionService.RemoveTransaction(await this.CurrentProfileId(), model.Id);
-            }
-            catch (SecurityException)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
-                    TransactionResource.PermissionErrorDelete);
-            }
             return this.RedirectToAction("Index", new {wallet = walletId});
         }
 
@@ -273,16 +233,8 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> Export(Guid? wallet, Guid? category, Guid? budget)
         {
             var id = await this.CurrentProfileId();
-            try
-            {
-                var file = await this._transactionService.ExportToCsv(id, wallet, category, budget);
-                return this.File(new UTF8Encoding().GetBytes(file), "text/csv", "transactions.csv");
-            }
-            catch (SecurityException)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest,
-                    TransactionResource.PermissionError);
-            }
+            var file = await this._transactionService.ExportToCsv(id, wallet, category, budget);
+            return this.File(new UTF8Encoding().GetBytes(file), "text/csv", "transactions.csv");
         }
 
         /// <summary>

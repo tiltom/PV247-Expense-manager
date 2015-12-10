@@ -205,7 +205,7 @@
     <value>Transactions overview</value>
   </data>
   <data name="PermissionError" xml:space="preserve">
-    <value>You don't have permission to view this wallet</value>
+    <value>You don't have permission to manipulate with this wallet</value>
   </data>
   <data name="PermissionErrorCreate" xml:space="preserve">
     <value>You don't have permission to create transactions in this wallet</value>

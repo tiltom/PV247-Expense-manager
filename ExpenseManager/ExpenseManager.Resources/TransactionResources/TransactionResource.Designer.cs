@@ -358,7 +358,7 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You don&apos;t have permission to view this wallet.
+        ///   Looks up a localized string similar to You don&apos;t have permission to manipulate with this wallet.
         /// </summary>
         public static string PermissionError {
             get {
