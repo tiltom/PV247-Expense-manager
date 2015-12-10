@@ -190,7 +190,7 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         ///     Login to application via external login service
         /// </summary>
-        /// <param name="returnUrl">return URL after sucessful login</param>
+        /// <param name="returnUrl">return URL after successful login</param>
         /// <returns>View</returns>
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
@@ -203,8 +203,9 @@ namespace ExpenseManager.Web.Controllers
 
             // Sign in the UserProfile with this external login provider if the UserProfile already has a login
             var result = await SignInManager.ExternalSignInAsync(loginInfo, false);
-            var firstName = string.Empty;
-            var lastName = string.Empty;
+            var name = loginInfo.ExternalIdentity.Name.Split(new[] {' '}, 2);
+            var firstName = name[0];
+            var lastName = name[1];
             switch (result)
             {
                 case SignInStatus.Success:
@@ -241,6 +242,7 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         ///     Confirm login via external service as Google or FB
         /// </summary>
+        /// 00
         /// <param name="model">RegisterViewModel instance</param>
         /// <param name="returnUrl">return URL after successful login</param>
         /// <returns>View</returns>
