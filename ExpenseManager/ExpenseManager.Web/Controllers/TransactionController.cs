@@ -97,16 +97,15 @@ namespace ExpenseManager.Web.Controllers
             //get default currency for wallet
             var currency = await this._transactionService.GetDefaultCurrencyInWallet(wallet);
             //fill NewTransaction model with needed informations
+            var model = new NewTransactionModel
+            {
+                Expense = expense,
+                WalletId = wallet,
+                CurrencyId = currency.Guid
+            };
+            await this.SetTransactionFormsDropdowns(model);
             return
-                this.View(new NewTransactionModel
-                {
-                    Expense = expense,
-                    WalletId = wallet,
-                    CurrencyId = currency.Guid,
-                    Categories = await this._transactionService.GetCategoriesSelection(expense),
-                    Currencies = await this._transactionService.GetCurrenciesSelection(),
-                    Budgets = await this._transactionService.GetBudgetsSelection(userId)
-                });
+                this.View(model);
         }
 
         /// <summary>
@@ -134,9 +133,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 return this.RedirectToAction("Index", new {wallet = transaction.WalletId});
             }
-            transaction.Currencies = await this._transactionService.GetCurrenciesSelection();
-            transaction.Categories = await this._transactionService.GetCategoriesSelection(transaction.Expense);
-            transaction.Budgets = await this._transactionService.GetBudgetsSelection(await this.CurrentProfileId());
+            await this.SetTransactionFormsDropdowns(transaction);
             return this.View(transaction);
         }
 
@@ -166,10 +163,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.HttpNotFound();
             }
             var model = Mapper.Map<EditTransactionModel>(transaction);
-
-            model.Currencies = await this._transactionService.GetCurrenciesSelection();
-            model.Categories = await this._transactionService.GetCategoriesSelection(model.Expense);
-            model.Budgets = await this._transactionService.GetBudgetsSelection(userId);
+            await this.SetTransactionFormsDropdowns(model);
 
             return this.View(model);
         }
@@ -202,11 +196,10 @@ namespace ExpenseManager.Web.Controllers
             {
                 return this.RedirectToAction("Index", new {wallet = transaction.WalletId});
             }
-            transaction.Currencies = await this._transactionService.GetCurrenciesSelection();
-            transaction.Categories = await this._transactionService.GetCategoriesSelection(transaction.Expense);
-            transaction.Budgets = await this._transactionService.GetBudgetsSelection(await this.CurrentProfileId());
+            await this.SetTransactionFormsDropdowns(transaction);
             return this.View(transaction);
         }
+
 
         /// <summary>
         ///     Deleting transactions
@@ -360,6 +353,13 @@ namespace ExpenseManager.Web.Controllers
             // when user doesn't have permission to manipulate with transaction show view without edit and delete
             ViewBag.editable = (await this._transactionService.GetPermission(id, walletId)).Permission !=
                                PermissionEnum.Read;
+        }
+
+        private async Task SetTransactionFormsDropdowns(NewTransactionModel transaction)
+        {
+            transaction.Currencies = await this._transactionService.GetCurrenciesSelection();
+            transaction.Categories = await this._transactionService.GetCategoriesSelection(transaction.Expense);
+            transaction.Budgets = await this._transactionService.GetBudgetsSelection(await this.CurrentProfileId());
         }
     }
 }
