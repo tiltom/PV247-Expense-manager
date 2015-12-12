@@ -168,6 +168,9 @@
   <data name="Date" xml:space="preserve">
     <value>Date</value>
   </data>
+  <data name="DefaultWallet" xml:space="preserve">
+    <value>Default wallet</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
   </data>
@@ -251,6 +254,9 @@
   </data>
   <data name="UserNotFoundByEmail" xml:space="preserve">
     <value>User with given email not found</value>
+  </data>
+  <data name="ValidationFailed" xml:space="preserve">
+    <value>Validation failed: {0}</value>
   </data>
   <data name="Wallet" xml:space="preserve">
     <value>Wallet</value>

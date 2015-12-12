@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ExpenseManager.Entity.Enums
+﻿namespace ExpenseManager.Entity.Enums
 {
     /// <summary>
     ///     Type of the category
@@ -10,16 +8,16 @@ namespace ExpenseManager.Entity.Enums
         /// <summary>
         ///     Represents category for expenses
         /// </summary>
-        [Display(Name = "Expense")] Expense,
+        Expense,
 
         /// <summary>
         ///     Represents category for incomes
         /// </summary>
-        [Display(Name = "Income")] Income,
+        Income,
 
         /// <summary>
         ///     Represents category for both incomes and expenses
         /// </summary>
-        [Display(Name = "Income and Expense")] IncomeAndExpense
+        IncomeAndExpense
     }
 }

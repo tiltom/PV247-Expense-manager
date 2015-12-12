@@ -16,6 +16,7 @@ using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Resources;
 using ExpenseManager.Resources.TransactionResources;
 using ExpenseManager.Web.Constants;
+using ExpenseManager.Web.Constants.TransactionsConstants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Transaction;
 using PagedList;
@@ -50,8 +51,8 @@ namespace ExpenseManager.Web.Controllers
             list = TransactionService.FilterTransactions(category, budget, list);
 
             var showModels = Enumerable.Reverse(list.Select(Mapper.Map<TransactionShowModel>)).ToList();
-            var pageNumber = (page ?? 1);
-            return this.View("Index",
+            var pageNumber = (page ?? SharedConstant.DefaultStartPage);
+            return this.View(SharedConstant.Index,
                 showModels.OrderByDescending(model => model.Date).ToPagedList(pageNumber, SharedConstant.PageSize));
         }
 
@@ -94,8 +95,8 @@ namespace ExpenseManager.Web.Controllers
                 CurrencyId = currency.Guid
             };
             await this.SetTransactionFormsDropdowns(model);
-            return
-                this.View(model);
+
+            return this.View(model);
         }
 
         /// <summary>
@@ -121,7 +122,7 @@ namespace ExpenseManager.Web.Controllers
             //Check server validation
             if (ModelState.IsValid)
             {
-                return this.RedirectToAction("Index", new {wallet = transaction.WalletId});
+                return this.RedirectToAction(SharedConstant.Index, new {wallet = transaction.WalletId});
             }
             await this.SetTransactionFormsDropdowns(transaction);
             return this.View(transaction);
@@ -142,6 +143,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 return this.HttpNotFound();
             }
+
             var model = Mapper.Map<EditTransactionModel>(transaction);
             await this.SetTransactionFormsDropdowns(model);
 
@@ -174,7 +176,7 @@ namespace ExpenseManager.Web.Controllers
             //check if model is valid
             if (ModelState.IsValid)
             {
-                return this.RedirectToAction("Index", new {wallet = transaction.WalletId});
+                return this.RedirectToAction(SharedConstant.Index, new {wallet = transaction.WalletId});
             }
             await this.SetTransactionFormsDropdowns(transaction);
             return this.View(transaction);
@@ -195,7 +197,7 @@ namespace ExpenseManager.Web.Controllers
             if (transaction == null)
             {
                 //error "Transaction not found"
-                return this.RedirectToAction("Index");
+                return this.RedirectToAction(SharedConstant.Index);
             }
 
             return this.View(Mapper.Map<EditTransactionModel>(transaction));
@@ -208,19 +210,19 @@ namespace ExpenseManager.Web.Controllers
         ///     TransactionShowModel of transaction to delete<</param>
         /// <returns>Redirect to Index</returns>
         // POST: Transactions/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName(SharedConstant.Delete)]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed([Bind(Include = "Id")] TransactionShowModel model)
+        public async Task<ActionResult> DeleteConfirmed([Bind(Include = SharedConstant.Id)] TransactionShowModel model)
         {
             if (!ModelState.IsValid)
             {
                 this.AddError(SharedResource.ModelStateIsNotValid);
-                return this.RedirectToAction("Index");
+                return this.RedirectToAction(SharedConstant.Index);
             }
             //removing transaction from DB
             var walletId = await this._transactionService.RemoveTransaction(await this.CurrentProfileId(), model.Id);
 
-            return this.RedirectToAction("Index", new {wallet = walletId});
+            return this.RedirectToAction(SharedConstant.Index, new {wallet = walletId});
         }
 
         /// <summary>
@@ -234,7 +236,8 @@ namespace ExpenseManager.Web.Controllers
         {
             var id = await this.CurrentProfileId();
             var file = await this._transactionService.ExportToCsv(id, wallet, category, budget);
-            return this.File(new UTF8Encoding().GetBytes(file), "text/csv", "transactions.csv");
+            return this.File(new UTF8Encoding().GetBytes(file), TransactionConstant.TextCsvAbbreviation,
+                TransactionConstant.FileName);
         }
 
         /// <summary>
@@ -251,7 +254,7 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="file">File to import transactions from</param>
         /// <returns>Redirect to Index</returns>
-        [HttpPost, ActionName("Import")]
+        [HttpPost, ActionName(TransactionConstant.Import)]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Import(HttpPostedFileBase file)
         {
@@ -264,12 +267,12 @@ namespace ExpenseManager.Web.Controllers
                     {
                         await this._transactionService.ImportFromCsv(id, reader.ReadToEnd());
                     }
-                    return this.RedirectToAction("Index");
+                    return this.RedirectToAction(SharedConstant.Index);
                 }
             }
             catch (Exception)
             {
-                ModelState.AddModelError("File", TransactionResource.FileFormatError);
+                ModelState.AddModelError(TransactionConstant.File, TransactionResource.FileFormatError);
             }
 
             return this.View();

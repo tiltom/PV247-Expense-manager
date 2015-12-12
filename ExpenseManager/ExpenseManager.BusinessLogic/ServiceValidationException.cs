@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ExpenseManager.BusinessLogic.ServicesConstants;
+using ExpenseManager.Resources;
 using FluentValidation.Results;
 
 namespace ExpenseManager.BusinessLogic
@@ -43,8 +45,8 @@ namespace ExpenseManager.BusinessLogic
 
         private static string BuildErrorMesage(IEnumerable<ValidationFailure> errors)
         {
-            var arr = errors.Select(x => "\r\n -- " + x.ErrorMessage).ToArray();
-            return "Validation failed: " + string.Join("", arr);
+            var arr = errors.Select(error => ValidationConstant.ErrorLineDelimeter + error.ErrorMessage).ToArray();
+            return string.Format(SharedResource.ValidationFailed, string.Join("", arr));
         }
     }
 }

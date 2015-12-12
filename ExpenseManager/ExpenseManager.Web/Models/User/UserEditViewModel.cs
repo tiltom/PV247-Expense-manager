@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using ExpenseManager.Resources.UsersAdminResources;
 
 namespace ExpenseManager.Web.Models.User
 {
@@ -27,13 +27,13 @@ namespace ExpenseManager.Web.Models.User
         ///     First name of user
         /// </summary>
         [Required(AllowEmptyStrings = false)]
-        [DisplayName("First name")]
+        [Display(Name = "FirstName", ResourceType = typeof (UsersAdminResource))]
         public string FirstName { get; set; }
 
         /// <summary>
         ///     Last name of user
         /// </summary>
-        [DisplayName("Last name")]
+        [Display(Name = "LastName", ResourceType = typeof (UsersAdminResource))]
         [Required(AllowEmptyStrings = false)]
         public string LastName { get; set; }
 
@@ -45,7 +45,7 @@ namespace ExpenseManager.Web.Models.User
         /// <summary>
         ///     Selected roles for user
         /// </summary>
-        [DisplayName("Selected roles")]
+        [Display(Name = "SelectedRoles", ResourceType = typeof (UsersAdminResource))]
         public IEnumerable<string> SelectedRoles { get; set; }
     }
 }

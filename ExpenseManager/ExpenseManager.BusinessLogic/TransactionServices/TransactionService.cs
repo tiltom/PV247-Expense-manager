@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -11,6 +12,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using ExpenseManager.BusinessLogic.ExchangeRates;
+using ExpenseManager.BusinessLogic.ServicesConstants;
 using ExpenseManager.BusinessLogic.TransactionServices.Models;
 using ExpenseManager.BusinessLogic.Validators;
 using ExpenseManager.BusinessLogic.Validators.Extensions;
@@ -33,7 +35,6 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
     /// </summary>
     public class TransactionService : ServiceWithWallet
     {
-        public const string DateFormat = "dd.MM.yyyy";
         private readonly IBudgetsProvider _budgetsProvider;
         private readonly ITransactionsProvider _transactionsProvider;
         private readonly TransactionValidator _validator;
@@ -120,30 +121,32 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         public async Task<HttpStatusCodeResult> UpdateRepeatableTransactions()
         {
             var repeatableTransactions = await this._transactionsProvider.RepeatableTransactions.ToListAsync();
-            foreach (var rt in repeatableTransactions)
+            foreach (var repeatableTransaction in repeatableTransactions)
             {
-                var expectedNewOccurance = rt.LastOccurrence.AddDays(rt.NextRepeat);
+                var expectedNewOccurance = repeatableTransaction.LastOccurrence.AddDays(repeatableTransaction.NextRepeat);
 
                 while (expectedNewOccurance.Subtract(DateTime.Today).Days <= 0)
                 {
-                    var transactionToAdd = new Transaction();
-                    transactionToAdd.Amount = rt.FirstTransaction.Amount;
-                    transactionToAdd.Budget = rt.FirstTransaction.Budget;
-                    transactionToAdd.Category = rt.FirstTransaction.Category;
-                    transactionToAdd.Currency = rt.FirstTransaction.Currency;
-                    transactionToAdd.Date = expectedNewOccurance;
-                    transactionToAdd.Description = rt.FirstTransaction.Description;
-                    transactionToAdd.Wallet = rt.FirstTransaction.Wallet;
+                    var transactionToAdd = new Transaction
+                    {
+                        Amount = repeatableTransaction.FirstTransaction.Amount,
+                        Budget = repeatableTransaction.FirstTransaction.Budget,
+                        Category = repeatableTransaction.FirstTransaction.Category,
+                        Currency = repeatableTransaction.FirstTransaction.Currency,
+                        Date = expectedNewOccurance,
+                        Description = repeatableTransaction.FirstTransaction.Description,
+                        Wallet = repeatableTransaction.FirstTransaction.Wallet
+                    };
                     await this._transactionsProvider.AddOrUpdateAsync(transactionToAdd);
 
-                    rt.LastOccurrence = transactionToAdd.Date;
-                    await this._transactionsProvider.AddOrUpdateAsync(rt);
+                    repeatableTransaction.LastOccurrence = transactionToAdd.Date;
+                    await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
 
-                    expectedNewOccurance = expectedNewOccurance.AddDays(rt.NextRepeat);
+                    expectedNewOccurance = expectedNewOccurance.AddDays(repeatableTransaction.NextRepeat);
                 }
             }
 
-            return new HttpStatusCodeResult(200);
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
         /// <summary>
@@ -231,7 +234,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             writer.Configuration.RegisterClassMap<TransactionExportMap>();
             var options = new TypeConverterOptions
             {
-                Format = DateFormat
+                Format = TransactionConstant.DateFormat
             };
             TypeConverterOptionsFactory.AddOptions<DateTime>(options);
             writer.WriteRecords(list);
@@ -259,18 +262,20 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     Amount = reader.GetField<decimal>(SharedResource.Amount),
                     Date = DateTime.Parse(reader.GetField<string>(SharedResource.Date)),
                     Description = reader.GetField<string>(SharedResource.Description),
-                    WalletId = await this.GetWalletIdByUserId(userId)
+                    WalletId = await this.GetWalletIdByUserId(userId),
+                    CurrencyId = (await this.GetCurrencyByCode(currencyCode)).Guid,
+                    CategoryId = (await this.GetCategoryByName(categoryName)).Guid
                 };
-                model.CurrencyId = (await this.GetCurrencyByCode(currencyCode)).Guid;
-                model.CategoryId = (await this.GetCategoryByName(categoryName)).Guid;
+
                 if (budgetName != string.Empty)
                 {
                     model.BudgetId = (await this.GetBudgetByName(budgetName)).Guid;
                 }
+
                 if (model.Amount < 0)
                 {
                     model.Expense = true;
-                    model.Amount *= -1;
+                    model.Amount = Math.Abs(model.Amount);
                 }
                 await this.Create(model);
             }
@@ -485,7 +490,8 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         Value = category.Category.Guid.ToString(),
                         Text = category.Category.Name
                     });
-            return new SelectList(selectList, "Value", "Text", categoryId);
+            return new SelectList(selectList, TransactionConstant.DefaultValue, TransactionConstant.DefaultText,
+                categoryId);
         }
 
         /// <summary>
@@ -533,7 +539,8 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         /// <returns>List of SelectListItem for Wallet</returns>
         public async Task<SelectList> GetViewableWalletsSelection(Guid userId, Guid walletId)
         {
-            return new SelectList(await this.GetAllReadableWalletsSelection(userId), "Value", "Text", walletId);
+            return new SelectList(await this.GetAllReadableWalletsSelection(userId), TransactionConstant.DefaultValue,
+                TransactionConstant.DefaultText, walletId);
         }
 
         /// <summary>
@@ -586,7 +593,8 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                         Value = budget.Budget.Guid.ToString(),
                         Text = budget.Budget.Name
                     }).Distinct();
-            return new SelectList(selectList, "Value", "Text", budgetId);
+            return new SelectList(selectList, TransactionConstant.DefaultValue, TransactionConstant.DefaultText,
+                budgetId);
         }
 
         /// <summary>
@@ -752,7 +760,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             entity.Amount = transaction.Amount;
             if (transaction.Expense)
             {
-                entity.Amount *= -1;
+                entity.Amount = -entity.Amount;
             }
             entity.Date = transaction.Date;
             entity.Description = transaction.Description;

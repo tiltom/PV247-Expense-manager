@@ -130,7 +130,7 @@
     <value>Budget name</value>
   </data>
   <data name="BudgetSelection" xml:space="preserve">
-    <value>Select Budget</value>
+    <value>Select budget</value>
   </data>
   <data name="CategoryError" xml:space="preserve">
     <value>Category field is required</value>
@@ -139,7 +139,7 @@
     <value>Category name</value>
   </data>
   <data name="CategorySelection" xml:space="preserve">
-    <value>Select Category</value>
+    <value>Select category</value>
   </data>
   <data name="ChooseType" xml:space="preserve">
     <value>Choose type of transaction</value>
@@ -148,7 +148,7 @@
     <value>Currency field is required.</value>
   </data>
   <data name="CurrencySelection" xml:space="preserve">
-    <value>Select Currency</value>
+    <value>Select currency</value>
   </data>
   <data name="DateError" xml:space="preserve">
     <value>Date was not in format dd.MM.yyyy</value>

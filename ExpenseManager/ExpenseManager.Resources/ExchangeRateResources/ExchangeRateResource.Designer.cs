@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ExpenseManager.Resources.WalletResources {
+namespace ExpenseManager.Resources.ExchangeRateResources {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace ExpenseManager.Resources.WalletResources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class WalletResource {
+    public class ExchangeRateResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal WalletResource() {
+        internal ExchangeRateResource() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace ExpenseManager.Resources.WalletResources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ExpenseManager.Resources.WalletResources.WalletResource", typeof(WalletResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ExpenseManager.Resources.ExchangeRateResources.ExchangeRateResource", typeof(ExchangeRateResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,56 +61,20 @@ namespace ExpenseManager.Resources.WalletResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit wallet.
+        ///   Looks up a localized string similar to Could not get data!.
         /// </summary>
-        public static string EditWallet {
+        public static string CouldNotGetData {
             get {
-                return ResourceManager.GetString("EditWallet", resourceCulture);
+                return ResourceManager.GetString("CouldNotGetData", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage access rights.
+        ///   Looks up a localized string similar to Reading exchange rates.
         /// </summary>
-        public static string ManageAccessRights {
+        public static string ReadingExchangeRates {
             get {
-                return ResourceManager.GetString("ManageAccessRights", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name can not be empty!.
-        /// </summary>
-        public static string NameNotNullOrEmpty {
-            get {
-                return ResourceManager.GetString("NameNotNullOrEmpty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select currency.
-        /// </summary>
-        public static string SelectCurrency {
-            get {
-                return ResourceManager.GetString("SelectCurrency", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Wallet access rigts.
-        /// </summary>
-        public static string WalletAccessRigts {
-            get {
-                return ResourceManager.GetString("WalletAccessRigts", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Wallet name.
-        /// </summary>
-        public static string WalletName {
-            get {
-                return ResourceManager.GetString("WalletName", resourceCulture);
+                return ResourceManager.GetString("ReadingExchangeRates", resourceCulture);
             }
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using ExpenseManager.Resources;
 using ExpenseManager.Resources.WalletResources;
 
 namespace ExpenseManager.Web.Models.WalletAccessRight
@@ -20,7 +21,7 @@ namespace ExpenseManager.Web.Models.WalletAccessRight
         /// <summary>
         ///     id of the assigned user (selected from dropdown)
         /// </summary>
-        [Display(ResourceType = typeof (WalletAccessRightResource), Name = "User")]
+        [Display(ResourceType = typeof (SharedResource), Name = "User")]
         [Required]
         public Guid AssignedUserId { get; set; }
 

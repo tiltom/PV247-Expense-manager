@@ -5,6 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using ExpenseManager.BusinessLogic.ServicesConstants;
+using ExpenseManager.Resources.ExchangeRateResources;
 
 namespace ExpenseManager.BusinessLogic.ExchangeRates
 {
@@ -13,11 +15,6 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
     /// </summary>
     internal static class ExchangeRateReader
     {
-        private const string BasicUrl =
-            "http://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt?date=";
-
-        private const int DescriptionLinesCount = 2;
-
         private static Lazy<Dictionary<Tuple<string, string>, decimal>> _exchangeRatesTable
             = new Lazy<Dictionary<Tuple<string, string>, decimal>>(PreComputeExchangeRateTable);
 
@@ -52,13 +49,13 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
         /// <returns>List of exchange rate</returns>
         private static List<ExchangeRate> LoadExchangeRates()
         {
-            Debug.WriteLine("Reading exchange rates");
+            Debug.WriteLine(ExchangeRateResource.ReadingExchangeRates);
             var client = new WebClient();
-            var stream = client.OpenRead(BasicUrl + DateTime.Now.ToShortDateString());
+            var stream = client.OpenRead(ExchangeRateConstant.BasicUrl + DateTime.Now.ToShortDateString());
 
             if (stream == null)
             {
-                throw new WebException("Could not get data!");
+                throw new WebException(ExchangeRateResource.CouldNotGetData);
             }
 
             var lines = new List<string>();
@@ -70,7 +67,7 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
                     lines.Add(input);
                 }
             }
-            return lines.Skip(DescriptionLinesCount).Select(GetExchangeRateFromLine).ToList();
+            return lines.Skip(ExchangeRateConstant.DescriptionLinesCount).Select(GetExchangeRateFromLine).ToList();
         }
 
         private static Dictionary<Tuple<string, string>, decimal> PreComputeExchangeRateTable()
@@ -79,7 +76,7 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
             // Add Czech Crown to list, because it was not included in parsed document
             exchangeRates.Add(new ExchangeRate
             {
-                Code = "CZK",
+                Code = ExchangeRateConstant.CzkCurrencyCode,
                 Rate = 1,
                 Amount = 1
             });
@@ -112,7 +109,7 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
         {
             if (fromCurrency.Code == toCurrency.Code)
             {
-                return 1;
+                return ExchangeRateConstant.DefaultExchangeRate;
             }
 
             var czkRate = fromCurrency.Rate/fromCurrency.Amount;
@@ -122,13 +119,18 @@ namespace ExpenseManager.BusinessLogic.ExchangeRates
 
         private static ExchangeRate GetExchangeRateFromLine(string exchangeRateLine)
         {
-            var fields = exchangeRateLine.Split('|');
+            var fields = exchangeRateLine.Split(ExchangeRateConstant.ExchangeRateLineSeparator);
 
             return new ExchangeRate
             {
                 Amount = Convert.ToInt32(fields[2]),
                 Code = fields[3],
-                Rate = Convert.ToDecimal(fields[4], new NumberFormatInfo {NumberDecimalSeparator = ","})
+                Rate =
+                    Convert.ToDecimal(fields[4],
+                        new NumberFormatInfo
+                        {
+                            NumberDecimalSeparator = ExchangeRateConstant.DefaultNumberDecimalSeparator
+                        })
             };
         }
 

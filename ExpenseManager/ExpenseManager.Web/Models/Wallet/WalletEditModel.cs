@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using ExpenseManager.Resources;
+using ExpenseManager.Resources.WalletResources;
 
 namespace ExpenseManager.Web.Models.Wallet
 {
@@ -19,14 +21,14 @@ namespace ExpenseManager.Web.Models.Wallet
         /// <summary>
         ///     Name of the wallet
         /// </summary>
-        [Display(Name = "Wallet Name")]
+        [Display(Name = "WalletName", ResourceType = typeof (WalletResource))]
         [Required]
         public string Name { get; set; }
 
         /// <summary>
         ///     Currency of the wallet
         /// </summary>
-        [Display(Name = "Currency")]
+        [Display(Name = "Currency", ResourceType = typeof (SharedResource))]
         [Required]
         public Guid CurrencyId { get; set; }
 

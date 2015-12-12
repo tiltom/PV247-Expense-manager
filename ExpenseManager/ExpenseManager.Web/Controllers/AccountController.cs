@@ -5,6 +5,9 @@ using CaptchaMvc.HtmlHelpers;
 using ExpenseManager.Database;
 using ExpenseManager.Resources;
 using ExpenseManager.Resources.AccountResources;
+using ExpenseManager.Web.Constants;
+using ExpenseManager.Web.Constants.LoginConstants;
+using ExpenseManager.Web.Constants.UserConstants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Facebook;
@@ -100,7 +103,7 @@ namespace ExpenseManager.Web.Controllers
                 case SignInStatus.Success:
                     return this.RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
-                    return this.View("Lockout");
+                    return this.View(LoginConstant.Lockout);
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", AccountResource.InvalidLoginAttempt);
@@ -146,7 +149,7 @@ namespace ExpenseManager.Web.Controllers
                 var userRole = await RoleManager.FindByNameAsync("User");
                 await UserManager.AddToRoleAsync(user.Id, userRole.Name);
 
-                return this.RedirectToAction("Index", "DashBoard");
+                return this.RedirectToAction(SharedConstant.Index, SharedConstant.DashBoard);
             }
             this.AddErrors(result);
             model.Currencies = await this.GetCurrencies();
@@ -166,10 +169,10 @@ namespace ExpenseManager.Web.Controllers
         {
             if (userId == null || code == null)
             {
-                return this.View("Error");
+                return this.View(SharedConstant.Error);
             }
             var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return this.View(result.Succeeded ? "ConfirmEmail" : "Error");
+            return this.View(result.Succeeded ? LoginConstant.ConfirmEmail : SharedConstant.Error);
         }
 
         /// <summary>
@@ -185,7 +188,7 @@ namespace ExpenseManager.Web.Controllers
         {
             // Request a redirect to the external login provider
             return new ChallengeResult(provider,
-                Url.Action("ExternalLoginCallback", "Account", new {ReturnUrl = returnUrl}));
+                Url.Action(LoginConstant.ExternalLoginCallback, LoginConstant.Account, new {ReturnUrl = returnUrl}));
         }
 
         /// <summary>
@@ -199,7 +202,7 @@ namespace ExpenseManager.Web.Controllers
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
-                return this.RedirectToAction("Login");
+                return this.RedirectToAction(LoginConstant.Login);
             }
 
             // Sign in the UserProfile with this external login provider if the UserProfile already has a login
@@ -212,16 +215,15 @@ namespace ExpenseManager.Web.Controllers
                 case SignInStatus.Success:
                     return this.RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
-                    return this.View("Lockout");
-                case SignInStatus.Failure:
+                    return this.View(LoginConstant.Lockout);
                 default:
                     // If the UserProfile does not have an account, then prompt the UserProfile to create an account
-                    if (loginInfo.Login.LoginProvider == "Facebook")
+                    if (loginInfo.Login.LoginProvider == LoginConstant.Facebook)
                     {
                         var identity =
                             AuthenticationManager.GetExternalIdentity(DefaultAuthenticationTypes.ExternalCookie);
-                        var access_token = identity.FindFirstValue("FacebookAccessToken");
-                        var fb = new FacebookClient(access_token);
+                        var accessToken = identity.FindFirstValue(LoginConstant.FacebookAccessToken);
+                        var fb = new FacebookClient(accessToken);
                         dynamic myInfo = fb.Get("me?fields=first_name, email, last_name"); // specify the email field
                         loginInfo.Email = myInfo.email;
                         firstName = myInfo.first_name;
@@ -230,7 +232,7 @@ namespace ExpenseManager.Web.Controllers
                     ViewBag.ReturnUrl = returnUrl;
                     this.AddSuccess(string.Format(AccountResource.SuccessfullyAuthenticated,
                         loginInfo.Login.LoginProvider));
-                    return this.View("ExternalLoginConfirmation",
+                    return this.View(LoginConstant.ExternalLoginConfirmation,
                         new RegisterViewModel
                         {
                             FirstName = firstName,
@@ -244,7 +246,6 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         ///     Confirm login via external service as Google or FB
         /// </summary>
-        /// 00
         /// <param name="model">RegisterViewModel instance</param>
         /// <param name="returnUrl">return URL after successful login</param>
         /// <returns>View</returns>
@@ -256,7 +257,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return this.RedirectToAction("Index", "Manage");
+                return this.RedirectToAction(SharedConstant.Index, LoginConstant.Manage);
             }
 
             if (ModelState.IsValid)
@@ -265,7 +266,7 @@ namespace ExpenseManager.Web.Controllers
                 var info = await AuthenticationManager.GetExternalLoginInfoAsync();
                 if (info == null)
                 {
-                    return this.View("ExternalLoginFailure");
+                    return this.View(LoginConstant.ExternalLoginFailure);
                 }
 
                 var user = await this.CreateUser(model);
@@ -300,7 +301,7 @@ namespace ExpenseManager.Web.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return this.RedirectToAction("Index", "DashBoard");
+            return this.RedirectToAction(SharedConstant.Index, SharedConstant.DashBoard);
         }
 
         /// <summary>
@@ -341,9 +342,6 @@ namespace ExpenseManager.Web.Controllers
 
         #region Helpers
 
-        // Used for XSRF protection when adding external logins
-        private const string XsrfKey = "XsrfId";
-
         private IAuthenticationManager AuthenticationManager
         {
             get { return HttpContext.GetOwinContext().Authentication; }
@@ -363,7 +361,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 return this.Redirect(returnUrl);
             }
-            return this.RedirectToAction("Index", "DashBoard");
+            return this.RedirectToAction(SharedConstant.Index, SharedConstant.DashBoard);
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult
@@ -389,7 +387,7 @@ namespace ExpenseManager.Web.Controllers
                 var properties = new AuthenticationProperties {RedirectUri = RedirectUri};
                 if (UserId != null)
                 {
-                    properties.Dictionary[XsrfKey] = UserId;
+                    properties.Dictionary[LoginConstant.XsrfKey] = UserId;
                 }
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }

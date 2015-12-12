@@ -55,10 +55,10 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         {
             return
                 this._db.WalletAccessRights.Where(
-                    war => war.Permission == PermissionEnum.Owner
-                           && war.UserProfile.Guid == id
+                    right => right.Permission == PermissionEnum.Owner
+                             && right.UserProfile.Guid == id
                     )
-                    .Select(war => war.Wallet);
+                    .Select(right => right.Wallet);
         }
 
 
@@ -107,7 +107,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
 
         private async Task<Currency> GetCurrencyById(Guid id)
         {
-            return await this._db.Currencies.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
+            return await this._db.Currencies.Where(currency => currency.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
         #endregion

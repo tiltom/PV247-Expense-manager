@@ -6,6 +6,7 @@ using ExpenseManager.BusinessLogic.DashboardServices;
 using ExpenseManager.BusinessLogic.DashboardServices.Models;
 using ExpenseManager.BusinessLogic.TransactionServices;
 using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Models.HomePage;
 
 namespace ExpenseManager.Web.Controllers
@@ -28,7 +29,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return this.View("Index", await this.ProcessFilter(new FilterDataModel()));
+                return this.View(SharedConstant.Index, await this.ProcessFilter(new FilterDataModel()));
             }
             return this.View();
         }
@@ -42,7 +43,7 @@ namespace ExpenseManager.Web.Controllers
         [Authorize]
         public async Task<ViewResult> IndexWithFilter(FilterDataModel filter)
         {
-            return this.View("Index", await this.ProcessFilter(filter));
+            return this.View(SharedConstant.Index, await this.ProcessFilter(filter));
         }
 
         private async Task<DashBoardModel> ProcessFilter(FilterDataModel filter)
@@ -62,7 +63,6 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         ///     Action for adding new repeatable transactions
         /// </summary>
-        /// <param name="id"></param>
         /// <returns>View with model</returns>
         // GET: Home/UpdateRepeatable
         public async Task<ActionResult> UpdateRepeatable()

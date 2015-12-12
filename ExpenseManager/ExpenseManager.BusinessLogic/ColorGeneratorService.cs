@@ -1,4 +1,5 @@
 ﻿using System;
+using ExpenseManager.BusinessLogic.ServicesConstants;
 
 namespace ExpenseManager.BusinessLogic
 {
@@ -7,16 +8,6 @@ namespace ExpenseManager.BusinessLogic
     /// </summary>
     public class ColorGeneratorService
     {
-        public const string White = "#FFFFFF";
-        public const string Black = "#000000";
-        public const string Transparent = "rgba(0,0,0,0)";
-
-
-        private static readonly string[] ColourValues =
-        {
-            "#727272", "#f1595f", "#79c36a", "#599ad3", "#f9a65a", "#9e66ab", "#cd7058", "#d77fb3"
-        };
-
         private int _index;
 
         /// <summary>
@@ -29,12 +20,12 @@ namespace ExpenseManager.BusinessLogic
             var normalizedIndex = 1;
             if (index != int.MinValue)
             {
-                normalizedIndex = Math.Abs(index)%ColourValues.Length;
+                normalizedIndex = Math.Abs(index)%ColorGeneratorConstants.ColourValues.Length;
             }
 
             // make number in range of array (currently used for color generation)
 
-            return ColourValues[normalizedIndex];
+            return ColorGeneratorConstants.ColourValues[normalizedIndex];
         }
 
         /// <summary>
@@ -43,11 +34,11 @@ namespace ExpenseManager.BusinessLogic
         /// <returns>code of color in #RRGGBB format</returns>
         public string GenerateColor()
         {
-            if (this._index >= ColourValues.Length)
+            if (this._index >= ColorGeneratorConstants.ColourValues.Length)
             {
                 this._index = 0;
             }
-            return ColourValues[this._index++];
+            return ColorGeneratorConstants.ColourValues[this._index++];
         }
     }
 }

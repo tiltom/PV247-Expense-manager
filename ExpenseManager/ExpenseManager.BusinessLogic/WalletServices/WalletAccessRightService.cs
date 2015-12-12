@@ -74,10 +74,10 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         {
             return await this._wallets.Wallets
                 .Where(
-                    w =>
-                        w.WalletAccessRights.Any(
-                            war => war.UserProfile.Guid == id && war.Permission == PermissionEnum.Owner))
-                .Select(w => w.Guid)
+                    wallet =>
+                        wallet.WalletAccessRights.Any(
+                            right => right.UserProfile.Guid == id && right.Permission == PermissionEnum.Owner))
+                .Select(wallet => wallet.Guid)
                 .FirstOrDefaultAsync();
         }
 
@@ -88,7 +88,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         /// <returns>Desired wallet access right</returns>
         public async Task<WalletAccessRight> GetWalletAccessRightById(Guid id)
         {
-            return await this._wallets.WalletAccessRights.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
+            return await this._wallets.WalletAccessRights.Where(right => right.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         /// <returns>Desired user profile</returns>
         public async Task<UserProfile> GetUserProfileById(Guid id)
         {
-            return await this._wallets.UserProfiles.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
+            return await this._wallets.UserProfiles.Where(profile => profile.Guid.Equals(id)).FirstOrDefaultAsync();
         }
     }
 }

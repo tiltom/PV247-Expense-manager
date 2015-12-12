@@ -68,7 +68,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <returns>Desired budget</returns>
         private async Task<Budget> GetBudgetById(Guid id)
         {
-            return await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
+            return await this._db.Budgets.Where(budget => budget.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <returns>Desired budget access right</returns>
         public async Task<BudgetAccessRight> GetBudgetAccessRightById(Guid id)
         {
-            return await this._db.BudgetAccessRights.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
+            return await this._db.BudgetAccessRights.Where(right => right.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <returns>Desired user profile</returns>
         public async Task<UserProfile> GetUserProfileById(Guid id)
         {
-            return await this._db.UserProfiles.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
+            return await this._db.UserProfiles.Where(profile => profile.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -168,15 +168,15 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         {
             return this._db.UserProfiles
                 .Where(
-                    u => // filtering users which don't have owner permission or other permissions
-                        u.BudgetAccessRights.All(war => !users.Contains(u.Guid)));
+                    profile => // filtering users which don't have owner permission or other permissions
+                        profile.BudgetAccessRights.All(right => !users.Contains(profile.Guid)));
         }
 
         #region private
 
         private ICollection<BudgetAccessRight> GetBudgetAccessRightsByBudget(Guid id)
         {
-            return this._db.Budgets.FirstOrDefault(x => x.Guid.Equals(id)).AccessRights;
+            return this._db.Budgets.FirstOrDefault(budget => budget.Guid.Equals(id)).AccessRights;
         }
 
         #endregion

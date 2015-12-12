@@ -115,7 +115,7 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Budget.
+        ///   Looks up a localized string similar to Select budget.
         /// </summary>
         public static string BudgetSelection {
             get {
@@ -142,7 +142,7 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Category.
+        ///   Looks up a localized string similar to Select category.
         /// </summary>
         public static string CategorySelection {
             get {
@@ -178,7 +178,7 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Currency.
+        ///   Looks up a localized string similar to Select currency.
         /// </summary>
         public static string CurrencySelection {
             get {

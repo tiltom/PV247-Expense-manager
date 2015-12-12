@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using ExpenseManager.Resources;
+using ExpenseManager.Web.Constants;
 
 namespace ExpenseManager.Web.Models.Transaction
 {
@@ -27,7 +28,7 @@ namespace ExpenseManager.Web.Models.Transaction
         /// </summary>
         [Required]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
+        [DisplayFormat(DataFormatString = SharedConstant.DateFormatModels)]
         [Display(Name = "Date", ResourceType = typeof (SharedResource))]
         public DateTime Date { get; set; }
 

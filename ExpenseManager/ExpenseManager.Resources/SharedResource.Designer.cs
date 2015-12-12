@@ -214,6 +214,15 @@ namespace ExpenseManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default wallet.
+        /// </summary>
+        public static string DefaultWallet {
+            get {
+                return ResourceManager.GetString("DefaultWallet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string Delete {
@@ -462,6 +471,15 @@ namespace ExpenseManager.Resources {
         public static string UserNotFoundByEmail {
             get {
                 return ResourceManager.GetString("UserNotFoundByEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation failed: {0}.
+        /// </summary>
+        public static string ValidationFailed {
+            get {
+                return ResourceManager.GetString("ValidationFailed", resourceCulture);
             }
         }
         

@@ -8,6 +8,7 @@ using Chart.Mvc.ComplexChart;
 using Chart.Mvc.SimpleChart;
 using ExpenseManager.BusinessLogic.DashboardServices.Models;
 using ExpenseManager.BusinessLogic.ExchangeRates;
+using ExpenseManager.BusinessLogic.ServicesConstants;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Queryable;
@@ -51,9 +52,9 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
         {
             return
                 this._transactionsProvider.Transactions
-                    .Where(t =>
-                        (t.Wallet.WalletAccessRights.Any(war => war.UserProfile.Guid == userId) ||
-                         t.Budget.AccessRights.Any(bar => bar.UserProfile.Guid == userId))
+                    .Where(transaction =>
+                        (transaction.Wallet.WalletAccessRights.Any(right => right.UserProfile.Guid == userId) ||
+                         transaction.Budget.AccessRights.Any(right => right.UserProfile.Guid == userId))
                     );
         }
 
@@ -66,10 +67,11 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
         {
             return await
                 this._transactionsProvider.Wallets.Where(
-                    w => w.WalletAccessRights.Any(war => war.UserProfile.Guid == userId)).Select(w => new SelectListItem
+                    w => w.WalletAccessRights.Any(right => right.UserProfile.Guid == userId))
+                    .Select(wallet => new SelectListItem
                     {
-                        Value = w.Guid.ToString(),
-                        Text = w.Name
+                        Value = wallet.Guid.ToString(),
+                        Text = wallet.Name
                     }).ToListAsync();
         }
 
@@ -84,14 +86,14 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
             Currency currency)
         {
             var data = await collection.ToListAsync();
-            return data.Select(t => Transformation.ChangeCurrencyForNewTransaction(t, currency))
-                .GroupBy(t => t.Category.Name)
+            return data.Select(transaction => Transformation.ChangeCurrencyForNewTransaction(transaction, currency))
+                .GroupBy(transaction => transaction.Category.Name)
                 .Select(
-                    x =>
+                    group =>
                         new SimpleGraphModel
                         {
-                            Label = x.Key,
-                            Value = x.Sum(f => Math.Abs(f.Amount))
+                            Label = group.Key,
+                            Value = group.Sum(transaction => Math.Abs(transaction.Amount))
                         })
                 .ToList();
         }
@@ -107,15 +109,16 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
             Currency currency)
         {
             var data = await collection.ToListAsync();
-            var result = data.Select(t => Transformation.ChangeCurrencyForNewTransaction(t, currency))
-                .GroupBy(t => new {t.Date.Month, t.Date.Year}).Select(
-                    x =>
-                        new SimpleGraphModel
-                        {
-                            Label = x.Key.Month + DashBoardResource.MonthDelimiter + x.Key.Year,
-                            Value = x.Sum(f => f.Amount)
-                        })
-                .ToList();
+            var result =
+                data.Select(transaction => Transformation.ChangeCurrencyForNewTransaction(transaction, currency))
+                    .GroupBy(transaction => new {transaction.Date.Month, transaction.Date.Year}).Select(
+                        group =>
+                            new SimpleGraphModel
+                            {
+                                Label = group.Key.Month + DashBoardResource.MonthDelimiter + group.Key.Year,
+                                Value = group.Sum(transaction => transaction.Amount)
+                            })
+                    .ToList();
             return new GraphWithDescriptionModel {Description = DashBoardResource.LastYearReport, GraphData = result};
         }
 
@@ -131,14 +134,14 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
         {
             var data = await collection.ToListAsync();
             var result =
-                data.Select(t => Transformation.ChangeCurrencyForNewTransaction(t, currency))
-                    .GroupBy(t => new {t.Date.Day, t.Date.Month})
+                data.Select(transaction => Transformation.ChangeCurrencyForNewTransaction(transaction, currency))
+                    .GroupBy(transaction => new {transaction.Date.Day, transaction.Date.Month})
                     .Select(
-                        x =>
+                        group =>
                             new SimpleGraphModel
                             {
-                                Label = x.Key.Day + DashBoardResource.MonthDelimiter + x.Key.Month,
-                                Value = x.Sum(f => f.Amount)
+                                Label = group.Key.Day + DashBoardResource.MonthDelimiter + group.Key.Month,
+                                Value = group.Sum(transaction => transaction.Amount)
                             })
                     .ToList();
             return new GraphWithDescriptionModel {Description = DashBoardResource.LastMonthReport, GraphData = result};
@@ -158,9 +161,13 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
             var resultYear = this.FilterTransactions(mappedFilter.WithYearFilterValues(), userId);
             // prepare data for graphs
             var categoriesExpense =
-                await this.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount < 0), userWallet.Currency);
+                await
+                    this.GetWrapperValuesForCategories(resultMonth.Where(transaction => transaction.Amount < 0),
+                        userWallet.Currency);
             var categoriesIncome =
-                await this.GetWrapperValuesForCategories(resultMonth.Where(t => t.Amount >= 0), userWallet.Currency);
+                await
+                    this.GetWrapperValuesForCategories(resultMonth.Where(transaction => transaction.Amount >= 0),
+                        userWallet.Currency);
             var monthSummary = await this.GetGraphForDaysLastMonth(resultMonth, userWallet.Currency);
             var yearSummary = await this.GetGraphForMonthLastYear(resultYear, userWallet.Currency);
             // generate charts
@@ -188,11 +195,11 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
         {
             return this.GetAccessibleResults(currentUser)
                 .Where(
-                    t =>
-                        t.Date <= filter.EndDate && t.Date >= filter.StartDate
-                        && (!filter.Budgets.Any() || filter.Budgets.Contains(t.Budget.Guid))
-                        && (!filter.Wallets.Any() || filter.Wallets.Contains(t.Wallet.Guid))
-                        && (!filter.Categories.Any() || filter.Categories.Contains(t.Category.Guid))
+                    transaction =>
+                        transaction.Date <= filter.EndDate && transaction.Date >= filter.StartDate
+                        && (!filter.Budgets.Any() || filter.Budgets.Contains(transaction.Budget.Guid))
+                        && (!filter.Wallets.Any() || filter.Wallets.Contains(transaction.Wallet.Guid))
+                        && (!filter.Categories.Any() || filter.Categories.Contains(transaction.Category.Guid))
                 );
         }
 
@@ -201,7 +208,7 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
             var lastTransactions =
                 await
                     this.GetAccessibleResults(userId)
-                        .OrderByDescending(t => t.Date)
+                        .OrderByDescending(transaction => transaction.Date)
                         .Take(NumberOfTransactionsOnDashBoard)
                         .ToListAsync();
             return lastTransactions;
@@ -219,19 +226,19 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
             {
                 ComplexData =
                 {
-                    Labels = data.GraphData.Select(t => t.Label).ToList(),
+                    Labels = data.GraphData.Select(graphData => graphData.Label).ToList(),
                     Datasets = new List<ComplexDataset>
                     {
                         new ComplexDataset
                         {
                             Data = data.GraphData.Select(t => Convert.ToDouble(t.Value)).ToList(),
                             Label = data.Description,
-                            FillColor = ColorGeneratorService.Transparent,
+                            FillColor = ColorGeneratorConstants.Transparent,
                             StrokeColor = this._colorGenerator.GenerateColor(),
-                            PointColor = ColorGeneratorService.Black,
-                            PointStrokeColor = ColorGeneratorService.White,
-                            PointHighlightFill = ColorGeneratorService.White,
-                            PointHighlightStroke = ColorGeneratorService.Black
+                            PointColor = ColorGeneratorConstants.Black,
+                            PointStrokeColor = ColorGeneratorConstants.White,
+                            PointHighlightFill = ColorGeneratorConstants.White,
+                            PointHighlightStroke = ColorGeneratorConstants.Black
                         }
                     }
                 }
@@ -250,16 +257,16 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
             {
                 return null;
             }
-            var sum = result.Sum(t => t.Value);
+            var sum = result.Sum(model => model.Value);
             return new PieChart
             {
                 Data = result.Select(
-                    t =>
+                    model =>
                         new SimpleData
                         {
-                            Label = t.Label,
+                            Label = model.Label,
                             // compute part in percents and with two decimal
-                            Value = Math.Round(Math.Abs(Convert.ToDouble(100*t.Value/sum)), 2),
+                            Value = Math.Round(Math.Abs(Convert.ToDouble(100*model.Value/sum)), 2),
                             Color = this._colorGenerator.GenerateColor()
                         }).ToList()
             };

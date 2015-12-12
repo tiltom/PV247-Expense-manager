@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using ExpenseManager.Resources.ManageResources;
+using ExpenseManager.Web.Constants;
+using ExpenseManager.Web.Constants.LoginConstants;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -108,7 +110,7 @@ namespace ExpenseManager.Web.Controllers
             {
                 message = ManageMessageId.Error;
             }
-            return this.RedirectToAction("ManageLogins", new {Message = message});
+            return this.RedirectToAction(LoginConstant.ManageLogins, new {Message = message});
         }
 
         /// <summary>
@@ -142,7 +144,7 @@ namespace ExpenseManager.Web.Controllers
                 {
                     await SignInManager.SignInAsync(user, false, false);
                 }
-                return this.RedirectToAction("Index", new {Message = ManageMessageId.ChangePasswordSuccess});
+                return this.RedirectToAction(SharedConstant.Index, new {Message = ManageMessageId.ChangePasswordSuccess});
             }
             this.AddErrors(result);
             return this.View(model);
@@ -176,7 +178,8 @@ namespace ExpenseManager.Web.Controllers
                     {
                         await SignInManager.SignInAsync(user, false, false);
                     }
-                    return this.RedirectToAction("Index", new {Message = ManageMessageId.SetPasswordSuccess});
+                    return this.RedirectToAction(SharedConstant.Index,
+                        new {Message = ManageMessageId.SetPasswordSuccess});
                 }
                 this.AddErrors(result);
             }
@@ -201,7 +204,7 @@ namespace ExpenseManager.Web.Controllers
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
             if (user == null)
             {
-                return this.View("Error");
+                return this.View(SharedConstant.Error);
             }
             var userLogins = await UserManager.GetLoginsAsync(User.Identity.GetUserId());
             var otherLogins =
@@ -226,7 +229,8 @@ namespace ExpenseManager.Web.Controllers
         public ActionResult LinkLogin(string provider)
         {
             // Request a redirect to the external login provider to link a login for the current UserProfile
-            return new AccountController.ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"),
+            return new AccountController.ChallengeResult(provider,
+                Url.Action(LoginConstant.LinkLoginCallback, LoginConstant.Manage),
                 User.Identity.GetUserId());
         }
 
@@ -236,15 +240,16 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View</returns>
         public async Task<ActionResult> LinkLoginCallback()
         {
-            var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, User.Identity.GetUserId());
+            var loginInfo =
+                await AuthenticationManager.GetExternalLoginInfoAsync(LoginConstant.XsrfKey, User.Identity.GetUserId());
             if (loginInfo == null)
             {
-                return this.RedirectToAction("ManageLogins", new {Message = ManageMessageId.Error});
+                return this.RedirectToAction(LoginConstant.ManageLogins, new {Message = ManageMessageId.Error});
             }
             var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
             return result.Succeeded
-                ? this.RedirectToAction("ManageLogins")
-                : this.RedirectToAction("ManageLogins", new {Message = ManageMessageId.Error});
+                ? this.RedirectToAction(LoginConstant.ManageLogins)
+                : this.RedirectToAction(LoginConstant.ManageLogins, new {Message = ManageMessageId.Error});
         }
 
         protected override void Dispose(bool disposing)
@@ -259,9 +264,6 @@ namespace ExpenseManager.Web.Controllers
         }
 
         #region Helpers
-
-        // Used for XSRF protection when adding external logins
-        private const string XsrfKey = "XsrfId";
 
         private IAuthenticationManager AuthenticationManager
         {

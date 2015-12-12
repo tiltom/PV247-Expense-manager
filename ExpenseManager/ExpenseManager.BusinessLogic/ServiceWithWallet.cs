@@ -12,7 +12,6 @@ namespace ExpenseManager.BusinessLogic
     {
         protected abstract IWalletsQueryable WalletsProvider { get; }
 
-
         /// <summary>
         ///     Returns a wallet by specified ID
         /// </summary>
@@ -20,7 +19,7 @@ namespace ExpenseManager.BusinessLogic
         /// <returns>Desired wallet</returns>
         public async Task<Wallet> GetWalletById(Guid id)
         {
-            return await WalletsProvider.Wallets.Where(w => w.Guid.Equals(id)).FirstOrDefaultAsync();
+            return await WalletsProvider.Wallets.Where(wallet => wallet.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -33,8 +32,8 @@ namespace ExpenseManager.BusinessLogic
             return
                 await
                     WalletsProvider.Wallets.Where(
-                        w =>
-                            w.WalletAccessRights.Any(
+                        wallet =>
+                            wallet.WalletAccessRights.Any(
                                 right =>
                                     right.Permission == PermissionEnum.Owner
                                     && right.UserProfile.Guid == userId)

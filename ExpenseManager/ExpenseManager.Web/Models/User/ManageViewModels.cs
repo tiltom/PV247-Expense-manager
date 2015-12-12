@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using ExpenseManager.Resources.UsersAdminResources;
+using ExpenseManager.Web.Constants.UserConstants;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 
@@ -51,17 +53,20 @@ namespace ExpenseManager.Web.Models.User
         ///     New password
         /// </summary>
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(UserConstant.NameMaximumLength, ErrorMessageResourceType = typeof (UsersAdminResource),
+            ErrorMessageResourceName = "MinimumLengthErrorMessage", MinimumLength = UserConstant.PasswordMinimumLength)]
         [DataType(DataType.Password)]
-        [Display(Name = "New password")]
+        [Display(Name = "NewPassword", ResourceType = typeof (UsersAdminResource))]
         public string NewPassword { get; set; }
 
         /// <summary>
         ///     New password confirmation
         /// </summary>
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm new password")]
-        [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+        [Display(Name = "ConfirmNewPassword", ResourceType = typeof (UsersAdminResource))]
+        [Compare("Password",
+            ErrorMessageResourceType = typeof (UsersAdminResource),
+            ErrorMessageResourceName = "PasswordsDoNotMatch")]
         public string ConfirmPassword { get; set; }
     }
 
@@ -75,24 +80,27 @@ namespace ExpenseManager.Web.Models.User
         /// </summary>
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Current password")]
+        [Display(Name = "CurrentPassword", ResourceType = typeof (UsersAdminResource))]
         public string OldPassword { get; set; }
 
         /// <summary>
         ///     New password
         /// </summary>
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(UserConstant.NameMaximumLength, ErrorMessageResourceType = typeof (UsersAdminResource),
+            ErrorMessageResourceName = "MinimumLengthErrorMessage", MinimumLength = UserConstant.PasswordMinimumLength)]
         [DataType(DataType.Password)]
-        [Display(Name = "New password")]
+        [Display(Name = "NewPassword", ResourceType = typeof (UsersAdminResource))]
         public string NewPassword { get; set; }
 
         /// <summary>
         ///     Confirmation of new password
         /// </summary>
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm new password")]
-        [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+        [Display(Name = "ConfirmNewPassword", ResourceType = typeof (UsersAdminResource))]
+        [Compare("Password",
+            ErrorMessageResourceType = typeof (UsersAdminResource),
+            ErrorMessageResourceName = "PasswordsDoNotMatch")]
         public string ConfirmPassword { get; set; }
     }
 }

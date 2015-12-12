@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using ExpenseManager.Resources;
+using ExpenseManager.Resources.UsersAdminResources;
+using ExpenseManager.Web.Constants.UserConstants;
 
 namespace ExpenseManager.Web.Models.User
 {
@@ -21,29 +24,31 @@ namespace ExpenseManager.Web.Models.User
         ///     First name of user
         /// </summary>
         [Required(AllowEmptyStrings = false)]
-        [Display(Name = "First name")]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+        [Display(Name = "FirstName", ResourceType = typeof (UsersAdminResource))]
+        [StringLength(UserConstant.NameMaximumLength, ErrorMessageResourceType = typeof (UsersAdminResource),
+            ErrorMessageResourceName = "MinimumLengthErrorMessage", MinimumLength = UserConstant.NameMinimumLength)]
         public string FirstName { get; set; }
 
         /// <summary>
         ///     Last name of user
         /// </summary>
         [Required(AllowEmptyStrings = false)]
-        [Display(Name = "Last name")]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+        [Display(Name = "LastName", ResourceType = typeof (UsersAdminResource))]
+        [StringLength(UserConstant.NameMaximumLength, ErrorMessageResourceType = typeof (UsersAdminResource),
+            ErrorMessageResourceName = "MinimumLengthErrorMessage", MinimumLength = UserConstant.NameMinimumLength)]
         public string LastName { get; set; }
 
         /// <summary>
         ///     Currency of the wallet
         /// </summary>
-        [Display(Name = "Currency")]
+        [Display(Name = "Currency", ResourceType = typeof (SharedResource))]
         [Required]
         public Guid CurrencyId { get; set; }
 
         /// <summary>
         ///     List of currencies available for the user
         /// </summary>
-        [Display(Name = "Wallet currency")]
+        [Display(Name = "WalletCurrency", ResourceType = typeof (UsersAdminResource))]
         public List<SelectListItem> Currencies { get; set; }
     }
 
@@ -74,7 +79,7 @@ namespace ExpenseManager.Web.Models.User
         /// <summary>
         ///     Remember me option - if user name and password should be remembered
         /// </summary>
-        [Display(Name = "Remember me?")]
+        [Display(Name = "RememberMe", ResourceType = typeof (UsersAdminResource))]
         public bool RememberMe { get; set; }
     }
 
@@ -87,7 +92,8 @@ namespace ExpenseManager.Web.Models.User
         ///     Password of user
         /// </summary>
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(UserConstant.NameMaximumLength, ErrorMessageResourceType = typeof (UsersAdminResource),
+            ErrorMessageResourceName = "MinimumLengthErrorMessage", MinimumLength = UserConstant.PasswordMinimumLength)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
@@ -95,9 +101,10 @@ namespace ExpenseManager.Web.Models.User
         ///     Password confirmation
         /// </summary>
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
+        [Display(Name = "ConfirmPassword", ResourceType = typeof (UsersAdminResource))]
         [System.ComponentModel.DataAnnotations.Compare("Password",
-            ErrorMessage = "The password and confirmation password do not match.")]
+            ErrorMessageResourceType = typeof (UsersAdminResource),
+            ErrorMessageResourceName = "PasswordsDoNotMatch")]
         public string ConfirmPassword { get; set; }
 
         /// <summary>
