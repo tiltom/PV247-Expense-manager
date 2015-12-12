@@ -23,7 +23,7 @@ textarea { max-width: 280px; }
 
 textarea { resize: none; }
 
-.btn-action, .btn-action:focus  {
+.btn-action, .btn-action:focus {
     background: none;
     border: 1px solid #428bca;
     border-radius: 5px;
@@ -136,26 +136,22 @@ textarea { resize: none; }
 
 @media (max-width: 992px) {
     .expense {
+        font-size: 14px;
         height: 85px;
         line-height: 85px;
-        font-size: 14px;
     }
 
     .income {
+        font-size: 14px;
         height: 85px;
         line-height: 85px;
-        font-size: 14px;
     }
 
-    #ExpenseIncome {
-        height: 90px;
-    }
+    #ExpenseIncome { height: 90px; }
 }
 
-#actionContainer {
-  display: flex;
-}
+#actionContainer { display: flex; }
 
-#csvButtons {
-  align-self: center;
-}
+#csvButtons { align-self: center; }
+
+#userRoleLabel { text-align: left; }

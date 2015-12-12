@@ -8,12 +8,26 @@
 @if (ViewBag.editable)
 {
     <div class="row" id="actionContainer">
-        <div class="col-md-2">
-            @Html.ActionLink(SharedResource.CreateNew, "ExpenseIncome", new { wallet = ViewBag.displayedWalletId }, new { @class = "btn btn-action" })
+        <div class="col-md-2 col-sm-3">
+            @Html.ActionLink(SharedResource.CreateNew, "ExpenseIncome", new {wallet = ViewBag.displayedWalletId}, new {@class = "btn btn-action"})
         </div>
-        <div class=" col-md-5" id="csvButtons"   >
+
+        <div class=" col-md-5 col-sm-6 hidden-xs" id="csvButtons">
             <a href="@Url.Action("Import")" class="btn btn-action-small"><i class="glyphicon glyphicon-upload"></i> @TransactionResource.Import</a>
             <a href="@Url.Action("Export", new {wallet = ViewBag.displayedWalletId, category = ViewBag.selectedCategoryId, budget = ViewBag.selectedBudgetId})" class="btn btn-action-small"><i class="glyphicon glyphicon-download"></i> @TransactionResource.Export</a>
+        </div>
+    </div>
+
+
+    <div class="row visible-xs" style="margin-top: 15px">
+        <div class="col-xs-12">
+            <a href="@Url.Action("Import")" class="btn btn-action-small"><i class="glyphicon glyphicon-upload"></i> @TransactionResource.Import</a>
+        </div>
+    </div>
+
+    <div class="row visible-xs" style="margin-top: 5px">
+        <div class="col-xs-12">
+            <a href="@Url.Action("Export", new {wallet = ViewBag.displayedWalletId, category = ViewBag.selectedCategoryId, budget = ViewBag.selectedBudgetId})" class="btn btn-action-small" style="margin-top: 5px"><i class="glyphicon glyphicon-download"></i> @TransactionResource.Export</a>
         </div>
     </div>
 }
