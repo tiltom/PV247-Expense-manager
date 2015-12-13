@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Web.Mvc;
 using ExpenseManager.Resources;
 using ExpenseManager.Resources.WalletResources;
@@ -12,6 +13,11 @@ namespace ExpenseManager.Web.Models.Wallet
     /// </summary>
     public class WalletEditModel
     {
+        public WalletEditModel()
+        {
+            Currencies = Enumerable.Empty<SelectListItem>();
+        }
+
         /// <summary>
         ///     id of the wallet - hidden on all pages so without name
         /// </summary>
@@ -35,6 +41,6 @@ namespace ExpenseManager.Web.Models.Wallet
         /// <summary>
         ///     List of currencies available for the user
         /// </summary>
-        public List<SelectListItem> Currencies { get; set; }
+        public IEnumerable<SelectListItem> Currencies { get; set; }
     }
 }

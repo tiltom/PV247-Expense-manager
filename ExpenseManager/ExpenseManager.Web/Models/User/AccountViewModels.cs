@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Web.Mvc;
 using ExpenseManager.Resources;
 using ExpenseManager.Resources.UsersAdminResources;
@@ -88,6 +89,10 @@ namespace ExpenseManager.Web.Models.User
     /// </summary>
     public class RegisterWithPasswordViewModel : RegisterViewModel
     {
+        public RegisterWithPasswordViewModel()
+        {
+            SelectedRoles = Enumerable.Empty<string>();
+        }
         /// <summary>
         ///     Password of user
         /// </summary>

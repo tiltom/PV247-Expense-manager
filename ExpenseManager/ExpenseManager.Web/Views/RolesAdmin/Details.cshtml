@@ -18,11 +18,11 @@
 <div class="panel-heading">
     <h4>
         @RolesAdminResource.ListOfUsers
-        <span class="badge">@Model.Users.Count</span>
+        <span class="badge">@Model.Users.LongCount()</span>
     </h4>
 </div>
     <ul class="list-group">
-        @if (Model.Users.Count == 0)
+        @if (!Model.Users.Any())
         {
             <li class="list-group-item">
                 @RolesAdminResource.NoUsersFound
@@ -37,7 +37,7 @@
 </div>
 
 <p>
-    @Html.ActionLink(SharedResource.Edi, "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink(SharedResource.Edit, "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
     @Html.ActionLink(SharedResource.Cancel, "Index", null, new { @class = "btn btn-danger" })
 </p>
 

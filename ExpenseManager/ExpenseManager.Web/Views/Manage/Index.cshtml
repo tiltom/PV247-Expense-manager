@@ -21,7 +21,7 @@
         <div class="medium-margin-top" /> 
         <dt>@ManageResource.ExternalLogins:</dt>
         <dd>
-            @Model.Logins.Count
+            @Model.Logins.Count()
             @Html.ActionLink(SharedResource.Manage, "ManageLogins", null, new {@class = "btn btn-primary"})
         </dd>
         

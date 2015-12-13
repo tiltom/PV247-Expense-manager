@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using ExpenseManager.Resources.UsersAdminResources;
 
 namespace ExpenseManager.Web.Models.User
@@ -9,6 +10,11 @@ namespace ExpenseManager.Web.Models.User
     /// </summary>
     public class UserDetailViewModel
     {
+        public UserDetailViewModel()
+        {
+            RolesList = Enumerable.Empty<string>();
+        }
+
         /// <summary>
         ///     Id of user, is hidden on all pages
         /// </summary>
