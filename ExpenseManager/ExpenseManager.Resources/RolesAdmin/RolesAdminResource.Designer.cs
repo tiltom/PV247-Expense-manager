@@ -124,6 +124,15 @@ namespace ExpenseManager.Resources.RolesAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Role name.
+        /// </summary>
+        public static string RoleName {
+            get {
+                return ResourceManager.GetString("RoleName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Roles management.
         /// </summary>
         public static string RolesManagement {

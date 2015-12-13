@@ -27,16 +27,14 @@ namespace ExpenseManager.Web.Binders
 
                 result = decimal.Parse(attemptedValue, NumberStyles.Any);
             }
-            catch (FormatException e)
+            catch (FormatException)
             {
                 result = base.BindModel(controllerContext, bindingContext);
-                bindingContext.ModelState.AddModelError(modelName, e);
             }
 
-            catch (OverflowException e)
+            catch (OverflowException)
             {
                 result = base.BindModel(controllerContext, bindingContext);
-                bindingContext.ModelState.AddModelError(modelName, e);
             }
 
             return result;

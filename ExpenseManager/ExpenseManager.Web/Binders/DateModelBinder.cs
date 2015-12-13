@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Web.Mvc;
-using ExpenseManager.Web.Controllers;
+using ExpenseManager.Web.Constants;
 
 namespace ExpenseManager.Web.Binders
 {
@@ -21,15 +21,12 @@ namespace ExpenseManager.Web.Binders
             }
 
             DateTime value;
-            var valid = DateTime.TryParseExact(attemptedValue, AbstractController.DateFormat,
+            var valid = DateTime.TryParseExact(attemptedValue, SharedConstant.DateFormat,
                 CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
 
             if (!valid)
             {
-                var result = base.BindModel(controllerContext, bindingContext);
-                bindingContext.ModelState.AddModelError(modelName,
-                    "Date was not in format " + AbstractController.DateFormat);
-                return result;
+                return base.BindModel(controllerContext, bindingContext);
             }
 
             return value;

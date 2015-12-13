@@ -13,7 +13,7 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
     /// <summary>
     ///     Class that handles logic of CategoryController
     /// </summary>
-    public class CategoryService : IServiceValidation<Category>
+    public class CategoryService
     {
         private readonly ITransactionsProvider _db;
         private readonly CategoryValidator _validator;
@@ -64,7 +64,7 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         /// <returns>Desired category</returns>
         public async Task<Category> GetCategoryByGuid(Guid guid)
         {
-            return await this._db.Categories.Where(x => x.Guid.Equals(guid)).FirstOrDefaultAsync();
+            return await this._db.Categories.Where(category => category.Guid.Equals(guid)).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
 
             var defaultCategory = await this.GetDefaultCategory();
             categoryToDelete.Transactions.ToList()
-                .ForEach(t => t.Category = defaultCategory);
+                .ForEach(transaction => transaction.Category = defaultCategory);
 
             await this._db.DeteleAsync(categoryToDelete);
         }

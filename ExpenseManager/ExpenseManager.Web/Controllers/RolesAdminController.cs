@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using ExpenseManager.Database;
+using ExpenseManager.Web.Constants;
+using ExpenseManager.Web.Constants.UserConstants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Role;
 using ExpenseManager.Web.Models.User;
@@ -60,8 +62,8 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View</returns>
         public ActionResult Index(int? page)
         {
-            var pageSize = 5;
-            var pageNumber = (page ?? 1);
+            var pageSize = SharedConstant.PageSize;
+            var pageNumber = (page ?? SharedConstant.DefaultStartPage);
 
             return this.View(RoleManager.Roles.OrderBy(x => x.Name).ToPagedList(pageNumber, pageSize));
         }
@@ -93,10 +95,10 @@ namespace ExpenseManager.Web.Controllers
             return this.View(new RoleDetailViewModel
             {
                 Name = role.Name,
-                Users = users.Select(u => new UserDetailViewModel
+                Users = users.Select(user => new UserDetailViewModel
                 {
-                    Id = u.Id,
-                    UserName = u.UserName
+                    Id = user.Id,
+                    UserName = user.UserName
                 }).ToList()
             });
         }
@@ -123,9 +125,9 @@ namespace ExpenseManager.Web.Controllers
                 var role = new IdentityRole(roleViewModel.Name);
                 var roleresult = await RoleManager.CreateAsync(role);
 
-                if (roleresult.Succeeded) return this.RedirectToAction("Index");
+                if (roleresult.Succeeded) return this.RedirectToAction(SharedConstant.Index);
 
-                roleresult.Errors.ForEach(e => ModelState.AddModelError("", e));
+                roleresult.Errors.ForEach(error => ModelState.AddModelError("", error));
                 return this.View();
             }
             return this.View();
@@ -142,12 +144,19 @@ namespace ExpenseManager.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             var role = await RoleManager.FindByIdAsync(id);
             if (role == null)
             {
                 return this.HttpNotFound();
             }
-            var roleModel = new RoleViewModel {Id = role.Id, Name = role.Name};
+
+            var roleModel = new RoleViewModel
+            {
+                Id = role.Id,
+                Name = role.Name
+            };
+
             return this.View(roleModel);
         }
 
@@ -158,14 +167,14 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Name,Id")] RoleViewModel roleModel)
+        public async Task<ActionResult> Edit([Bind(Include = UserConstant.EditRoleInclude)] RoleViewModel roleModel)
         {
             if (ModelState.IsValid)
             {
                 var role = await RoleManager.FindByIdAsync(roleModel.Id);
                 role.Name = roleModel.Name;
                 await RoleManager.UpdateAsync(role);
-                return this.RedirectToAction("Index");
+                return this.RedirectToAction(SharedConstant.Index);
             }
             return this.View();
         }
@@ -181,11 +190,13 @@ namespace ExpenseManager.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             var role = await RoleManager.FindByIdAsync(id);
             if (role == null)
             {
                 return this.HttpNotFound();
             }
+
             return this.View(role);
         }
 
@@ -194,7 +205,7 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="id">id of selected role</param>
         /// <returns></returns>
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName(SharedConstant.Delete)]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(string id)
         {
@@ -204,13 +215,16 @@ namespace ExpenseManager.Web.Controllers
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
+
                 var role = await RoleManager.FindByIdAsync(id);
                 if (role == null)
                 {
                     return this.HttpNotFound();
                 }
 
-                var usersInRole = UserManager.Users.Where(u => u.Roles.Select(r => r.RoleId).Contains(role.Id)).ToList();
+                var usersInRole =
+                    UserManager.Users.Where(user => user.Roles.Select(userRole => userRole.RoleId).Contains(role.Id))
+                        .ToList();
 
                 foreach (var user in usersInRole)
                 {
@@ -221,10 +235,10 @@ namespace ExpenseManager.Web.Controllers
 
                 if (!result.Succeeded)
                 {
-                    result.Errors.ForEach(e => ModelState.AddModelError("", e));
+                    result.Errors.ForEach(error => ModelState.AddModelError("", error));
                     return this.View();
                 }
-                return this.RedirectToAction("Index");
+                return this.RedirectToAction(SharedConstant.Index);
             }
             return this.View();
         }

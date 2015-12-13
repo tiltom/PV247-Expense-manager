@@ -10,6 +10,11 @@ using ExpenseManager.BusinessLogic.BudgetServices;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Entity.Users;
+using ExpenseManager.Resources;
+using ExpenseManager.Resources.BudgetResources;
+using ExpenseManager.Web.Constants;
+using ExpenseManager.Web.Constants.BudgetConstants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Budget;
 using PagedList;
@@ -36,9 +41,9 @@ namespace ExpenseManager.Web.Controllers
             var budgets = this._budgetService.GetBudgetsByUserId(userId);
             var budgetShowModels = await budgets.ProjectTo<BudgetShowModel>().ToListAsync();
 
-            var pageNumber = (page ?? 1);
+            var pageNumber = (page ?? SharedConstant.DefaultStartPage);
 
-            return this.View(budgetShowModels.ToPagedList(pageNumber, PageSize));
+            return this.View(budgetShowModels.ToPagedList(pageNumber, SharedConstant.PageSize));
         }
 
         /// <summary>
@@ -64,7 +69,7 @@ namespace ExpenseManager.Web.Controllers
             // check if model is valid
             if (!ModelState.IsValid)
             {
-                // TODO: add error message to layout and display it here
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.View(model);
             }
 
@@ -75,23 +80,7 @@ namespace ExpenseManager.Web.Controllers
             var creator = await this._budgetService.GetBudgetCreator(userId);
 
             // creating new Budget by filling it from model
-            var budget = new Budget
-            {
-                Name = model.Name,
-                StartDate = model.StartDate,
-                EndDate = model.EndDate,
-                Limit = model.Limit,
-                Description = model.Description ?? string.Empty,
-                AccessRights =
-                    new List<BudgetAccessRight>
-                    {
-                        new BudgetAccessRight
-                        {
-                            Permission = PermissionEnum.Owner,
-                            UserProfile = creator
-                        }
-                    }
-            };
+            var budget = this.NewBudgetInstanceFromNewBudgetModel(model, creator);
 
             // write budget to DB
             try
@@ -104,7 +93,8 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(model);
             }
 
-            return this.RedirectToAction("Index");
+            this.AddSuccess(string.Format(BudgetResource.SuccessfullCreation, budget.Name));
+            return this.RedirectToAction(SharedConstant.Index);
         }
 
         /// <summary>
@@ -134,9 +124,10 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(EditBudgetModel model)
         {
-            // check if model is valid, if not, return View with it (and error message later)
+            // check if model is valid, if not, return View with it
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.View(model);
             }
 
@@ -153,9 +144,8 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(model);
             }
 
-
-            // Add OK message
-            return this.RedirectToAction("Index");
+            this.AddSuccess(string.Format(BudgetResource.SuccessfullEdit, model.Name));
+            return this.RedirectToAction(SharedConstant.Index);
         }
 
         /// <summary>
@@ -175,19 +165,52 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="model">BudgetShowModel of budget to delete</param>
         /// <returns>Redirect to Index</returns>
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName(SharedConstant.Delete)]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed([Bind(Exclude = "StartDate, EndDate")] BudgetShowModel model)
+        public async Task<ActionResult> DeleteConfirmed(
+            [Bind(Exclude = BudgetConstant.DeleteConfirmedExcluding)] BudgetShowModel model)
         {
             if (!ModelState.IsValid)
             {
-                // error 
-                return this.RedirectToAction("Index");
+                this.AddError(SharedResource.ModelStateIsNotValid);
+                return this.RedirectToAction(SharedConstant.Index);
             }
 
             await this._budgetService.DeleteBudget(model.Guid);
 
-            return this.RedirectToAction("Index");
+            this.AddSuccess(string.Format(BudgetResource.SuccessfullDelete, model.Name));
+            return this.RedirectToAction(SharedConstant.Index);
         }
+
+        #region private
+
+        /// <summary>
+        ///     Creates instance of Budget from NewBudgetModel and UserProfile of creator
+        /// </summary>
+        /// <param name="model">NewBudgetModel instance</param>
+        /// <param name="creator">Creator of the budget</param>
+        /// <returns></returns>
+        private Budget NewBudgetInstanceFromNewBudgetModel(NewBudgetModel model, UserProfile creator)
+        {
+            return new Budget
+            {
+                Name = model.Name,
+                StartDate = model.StartDate,
+                EndDate = model.EndDate,
+                Limit = model.Limit,
+                Description = model.Description ?? string.Empty,
+                AccessRights =
+                    new List<BudgetAccessRight>
+                    {
+                        new BudgetAccessRight
+                        {
+                            Permission = PermissionEnum.Owner,
+                            UserProfile = creator
+                        }
+                    }
+            };
+        }
+
+        #endregion
     }
 }

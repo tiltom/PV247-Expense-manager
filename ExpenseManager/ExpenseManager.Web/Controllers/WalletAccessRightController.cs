@@ -11,6 +11,7 @@ using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Resources;
+using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.WalletAccessRight;
 using PagedList;
@@ -37,8 +38,8 @@ namespace ExpenseManager.Web.Controllers
 
             var accessRights = await this._walletAccessRightService.GetAccessRightsByWalletOwnerId(id);
             var accessRightModels = accessRights.Select(Mapper.Map<WalletAccessRightModel>);
-            var pageNumber = page ?? 1;
-            return this.View(accessRightModels.ToPagedList(pageNumber, PageSize));
+            var pageNumber = page ?? SharedConstant.DefaultStartPage;
+            return this.View(accessRightModels.ToPagedList(pageNumber, SharedConstant.PageSize));
         }
 
         /// <summary>
@@ -74,6 +75,7 @@ namespace ExpenseManager.Web.Controllers
             this.IsCaptchaValid(SharedResource.CaptchaValidationFailed);
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 walletAccessRight.Permissions = this.GetPermissions();
                 return this.View(walletAccessRight);
             }
@@ -93,7 +95,7 @@ namespace ExpenseManager.Web.Controllers
                 walletAccessRight.Permissions = this.GetPermissions();
                 return this.View(walletAccessRight);
             }
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction(SharedConstant.Index);
         }
 
 
@@ -127,6 +129,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 walletAccessRight.Permissions = this.GetPermissions();
                 return this.View(walletAccessRight);
             }
@@ -147,7 +150,7 @@ namespace ExpenseManager.Web.Controllers
                 walletAccessRight.Permissions = this.GetPermissions();
                 return this.View(walletAccessRight);
             }
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction(SharedConstant.Index);
         }
 
         /// <summary>
@@ -174,7 +177,7 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="id">id of wallet access right</param>
         /// <returns>redirect to list with all wallet access rights</returns>
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName(SharedConstant.Delete)]
         [ValidateAntiForgeryToken]
         public async Task<RedirectToRouteResult> DeleteConfirmed(Guid id)
         {
@@ -183,11 +186,11 @@ namespace ExpenseManager.Web.Controllers
             // should not happen from front end - just some kind of attack can do this
             if (walletAccessRightPermission.Equals(PermissionEnum.Owner))
             {
-                return this.RedirectToAction("Index");
+                return this.RedirectToAction(SharedConstant.Index);
             }
 
             await this._walletAccessRightService.DeleteWalletAccessRight(id);
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction(SharedConstant.Index);
         }
 
         #region private

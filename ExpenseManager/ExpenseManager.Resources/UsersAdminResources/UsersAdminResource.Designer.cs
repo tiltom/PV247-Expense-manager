@@ -61,11 +61,38 @@ namespace ExpenseManager.Resources.UsersAdminResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm new password.
+        /// </summary>
+        public static string ConfirmNewPassword {
+            get {
+                return ResourceManager.GetString("ConfirmNewPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm password.
+        /// </summary>
+        public static string ConfirmPassword {
+            get {
+                return ResourceManager.GetString("ConfirmPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create new user.
         /// </summary>
         public static string CreateNewUser {
             get {
                 return ResourceManager.GetString("CreateNewUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current password.
+        /// </summary>
+        public static string CurrentPassword {
+            get {
+                return ResourceManager.GetString("CurrentPassword", resourceCulture);
             }
         }
         
@@ -79,11 +106,47 @@ namespace ExpenseManager.Resources.UsersAdminResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to First name.
+        /// </summary>
+        public static string FirstName {
+            get {
+                return ResourceManager.GetString("FirstName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last name.
+        /// </summary>
+        public static string LastName {
+            get {
+                return ResourceManager.GetString("LastName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to List of roles for this user.
         /// </summary>
         public static string ListOfRoles {
             get {
                 return ResourceManager.GetString("ListOfRoles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} must be at least {2} characters long..
+        /// </summary>
+        public static string MinimumLengthErrorMessage {
+            get {
+                return ResourceManager.GetString("MinimumLengthErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New password.
+        /// </summary>
+        public static string NewPassword {
+            get {
+                return ResourceManager.GetString("NewPassword", resourceCulture);
             }
         }
         
@@ -102,6 +165,33 @@ namespace ExpenseManager.Resources.UsersAdminResources {
         public static string OneRoleMustBeSelected {
             get {
                 return ResourceManager.GetString("OneRoleMustBeSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The password and confirmation password do not match.
+        /// </summary>
+        public static string PasswordsDoNotMatch {
+            get {
+                return ResourceManager.GetString("PasswordsDoNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remember me?.
+        /// </summary>
+        public static string RememberMe {
+            get {
+                return ResourceManager.GetString("RememberMe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected roles.
+        /// </summary>
+        public static string SelectedRoles {
+            get {
+                return ResourceManager.GetString("SelectedRoles", resourceCulture);
             }
         }
         
@@ -142,11 +232,29 @@ namespace ExpenseManager.Resources.UsersAdminResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User Management.
+        ///   Looks up a localized string similar to User management.
         /// </summary>
         public static string UserManagement {
             get {
                 return ResourceManager.GetString("UserManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User name.
+        /// </summary>
+        public static string UserName {
+            get {
+                return ResourceManager.GetString("UserName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wallet currency.
+        /// </summary>
+        public static string WalletCurrency {
+            get {
+                return ResourceManager.GetString("WalletCurrency", resourceCulture);
             }
         }
     }

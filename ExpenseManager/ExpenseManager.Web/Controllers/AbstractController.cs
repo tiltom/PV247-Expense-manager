@@ -11,6 +11,8 @@ using ExpenseManager.Entity;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
+using ExpenseManager.Resources;
+using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -20,19 +22,14 @@ namespace ExpenseManager.Web.Controllers
 {
     public abstract class AbstractController : Controller
     {
-        public const string DateFormat = "dd.MM.yyyy";
-        public const string Error = "Error";
-        public const string Success = "Success";
-        public const int PageSize = 5;
-
         protected void AddSuccess(string message)
         {
-            TempData[Success] = message;
+            TempData[SharedConstant.Success] = message;
         }
 
         protected void AddError(string message)
         {
-            TempData[Error] = message;
+            TempData[SharedConstant.Error] = message;
         }
 
         #region protected
@@ -75,7 +72,9 @@ namespace ExpenseManager.Web.Controllers
             var userId = HttpContext.User.Identity.GetUserId();
             return
                 await
-                    UserContext.Users.Where(u => u.Id == userId).Select(u => u.Profile.Guid).FirstOrDefaultAsync();
+                    UserContext.Users.Where(user => user.Id == userId)
+                        .Select(user => user.Profile.Guid)
+                        .FirstOrDefaultAsync();
         }
 
 
@@ -98,7 +97,10 @@ namespace ExpenseManager.Web.Controllers
         protected async Task<Guid> GetUserProfileByEmail(string email)
         {
             return
-                await UserContext.Users.Where(x => x.Email == email).Select(u => u.Profile.Guid).FirstOrDefaultAsync();
+                await
+                    UserContext.Users.Where(user => user.Email == email)
+                        .Select(user => user.Profile.Guid)
+                        .FirstOrDefaultAsync();
         }
 
 
@@ -120,7 +122,8 @@ namespace ExpenseManager.Web.Controllers
 
         protected async Task<UserIdentity> CreateUser(RegisterViewModel model)
         {
-            var currency = await UserContext.Currencies.FirstOrDefaultAsync(x => x.Guid == model.CurrencyId);
+            var currency =
+                await UserContext.Currencies.FirstOrDefaultAsync(userCurrency => userCurrency.Guid == model.CurrencyId);
 
             var user = new UserIdentity
             {
@@ -142,8 +145,8 @@ namespace ExpenseManager.Web.Controllers
                     UserProfile = user.Profile,
                     Wallet = new Wallet
                     {
-                        Name = "Default Wallet",
-                        Currency = await this.GetDefaultCurrency()
+                        Name = SharedResource.DefaultWallet,
+                        Currency = currency
                     }
                 }
             };

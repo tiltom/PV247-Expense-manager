@@ -13,3 +13,6 @@ More details can be found in wiki https://github.com/tiltom/PV247-Expense-manage
 
 
 Project is licensed under MIT License
+
+Application is running on azure at 
+https://pv247expensemanager.azurewebsites.net/

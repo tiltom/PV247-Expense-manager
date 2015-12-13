@@ -214,6 +214,15 @@ namespace ExpenseManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default wallet.
+        /// </summary>
+        public static string DefaultWallet {
+            get {
+                return ResourceManager.GetString("DefaultWallet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string Delete {
@@ -322,11 +331,29 @@ namespace ExpenseManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Provided model is incorrect, please check data in all your fields again.
+        /// </summary>
+        public static string ModelStateIsNotValid {
+            get {
+                return ResourceManager.GetString("ModelStateIsNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Page {0} of {1}.
         /// </summary>
         public static string Pager {
             get {
                 return ResourceManager.GetString("Pager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permission.
+        /// </summary>
+        public static string Permission {
+            get {
+                return ResourceManager.GetString("Permission", resourceCulture);
             }
         }
         
@@ -412,20 +439,20 @@ namespace ExpenseManager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This is some serious error!.
-        /// </summary>
-        public static string TestError {
-            get {
-                return ResourceManager.GetString("TestError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Transactions.
         /// </summary>
         public static string Transactions {
             get {
                 return ResourceManager.GetString("Transactions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User.
+        /// </summary>
+        public static string User {
+            get {
+                return ResourceManager.GetString("User", resourceCulture);
             }
         }
         
@@ -444,6 +471,15 @@ namespace ExpenseManager.Resources {
         public static string UserNotFoundByEmail {
             get {
                 return ResourceManager.GetString("UserNotFoundByEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation failed: {0}.
+        /// </summary>
+        public static string ValidationFailed {
+            get {
+                return ResourceManager.GetString("ValidationFailed", resourceCulture);
             }
         }
         

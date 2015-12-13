@@ -61,6 +61,15 @@ namespace ExpenseManager.Resources.BudgetResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Assigned user.
+        /// </summary>
+        public static string AssignedUser {
+            get {
+                return ResourceManager.GetString("AssignedUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Budget access right management.
         /// </summary>
         public static string BudgetAccessRightManagement {
@@ -102,6 +111,33 @@ namespace ExpenseManager.Resources.BudgetResources {
         public static string EditBudgetAccessRight {
             get {
                 return ResourceManager.GetString("EditBudgetAccessRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access right {0} for user {1} was successfully granted!.
+        /// </summary>
+        public static string SuccessfullCreation {
+            get {
+                return ResourceManager.GetString("SuccessfullCreation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access right {0} for user {1} was successfully deleted!.
+        /// </summary>
+        public static string SuccessfullDelete {
+            get {
+                return ResourceManager.GetString("SuccessfullDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access right for user {0} was successfully edited!.
+        /// </summary>
+        public static string SuccessfullEdit {
+            get {
+                return ResourceManager.GetString("SuccessfullEdit", resourceCulture);
             }
         }
         

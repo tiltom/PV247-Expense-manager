@@ -14,7 +14,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
     /// <summary>
     ///     Class that handles logic of BudgetController
     /// </summary>
-    public class BudgetService : IServiceValidation<Budget>
+    public class BudgetService
     {
         private readonly IBudgetsProvider _db;
         private readonly ITransactionsProvider _transactionsProvider;
@@ -61,10 +61,10 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
             return
                 this._db.BudgetAccessRights
                     .Where(
-                        bar => bar.Permission == PermissionEnum.Owner
-                               && bar.UserProfile.Guid == userId
+                        right => right.Permission == PermissionEnum.Owner
+                                 && right.UserProfile.Guid == userId
                     )
-                    .Select(bar => bar.Budget);
+                    .Select(right => right.Budget);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <returns>Desired budget</returns>
         public async Task<Budget> GetBudgetById(Guid guid)
         {
-            return await this._db.Budgets.Where(x => x.Guid.Equals(guid)).FirstOrDefaultAsync();
+            return await this._db.Budgets.Where(budget => budget.Guid.Equals(guid)).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -130,7 +130,8 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <returns></returns>
         public async Task DeleteBudget(Guid guid)
         {
-            var budget = await this._db.Budgets.Where(x => x.Guid.Equals(guid)).FirstOrDefaultAsync();
+            var budget =
+                await this._db.Budgets.Where(budgetInstance => budgetInstance.Guid.Equals(guid)).FirstOrDefaultAsync();
 
             // delete budget rights
             foreach (var right in budget.AccessRights.ToList())

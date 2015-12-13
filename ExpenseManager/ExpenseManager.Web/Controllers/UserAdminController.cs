@@ -9,7 +9,9 @@ using ExpenseManager.Database;
 using ExpenseManager.Entity;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
+using ExpenseManager.Resources;
 using ExpenseManager.Resources.UsersAdminResources;
+using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
@@ -63,8 +65,8 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View</returns>
         public ActionResult Index(int? page)
         {
-            var pageSize = 5;
-            var pageNumber = (page ?? 1);
+            var pageSize = SharedConstant.PageSize;
+            var pageNumber = (page ?? SharedConstant.DefaultStartPage);
 
             return
                 this.View(
@@ -108,7 +110,7 @@ namespace ExpenseManager.Web.Controllers
         private Task<List<SelectListItem>> GetAllRolesAsync()
         {
             return QueryableExtensions.ToListAsync(RoleManager.Roles.Select(
-                r => new SelectListItem {Value = r.Id, Text = r.Name}));
+                role => new SelectListItem {Value = role.Id, Text = role.Name}));
         }
 
         /// <summary>
@@ -121,6 +123,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 userWithPasswordViewModel.RolesList = await this.GetAllRolesAsync();
                 userWithPasswordViewModel.Currencies = await this.GetCurrencies();
                 return this.View(userWithPasswordViewModel);
@@ -141,13 +144,13 @@ namespace ExpenseManager.Web.Controllers
             //Add User to the selected SelectedRoles 
             if (adminresult.Succeeded)
             {
-                if (userWithPasswordViewModel.SelectedRoles == null) return this.RedirectToAction("Index");
+                if (userWithPasswordViewModel.SelectedRoles == null) return this.RedirectToAction(SharedConstant.Index);
 
                 var result =
                     await UserManager.AddToRolesAsync(user.Id, userWithPasswordViewModel.SelectedRoles.ToArray());
                 if (!result.Succeeded)
                 {
-                    result.Errors.ForEach(e => ModelState.AddModelError("", e));
+                    result.Errors.ForEach(error => ModelState.AddModelError("", error));
                     userWithPasswordViewModel.RolesList = await this.GetAllRolesAsync();
                     return this.View(userWithPasswordViewModel);
                 }
@@ -159,7 +162,7 @@ namespace ExpenseManager.Web.Controllers
                 userWithPasswordViewModel.Currencies = await this.GetCurrencies();
                 return this.View(userWithPasswordViewModel);
             }
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction(SharedConstant.Index);
         }
 
         /// <summary>
@@ -181,11 +184,11 @@ namespace ExpenseManager.Web.Controllers
 
             var userEditModel = Mapper.Map<UserEditViewModel>(user);
             var userRoles = await UserManager.GetRolesAsync(user.Id);
-            userEditModel.RolesList = RoleManager.Roles.ToList().Select(x => new SelectListItem
+            userEditModel.RolesList = RoleManager.Roles.ToList().Select(role => new SelectListItem
             {
-                Selected = userRoles.Contains(x.Name),
-                Text = x.Name,
-                Value = x.Name
+                Selected = userRoles.Contains(role.Name),
+                Text = role.Name,
+                Value = role.Name
             });
 
 
@@ -203,7 +206,7 @@ namespace ExpenseManager.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", UsersAdminResource.SomethingFailed);
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.View();
             }
 
@@ -231,17 +234,17 @@ namespace ExpenseManager.Web.Controllers
 
             if (!result.Succeeded)
             {
-                result.Errors.ForEach(e => ModelState.AddModelError("", e));
+                result.Errors.ForEach(error => ModelState.AddModelError("", error));
                 return this.View(editUser);
             }
             result = await UserManager.RemoveFromRolesAsync(user.Id, userRoles.Except(selectedRoles).ToArray());
 
             if (!result.Succeeded)
             {
-                result.Errors.ForEach(e => ModelState.AddModelError("", e));
+                result.Errors.ForEach(error => ModelState.AddModelError("", error));
                 return this.View(editUser);
             }
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction(SharedConstant.Index);
         }
 
         /// <summary>
@@ -272,7 +275,11 @@ namespace ExpenseManager.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(string id)
         {
-            if (!ModelState.IsValid) return this.View();
+            if (!ModelState.IsValid)
+            {
+                this.AddError(SharedResource.ModelStateIsNotValid);
+                return this.View();
+            }
 
             if (id == null)
             {
@@ -290,22 +297,22 @@ namespace ExpenseManager.Web.Controllers
             var result = await UserManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
-                result.Errors.ForEach(e => ModelState.AddModelError("", e));
+                result.Errors.ForEach(error => ModelState.AddModelError("", error));
                 return this.View();
             }
 
             var budgetProvider = ProvidersFactory.GetNewBudgetsProviders();
             await budgetProvider.DeteleAsync(profile);
 
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction(SharedConstant.Index);
         }
 
         private async Task DeleteUserDependentEntities(UserProfile profile)
         {
             // Delete WalletAccessRights, Wallet and Transactions connected with Wallet
             var walletToDelete =
-                profile.WalletAccessRights.FirstOrDefault(war => war.Permission == PermissionEnum.Owner)?.Wallet;
-            var warToDelete = walletToDelete?.WalletAccessRights.ToList();
+                profile.WalletAccessRights.FirstOrDefault(right => right.Permission == PermissionEnum.Owner)?.Wallet;
+            var rightToDelete = walletToDelete?.WalletAccessRights.ToList();
             var transactionsToDelete = walletToDelete?.Transactions.ToList();
 
             var transactionsProvider = ProvidersFactory.GetNewTransactionsProviders();
@@ -316,8 +323,8 @@ namespace ExpenseManager.Web.Controllers
                 }
 
             var walletProvider = ProvidersFactory.GetNewWalletsProviders();
-            if (warToDelete != null)
-                foreach (var walletAccessRight in warToDelete)
+            if (rightToDelete != null)
+                foreach (var walletAccessRight in rightToDelete)
                 {
                     await walletProvider.DeteleAsync(walletAccessRight);
                 }
@@ -327,8 +334,8 @@ namespace ExpenseManager.Web.Controllers
             var budgetProvider = ProvidersFactory.GetNewBudgetsProviders();
             var userBudgets =
                 profile.BudgetAccessRights
-                    .Where(bar => bar.Permission == PermissionEnum.Owner)
-                    .Select(bar => bar.Budget);
+                    .Where(right => right.Permission == PermissionEnum.Owner)
+                    .Select(right => right.Budget);
             foreach (var createdBudget in userBudgets)
             {
                 await budgetProvider.DeteleAsync(createdBudget);

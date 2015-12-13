@@ -115,7 +115,7 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Budget.
+        ///   Looks up a localized string similar to Select budget.
         /// </summary>
         public static string BudgetSelection {
             get {
@@ -142,7 +142,7 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Category.
+        ///   Looks up a localized string similar to Select category.
         /// </summary>
         public static string CategorySelection {
             get {
@@ -178,7 +178,7 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Currency.
+        ///   Looks up a localized string similar to Select currency.
         /// </summary>
         public static string CurrencySelection {
             get {
@@ -232,7 +232,7 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export.
+        ///   Looks up a localized string similar to Export CSV.
         /// </summary>
         public static string Export {
             get {
@@ -277,7 +277,7 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import.
+        ///   Looks up a localized string similar to Import CSV.
         /// </summary>
         public static string Import {
             get {
@@ -358,7 +358,7 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You don&apos;t have permission to view this wallet.
+        ///   Looks up a localized string similar to You don&apos;t have permission to manipulate with this wallet.
         /// </summary>
         public static string PermissionError {
             get {

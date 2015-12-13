@@ -88,11 +88,38 @@ namespace ExpenseManager.Resources.BudgetResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string Description {
+            get {
+                return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit budget.
         /// </summary>
         public static string EditBudget {
             get {
                 return ResourceManager.GetString("EditBudget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End date.
+        /// </summary>
+        public static string EndDate {
+            get {
+                return ResourceManager.GetString("EndDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limit.
+        /// </summary>
+        public static string Limit {
+            get {
+                return ResourceManager.GetString("Limit", resourceCulture);
             }
         }
         
@@ -106,11 +133,56 @@ namespace ExpenseManager.Resources.BudgetResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name of the budget can not be empty!.
         /// </summary>
         public static string NameNotNull {
             get {
                 return ResourceManager.GetString("NameNotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start date.
+        /// </summary>
+        public static string StartDate {
+            get {
+                return ResourceManager.GetString("StartDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget {0} was successfully created!.
+        /// </summary>
+        public static string SuccessfullCreation {
+            get {
+                return ResourceManager.GetString("SuccessfullCreation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget {0} was successfully deleted!.
+        /// </summary>
+        public static string SuccessfullDelete {
+            get {
+                return ResourceManager.GetString("SuccessfullDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget {0} was successfully edited!.
+        /// </summary>
+        public static string SuccessfullEdit {
+            get {
+                return ResourceManager.GetString("SuccessfullEdit", resourceCulture);
             }
         }
         

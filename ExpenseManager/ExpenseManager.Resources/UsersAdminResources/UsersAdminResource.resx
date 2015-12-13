@@ -117,20 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Confirm new password</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
   <data name="CreateNewUser" xml:space="preserve">
     <value>Create new user</value>
+  </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>Current password</value>
   </data>
   <data name="EditUser" xml:space="preserve">
     <value>Edit user</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Last name</value>
+  </data>
   <data name="ListOfRoles" xml:space="preserve">
     <value>List of roles for this user</value>
+  </data>
+  <data name="MinimumLengthErrorMessage" xml:space="preserve">
+    <value>The {0} must be at least {2} characters long.</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>New password</value>
   </data>
   <data name="NoRoles" xml:space="preserve">
     <value>No roles found for this User</value>
   </data>
   <data name="OneRoleMustBeSelected" xml:space="preserve">
     <value>At least one role has to be selected</value>
+  </data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>The password and confirmation password do not match</value>
+  </data>
+  <data name="RememberMe" xml:space="preserve">
+    <value>Remember me?</value>
+  </data>
+  <data name="SelectedRoles" xml:space="preserve">
+    <value>Selected roles</value>
   </data>
   <data name="SelectUserRole" xml:space="preserve">
     <value>Select user role</value>
@@ -145,6 +175,12 @@
     <value>User details</value>
   </data>
   <data name="UserManagement" xml:space="preserve">
-    <value>User Management</value>
+    <value>User management</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>User name</value>
+  </data>
+  <data name="WalletCurrency" xml:space="preserve">
+    <value>Wallet currency</value>
   </data>
 </root>

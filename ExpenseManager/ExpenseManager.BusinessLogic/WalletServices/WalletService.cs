@@ -16,7 +16,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
     /// <summary>
     ///     Class that handles logic of WalletController
     /// </summary>
-    public class WalletService : ServiceWithWallet, IServiceValidation<Wallet>
+    public class WalletService : ServiceWithWallet
     {
         private readonly IWalletsProvider _db;
         private readonly WalletValidator _validator;
@@ -55,10 +55,10 @@ namespace ExpenseManager.BusinessLogic.WalletServices
         {
             return
                 this._db.WalletAccessRights.Where(
-                    war => war.Permission == PermissionEnum.Owner
-                           && war.UserProfile.Guid == id
+                    right => right.Permission == PermissionEnum.Owner
+                             && right.UserProfile.Guid == id
                     )
-                    .Select(war => war.Wallet);
+                    .Select(right => right.Wallet);
         }
 
 
@@ -83,7 +83,14 @@ namespace ExpenseManager.BusinessLogic.WalletServices
             {
                 Transformation.ChangeCurrency(transaction, currency);
             }
-            // TODO change budget limit currency
+            var budgetAccessRights = wallet.WalletAccessRights.Where(right => right.Permission == PermissionEnum.Owner)
+                .SelectMany(right => right.UserProfile.BudgetAccessRights).ToList();
+
+            foreach (var budget in budgetAccessRights.Where(right => right.Permission == PermissionEnum.Owner)
+                .Select(permission => permission.Budget))
+            {
+                Transformation.ChangeCurrency(budget, currency, oldCurrency);
+            }
             await this._db.AddOrUpdateAsync(wallet);
         }
 
@@ -100,7 +107,7 @@ namespace ExpenseManager.BusinessLogic.WalletServices
 
         private async Task<Currency> GetCurrencyById(Guid id)
         {
-            return await this._db.Currencies.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
+            return await this._db.Currencies.Where(currency => currency.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
         #endregion

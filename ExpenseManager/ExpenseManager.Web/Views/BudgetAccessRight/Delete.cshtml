@@ -11,6 +11,8 @@
 {
     @Html.AntiForgeryToken()
 
+    @Html.HiddenFor(model => model.AssignedUserName)
+
     <div class="form-actions no-color">
         <input type="submit" value=@SharedResource.Delete class="btn btn-success" />
         @Html.ActionLink(SharedResource.BackToList, "Index", new { id = Model.BudgetId }, new { @class = "btn btn-danger" })

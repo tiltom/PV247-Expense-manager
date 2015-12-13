@@ -197,6 +197,11 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Binders\DateModelBinder.cs" />
     <Compile Include="Binders\DecimalModelBinder.cs" />
+    <Compile Include="Constants\BudgetConstants\BudgetConstant.cs" />
+    <Compile Include="Constants\LoginConstants\LoginConstant.cs" />
+    <Compile Include="Constants\SharedConstant.cs" />
+    <Compile Include="Constants\TransactionsConstants\TransactionConstant.cs" />
+    <Compile Include="Constants\UserConstants\UserConstant.cs" />
     <Compile Include="Controllers\AbstractController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BudgetAccessRightController.cs" />
@@ -209,6 +214,7 @@
     <Compile Include="Controllers\UserAdminController.cs" />
     <Compile Include="Controllers\WalletAccessRightController.cs" />
     <Compile Include="Controllers\WalletController.cs" />
+    <Compile Include="Filters\SecurityExceptionFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -254,7 +260,6 @@
     <Content Include="Content\chosen-sprite%402x.png" />
     <Content Include="Content\chosen-sprite.png" />
     <Content Include="Content\PagedList.css" />
-    <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -408,7 +413,6 @@
     <Content Include="Views\Category\Delete.cshtml" />
     <Content Include="Views\Transaction\Delete.cshtml" />
     <Content Include="Views\Transaction\Import.cshtml" />
-    <Content Include="Views\DashBoard\UpdateRepeatable.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

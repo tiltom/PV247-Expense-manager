@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using ExpenseManager.Resources.UsersAdminResources;
 
 namespace ExpenseManager.Web.Models.User
 {
@@ -17,13 +17,13 @@ namespace ExpenseManager.Web.Models.User
         /// <summary>
         ///     First name of user
         /// </summary>
-        [DisplayName("First name")]
+        [Display(Name = "FirstName", ResourceType = typeof (UsersAdminResource))]
         public string FirstName { get; set; }
 
         /// <summary>
         ///     Last name of user
         /// </summary>
-        [DisplayName("Last name")]
+        [Display(Name = "LastName", ResourceType = typeof (UsersAdminResource))]
         public string LastName { get; set; }
 
         /// <summary>

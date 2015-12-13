@@ -15,7 +15,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
     /// <summary>
     ///     Class that handles logic of BudgetAccessRightController
     /// </summary>
-    public class BudgetAccessRightService : IServiceValidation<BudgetAccessRight>
+    public class BudgetAccessRightService
     {
         private readonly IBudgetsProvider _db;
         private readonly BudgetAccessRightValidator _validator;
@@ -68,7 +68,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <returns>Desired budget</returns>
         private async Task<Budget> GetBudgetById(Guid id)
         {
-            return await this._db.Budgets.Where(b => b.Guid.Equals(id)).FirstOrDefaultAsync();
+            return await this._db.Budgets.Where(budget => budget.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <param name="assignedUserId">Assigned user's ID</param>
         /// <param name="permission">Permission for right</param>
         /// <returns></returns>
-        public async Task CreateAccessBudgetRight(Guid budgetId, Guid assignedUserId, PermissionEnum permission)
+        public async Task CreateBudgetAccessRight(Guid budgetId, Guid assignedUserId, PermissionEnum permission)
         {
             // find budget by its Id
             var budget = await this.GetBudgetById(budgetId);
@@ -115,7 +115,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <returns>Desired budget access right</returns>
         public async Task<BudgetAccessRight> GetBudgetAccessRightById(Guid id)
         {
-            return await this._db.BudgetAccessRights.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
+            return await this._db.BudgetAccessRights.Where(right => right.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -128,7 +128,6 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         public async Task EditBudgetAccessRight(Guid budgetAccessRightId, PermissionEnum permission, Guid userProfileId)
         {
             var accessRightToEdit = await this.GetBudgetAccessRightById(budgetAccessRightId);
-
 
             accessRightToEdit.Permission = permission;
             accessRightToEdit.UserProfile = await this.GetUserProfileById(userProfileId);
@@ -145,7 +144,7 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <returns>Desired user profile</returns>
         public async Task<UserProfile> GetUserProfileById(Guid id)
         {
-            return await this._db.UserProfiles.Where(x => x.Guid.Equals(id)).FirstOrDefaultAsync();
+            return await this._db.UserProfiles.Where(profile => profile.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -156,7 +155,6 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         public async Task DeleteBudgetAccessRight(Guid id)
         {
             var budgetAccessRight = await this.GetBudgetAccessRightById(id);
-            // TODO: add check for permissions
             await this._db.DeteleAsync(budgetAccessRight);
         }
 
@@ -170,15 +168,15 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         {
             return this._db.UserProfiles
                 .Where(
-                    u => // filtering users which don't have owner permission or other permissions
-                        u.BudgetAccessRights.All(war => !users.Contains(u.Guid)));
+                    profile => // filtering users which don't have owner permission or other permissions
+                        profile.BudgetAccessRights.All(right => !users.Contains(profile.Guid)));
         }
 
         #region private
 
         private ICollection<BudgetAccessRight> GetBudgetAccessRightsByBudget(Guid id)
         {
-            return this._db.Budgets.FirstOrDefault(x => x.Guid.Equals(id)).AccessRights;
+            return this._db.Budgets.FirstOrDefault(budget => budget.Guid.Equals(id)).AccessRights;
         }
 
         #endregion

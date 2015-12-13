@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using ExpenseManager.Resources.UsersAdminResources;
 
 namespace ExpenseManager.Web.Models.User
 {
@@ -23,7 +23,7 @@ namespace ExpenseManager.Web.Models.User
         /// <summary>
         ///     User name (First name + Last name)
         /// </summary>
-        [DisplayName("User name")]
+        [Display(Name = "UserName", ResourceType = typeof (UsersAdminResource))]
         public string UserName { get; set; }
 
         /// <summary>

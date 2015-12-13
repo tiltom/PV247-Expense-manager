@@ -138,6 +138,9 @@
   <data name="RoleDetails" xml:space="preserve">
     <value>Role details</value>
   </data>
+  <data name="RoleName" xml:space="preserve">
+    <value>Role name</value>
+  </data>
   <data name="RolesManagement" xml:space="preserve">
     <value>Roles management</value>
   </data>

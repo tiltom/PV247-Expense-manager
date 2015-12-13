@@ -1,5 +1,6 @@
 ﻿@using System
 @using ExpenseManager.Database
+@using ExpenseManager.Web.Constants
 @using ExpenseManager.Web.Controllers
 <!DOCTYPE html>
 <html>
@@ -53,18 +54,18 @@
             </div>
             <div class="panel-body">
                 <div>
-                    @if (TempData[AbstractController.Error] !=null)
+                    @if (TempData[SharedConstant.Error] !=null)
                     {
                         <div class="alert alert-danger">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            @TempData[AbstractController.Error]
+                            @TempData[SharedConstant.Error]
                         </div>
                     }
-                    @if (TempData[AbstractController.Success] != null)
+                    @if (TempData[SharedConstant.Success] != null)
                     {
                         <div class="alert alert-success">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            @TempData[AbstractController.Success]
+                            @TempData[SharedConstant.Success]
                         </div>
                     }
                     @if (ViewData.ModelState.Any(x => x.Value.Errors.Any()))

@@ -9,6 +9,8 @@ using ExpenseManager.BusinessLogic;
 using ExpenseManager.BusinessLogic.CategoryServices;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Providers.Factory;
+using ExpenseManager.Resources;
+using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Category;
 
@@ -59,6 +61,7 @@ namespace ExpenseManager.Web.Controllers
             // first, check if model is valid
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 category.Glyphicons = CategoryService.GetGlyphicons();
                 return this.View(category);
             }
@@ -76,7 +79,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(category);
             }
 
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction(SharedConstant.Index);
         }
 
         /// <summary>
@@ -108,6 +111,7 @@ namespace ExpenseManager.Web.Controllers
             // check if model is valid
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 category.Glyphicons = CategoryService.GetGlyphicons();
                 return this.View(category);
             }
@@ -125,7 +129,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(category);
             }
 
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction(SharedConstant.Index);
         }
 
         /// <summary>
@@ -146,19 +150,19 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="model">CategoryShowModel of category to delete</param>
         /// <returns>Redirect to Index</returns>
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName(SharedConstant.Delete)]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(CategoryModel model)
         {
             if (!ModelState.IsValid)
             {
-                // error
-                return this.RedirectToAction("Index");
+                this.AddError(SharedResource.ModelStateIsNotValid);
+                return this.RedirectToAction(SharedConstant.Index);
             }
 
             await this._categoryService.DeleteCategory(model.Guid);
 
-            return this.RedirectToAction("Index");
+            return this.RedirectToAction(SharedConstant.Index);
         }
     }
 }

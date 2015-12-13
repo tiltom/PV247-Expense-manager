@@ -19,16 +19,17 @@
                @DashBoardResource.FilterCriteriaDescription
             </h4>
             <div class="col-md-2">
-                @Html.ListBoxFor(m => m.Filter.Wallets, Model.Filter.WalletsSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = SharedResource.SelectWallets})
+                @Html.ListBoxFor(m => m.Filter.Wallets, Model.Filter.WalletsSelectList, new {@class = "form-control chosen-select", @data_placeholder = SharedResource.SelectWallets})
             </div>
             <div class="col-md-2">
-                @Html.ListBoxFor(m => m.Filter.Categories, Model.Filter.CategoriesSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = SharedResource.SelectCategories })
+                @Html.ListBoxFor(m => m.Filter.Categories, Model.Filter.CategoriesSelectList,  new {@class = "form-control chosen-select",  @data_placeholder = SharedResource.SelectCategories })
             </div>
             <div class="col-md-2">
-                @Html.ListBoxFor(m => m.Filter.Budgets, Model.Filter.BudgetsSelectList, htmlAttributes: new {@class = "form-control chosen-select", @data_placeholder = SharedResource.SelectBudgets })
+                @Html.ListBoxFor(m => m.Filter.Budgets, Model.Filter.BudgetsSelectList, new {@class = "form-control chosen-select",  @data_placeholder = SharedResource.SelectBudgets })
             </div>
             <div class="col-md-2">
-                <input type="submit" class="btn btn-success" value="@SharedResource.Filter"/>
+                <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-search"></i> @SharedResource.Filter</button>
+
             </div>
         </div>
     }

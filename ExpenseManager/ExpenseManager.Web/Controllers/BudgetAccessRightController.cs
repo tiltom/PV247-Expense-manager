@@ -11,6 +11,8 @@ using ExpenseManager.BusinessLogic;
 using ExpenseManager.BusinessLogic.BudgetServices;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Resources;
+using ExpenseManager.Resources.BudgetResources;
+using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.BudgetAccessRight;
 using PagedList;
@@ -38,8 +40,8 @@ namespace ExpenseManager.Web.Controllers
                         .ToListAsync();
 
             accessRightModels.ForEach(model => model.BudgetId = id);
-            var pageNumber = page ?? 1;
-            return this.View(accessRightModels.ToPagedList(pageNumber, PageSize));
+            var pageNumber = page ?? SharedConstant.DefaultStartPage;
+            return this.View(accessRightModels.ToPagedList(pageNumber, SharedConstant.PageSize));
         }
 
         /// <summary>
@@ -72,6 +74,7 @@ namespace ExpenseManager.Web.Controllers
             // checking if model is valid
             if (!ModelState.IsValid)
             {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 model.Permissions = this.GetPermissions();
                 return this.View(model);
             }
@@ -80,7 +83,7 @@ namespace ExpenseManager.Web.Controllers
             try
             {
                 await
-                    this._budgetAccessRightService.CreateAccessBudgetRight(
+                    this._budgetAccessRightService.CreateBudgetAccessRight(
                         model.BudgetId,
                         userId,
                         model.Permission
@@ -93,7 +96,10 @@ namespace ExpenseManager.Web.Controllers
                 model.Permissions = this.GetPermissions();
                 return this.View(model);
             }
-            return this.RedirectToAction("Index", new {id = model.BudgetId});
+
+            this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullCreation, model.Permission,
+                model.AssignedUserEmail));
+            return this.RedirectToAction(SharedConstant.Index, new {id = model.BudgetId});
         }
 
         /// <summary>
@@ -124,7 +130,10 @@ namespace ExpenseManager.Web.Controllers
         {
             // checking if model is valid
             if (!ModelState.IsValid)
+            {
+                this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.View(model);
+            }
 
             try
             {
@@ -139,7 +148,8 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(model);
             }
 
-            return this.RedirectToAction("Index", new {id = model.BudgetId});
+            this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullEdit, model.AssignedUserName));
+            return this.RedirectToAction(SharedConstant.Index, new {id = model.BudgetId});
         }
 
         /// <summary>
@@ -163,19 +173,21 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <param name="model">ShowBudgetAccessRightModel of budget access right to delete</param>
         /// <returns>Redirect to Index</returns>
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName(SharedConstant.Delete)]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(ShowBudgetAccessRightModel model)
         {
             if (!ModelState.IsValid)
             {
-                // error
-                return this.RedirectToAction("Index", new {id = model.BudgetId});
+                this.AddError(SharedResource.ModelStateIsNotValid);
+                return this.RedirectToAction(SharedConstant.Index, new {id = model.BudgetId});
             }
 
             await this._budgetAccessRightService.DeleteBudgetAccessRight(model.Id);
 
-            return this.RedirectToAction("Index", new {id = model.BudgetId});
+            this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullDelete, model.Permission,
+                model.AssignedUserName));
+            return this.RedirectToAction(SharedConstant.Index, new {id = model.BudgetId});
         }
 
         #region private

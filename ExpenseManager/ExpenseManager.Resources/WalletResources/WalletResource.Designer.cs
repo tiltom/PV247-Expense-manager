@@ -104,5 +104,14 @@ namespace ExpenseManager.Resources.WalletResources {
                 return ResourceManager.GetString("WalletAccessRigts", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wallet name.
+        /// </summary>
+        public static string WalletName {
+            get {
+                return ResourceManager.GetString("WalletName", resourceCulture);
+            }
+        }
     }
 }

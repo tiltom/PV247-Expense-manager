@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using ExpenseManager.Entity;
+using ExpenseManager.Resources;
 
 namespace ExpenseManager.Web.Models.BudgetAccessRight
 {
@@ -17,13 +18,13 @@ namespace ExpenseManager.Web.Models.BudgetAccessRight
         /// <summary>
         ///     username of the user with given permission
         /// </summary>
-        [Display(Name = "User")]
+        [Display(Name = "User", ResourceType = typeof (SharedResource))]
         public string AssignedUserName { get; set; }
 
         /// <summary>
         ///     string representing permission of the user
         /// </summary>
-        [Display(Name = "Permission")]
+        [Display(Name = "Permission", ResourceType = typeof (SharedResource))]
         public PermissionEnum Permission { get; set; }
 
         /// <summary>

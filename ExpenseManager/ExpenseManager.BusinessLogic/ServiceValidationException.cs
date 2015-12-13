@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ExpenseManager.BusinessLogic.ServicesConstants;
+using ExpenseManager.Resources;
 using FluentValidation.Results;
 
 namespace ExpenseManager.BusinessLogic
 {
     public class ServiceValidationException : Exception
     {
-        public Dictionary<string, string> _errors = new Dictionary<string, string>();
-
         public ServiceValidationException()
         {
         }
@@ -16,19 +16,18 @@ namespace ExpenseManager.BusinessLogic
         public ServiceValidationException(IEnumerable<ValidationFailure> errors)
             : base(BuildErrorMesage(errors))
         {
-            foreach (var error in errors)
+            var errorsWithMessages = errors
+                .GroupBy(error => error.PropertyName)
+                .Select(error => new
+                {
+                    PropertyName = error.Key,
+                    ErrorMessage = string.Join(Environment.NewLine,
+                        error.Select(failure => failure.ErrorMessage))
+                });
+
+            foreach (var errorsWithMessage in errorsWithMessages)
             {
-                if (this._errors.ContainsKey(error.PropertyName))
-                {
-                    this._errors[error.PropertyName] =
-                        this._errors[error.PropertyName] +
-                        Environment.NewLine +
-                        error.ErrorMessage;
-                }
-                else
-                {
-                    this._errors.Add(error.PropertyName, error.ErrorMessage);
-                }
+                Errors[errorsWithMessage.PropertyName] = errorsWithMessage.ErrorMessage;
             }
         }
 
@@ -42,15 +41,12 @@ namespace ExpenseManager.BusinessLogic
         {
         }
 
-        public Dictionary<string, string> Errors
-        {
-            get { return this._errors; }
-        }
+        public Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
 
         private static string BuildErrorMesage(IEnumerable<ValidationFailure> errors)
         {
-            var arr = errors.Select(x => "\r\n -- " + x.ErrorMessage).ToArray();
-            return "Validation failed: " + string.Join("", arr);
+            var arr = errors.Select(error => ValidationConstant.ErrorLineDelimeter + error.ErrorMessage).ToArray();
+            return string.Format(SharedResource.ValidationFailed, string.Join("", arr));
         }
     }
 }

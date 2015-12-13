@@ -1,10 +1,10 @@
 ﻿@using ExpenseManager.Resources.TransactionResources
+@using ExpenseManager.Web.Constants
 @using ExpenseManager.Web.Controllers
 @model ExpenseManager.Web.Models.Transaction.NewTransactionModel
 
 @{
     ViewBag.Title = @Model.Expense ? TransactionResource.AddExpense : TransactionResource.AddIncome;
-    HtmlHelper.ClientValidationEnabled = false;
 }
 
 
@@ -20,7 +20,6 @@
             @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-3">
                 @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control", @data_val = "false" } })
-                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -28,7 +27,6 @@
             @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-3">
                 @Html.DropDownListFor(model => model.CategoryId, Model.Categories, TransactionResource.CategorySelection, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -45,7 +43,7 @@
             var amount = (ViewData.ModelState.ContainsKey("Amount")) ? ViewData.ModelState["Amount"].Errors.Count : 0;
             var categoryId = (ViewData.ModelState.ContainsKey("CategoryId")) ? ViewData.ModelState["CategoryId"].Errors.Count : 0;
             if (ViewData.ModelState.Values.Sum(m => m.Errors.Count) > amount + categoryId || Model.BudgetId != null || Model.Description != null ||
-                (Model.Date.ToString(AbstractController.DateFormat) != DateTime.Now.ToString(AbstractController.DateFormat) && Model.Date != new DateTime()) || Model.IsRepeatable)
+                (Model.Date.ToString(SharedConstant.DateFormat) != DateTime.Now.ToString(SharedConstant.DateFormat) && Model.Date != new DateTime()) || Model.IsRepeatable)
             {
                 collapse += " in";
             }
@@ -55,9 +53,8 @@
                 @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-3">
                     @(Model.Date == new DateTime() ?
-                    Html.TextBoxFor(model => model.Date, new {@class = "form-control datepicker", @Value = DateTime.Now.ToString(AbstractController.DateFormat), id = "IssueDate"}) :
-                    Html.TextBoxFor(model => model.Date, new { @class = "form-control datepicker", @Value = Model.Date.ToString(AbstractController.DateFormat), id = "IssueDate" }))
-                    @Html.ValidationMessageFor(model => model.Date, "", new {@class = "text-danger"})
+                    Html.TextBoxFor(model => model.Date, new {@class = "form-control datepicker", @Value = DateTime.Now.ToString(SharedConstant.DateFormat), id = "IssueDate"}) :
+                    Html.TextBoxFor(model => model.Date, new { @class = "form-control datepicker", @Value = Model.Date.ToString(SharedConstant.DateFormat), id = "IssueDate" }))
                 </div>
             </div>
 
@@ -65,7 +62,6 @@
                 @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-3">
                     @Html.TextAreaFor(model => model.Description, new { @class = "form-control noresize", @rows = 5 })
-                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                 </div>
             </div>
 
@@ -73,7 +69,6 @@
                 @Html.LabelFor(model => model.CurrencyId, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-3">
                     @Html.DropDownListFor(model => model.CurrencyId, Model.Currencies, TransactionResource.CurrencySelection, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.CurrencyId, "", new { @class = "text-danger" })
                 </div>
             </div>
 
@@ -82,7 +77,6 @@
                 @Html.LabelFor(model => model.BudgetId, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-3">
                     @Html.DropDownListFor(model => model.BudgetId, Model.Budgets, TransactionResource.BudgetSelection, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.BudgetId, "", new { @class = "text-danger" })
                 </div>
             </div>
 
@@ -90,7 +84,6 @@
                 @Html.LabelFor(model => model.IsRepeatable, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-3" style="margin-top: 7px">
                     @Html.CheckBoxFor(model => model.IsRepeatable, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.IsRepeatable, "", new { @class = "text-danger" })
                 </div>
             </div>
 
@@ -109,11 +102,9 @@
                     
                         <div class="col-md-1 col-xs-4">
                             @Html.EditorFor(model => model.NextRepeat, new { htmlAttributes = new { @class = "form-control", @Value = Model.NextRepeat ?? 1 } })
-                            @Html.ValidationMessageFor(model => model.NextRepeat, "", new { @class = "text-danger" })
                         </div>
                         <div class="col-md-2 col-xs-7">
                             @Html.EnumDropDownListFor(model => model.FrequencyType, TransactionResource.FrequencySelection, htmlAttributes: new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.FrequencyType, "", new { @class = "text-danger" })
                         </div>
                     
                 </div>
@@ -122,9 +113,8 @@
                     @Html.LabelFor(model => model.LastOccurrence, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-3">
                         @(Model.LastOccurrence == null ?
-                        Html.TextBoxFor(model => model.LastOccurrence, new { @class = "form-control datepicker", placeholder = DateTime.Now.AddDays(1).ToString(AbstractController.DateFormat) }) :
-                        Html.TextBoxFor(model => model.LastOccurrence, new { @class = "form-control datepicker", @Value = Model.LastOccurrence.GetValueOrDefault().ToString(AbstractController.DateFormat) }))
-                        @Html.ValidationMessageFor(model => model.LastOccurrence, "", new {@class = "text-danger"})
+                        Html.TextBoxFor(model => model.LastOccurrence, new { @class = "form-control datepicker", placeholder = DateTime.Now.AddDays(1).ToString(SharedConstant.DateFormat) }) :
+                        Html.TextBoxFor(model => model.LastOccurrence, new { @class = "form-control datepicker", @Value = Model.LastOccurrence.GetValueOrDefault().ToString(SharedConstant.DateFormat) }))
                     </div>
                 </div>
             </div>
@@ -143,6 +133,5 @@
 
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("/Scripts/transactionCheckbox.js")
 }
