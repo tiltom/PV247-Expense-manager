@@ -1,5 +1,4 @@
-﻿using ExpenseManager.BusinessLogic.CategoryServices;
-using ExpenseManager.Entity.Categories;
+﻿using ExpenseManager.Entity.Categories;
 using ExpenseManager.Resources.CategoryResources;
 using FluentValidation;
 
@@ -17,9 +16,6 @@ namespace ExpenseManager.BusinessLogic.Validators
                 .NotNull()
                 .NotEmpty()
                 .WithLocalizedMessage(() => CategoryResource.DescriptionNotNullOrEmpty);
-            this.RuleFor(category => category.IconPath)
-                .Must(iconPath => CategoryService.GetGlyphicons().Contains(iconPath))
-                .WithLocalizedMessage(() => CategoryResource.GlyphiconIconInList);
         }
     }
 }

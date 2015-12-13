@@ -41,12 +41,7 @@ namespace ExpenseManager.Web.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            var glyphicons = CategoryService.GetGlyphicons();
-            return this.View(new CategoryModel
-            {
-                Glyphicons = glyphicons,
-                Icon = glyphicons.ElementAt(0)
-            });
+            return this.View();
         }
 
         /// <summary>
@@ -62,7 +57,6 @@ namespace ExpenseManager.Web.Controllers
             if (!ModelState.IsValid)
             {
                 this.AddError(SharedResource.ModelStateIsNotValid);
-                category.Glyphicons = CategoryService.GetGlyphicons();
                 return this.View(category);
             }
 
@@ -75,7 +69,6 @@ namespace ExpenseManager.Web.Controllers
             catch (ServiceValidationException exception)
             {
                 ModelState.AddModelErrors(exception);
-                category.Glyphicons = CategoryService.GetGlyphicons();
                 return this.View(category);
             }
 
@@ -92,9 +85,7 @@ namespace ExpenseManager.Web.Controllers
         {
             // find category by its Id
             var category = await this._categoryService.GetCategoryByGuid(guid);
-
             var viewModel = Mapper.Map<CategoryModel>(category);
-            viewModel.Glyphicons = CategoryService.GetGlyphicons();
 
             return this.View(viewModel);
         }
@@ -112,7 +103,6 @@ namespace ExpenseManager.Web.Controllers
             if (!ModelState.IsValid)
             {
                 this.AddError(SharedResource.ModelStateIsNotValid);
-                category.Glyphicons = CategoryService.GetGlyphicons();
                 return this.View(category);
             }
 
@@ -125,7 +115,6 @@ namespace ExpenseManager.Web.Controllers
             catch (ServiceValidationException exception)
             {
                 ModelState.AddModelErrors(exception);
-                category.Glyphicons = CategoryService.GetGlyphicons();
                 return this.View(category);
             }
 

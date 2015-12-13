@@ -32,16 +32,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Icon, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <div class="btn-group" data-toggle="buttons">
-                    @foreach (var glyphicon in Model.Glyphicons)
-                    {
-                        var active = Model.Icon == glyphicon ? "active" : "";
-                        <label class="pdsa-radiobutton btn btn-default @active">
-                            <span class="glyphicon @glyphicon"></span>
-                            @Html.RadioButtonFor(x => x.Icon, glyphicon)
-                        </label>
-                    }
-                </div>
+                <button role="iconpicker" name="icon" data-icon=@Model.Icon class="btn btn-default" data-align="left" data-search="false" data-footer="false" data-rows="3" data-cols="7" data-arrow-class="btn-default" data-selected-class="btn-success"></button>
             </div>
         </div>
 

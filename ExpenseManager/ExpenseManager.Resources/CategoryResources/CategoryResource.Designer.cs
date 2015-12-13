@@ -133,15 +133,6 @@ namespace ExpenseManager.Resources.CategoryResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Selected glyphicon is not in supported!.
-        /// </summary>
-        public static string GlyphiconIconInList {
-            get {
-                return ResourceManager.GetString("GlyphiconIconInList", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Icon.
         /// </summary>
         public static string Icon {

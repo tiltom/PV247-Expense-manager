@@ -141,9 +141,6 @@
   <data name="Expenses" xml:space="preserve">
     <value>Expenses</value>
   </data>
-  <data name="GlyphiconIconInList" xml:space="preserve">
-    <value>Selected glyphicon is not in supported!</value>
-  </data>
   <data name="Icon" xml:space="preserve">
     <value>Icon</value>
   </data>

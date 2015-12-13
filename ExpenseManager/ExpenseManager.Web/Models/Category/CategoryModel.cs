@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ExpenseManager.Entity.Enums;
 using ExpenseManager.Resources.CategoryResources;
@@ -40,7 +39,5 @@ namespace ExpenseManager.Web.Models.Category
         [Required]
         [Display(ResourceType = typeof (CategoryResource), Name = "Type")]
         public CategoryType Type { get; set; }
-
-        public IEnumerable<string> Glyphicons { get; set; }
     }
 }
