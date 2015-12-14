@@ -106,6 +106,15 @@ namespace ExpenseManager.Resources.WalletResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wallet was successfully edited.
+        /// </summary>
+        public static string WalletEdited {
+            get {
+                return ResourceManager.GetString("WalletEdited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Wallet name.
         /// </summary>
         public static string WalletName {

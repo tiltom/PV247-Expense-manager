@@ -122,9 +122,11 @@ namespace ExpenseManager.Web.Controllers
             //Check server validation
             if (ModelState.IsValid)
             {
+                this.AddSuccess(TransactionResource.TransactionCreated);
                 return this.RedirectToAction(SharedConstant.Index, new {wallet = transaction.WalletId});
             }
             await this.SetTransactionFormsDropdowns(transaction);
+
             return this.View(transaction);
         }
 
@@ -176,9 +178,11 @@ namespace ExpenseManager.Web.Controllers
             //check if model is valid
             if (ModelState.IsValid)
             {
+                this.AddSuccess(TransactionResource.TransactionEdited);
                 return this.RedirectToAction(SharedConstant.Index, new {wallet = transaction.WalletId});
             }
             await this.SetTransactionFormsDropdowns(transaction);
+
             return this.View(transaction);
         }
 
@@ -219,9 +223,11 @@ namespace ExpenseManager.Web.Controllers
                 this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.RedirectToAction(SharedConstant.Index);
             }
+
             //removing transaction from DB
             var walletId = await this._transactionService.RemoveTransaction(await this.CurrentProfileId(), model.Id);
 
+            this.AddSuccess(TransactionResource.TransactionDeleted);
             return this.RedirectToAction(SharedConstant.Index, new {wallet = walletId});
         }
 
@@ -276,6 +282,7 @@ namespace ExpenseManager.Web.Controllers
                 ModelState.AddModelError(TransactionConstant.File, TransactionResource.FileFormatError);
             }
 
+            this.AddSuccess(TransactionResource.ImportSuccessful);
             return this.View();
         }
 

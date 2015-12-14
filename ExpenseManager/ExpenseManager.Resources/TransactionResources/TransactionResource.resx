@@ -237,4 +237,16 @@
   <data name="TransactionFileName" xml:space="preserve">
     <value>transaction.csv</value>
   </data>
+  <data name="ImportSuccessful" xml:space="preserve">
+    <value>Your transactions were successfully imported into your wallet</value>
+  </data>
+  <data name="TransactionCreated" xml:space="preserve">
+    <value>Your transaction was successfully created</value>
+  </data>
+  <data name="TransactionDeleted" xml:space="preserve">
+    <value>Transaction {0} for {1} was deleted</value>
+  </data>
+  <data name="TransactionEdited" xml:space="preserve">
+    <value>Transaction was successfully edited</value>
+  </data>
 </root>

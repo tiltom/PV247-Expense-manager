@@ -6,6 +6,7 @@ using ExpenseManager.BusinessLogic;
 using ExpenseManager.BusinessLogic.WalletServices;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Resources;
+using ExpenseManager.Resources.WalletResources;
 using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Wallet;
@@ -67,6 +68,8 @@ namespace ExpenseManager.Web.Controllers
                 wallet.Currencies = await this.GetCurrencies();
                 return this.View(wallet);
             }
+
+            this.AddSuccess(WalletResource.WalletEdited);
             return this.RedirectToAction(SharedResource.Index, SharedConstant.DashBoard);
         }
     }

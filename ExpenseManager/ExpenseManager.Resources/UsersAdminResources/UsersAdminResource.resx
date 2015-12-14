@@ -183,4 +183,13 @@
   <data name="WalletCurrency" xml:space="preserve">
     <value>Wallet currency</value>
   </data>
+  <data name="UserCreated" xml:space="preserve">
+    <value>User {0} was successfully created</value>
+  </data>
+  <data name="UserDeleted" xml:space="preserve">
+    <value>User {0} was successfully deleted</value>
+  </data>
+  <data name="UserEdited" xml:space="preserve">
+    <value>User {0} was successfully edited</value>
+  </data>
 </root>

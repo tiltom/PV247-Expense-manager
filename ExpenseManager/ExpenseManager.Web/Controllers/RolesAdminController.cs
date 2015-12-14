@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using ExpenseManager.Database;
+using ExpenseManager.Resources.RolesAdmin;
 using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Constants.UserConstants;
 using ExpenseManager.Web.Helpers;
@@ -19,7 +20,7 @@ using WebGrease.Css.Extensions;
 namespace ExpenseManager.Web.Controllers
 {
     [Authorize(Roles = UserIdentity.AdminRole)]
-    public class RolesAdminController : Controller
+    public class RolesAdminController : AbstractController
     {
         private ApplicationRoleManager _roleManager;
 
@@ -125,7 +126,11 @@ namespace ExpenseManager.Web.Controllers
                 var role = new IdentityRole(roleViewModel.Name);
                 var roleresult = await RoleManager.CreateAsync(role);
 
-                if (roleresult.Succeeded) return this.RedirectToAction(SharedConstant.Index);
+                if (roleresult.Succeeded)
+                {
+                    this.AddSuccess(RolesAdminResource.RoleCreated);
+                    return this.RedirectToAction(SharedConstant.Index);
+                }
 
                 roleresult.Errors.ForEach(error => ModelState.AddModelError("", error));
                 return this.View();
@@ -174,6 +179,7 @@ namespace ExpenseManager.Web.Controllers
                 var role = await RoleManager.FindByIdAsync(roleModel.Id);
                 role.Name = roleModel.Name;
                 await RoleManager.UpdateAsync(role);
+                this.AddSuccess(RolesAdminResource.RoleEdited);
                 return this.RedirectToAction(SharedConstant.Index);
             }
             return this.View();
@@ -238,6 +244,8 @@ namespace ExpenseManager.Web.Controllers
                     result.Errors.ForEach(error => ModelState.AddModelError("", error));
                     return this.View();
                 }
+
+                this.AddSuccess(RolesAdminResource.RoleDeleted);
                 return this.RedirectToAction(SharedConstant.Index);
             }
             return this.View();

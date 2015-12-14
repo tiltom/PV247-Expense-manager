@@ -71,26 +71,26 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         ///     Confirm budgetAccessRight when user guid is known, otherwise redirects user to registration.
         /// </summary>
-        /// <param name="b">Budget id</param>
-        /// <param name="u">User id</param>
-        /// <param name="p">Permission</param>
+        /// <param name="budgetGuid">Budget id</param>
+        /// <param name="userGuid">User id</param>
+        /// <param name="permission">Permission</param>
         /// <returns>Redirect to Index when user was created. To registration otherwise.</returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmRequest(Guid b, Guid u, Entity.PermissionEnum p)
+        public async Task<ActionResult> ConfirmRequest(Guid budgetGuid, Guid userGuid, Entity.PermissionEnum permission)
         {
-            var user = await UserContext.UserProfiles.Where(user2 => user2.Guid == u).FirstOrDefaultAsync();
+            var user = await UserContext.UserProfiles.Where(user2 => user2.Guid == userGuid).FirstOrDefaultAsync();
 
             if (user != null)
             {
-                await this._budgetAccessRightService.CreateBudgetAccessRight(b, u, p);
-                Budget budget = await this._budgetService.GetBudgetById(b);
-                this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullCreation, p, budget.Name));
+                await this._budgetAccessRightService.CreateBudgetAccessRight(budgetGuid, userGuid, permission);
+                Budget budget = await this._budgetService.GetBudgetById(budgetGuid);
+                this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullCreation, permission, budget.Name));
                 return this.RedirectToAction(SharedConstant.Index, "DashBoard");
             }
             else
             {
-                return this.RedirectToAction("Register", "Account", new { budgetId = b, permission = p });
+                return this.RedirectToAction("Register", "Account", new { budgetId = budgetGuid, permission = permission });
             }
         }
 

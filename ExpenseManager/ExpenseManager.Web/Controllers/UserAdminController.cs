@@ -162,6 +162,8 @@ namespace ExpenseManager.Web.Controllers
                 userWithPasswordViewModel.Currencies = await this.GetCurrencies();
                 return this.View(userWithPasswordViewModel);
             }
+
+            this.AddSuccess(string.Format(UsersAdminResource.UserCreated, userWithPasswordViewModel.Email));
             return this.RedirectToAction(SharedConstant.Index);
         }
 
@@ -244,6 +246,8 @@ namespace ExpenseManager.Web.Controllers
                 result.Errors.ForEach(error => ModelState.AddModelError("", error));
                 return this.View(editUser);
             }
+
+            this.AddSuccess(string.Format(UsersAdminResource.UserEdited, editUser.Email));
             return this.RedirectToAction(SharedConstant.Index);
         }
 
@@ -304,6 +308,7 @@ namespace ExpenseManager.Web.Controllers
             var budgetProvider = ProvidersFactory.GetNewBudgetsProviders();
             await budgetProvider.DeteleAsync(profile);
 
+            this.AddSuccess(string.Format(UsersAdminResource.UserDeleted, user.Email));
             return this.RedirectToAction(SharedConstant.Index);
         }
 

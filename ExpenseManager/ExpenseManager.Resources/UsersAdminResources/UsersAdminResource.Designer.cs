@@ -223,11 +223,38 @@ namespace ExpenseManager.Resources.UsersAdminResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User {0} was successfully created.
+        /// </summary>
+        public static string UserCreated {
+            get {
+                return ResourceManager.GetString("UserCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User {0} was successfully deleted.
+        /// </summary>
+        public static string UserDeleted {
+            get {
+                return ResourceManager.GetString("UserDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User details.
         /// </summary>
         public static string UserDetails {
             get {
                 return ResourceManager.GetString("UserDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User {0} was successfully edited.
+        /// </summary>
+        public static string UserEdited {
+            get {
+                return ResourceManager.GetString("UserEdited", resourceCulture);
             }
         }
         

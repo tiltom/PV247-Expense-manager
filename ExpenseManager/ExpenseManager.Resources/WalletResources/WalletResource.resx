@@ -132,6 +132,9 @@
   <data name="WalletAccessRigts" xml:space="preserve">
     <value>Wallet access rigts</value>
   </data>
+  <data name="WalletEdited" xml:space="preserve">
+    <value>Wallet was successfully edited</value>
+  </data>
   <data name="WalletName" xml:space="preserve">
     <value>Wallet name</value>
   </data>
