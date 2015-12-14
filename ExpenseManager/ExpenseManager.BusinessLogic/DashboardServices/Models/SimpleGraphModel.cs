@@ -3,7 +3,7 @@
     /// <summary>
     ///     class for wrapping data returned from queries to graph generator
     /// </summary>
-    public class SimpleGraphModel
+    internal class SimpleGraphModel
     {
         /// <summary>
         ///     label of property

@@ -224,6 +224,7 @@ namespace ExpenseManager.Web
                     options => options.MapFrom(model => model.CategoriesIncomeChart)
                 )
                 .ForMember(view => view.Transactions, options => options.MapFrom(model => model.Transactions))
+                .ForMember(view => view.BudgetLimitChart, options => options.MapFrom(model => model.BudgetLimitChart))
                 .ForMember(view => view.YearSummaryChart, options => options.MapFrom(model => model.YearSummaryChart));
         }
     }

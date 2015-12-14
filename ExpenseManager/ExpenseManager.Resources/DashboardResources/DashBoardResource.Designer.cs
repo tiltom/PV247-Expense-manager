@@ -61,11 +61,29 @@ namespace ExpenseManager.Resources.DashboardResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Graph with limits in all budgets.
+        /// </summary>
+        public static string BudgetTabDescription {
+            get {
+                return ResourceManager.GetString("BudgetTabDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budgets.
+        /// </summary>
+        public static string BudgetTabLabel {
+            get {
+                return ResourceManager.GetString("BudgetTabLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expenses by category in last month.
         /// </summary>
-        public static string ExpensesByCategoryInLastMonth {
+        public static string ExpensesByCategoryInLastMonthTabDescription {
             get {
-                return ResourceManager.GetString("ExpensesByCategoryInLastMonth", resourceCulture);
+                return ResourceManager.GetString("ExpensesByCategoryInLastMonthTabDescription", resourceCulture);
             }
         }
         
@@ -90,18 +108,27 @@ namespace ExpenseManager.Resources.DashboardResources {
         /// <summary>
         ///   Looks up a localized string similar to Incomes by category in last month.
         /// </summary>
-        public static string IncomesByCategoryInLastMonth {
+        public static string IncomesByCategoryInLastMonthTabDescription {
             get {
-                return ResourceManager.GetString("IncomesByCategoryInLastMonth", resourceCulture);
+                return ResourceManager.GetString("IncomesByCategoryInLastMonthTabDescription", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Last month report.
         /// </summary>
-        public static string LastMonthReport {
+        public static string LastMonthTabDescription {
             get {
-                return ResourceManager.GetString("LastMonthReport", resourceCulture);
+                return ResourceManager.GetString("LastMonthTabDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Month.
+        /// </summary>
+        public static string LastMonthTabLabel {
+            get {
+                return ResourceManager.GetString("LastMonthTabLabel", resourceCulture);
             }
         }
         
@@ -117,9 +144,18 @@ namespace ExpenseManager.Resources.DashboardResources {
         /// <summary>
         ///   Looks up a localized string similar to Last year report.
         /// </summary>
-        public static string LastYearReport {
+        public static string LastYearTabDescription {
             get {
-                return ResourceManager.GetString("LastYearReport", resourceCulture);
+                return ResourceManager.GetString("LastYearTabDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Year.
+        /// </summary>
+        public static string LastYearTabLabel {
+            get {
+                return ResourceManager.GetString("LastYearTabLabel", resourceCulture);
             }
         }
         
