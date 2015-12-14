@@ -181,36 +181,41 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
 
         private async Task<BarChart> CreateChartForBudgetLimits(Guid userId, Currency currency)
         {
-            var budgets = await this._transactionsProvider.Budgets.Where(
-                budget =>
-                    budget.AccessRights.Any(
-                        right => right.UserProfile.Guid == userId && right.Permission == PermissionEnum.Owner))
-                .ToListAsync();
-
+            var budgets = await this.GetAccessibleBudgets(userId);
             var transactionFromBudgets = await this.GetTransactionFromBudgets(budgets);
-            var graphModels = new List<MultiValueGraphModel>();
-            var complexGraphModel = new ComplexGraphModel
+            var graphModels = new List<BudgetWithLimitGraphModel>();
+            var complexGraphModel = new BudgetLimitGraphModel
             {
                 Values = graphModels,
                 Label = DashBoardResource.BudgetTabDescription
             };
 
-            foreach (var budget in budgets)
-            {
-                var budgetTransactions = transactionFromBudgets.ContainsKey(budget.Guid.ToString())
-                    ? transactionFromBudgets[budget.Guid.ToString()]
-                    : Enumerable.Empty<Transaction>();
-                var sumInUserCurrency =
-                    budgetTransactions
-                        .Select(transaction => Transformation.ChangeCurrencyForNewTransaction(transaction, currency))
-                        .Sum(transaction => transaction.Amount);
-                graphModels.Add(new MultiValueGraphModel
+            graphModels.AddRange(from budget in budgets
+                let budgetTransactions =
+                    transactionFromBudgets.ContainsKey(budget.Guid.ToString())
+                        ? transactionFromBudgets[budget.Guid.ToString()]
+                        : Enumerable.Empty<Transaction>()
+                let sumInUserCurrency =
+                    budgetTransactions.Select(
+                        transaction => Transformation.ChangeCurrencyForNewTransaction(transaction, currency))
+                        .Sum(transaction => transaction.Amount)
+                select new BudgetWithLimitGraphModel
                 {
                     Label = budget.Name,
-                    Values = new List<decimal> {budget.Limit, sumInUserCurrency}
+                    BudgetLimit = budget.Limit,
+                    ComputedTransaction = sumInUserCurrency
                 });
-            }
             return this.GenerateBarChart(complexGraphModel);
+        }
+
+        private async Task<List<Budget>> GetAccessibleBudgets(Guid userId)
+        {
+            var budgets = await this._transactionsProvider.Budgets.Where(
+                budget =>
+                    budget.AccessRights.Any(
+                        right => right.UserProfile.Guid == userId && right.Permission == PermissionEnum.Owner))
+                .ToListAsync();
+            return budgets;
         }
 
         private async Task<Dictionary<string, IEnumerable<Transaction>>> GetTransactionFromBudgets(List<Budget> budgets)
@@ -267,20 +272,7 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                 ComplexData =
                 {
                     Labels = data.GraphData.Select(graphData => graphData.Label).ToList(),
-                    Datasets = new List<ComplexDataset>
-                    {
-                        new ComplexDataset
-                        {
-                            Data = data.GraphData.Select(t => Convert.ToDouble(t.Value)).ToList(),
-                            Label = data.Description,
-                            FillColor = ColorGeneratorConstants.Transparent,
-                            StrokeColor = this._colorGenerator.GenerateColor(),
-                            PointColor = ColorGeneratorConstants.Black,
-                            PointStrokeColor = ColorGeneratorConstants.White,
-                            PointHighlightFill = ColorGeneratorConstants.White,
-                            PointHighlightStroke = ColorGeneratorConstants.Black
-                        }
-                    }
+                    Datasets = this.GenerateDataSets(data)
                 }
             };
             // graph settings for dynamic charts
@@ -290,8 +282,26 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
             return lineChart;
         }
 
+        private List<ComplexDataset> GenerateDataSets(GraphWithDescriptionModel data)
+        {
+            return new List<ComplexDataset>
+            {
+                new ComplexDataset
+                {
+                    Data = data.GraphData.Select(t => Convert.ToDouble(t.Value)).ToList(),
+                    Label = data.Description,
+                    FillColor = ColorGeneratorConstants.Transparent,
+                    StrokeColor = this._colorGenerator.GenerateColor(),
+                    PointColor = ColorGeneratorConstants.Black,
+                    PointStrokeColor = ColorGeneratorConstants.White,
+                    PointHighlightFill = ColorGeneratorConstants.White,
+                    PointHighlightStroke = ColorGeneratorConstants.Black
+                }
+            };
+        }
 
-        private BarChart GenerateBarChart(ComplexGraphModel data)
+
+        private BarChart GenerateBarChart(BudgetLimitGraphModel data)
         {
             // check if  enough data for bar chart
             if (!data.Values.Any())
@@ -304,24 +314,33 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                 {
                     Labels = data.Values.Select(graphData => graphData.Label).ToList(),
                     Datasets =
-                        data.Values.Select(values =>
-                            new ComplexDataset
-                            {
-                                Data = values.Values.Select(Convert.ToDouble).ToList(),
-                                Label = values.Label,
-                                FillColor = ColorGeneratorConstants.Transparent,
-                                StrokeColor = this._colorGenerator.GenerateColor(),
-                                PointColor = ColorGeneratorConstants.Black,
-                                PointStrokeColor = ColorGeneratorConstants.White,
-                                PointHighlightFill = ColorGeneratorConstants.White,
-                                PointHighlightStroke = ColorGeneratorConstants.Black
-                            }).ToList()
+                        new List<ComplexDataset>
+                        {
+                            this.GenerateComplexData(data.Values.Select(t => t.BudgetLimit).ToList(),
+                                ColorGeneratorConstants.Grey),
+                            this.GenerateComplexData(data.Values.Select(t => t.ComputedTransaction).ToList(),
+                                ColorGeneratorConstants.Red)
+                        }
                 }
             };
             // graph settings for dynamic charts
             lineChart.ChartConfiguration.ScaleBeginAtZero = false;
             lineChart.ChartConfiguration.Responsive = true;
             return lineChart;
+        }
+
+        private ComplexDataset GenerateComplexData(List<decimal> values, string color)
+        {
+            return new ComplexDataset
+            {
+                Data = values.Select(Convert.ToDouble).ToList(),
+                FillColor = color,
+                StrokeColor = color,
+                PointColor = ColorGeneratorConstants.Black,
+                PointStrokeColor = ColorGeneratorConstants.White,
+                PointHighlightFill = ColorGeneratorConstants.White,
+                PointHighlightStroke = ColorGeneratorConstants.Black
+            };
         }
 
         private PieChart GeneratePieChart(List<SimpleGraphModel> result)
@@ -357,8 +376,8 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
             return
                 this._transactionsProvider.Transactions
                     .Where(transaction =>
-                        (transaction.Wallet.WalletAccessRights.Any(right => right.UserProfile.Guid == userId) ||
-                         transaction.Budget.AccessRights.Any(right => right.UserProfile.Guid == userId))
+                        transaction.Wallet.WalletAccessRights.Any(right => right.UserProfile.Guid == userId) ||
+                        transaction.Budget.AccessRights.Any(right => right.UserProfile.Guid == userId)
                     );
         }
 

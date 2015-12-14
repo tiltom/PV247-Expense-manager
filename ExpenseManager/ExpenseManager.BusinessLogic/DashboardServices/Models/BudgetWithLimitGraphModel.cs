@@ -1,18 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace ExpenseManager.BusinessLogic.DashboardServices.Models
+﻿namespace ExpenseManager.BusinessLogic.DashboardServices.Models
 {
     /// <summary>
     ///     class for wrapping data with multiple values from graph generator
     /// </summary>
-    internal class MultiValueGraphModel
+    internal class BudgetWithLimitGraphModel
     {
-        public MultiValueGraphModel()
-        {
-            Values = Enumerable.Empty<decimal>();
-        }
-
         /// <summary>
         ///     label of property
         /// </summary>
@@ -21,6 +13,11 @@ namespace ExpenseManager.BusinessLogic.DashboardServices.Models
         /// <summary>
         ///     value of property
         /// </summary>
-        public IEnumerable<decimal> Values { get; set; }
+        public decimal BudgetLimit { get; set; }
+
+        /// <summary>
+        ///     value of property
+        /// </summary>
+        public decimal ComputedTransaction { get; set; }
     }
 }

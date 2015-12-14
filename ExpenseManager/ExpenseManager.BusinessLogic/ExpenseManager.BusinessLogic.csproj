@@ -99,11 +99,11 @@
     <Compile Include="ColorGeneratorService.cs" />
     <Compile Include="CommonService.cs" />
     <Compile Include="DashboardServices\DashBoardService.cs" />
-    <Compile Include="DashboardServices\Models\ComplexGraphModel.cs" />
+    <Compile Include="DashboardServices\Models\BudgetLimitGraphModel.cs" />
     <Compile Include="DashboardServices\Models\DashBoardServiceModel.cs" />
     <Compile Include="DashboardServices\Models\FilterDataServiceModel.cs" />
     <Compile Include="DashboardServices\Models\GraphWithDescriptionModel.cs" />
-    <Compile Include="DashboardServices\Models\MultiValueGraphModel.cs" />
+    <Compile Include="DashboardServices\Models\BudgetWithLimitGraphModel.cs" />
     <Compile Include="DashboardServices\Models\SimpleGraphModel.cs" />
     <Compile Include="ExchangeRates\ExchangeRate.cs" />
     <Compile Include="ExchangeRates\ExchangeRateReader.cs" />

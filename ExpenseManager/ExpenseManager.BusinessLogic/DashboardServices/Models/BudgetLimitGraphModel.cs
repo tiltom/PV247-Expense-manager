@@ -6,11 +6,11 @@ namespace ExpenseManager.BusinessLogic.DashboardServices.Models
     /// <summary>
     ///     class for wrapping data with more labels and  multiple values from graph
     /// </summary>
-    internal class ComplexGraphModel
+    internal class BudgetLimitGraphModel
     {
-        public ComplexGraphModel()
+        public BudgetLimitGraphModel()
         {
-            Values = Enumerable.Empty<MultiValueGraphModel>();
+            Values = Enumerable.Empty<BudgetWithLimitGraphModel>();
         }
 
         /// <summary>
@@ -21,6 +21,6 @@ namespace ExpenseManager.BusinessLogic.DashboardServices.Models
         /// <summary>
         ///     value of property
         /// </summary>
-        public IEnumerable<MultiValueGraphModel> Values { get; set; }
+        public IEnumerable<BudgetWithLimitGraphModel> Values { get; set; }
     }
 }
