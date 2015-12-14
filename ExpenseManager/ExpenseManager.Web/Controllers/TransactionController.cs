@@ -316,6 +316,7 @@ namespace ExpenseManager.Web.Controllers
             transaction.Currencies = await this._transactionService.GetCurrenciesSelection();
             transaction.Categories = await this._transactionService.GetCategoriesSelection(transaction.Expense);
             transaction.Budgets = await this._transactionService.GetBudgetsSelection(await this.CurrentProfileId());
+            transaction.CategoryIconDictionary = await this._transactionService.GetCategoryIconDictionary();
         }
     }
 }

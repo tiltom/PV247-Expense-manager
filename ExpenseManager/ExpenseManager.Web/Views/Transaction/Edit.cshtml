@@ -26,89 +26,100 @@
         </div>
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-3">
-            @Html.DropDownListFor(model => model.CategoryId, Model.Categories, TransactionResource.CategorySelection, htmlAttributes: new { @class = "form-control" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-3">
-            @Html.TextBoxFor(model => model.Date, new { @class = "form-control datepicker", @Value = Model.Date.ToString(SharedConstant.DateFormat) })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-3">
-            @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @rows = 5 })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.CurrencyId, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-3">
-            @Html.DropDownListFor(model => model.CurrencyId, Model.Currencies, TransactionResource.CurrencySelection, htmlAttributes: new { @class = "form-control" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.BudgetId, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-3">
-            @Html.DropDownListFor(model => model.BudgetId, Model.Budgets, TransactionResource.BudgetSelection, htmlAttributes: new { @class = "form-control" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.IsRepeatable, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-3" style="margin-top: 7px">
-            @Html.CheckBoxFor(model => model.IsRepeatable, new { htmlAttributes = new { @class = "form-control" } })
-        </div>
-    </div>
-
-    @{
-        var repeat = "";
-        if (!@Html.ViewData.Model.IsRepeatable)
-        {
-            repeat = "hidden";
-        }
-    }
-    <div class="repeatableTransaction" @repeat>
         <div class="form-group">
-            @Html.LabelFor(model => model.NextRepeat, htmlAttributes: new { @class = "control-label col-md-2 col-xs-12" })
-            
+            @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownListFor(model => model.CategoryId, Model.Categories, TransactionResource.CategorySelection, htmlAttributes: new {@class = "form-control", @id = "categoryDropdown", @onchange = "iconChange()"})               
+            </div>
+            <div class="col-md-1">
+                    <span id="categoryImage"></span>
+            </div>
+            </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.TextBoxFor(model => model.Date, new { @class = "form-control datepicker", @Value = Model.Date.ToString(SharedConstant.DateFormat) })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @rows = 5 })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CurrencyId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownListFor(model => model.CurrencyId, Model.Currencies, TransactionResource.CurrencySelection, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BudgetId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownListFor(model => model.BudgetId, Model.Budgets, TransactionResource.BudgetSelection, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsRepeatable, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3" style="margin-top: 7px">
+                @Html.CheckBoxFor(model => model.IsRepeatable, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        @{
+            var repeat = "";
+            if (!@Html.ViewData.Model.IsRepeatable)
+            {
+                repeat = "hidden";
+            }
+        }
+        <div class="repeatableTransaction" @repeat>
+            <div class="form-group">
+                @Html.LabelFor(model => model.NextRepeat, htmlAttributes: new { @class = "control-label col-md-2 col-xs-12" })
+
                 <div class="col-md-1 col-xs-4">
                     @Html.EditorFor(model => model.NextRepeat, new { htmlAttributes = new { @class = "form-control", @Value = Model.NextRepeat ?? 1 } })
                 </div>
                 <div class="col-md-2 col-xs-7">
                     @Html.EnumDropDownListFor(model => model.FrequencyType, TransactionResource.FrequencySelection, htmlAttributes: new { @class = "form-control" })
                 </div>
-            
+
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.LastOccurrence, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @(Model.LastOccurrence == null ?
+                Html.TextBoxFor(model => model.LastOccurrence, new { @class = "form-control datepicker", placeholder = DateTime.Now.AddDays(1).ToString(SharedConstant.DateFormat) }) :
+                Html.TextBoxFor(model => model.LastOccurrence, new { @class = "form-control datepicker", @Value = Model.LastOccurrence.GetValueOrDefault().ToString(SharedConstant.DateFormat) }))
+                </div>
+            </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.LastOccurrence, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-3">
-                @(Model.LastOccurrence == null ?
-                Html.TextBoxFor(model => model.LastOccurrence, new { @class = "form-control datepicker", placeholder = DateTime.Now.AddDays(1).ToString(SharedConstant.DateFormat) }) :
-                Html.TextBoxFor(model => model.LastOccurrence, new { @class = "form-control datepicker", @Value = Model.LastOccurrence.GetValueOrDefault().ToString(SharedConstant.DateFormat) }))
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value=@SharedResource.Save class="btn btn-success" />
+                @Html.ActionLink(SharedResource.Cancel, "Index", new { wallet = Model.WalletId }, new { @class = "btn btn-danger" })
             </div>
         </div>
-    </div>
-
-
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value=@SharedResource.Save class="btn btn-success" />
-            @Html.ActionLink(SharedResource.Cancel, "Index", new { wallet = Model.WalletId } , new { @class = "btn btn-danger" })
-        </div>
-    </div>
 </div>
 }
 
 @section Scripts {
     @Scripts.Render("/Scripts/transactionCheckbox.js")
+    <script type="text/javascript">
+        var iconMap = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.CategoryIconDictionary));
+        function iconChange() {
+            $("#categoryImage").removeClass();
+            $("#categoryImage").addClass('glyphicon');
+            $("#categoryImage").addClass(iconMap[$("#categoryDropdown").val()]);
+            $("#categoryImage").addClass('categoryIcon');
+        }
+        iconChange();
+    </script>
 }

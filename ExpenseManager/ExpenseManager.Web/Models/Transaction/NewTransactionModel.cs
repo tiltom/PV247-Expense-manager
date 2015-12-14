@@ -22,6 +22,7 @@ namespace ExpenseManager.Web.Models.Transaction
             Categories = Enumerable.Empty<SelectListItem>();
             Currencies = Enumerable.Empty<SelectListItem>();
             Budgets = Enumerable.Empty<SelectListItem>();
+            CategoryIconDictionary = new Dictionary<Guid, string>();
         }
 
         /// <summary>
@@ -109,5 +110,10 @@ namespace ExpenseManager.Web.Models.Transaction
         ///     List of all available Budgets
         /// </summary>
         public IEnumerable<SelectListItem> Budgets { get; set; }
+
+        /// <summary>
+        ///     Dictionary with Category guid key and category icon path value
+        /// </summary>
+        public Dictionary<Guid, string> CategoryIconDictionary { get; set; }
     }
 }

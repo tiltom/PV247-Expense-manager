@@ -624,6 +624,14 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             return modelList;
         }
 
+        public async Task<Dictionary<Guid, string>> GetCategoryIconDictionary()
+        {
+            return
+                await
+                    this._transactionsProvider.Categories.ToDictionaryAsync(category => category.Guid,
+                        category => category.IconPath);
+        }
+
         /// <summary>
         ///     Map for transaction exportation
         /// </summary>

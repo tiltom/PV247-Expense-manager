@@ -26,7 +26,10 @@
         <div class="form-group">
             @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-3">
-                @Html.DropDownListFor(model => model.CategoryId, Model.Categories, TransactionResource.CategorySelection, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.CategoryId, Model.Categories, TransactionResource.CategorySelection, htmlAttributes: new {@class = "form-control", @id = "categoryDropdown", @onchange = "iconChange()"})
+            </div>
+            <div class="col-md-1">
+                <span id="categoryImage"></span>
             </div>
         </div>
 
@@ -87,8 +90,6 @@
                 </div>
             </div>
 
-
-
             @{
                 var repeat = "";
                 if (!@Html.ViewData.Model.IsRepeatable)
@@ -134,4 +135,14 @@
 
 @section Scripts {
     @Scripts.Render("/Scripts/transactionCheckbox.js")
+    <script type="text/javascript">
+            var iconMap = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.CategoryIconDictionary));
+            function iconChange() {
+                $("#categoryImage").removeClass();
+                $("#categoryImage").addClass('glyphicon');
+                $("#categoryImage").addClass(iconMap[$("#categoryDropdown").val()]);
+                $("#categoryImage").addClass('categoryIcon');
+            }
+            iconChange();
+    </script>
 }

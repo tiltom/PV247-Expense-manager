@@ -150,6 +150,8 @@ textarea { resize: none; }
     #ExpenseIncome { height: 90px; }
 }
 
+.categoryIcon { vertical-align: bottom; }
+
 #actionContainer { display: flex; }
 
 #csvButtons { align-self: center; }
