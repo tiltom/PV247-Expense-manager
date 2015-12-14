@@ -16,16 +16,16 @@
     {
         <div class="form-group row medium-margin-top">
             <h4 class="col-md-2 control-label">
-               @DashBoardResource.FilterCriteriaDescription
+                @DashBoardResource.FilterCriteriaDescription
             </h4>
             <div class="col-md-2">
-                @Html.ListBoxFor(m => m.Filter.Wallets, Model.Filter.WalletsSelectList, new {@class = "form-control chosen-select", @data_placeholder = SharedResource.SelectWallets})
+                @Html.ListBoxFor(m => m.Filter.Wallets, Model.Filter.WalletsSelectList, new { @class = "form-control chosen-select", @data_placeholder = SharedResource.SelectWallets })
             </div>
             <div class="col-md-2">
-                @Html.ListBoxFor(m => m.Filter.Categories, Model.Filter.CategoriesSelectList,  new {@class = "form-control chosen-select",  @data_placeholder = SharedResource.SelectCategories })
+                @Html.ListBoxFor(m => m.Filter.Categories, Model.Filter.CategoriesSelectList, new { @class = "form-control chosen-select", @data_placeholder = SharedResource.SelectCategories })
             </div>
             <div class="col-md-2">
-                @Html.ListBoxFor(m => m.Filter.Budgets, Model.Filter.BudgetsSelectList, new {@class = "form-control chosen-select",  @data_placeholder = SharedResource.SelectBudgets })
+                @Html.ListBoxFor(m => m.Filter.Budgets, Model.Filter.BudgetsSelectList, new { @class = "form-control chosen-select", @data_placeholder = SharedResource.SelectBudgets })
             </div>
             <div class="col-md-2">
                 <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-search"></i> @SharedResource.Filter</button>
@@ -42,9 +42,10 @@
                     <div class="medium-margin-top table-responsive">
                         <table class="table table-hover table-condensed">
                             <tr>
-                                <th>
+                                <th style="text-align: center">
                                     @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().Amount)
                                 </th>
+                                <th></th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().Date)
                                 </th>
@@ -55,21 +56,21 @@
                                     @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().CategoryName)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().CurrencySymbol)
-                                </th>
-                                <th>
                                     @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().BudgetName)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().IsRepeatable)
+                                    @Html.DisplayNameFor(model => model.Transactions.FirstOrDefault().WalletName)
                                 </th>
                             </tr>
 
                             @foreach (var item in Model.Transactions)
                             {
                                 <tr>
-                                    <td>
+                                    <td style="text-align: right">
                                         @Html.DisplayFor(modelItem => item.Amount)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CurrencySymbol)
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Date)
@@ -77,17 +78,14 @@
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Description)
                                     </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.CategoryName)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.CurrencySymbol)
+                                    <td style="text-align: center">
+                                        <i class="glyphicon @item.CategoryIconPath" data-toggle="tooltip" data-placement="top" title="@item.CategoryName"></i>
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.BudgetName)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.IsRepeatable)
+                                        @Html.DisplayFor(modelItem => item.WalletName)
                                     </td>
                                 </tr>
                             }
@@ -101,7 +99,7 @@
                     <div class="container">
                         <h1>@DashBoardResource.NoDataHeader</h1>
                         <p>
-                           @DashBoardResource.NoDataDescription
+                            @DashBoardResource.NoDataDescription
                         </p>
                     </div>
                 </div>
@@ -110,7 +108,8 @@
             @if (Model.ContainsGraphData())
             {
                 <div class="col-md-5">
-                    <h3> @DashBoardResource.GraphSummaries
+                    <h3>
+                        @DashBoardResource.GraphSummaries
                         <a style="text-decoration: none;" role="button" data-toggle="collapse" href="#collapsibleSetting" aria-expanded="false" aria-controls="collapsibleSetting">
                             <i class="glyphicon glyphicon-cog"></i>
                         </a>
@@ -174,7 +173,7 @@
 
                             </div>
                             <div role="tabpanel" class="tab-pane active" id="months">
-                              
+
                                 <div class="medium-margin-top">
                                     <h4>@DashBoardResource.LastMonthReport</h4>
                                     @if (Model.MonthSummaryChart == null)
@@ -234,10 +233,10 @@
             </script>
             // show filter if no data displayed and filter is set
             if ((!Model.Filter.IsFilterSet() && !Model.ContainsAnyData()) || Model.ContainsAnyData())
-             {
-                 <script type="text/javascript">
-                     setTimeout(function() { $('#collapsibleSetting').removeClass('in'); }, 0);
-                 </script>
+            {
+                <script type="text/javascript">
+                    setTimeout(function () { $('#collapsibleSetting').removeClass('in'); }, 0);
+                </script>
             }
 
         }
@@ -245,12 +244,18 @@
             }
             else
             {
-                        <div class="jumbotron">
-                            <div class="container">
-                                <h1>@DashBoardResource.WelcomeHeader</h1>
-                                <p>
-                                   @DashBoardResource.WelcomeDescription
-                                </p>
-                            </div>
-                        </div>
-                    }
+                <div class="jumbotron">
+                    <div class="container">
+                        <h1>@DashBoardResource.WelcomeHeader</h1>
+                        <p>
+                            @DashBoardResource.WelcomeDescription
+                        </p>
+                    </div>
+                </div>
+            }
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
