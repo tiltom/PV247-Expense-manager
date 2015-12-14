@@ -77,7 +77,9 @@ namespace ExpenseManager.Web
                 .ForMember(view => view.Date, options => options.MapFrom(entity => entity.Date))
                 .ForMember(view => view.Description, options => options.MapFrom(entity => entity.Description))
                 .ForMember(view => view.CurrencySymbol, options => options.MapFrom(entity => entity.Currency.Symbol))
-                .ForMember(view => view.CategoryName, options => options.MapFrom(entity => entity.Category.Name));
+                .ForMember(view => view.CategoryName, options => options.MapFrom(entity => entity.Category.Name))
+                .ForMember(view => view.CategoryIconPath, options => options.MapFrom(entity => entity.Category.IconPath))
+                .ForMember(view => view.WalletName, options => options.MapFrom(entity => entity.Wallet.Name));
 
             Mapper.CreateMap<Transaction, EditTransactionModel>()
                 .ForMember(view => view.Id, options => options.MapFrom(entity => entity.Guid))
