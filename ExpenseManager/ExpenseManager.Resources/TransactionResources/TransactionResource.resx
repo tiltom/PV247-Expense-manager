@@ -234,4 +234,7 @@
   <data name="SureOfDelete" xml:space="preserve">
     <value>Are you sure you want to delete transaction {0}?</value>
   </data>
+  <data name="TransactionFileName" xml:space="preserve">
+    <value>transaction.csv</value>
+  </data>
 </root>

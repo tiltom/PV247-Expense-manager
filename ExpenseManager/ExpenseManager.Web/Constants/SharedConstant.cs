@@ -3,6 +3,7 @@
     public class SharedConstant
     {
         public const string DateFormat = "dd.MM.yyyy";
+        public const string DateTimeFormat = "dd.MM.yyyy HH:mm:ss";
         public const string Error = "Error";
         public const string Success = "Success";
         public const string Account = "Account";

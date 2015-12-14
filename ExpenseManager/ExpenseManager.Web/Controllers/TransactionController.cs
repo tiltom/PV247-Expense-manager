@@ -232,12 +232,13 @@ namespace ExpenseManager.Web.Controllers
         /// <param name="category">Id of category</param>
         /// <param name="budget">Id of budgets</param>
         /// <returns>File with all transactions</returns>
-        public async Task<ActionResult> Export(Guid? wallet, Guid? category, Guid? budget)
+        public async Task<ActionResult> Export(Guid wallet, Guid? category, Guid? budget)
         {
+            string filename =
+                $"{DateTime.Now.ToString(SharedConstant.DateTimeFormat)} {(await this._transactionService.GetWalletById(wallet)).Name} {TransactionResource.TransactionFileName}";
             var id = await this.CurrentProfileId();
             var file = await this._transactionService.ExportToCsv(id, wallet, category, budget);
-            return this.File(new UTF8Encoding().GetBytes(file), TransactionConstant.TextCsvAbbreviation,
-                TransactionConstant.FileName);
+            return this.File(new UTF8Encoding().GetBytes(file), TransactionConstant.TextCsvAbbreviation, filename);
         }
 
         /// <summary>

@@ -403,6 +403,15 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to transaction.csv.
+        /// </summary>
+        public static string TransactionFileName {
+            get {
+                return ResourceManager.GetString("TransactionFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to WalletId must have set Id.
         /// </summary>
         public static string WalletIdError {
