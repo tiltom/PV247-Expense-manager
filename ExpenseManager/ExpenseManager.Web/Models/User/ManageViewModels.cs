@@ -117,7 +117,7 @@ namespace ExpenseManager.Web.Models.User
         /// </summary>
         [DataType(DataType.Password)]
         [Display(Name = "ConfirmNewPassword", ResourceType = typeof (UsersAdminResource))]
-        [Compare("Password",
+        [Compare("NewPassword",
             ErrorMessageResourceType = typeof (UsersAdminResource),
             ErrorMessageResourceName = "PasswordsDoNotMatch")]
         public string ConfirmPassword { get; set; }
