@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Web.Mvc;
 using ExpenseManager.Resources;
 using ExpenseManager.Resources.WalletResources;
@@ -13,6 +14,11 @@ namespace ExpenseManager.Web.Models.WalletAccessRight
     /// </summary>
     public class WalletAccessRightModel
     {
+        public WalletAccessRightModel()
+        {
+            Permissions = Enumerable.Empty<SelectListItem>();
+        }
+
         /// <summary>
         ///     id of the wallet access right (hidden in all forms so without name attribute)
         /// </summary>
@@ -49,6 +55,6 @@ namespace ExpenseManager.Web.Models.WalletAccessRight
         /// <summary>
         ///     list with options for dropdown (contains id and name of the permission)
         /// </summary>
-        public List<SelectListItem> Permissions { get; set; }
+        public IEnumerable<SelectListItem> Permissions { get; set; }
     }
 }

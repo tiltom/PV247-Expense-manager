@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using ExpenseManager.Resources.UsersAdminResources;
 using ExpenseManager.Web.Constants.UserConstants;
 using Microsoft.AspNet.Identity;
@@ -12,6 +13,11 @@ namespace ExpenseManager.Web.Models.User
     /// </summary>
     public class IndexViewModel
     {
+        public IndexViewModel()
+        {
+            Logins = Enumerable.Empty<UserLoginInfo>();
+        }
+
         /// <summary>
         ///     If user already has password
         /// </summary>
@@ -20,7 +26,7 @@ namespace ExpenseManager.Web.Models.User
         /// <summary>
         ///     List of user logins (also includes external logins via Google or Facebook)
         /// </summary>
-        public IList<UserLoginInfo> Logins { get; set; }
+        public IEnumerable<UserLoginInfo> Logins { get; set; }
 
         /// <summary>
         ///     Phone number of user
@@ -40,8 +46,21 @@ namespace ExpenseManager.Web.Models.User
 
     public class ManageLoginsViewModel
     {
-        public IList<UserLoginInfo> CurrentLogins { get; set; }
-        public IList<AuthenticationDescription> OtherLogins { get; set; }
+        public ManageLoginsViewModel()
+        {
+            CurrentLogins = Enumerable.Empty<UserLoginInfo>();
+            OtherLogins = Enumerable.Empty<AuthenticationDescription>();
+        }
+
+        /// <summary>
+        ///     containt login information about currently logged user
+        /// </summary>
+        public IEnumerable<UserLoginInfo> CurrentLogins { get; set; }
+
+        /// <summary>
+        ///     list with options of other login options available to user
+        /// </summary>
+        public IEnumerable<AuthenticationDescription> OtherLogins { get; set; }
     }
 
     /// <summary>

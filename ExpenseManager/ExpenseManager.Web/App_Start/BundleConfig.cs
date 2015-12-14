@@ -26,14 +26,16 @@ namespace ExpenseManager.Web
                 "~/Scripts/bootstrap.js",
                 "~/Scripts/bootstrap-datepicker.js",
                 "~/Scripts/DatePickerReady.js",
-                "~/Scripts/respond.js"));
+                "~/Scripts/respond.js",
+                "~/Scripts/bootstrap-iconpicker.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/bootstrap.css",
                 "~/Content/bootstrap-datepicker3.css",
                 "~/Content/site.css",
                 "~/Content/PagedList.css",
-                "~/Content/bootstrap-chosen.css"));
+                "~/Content/bootstrap-chosen.css",
+                "~/Content/bootstrap-iconpicker.css"));
         }
     }
 }

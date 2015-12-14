@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -102,29 +101,6 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
                 .ForEach(transaction => transaction.Category = defaultCategory);
 
             await this._db.DeteleAsync(categoryToDelete);
-        }
-
-        /// <summary>
-        ///     Returns supported glyphicon icons for categories
-        /// </summary>
-        /// <returns>Glyphicons</returns>
-        public static IList<string> GetGlyphicons()
-        {
-            // TODO: do this another way?
-            // TODO: add more glyphicons
-            IList<string> glyphicons = new List<string>();
-            glyphicons.Add("glyphicon-record");
-            glyphicons.Add("glyphicon-glass");
-            glyphicons.Add("glyphicon-film");
-            glyphicons.Add("glyphicon-road");
-            glyphicons.Add("glyphicon-heart");
-            glyphicons.Add("glyphicon-stats");
-            glyphicons.Add("glyphicon-leaf");
-            glyphicons.Add("glyphicon-plane");
-            glyphicons.Add("glyphicon-usd");
-            glyphicons.Add("glyphicon-question-sign");
-
-            return glyphicons;
         }
 
         #region private
