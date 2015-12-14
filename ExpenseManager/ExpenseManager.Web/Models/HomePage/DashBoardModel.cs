@@ -50,11 +50,18 @@ namespace ExpenseManager.Web.Models.HomePage
         public IEnumerable<TransactionShowModel> Transactions { get; set; }
 
 
+        /// <summary>
+        ///     Chart displaying used limits in all budgets
+        /// </summary>
+        public BarChart BudgetLimitChart { get; set; }
+
+
         public bool ContainsGraphData()
         {
             return MonthSummaryChart != null
                    || YearSummaryChart != null
                    || CategoriesExpenseChart != null
+                   || BudgetLimitChart != null
                    || CategoriesIncomeChart != null;
         }
 
