@@ -169,7 +169,7 @@ namespace ExpenseManager.Resources.DashboardResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to Expense manager - best money management application. You have to login to show more functionality..
+        ///   Looks up a localized string similar to Welcome to Expense manager - best money management application. If you want to improve your money management, don&apos;t hesitate and join us for free..
         /// </summary>
         public static string WelcomeDescription {
             get {

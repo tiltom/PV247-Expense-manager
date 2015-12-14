@@ -154,7 +154,7 @@
     <value>Overview page</value>
   </data>
   <data name="WelcomeDescription" xml:space="preserve">
-    <value>Welcome to Expense manager - best money management application. You have to login to show more functionality.</value>
+    <value>Welcome to Expense manager - best money management application. If you want to improve your money management, don't hesitate and join us for free.</value>
   </data>
   <data name="WelcomeHeader" xml:space="preserve">
     <value>Hello anonymous user!</value>
