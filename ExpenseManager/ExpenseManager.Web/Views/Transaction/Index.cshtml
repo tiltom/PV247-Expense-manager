@@ -61,9 +61,10 @@
 <div class="medium-margin-top table-responsive">
     <table class="table table-hover table-condensed">
         <tr>
-            <th>
+            <th style="text-align: right">
                 @Html.DisplayNameFor(model => model.ElementAt(0).Amount)
             </th>
+            <th></th>
             <th>
                 @Html.DisplayNameFor(model => model.ElementAt(0).Date)
             </th>
@@ -74,13 +75,7 @@
                 @Html.DisplayNameFor(model => model.ElementAt(0).CategoryName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ElementAt(0).CurrencySymbol)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.ElementAt(0).BudgetName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ElementAt(0).IsRepeatable)
             </th>
             <th></th>
         </tr>
@@ -88,8 +83,11 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
+                <td style="text-align: right">
                     @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrencySymbol)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Date)
@@ -98,16 +96,10 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CategoryName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CurrencySymbol)
+                    <i class="glyphicon @item.CategoryIconPath" data-toggle="tooltip" data-placement="top" title="@item.CategoryName"></i>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.BudgetName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsRepeatable)
                 </td>
                 <td>
                     @if (ViewBag.editable)

@@ -45,6 +45,11 @@ namespace ExpenseManager.BusinessLogic.TransactionServices.Models
         public string CategoryName { get; set; }
 
         /// <summary>
+        ///     Path of category icon
+        /// </summary>
+        public string CategoryIconPath { get; set; }
+
+        /// <summary>
         ///     Id of category where transaction belongs
         /// </summary>
         public Guid CategoryId { get; set; }
