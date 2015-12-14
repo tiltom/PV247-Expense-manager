@@ -16,6 +16,10 @@ using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.BudgetAccessRight;
 using PagedList;
+using System.Net.Mail;
+using System.Net;
+using ExpenseManager.Entity.Budgets;
+using System.Configuration;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -24,6 +28,9 @@ namespace ExpenseManager.Web.Controllers
     {
         private readonly BudgetAccessRightService _budgetAccessRightService
             = new BudgetAccessRightService(ProvidersFactory.GetNewBudgetsProviders());
+
+        private readonly BudgetService _budgetService =
+            new BudgetService(ProvidersFactory.GetNewBudgetsProviders(), ProvidersFactory.GetNewTransactionsProviders());
 
         /// <summary>
         ///     Display all budget access rights for chosen budget
@@ -62,7 +69,33 @@ namespace ExpenseManager.Web.Controllers
         }
 
         /// <summary>
-        ///     Create new budget access right
+        ///     Confirm budgetAccessRight when user guid is known, otherwise redirects user to registration.
+        /// </summary>
+        /// <param name="b">Budget id</param>
+        /// <param name="u">User id</param>
+        /// <param name="p">Permission</param>
+        /// <returns>Redirect to Index when user was created. To registration otherwise.</returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ActionResult> ConfirmRequest(Guid b, Guid u, Entity.PermissionEnum p)
+        {
+            var user = await UserContext.UserProfiles.Where(user2 => user2.Guid == u).FirstOrDefaultAsync();
+
+            if (user != null)
+            {
+                await this._budgetAccessRightService.CreateBudgetAccessRight(b, u, p);
+                Budget budget = await this._budgetService.GetBudgetById(b);
+                this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullCreation, p, budget.Name));
+                return this.RedirectToAction(SharedConstant.Index, "DashBoard");
+            }
+            else
+            {
+                return this.RedirectToAction("Register", "Account", new { budgetId = b, permission = p });
+            }
+        }
+
+        /// <summary>
+        ///     Send request for budget access right
         /// </summary>
         /// <param name="model">CreateBudgetAccessRightModel instance</param>
         /// <returns>Redirect to Index</returns>
@@ -82,12 +115,9 @@ namespace ExpenseManager.Web.Controllers
             var userId = await this.GetUserProfileByEmail(model.AssignedUserEmail);
             try
             {
-                await
-                    this._budgetAccessRightService.CreateBudgetAccessRight(
-                        model.BudgetId,
-                        userId,
-                        model.Permission
-                        );
+                await SendRequest(model, userId);
+                this.AddSuccess(string.Format(BudgetAccessRightResource.RequestSent, model.AssignedUserEmail));
+                return RedirectToAction(SharedConstant.Index, new { id = model.BudgetId });
             }
             catch (ServiceValidationException exception)
             {
@@ -96,10 +126,34 @@ namespace ExpenseManager.Web.Controllers
                 model.Permissions = this.GetPermissions();
                 return this.View(model);
             }
+        }
 
-            this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullCreation, model.Permission,
-                model.AssignedUserEmail));
-            return this.RedirectToAction(SharedConstant.Index, new {id = model.BudgetId});
+        /// <summary>
+        /// Sends email to user with link which can be used to share desired budget.
+        /// </summary>
+        /// <param name="model"></param>
+        private async Task SendRequest(CreateBudgetAccessRightModel model, Guid userId)
+        {
+            var body = "<p>Email From: {0} </p><p> Please come and share a budget with me!:</p><p>{1}</p>";
+            var currentUserId = await this.CurrentProfileId();
+
+            var callbackUrl = Url.Action("ConfirmRequest", "BudgetAccessRight", new { b = model.BudgetId, u = userId, p = model.Permission }, protocol: Request.Url.Scheme);
+            var message = new MailMessage();
+            message.To.Add(new MailAddress(model.AssignedUserEmail));
+            message.Subject = "Budget sharing invitation";
+            message.Body = string.Format(body, User.Identity.Name, callbackUrl.ToString());
+            message.IsBodyHtml = true;
+
+            using (var smtp = new SmtpClient())
+            {
+                var credential = new NetworkCredential
+                {
+                    UserName = ConfigurationManager.AppSettings["GoogleUserName"],
+                    Password = ConfigurationManager.AppSettings["GooglePassword"]
+                };
+                smtp.Credentials = credential;
+                await smtp.SendMailAsync(message);
+            }
         }
 
         /// <summary>
@@ -149,7 +203,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullEdit, model.AssignedUserName));
-            return this.RedirectToAction(SharedConstant.Index, new {id = model.BudgetId});
+            return this.RedirectToAction(SharedConstant.Index, new { id = model.BudgetId });
         }
 
         /// <summary>
@@ -180,14 +234,14 @@ namespace ExpenseManager.Web.Controllers
             if (!ModelState.IsValid)
             {
                 this.AddError(SharedResource.ModelStateIsNotValid);
-                return this.RedirectToAction(SharedConstant.Index, new {id = model.BudgetId});
+                return this.RedirectToAction(SharedConstant.Index, new { id = model.BudgetId });
             }
 
             await this._budgetAccessRightService.DeleteBudgetAccessRight(model.Id);
 
             this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullDelete, model.Permission,
                 model.AssignedUserName));
-            return this.RedirectToAction(SharedConstant.Index, new {id = model.BudgetId});
+            return this.RedirectToAction(SharedConstant.Index, new { id = model.BudgetId });
         }
 
         #region private
@@ -207,7 +261,7 @@ namespace ExpenseManager.Web.Controllers
             return
                 await
                     userProfiles
-                        .Select(user => new SelectListItem {Value = user.Guid.ToString(), Text = user.FirstName})
+                        .Select(user => new SelectListItem { Value = user.Guid.ToString(), Text = user.FirstName })
                         .ToListAsync();
         }
 

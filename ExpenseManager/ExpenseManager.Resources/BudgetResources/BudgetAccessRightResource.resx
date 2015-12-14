@@ -135,8 +135,11 @@
   <data name="EditBudgetAccessRight" xml:space="preserve">
     <value>Edit budget access right</value>
   </data>
+  <data name="RequestSent" xml:space="preserve">
+    <value>Request for {0} was successfully sent. You must now wait until user accepts your budget invitation.</value>
+  </data>
   <data name="SuccessfullCreation" xml:space="preserve">
-    <value>Access right {0} for user {1} was successfully granted!</value>
+    <value>Access right {0} for budget {1} was successfully granted!</value>
   </data>
   <data name="SuccessfullDelete" xml:space="preserve">
     <value>Access right {0} for user {1} was successfully deleted!</value>

@@ -14,6 +14,7 @@ using Facebook;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using System;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -116,12 +117,20 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <returns>View</returns>
         [AllowAnonymous]
-        public async Task<ActionResult> Register()
+        public async Task<ActionResult> Register(Guid? budgetId, Entity.PermissionEnum? permission)
         {
-            return this.View(new RegisterWithPasswordViewModel
+            RegisterWithPasswordViewModel model = new RegisterWithPasswordViewModel
             {
                 Currencies = await this.GetCurrencies()
-            });
+            };
+
+            if (permission != null && budgetId != null)
+            {
+                Session["sharedBudgetPermission"] = (Entity.PermissionEnum)permission;
+                Session["sharedBudgetId"] = (Guid)budgetId;
+            }
+            
+            return this.View(model);
         }
 
         /// <summary>
@@ -149,7 +158,10 @@ namespace ExpenseManager.Web.Controllers
                 var userRole = await RoleManager.FindByNameAsync("User");
                 await UserManager.AddToRoleAsync(user.Id, userRole.Name);
 
-                return this.RedirectToAction(SharedConstant.Index, SharedConstant.DashBoard);
+                if (Session["sharedBudgetId"] == null)
+                    return this.RedirectToAction(SharedConstant.Index, SharedConstant.DashBoard);
+                else
+                    return this.RedirectToAction("ConfirmRequest", "BudgetAccessRight", new { b = Session["sharedBudgetId"], u = user.Profile.Guid,  p = Session["sharedBudgetPermission"] });
             }
             this.AddErrors(result);
             model.Currencies = await this.GetCurrencies();

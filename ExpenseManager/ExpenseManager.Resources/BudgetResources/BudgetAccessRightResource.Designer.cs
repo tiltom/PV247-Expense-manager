@@ -115,7 +115,16 @@ namespace ExpenseManager.Resources.BudgetResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Access right {0} for user {1} was successfully granted!.
+        ///   Looks up a localized string similar to Request for {0} was successfully sent. You must now wait until user accepts your budget invitation..
+        /// </summary>
+        public static string RequestSent {
+            get {
+                return ResourceManager.GetString("RequestSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access right {0} for budget {1} was successfully granted!.
         /// </summary>
         public static string SuccessfullCreation {
             get {
