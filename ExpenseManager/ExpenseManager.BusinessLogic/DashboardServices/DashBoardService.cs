@@ -9,6 +9,8 @@ using Chart.Mvc.SimpleChart;
 using ExpenseManager.BusinessLogic.DashboardServices.Models;
 using ExpenseManager.BusinessLogic.ExchangeRates;
 using ExpenseManager.BusinessLogic.ServicesConstants;
+using ExpenseManager.Entity;
+using ExpenseManager.Entity.Budgets;
 using ExpenseManager.Entity.Currencies;
 using ExpenseManager.Entity.Providers;
 using ExpenseManager.Entity.Providers.Queryable;
@@ -44,21 +46,6 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
         #endregion
 
         /// <summary>
-        ///     Will return just transaction which can be seen by this user
-        /// </summary>
-        /// <param name="userId"> id of logged user</param>
-        /// <returns> queryable for accessible transactions</returns>
-        public IQueryable<Transaction> GetAccessibleResults(Guid userId)
-        {
-            return
-                this._transactionsProvider.Transactions
-                    .Where(transaction =>
-                        (transaction.Wallet.WalletAccessRights.Any(right => right.UserProfile.Guid == userId) ||
-                         transaction.Budget.AccessRights.Any(right => right.UserProfile.Guid == userId))
-                    );
-        }
-
-        /// <summary>
         ///     provides list of wallets available for user
         /// </summary>
         /// <param name="userId"> user with access to provided wallets</param>
@@ -81,7 +68,7 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
         /// <param name="collection"> transaction collection</param>
         /// <param name="currency"> currency of user wallet</param>
         /// <returns> non negative values for all categories</returns>
-        public async Task<List<SimpleGraphModel>> GetWrapperValuesForCategories(
+        internal async Task<List<SimpleGraphModel>> GetWrapperValuesForCategories(
             IQueryable<Transaction> collection,
             Currency currency)
         {
@@ -104,7 +91,7 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
         /// <param name="collection"></param>
         /// <param name="currency"> currency of user wallet</param>
         /// <returns>Graph data for every month in last year</returns>
-        public async Task<GraphWithDescriptionModel> GetGraphForMonthLastYear(
+        private async Task<GraphWithDescriptionModel> GetGraphForMonthLastYear(
             IQueryable<Transaction> collection,
             Currency currency)
         {
@@ -119,7 +106,11 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                                 Value = group.Sum(transaction => transaction.Amount)
                             })
                     .ToList();
-            return new GraphWithDescriptionModel {Description = DashBoardResource.LastYearReport, GraphData = result};
+            return new GraphWithDescriptionModel
+            {
+                Description = DashBoardResource.LastYearTabDescription,
+                GraphData = result
+            };
         }
 
         /// <summary>
@@ -128,7 +119,7 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
         /// <param name="collection"></param>
         /// <param name="currency"> currency of user wallet</param>
         /// <returns> graph for every day for last month</returns>
-        public async Task<GraphWithDescriptionModel> GetGraphForDaysLastMonth(
+        internal async Task<GraphWithDescriptionModel> GetGraphForDaysLastMonth(
             IQueryable<Transaction> collection,
             Currency currency)
         {
@@ -144,7 +135,11 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                                 Value = group.Sum(transaction => transaction.Amount)
                             })
                     .ToList();
-            return new GraphWithDescriptionModel {Description = DashBoardResource.LastMonthReport, GraphData = result};
+            return new GraphWithDescriptionModel
+            {
+                Description = DashBoardResource.LastMonthTabDescription,
+                GraphData = result
+            };
         }
 
         /// <summary>
@@ -177,11 +172,61 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                 CategoriesIncomeChart = this.GeneratePieChart(categoriesIncome),
                 MonthSummaryChart = this.GenerateLineChart(monthSummary),
                 YearSummaryChart = this.GenerateLineChart(yearSummary),
-                Transactions = await this.LastTransactions(userId)
+                Transactions = await this.LastTransactions(userId),
+                BudgetLimitChart = await this.CreateChartForBudgetLimits(userId, userWallet.Currency)
             };
         }
 
         #region private
+
+        private async Task<BarChart> CreateChartForBudgetLimits(Guid userId, Currency currency)
+        {
+            var budgets = await this.GetAccessibleBudgets(userId);
+            var transactionFromBudgets = await this.GetTransactionFromBudgets(budgets);
+            var graphModels = new List<BudgetWithLimitGraphModel>();
+            var complexGraphModel = new BudgetLimitGraphModel
+            {
+                Values = graphModels,
+                Label = DashBoardResource.BudgetTabDescription
+            };
+
+            graphModels.AddRange(from budget in budgets
+                let budgetTransactions =
+                    transactionFromBudgets.ContainsKey(budget.Guid.ToString())
+                        ? transactionFromBudgets[budget.Guid.ToString()]
+                        : Enumerable.Empty<Transaction>()
+                let sumInUserCurrency =
+                    budgetTransactions.Select(
+                        transaction => Transformation.ChangeCurrencyForNewTransaction(transaction, currency))
+                        .Sum(transaction => transaction.Amount)
+                select new BudgetWithLimitGraphModel
+                {
+                    Label = budget.Name,
+                    BudgetLimit = budget.Limit,
+                    ComputedTransaction = sumInUserCurrency*-1
+                });
+            return this.GenerateBarChart(complexGraphModel);
+        }
+
+        private async Task<List<Budget>> GetAccessibleBudgets(Guid userId)
+        {
+            var budgets = await this._transactionsProvider.Budgets.Where(
+                budget =>
+                    budget.AccessRights.Any(
+                        right => right.UserProfile.Guid == userId && right.Permission == PermissionEnum.Owner))
+                .ToListAsync();
+            return budgets;
+        }
+
+        private async Task<Dictionary<string, IEnumerable<Transaction>>> GetTransactionFromBudgets(List<Budget> budgets)
+        {
+            var budgetIds = budgets.Select(budget => budget.Guid.ToString());
+            return await this._transactionsProvider.Transactions
+                .Where(transaction => budgetIds.Any(budgetId => transaction.Budget.Guid.ToString() == budgetId))
+                .GroupBy(transaction => transaction.Budget.Guid.ToString())
+                .ToDictionaryAsync(group => @group.Key, group => @group.Select(t => t));
+        }
+
 
         /// <summary>
         ///     Filter transactions using filter
@@ -227,20 +272,7 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                 ComplexData =
                 {
                     Labels = data.GraphData.Select(graphData => graphData.Label).ToList(),
-                    Datasets = new List<ComplexDataset>
-                    {
-                        new ComplexDataset
-                        {
-                            Data = data.GraphData.Select(t => Convert.ToDouble(t.Value)).ToList(),
-                            Label = data.Description,
-                            FillColor = ColorGeneratorConstants.Transparent,
-                            StrokeColor = this._colorGenerator.GenerateColor(),
-                            PointColor = ColorGeneratorConstants.Black,
-                            PointStrokeColor = ColorGeneratorConstants.White,
-                            PointHighlightFill = ColorGeneratorConstants.White,
-                            PointHighlightStroke = ColorGeneratorConstants.Black
-                        }
-                    }
+                    Datasets = this.GenerateDataSets(data)
                 }
             };
             // graph settings for dynamic charts
@@ -248,6 +280,67 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
             lineChart.ChartConfiguration.Responsive = true;
             lineChart.ChartConfiguration.BezierCurve = false;
             return lineChart;
+        }
+
+        private List<ComplexDataset> GenerateDataSets(GraphWithDescriptionModel data)
+        {
+            return new List<ComplexDataset>
+            {
+                new ComplexDataset
+                {
+                    Data = data.GraphData.Select(t => Convert.ToDouble(t.Value)).ToList(),
+                    Label = data.Description,
+                    FillColor = ColorGeneratorConstants.Transparent,
+                    StrokeColor = this._colorGenerator.GenerateColor(),
+                    PointColor = ColorGeneratorConstants.Black,
+                    PointStrokeColor = ColorGeneratorConstants.White,
+                    PointHighlightFill = ColorGeneratorConstants.White,
+                    PointHighlightStroke = ColorGeneratorConstants.Black
+                }
+            };
+        }
+
+
+        private BarChart GenerateBarChart(BudgetLimitGraphModel data)
+        {
+            // check if  enough data for bar chart
+            if (!data.Values.Any())
+            {
+                return null;
+            }
+            var barChart = new BarChart
+            {
+                ComplexData =
+                {
+                    Labels = data.Values.Select(graphData => graphData.Label).ToList(),
+                    Datasets =
+                        new List<ComplexDataset>
+                        {
+                            this.GenerateComplexData(data.Values.Select(t => t.BudgetLimit).ToList(),
+                                ColorGeneratorConstants.Grey),
+                            this.GenerateComplexData(data.Values.Select(t => t.ComputedTransaction).ToList(),
+                                ColorGeneratorConstants.Red)
+                        }
+                }
+            };
+            // graph settings for dynamic charts
+            barChart.ChartConfiguration.ScaleBeginAtZero = false;
+            barChart.ChartConfiguration.Responsive = true;
+            return barChart;
+        }
+
+        private ComplexDataset GenerateComplexData(List<decimal> values, string color)
+        {
+            return new ComplexDataset
+            {
+                Data = values.Select(Convert.ToDouble).ToList(),
+                FillColor = color,
+                StrokeColor = color,
+                PointColor = ColorGeneratorConstants.Black,
+                PointStrokeColor = ColorGeneratorConstants.White,
+                PointHighlightFill = ColorGeneratorConstants.White,
+                PointHighlightStroke = ColorGeneratorConstants.Black
+            };
         }
 
         private PieChart GeneratePieChart(List<SimpleGraphModel> result)
@@ -270,6 +363,22 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                             Color = this._colorGenerator.GenerateColor()
                         }).ToList()
             };
+        }
+
+
+        /// <summary>
+        ///     Will return just transaction which can be seen by this user
+        /// </summary>
+        /// <param name="userId"> id of logged user</param>
+        /// <returns> queryable for accessible transactions</returns>
+        private IQueryable<Transaction> GetAccessibleResults(Guid userId)
+        {
+            return
+                this._transactionsProvider.Transactions
+                    .Where(transaction =>
+                        transaction.Wallet.WalletAccessRights.Any(right => right.UserProfile.Guid == userId) ||
+                        transaction.Budget.AccessRights.Any(right => right.UserProfile.Guid == userId)
+                    );
         }
 
         #endregion

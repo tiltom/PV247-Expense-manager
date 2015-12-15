@@ -42,8 +42,13 @@ namespace ExpenseManager.BusinessLogic.DashboardServices.Models
         public FilterDataServiceModel Filter { get; set; }
 
         /// <summary>
-        ///     last 5 transactions
+        ///     last transactions (number is defined in constant DashBoardService.NumberOfTransactionsOnDashBoard)
         /// </summary>
         public IEnumerable<Transaction> Transactions { get; set; }
+
+        /// <summary>
+        ///     Chart displaying used limits in all budgets
+        /// </summary>
+        public BarChart BudgetLimitChart { get; set; }
     }
 }

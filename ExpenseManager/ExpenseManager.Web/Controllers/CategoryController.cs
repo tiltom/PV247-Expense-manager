@@ -10,6 +10,7 @@ using ExpenseManager.BusinessLogic.CategoryServices;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Resources;
+using ExpenseManager.Resources.CategoryResources;
 using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.Category;
@@ -72,6 +73,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(category);
             }
 
+            this.AddSuccess(string.Format(CategoryResource.SuccessfullyAdded, category.Name));
             return this.RedirectToAction(SharedConstant.Index);
         }
 
@@ -118,6 +120,7 @@ namespace ExpenseManager.Web.Controllers
                 return this.View(category);
             }
 
+            this.AddSuccess(string.Format(CategoryResource.SuccessfullyEdited, category.Name));
             return this.RedirectToAction(SharedConstant.Index);
         }
 
@@ -150,7 +153,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             await this._categoryService.DeleteCategory(model.Guid);
-
+            this.AddSuccess(string.Format(CategoryResource.SuccessfullyDeleted, model.Name));
             return this.RedirectToAction(SharedConstant.Index);
         }
     }

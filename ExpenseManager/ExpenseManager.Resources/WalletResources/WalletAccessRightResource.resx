@@ -135,6 +135,15 @@
   <data name="ManageWalletAccessRights" xml:space="preserve">
     <value>Manage wallet access rights</value>
   </data>
+  <data name="RightCreated" xml:space="preserve">
+    <value>Access right for user {0} was successfully created</value>
+  </data>
+  <data name="RightDeleted" xml:space="preserve">
+    <value>Access right for user {0} was successfully deleted</value>
+  </data>
+  <data name="RightEdited" xml:space="preserve">
+    <value>Access right for user {0} was successfully edited</value>
+  </data>
   <data name="SelectPermission" xml:space="preserve">
     <value>Select permission</value>
   </data>

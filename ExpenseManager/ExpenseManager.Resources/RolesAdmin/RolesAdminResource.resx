@@ -124,7 +124,7 @@
     <value>Delete role</value>
   </data>
   <data name="DeletingRole" xml:space="preserve">
-    <value>Deleting this Role will remove all users from this role. It will not delete the users</value>
+    <value>Deleting this role will remove all users from this role. It will not delete the users</value>
   </data>
   <data name="EditRole" xml:space="preserve">
     <value>Edit role</value>
@@ -135,8 +135,17 @@
   <data name="NoUsersFound" xml:space="preserve">
     <value>No users found in this role</value>
   </data>
+  <data name="RoleCreated" xml:space="preserve">
+    <value>Role was successfully created</value>
+  </data>
+  <data name="RoleDeleted" xml:space="preserve">
+    <value>Role was successfully deleted</value>
+  </data>
   <data name="RoleDetails" xml:space="preserve">
     <value>Role details</value>
+  </data>
+  <data name="RoleEdited" xml:space="preserve">
+    <value>Role was successfully edited</value>
   </data>
   <data name="RoleName" xml:space="preserve">
     <value>Role name</value>

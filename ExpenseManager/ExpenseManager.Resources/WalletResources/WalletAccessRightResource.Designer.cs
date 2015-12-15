@@ -115,6 +115,33 @@ namespace ExpenseManager.Resources.WalletResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access right for user {0} was successfully created.
+        /// </summary>
+        public static string RightCreated {
+            get {
+                return ResourceManager.GetString("RightCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access right for user {0} was successfully deleted.
+        /// </summary>
+        public static string RightDeleted {
+            get {
+                return ResourceManager.GetString("RightDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access right for user {0} was successfully edited.
+        /// </summary>
+        public static string RightEdited {
+            get {
+                return ResourceManager.GetString("RightEdited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select permission.
         /// </summary>
         public static string SelectPermission {

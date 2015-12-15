@@ -156,6 +156,15 @@
   <data name="NameNotNullOrEmpty" xml:space="preserve">
     <value>Name can not be empty!</value>
   </data>
+  <data name="SuccessfullyAdded" xml:space="preserve">
+    <value>Category {0} was successfully added</value>
+  </data>
+  <data name="SuccessfullyDeleted" xml:space="preserve">
+    <value>Category {0} was successfully deleted</value>
+  </data>
+  <data name="SuccessfullyEdited" xml:space="preserve">
+    <value>Category {0} was successfully edited</value>
+  </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
   </data>

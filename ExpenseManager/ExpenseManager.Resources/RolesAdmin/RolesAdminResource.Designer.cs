@@ -79,7 +79,7 @@ namespace ExpenseManager.Resources.RolesAdmin {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deleting this Role will remove all users from this role. It will not delete the users.
+        ///   Looks up a localized string similar to Deleting this role will remove all users from this role. It will not delete the users.
         /// </summary>
         public static string DeletingRole {
             get {
@@ -115,11 +115,38 @@ namespace ExpenseManager.Resources.RolesAdmin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Role was successfully created.
+        /// </summary>
+        public static string RoleCreated {
+            get {
+                return ResourceManager.GetString("RoleCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role was successfully deleted.
+        /// </summary>
+        public static string RoleDeleted {
+            get {
+                return ResourceManager.GetString("RoleDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Role details.
         /// </summary>
         public static string RoleDetails {
             get {
                 return ResourceManager.GetString("RoleDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role was successfully edited.
+        /// </summary>
+        public static string RoleEdited {
+            get {
+                return ResourceManager.GetString("RoleEdited", resourceCulture);
             }
         }
         

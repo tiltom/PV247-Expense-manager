@@ -122,9 +122,11 @@ namespace ExpenseManager.Web.Controllers
             //Check server validation
             if (ModelState.IsValid)
             {
+                this.AddSuccess(TransactionResource.TransactionCreated);
                 return this.RedirectToAction(SharedConstant.Index, new {wallet = transaction.WalletId});
             }
             await this.SetTransactionFormsDropdowns(transaction);
+
             return this.View(transaction);
         }
 
@@ -176,9 +178,11 @@ namespace ExpenseManager.Web.Controllers
             //check if model is valid
             if (ModelState.IsValid)
             {
+                this.AddSuccess(TransactionResource.TransactionEdited);
                 return this.RedirectToAction(SharedConstant.Index, new {wallet = transaction.WalletId});
             }
             await this.SetTransactionFormsDropdowns(transaction);
+
             return this.View(transaction);
         }
 
@@ -219,9 +223,11 @@ namespace ExpenseManager.Web.Controllers
                 this.AddError(SharedResource.ModelStateIsNotValid);
                 return this.RedirectToAction(SharedConstant.Index);
             }
+
             //removing transaction from DB
             var walletId = await this._transactionService.RemoveTransaction(await this.CurrentProfileId(), model.Id);
 
+            this.AddSuccess(TransactionResource.TransactionDeleted);
             return this.RedirectToAction(SharedConstant.Index, new {wallet = walletId});
         }
 
@@ -232,12 +238,13 @@ namespace ExpenseManager.Web.Controllers
         /// <param name="category">Id of category</param>
         /// <param name="budget">Id of budgets</param>
         /// <returns>File with all transactions</returns>
-        public async Task<ActionResult> Export(Guid? wallet, Guid? category, Guid? budget)
+        public async Task<ActionResult> Export(Guid wallet, Guid? category, Guid? budget)
         {
+            string filename =
+                $"{DateTime.Now.ToString(SharedConstant.DateTimeFormat)} {(await this._transactionService.GetWalletById(wallet)).Name} {TransactionResource.TransactionFileName}";
             var id = await this.CurrentProfileId();
             var file = await this._transactionService.ExportToCsv(id, wallet, category, budget);
-            return this.File(new UTF8Encoding().GetBytes(file), TransactionConstant.TextCsvAbbreviation,
-                TransactionConstant.FileName);
+            return this.File(new UTF8Encoding().GetBytes(file), TransactionConstant.TextCsvAbbreviation, filename);
         }
 
         /// <summary>
@@ -275,6 +282,7 @@ namespace ExpenseManager.Web.Controllers
                 ModelState.AddModelError(TransactionConstant.File, TransactionResource.FileFormatError);
             }
 
+            this.AddSuccess(TransactionResource.ImportSuccessful);
             return this.View();
         }
 
@@ -315,6 +323,7 @@ namespace ExpenseManager.Web.Controllers
             transaction.Currencies = await this._transactionService.GetCurrenciesSelection();
             transaction.Categories = await this._transactionService.GetCategoriesSelection(transaction.Expense);
             transaction.Budgets = await this._transactionService.GetBudgetsSelection(await this.CurrentProfileId());
+            transaction.CategoryIconDictionary = await this._transactionService.GetCategoryIconDictionary();
         }
     }
 }

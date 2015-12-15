@@ -103,6 +103,19 @@ namespace ExpenseManager.Web.Controllers
                         .FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        ///     Returns user email that belong to the specified user
+        /// </summary>
+        /// <param name="userId">Id of a user</param>
+        /// <returns>Desired email</returns>
+        protected async Task<string> GetEmailByUserId(Guid userId)
+        {
+            return
+                await
+                    UserContext.Users.Where(user => user.Profile.Guid == userId)
+                        .Select(user => user.Email)
+                        .FirstOrDefaultAsync();
+        }
 
         protected List<SelectListItem> GetPermissions()
         {

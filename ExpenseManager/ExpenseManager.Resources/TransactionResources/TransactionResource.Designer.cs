@@ -286,6 +286,15 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your transactions were successfully imported into your wallet.
+        /// </summary>
+        public static string ImportSuccessful {
+            get {
+                return ResourceManager.GetString("ImportSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Income.
         /// </summary>
         public static string Income {
@@ -399,6 +408,42 @@ namespace ExpenseManager.Resources.TransactionResources {
         public static string SureOfDelete {
             get {
                 return ResourceManager.GetString("SureOfDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your transaction was successfully created.
+        /// </summary>
+        public static string TransactionCreated {
+            get {
+                return ResourceManager.GetString("TransactionCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction for was successfully deleted.
+        /// </summary>
+        public static string TransactionDeleted {
+            get {
+                return ResourceManager.GetString("TransactionDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction was successfully edited.
+        /// </summary>
+        public static string TransactionEdited {
+            get {
+                return ResourceManager.GetString("TransactionEdited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to transaction.csv.
+        /// </summary>
+        public static string TransactionFileName {
+            get {
+                return ResourceManager.GetString("TransactionFileName", resourceCulture);
             }
         }
         

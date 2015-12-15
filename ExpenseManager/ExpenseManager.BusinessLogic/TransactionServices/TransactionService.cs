@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -250,6 +251,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         public async Task ImportFromCsv(Guid userId, string file)
         {
             var reader = new CsvReader(new StringReader(file));
+            reader.Configuration.CultureInfo = CultureInfo.CurrentCulture;
             reader.Configuration.RegisterClassMap<TransactionExportMap>();
             reader.Configuration.HasHeaderRecord = true;
             while (reader.Read())
@@ -622,6 +624,14 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 modelList.Add(model);
             }
             return modelList;
+        }
+
+        public async Task<Dictionary<Guid, string>> GetCategoryIconDictionary()
+        {
+            return
+                await
+                    this._transactionsProvider.Categories.ToDictionaryAsync(category => category.Guid,
+                        category => category.IconPath);
         }
 
         /// <summary>

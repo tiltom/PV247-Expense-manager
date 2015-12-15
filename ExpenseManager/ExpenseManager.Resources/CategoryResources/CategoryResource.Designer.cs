@@ -178,6 +178,33 @@ namespace ExpenseManager.Resources.CategoryResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Category {0} was successfully added.
+        /// </summary>
+        public static string SuccessfullyAdded {
+            get {
+                return ResourceManager.GetString("SuccessfullyAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category {0} was successfully deleted.
+        /// </summary>
+        public static string SuccessfullyDeleted {
+            get {
+                return ResourceManager.GetString("SuccessfullyDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category {0} was successfully edited.
+        /// </summary>
+        public static string SuccessfullyEdited {
+            get {
+                return ResourceManager.GetString("SuccessfullyEdited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
         public static string Type {

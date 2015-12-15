@@ -71,9 +71,9 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         ///     Confirm budgetAccessRight when user guid is known, otherwise redirects user to registration.
         /// </summary>
-        /// <param name="b">Budget id</param>
-        /// <param name="u">User id</param>
-        /// <param name="p">Permission</param>
+        /// <param name="budgetGuid">Budget id</param>
+        /// <param name="userGuid">User id</param>
+        /// <param name="permission">Permission</param>
         /// <returns>Redirect to Index when user was created. To registration otherwise.</returns>
         [HttpGet]
         [AllowAnonymous]

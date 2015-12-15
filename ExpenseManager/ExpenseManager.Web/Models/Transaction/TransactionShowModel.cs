@@ -57,6 +57,18 @@ namespace ExpenseManager.Web.Models.Transaction
         public string CategoryName { get; set; }
 
         /// <summary>
+        ///     Path to category icon
+        /// </summary>
+        public string CategoryIconPath { get; set; }
+
+
+        /// <summary>
+        ///     Name of wallet when the transaction belongs
+        /// </summary>
+        [Display(Name = "Wallet", ResourceType = typeof (SharedResource))]
+        public string WalletName { get; set; }
+
+        /// <summary>
         ///     Bool representing if transaction is repeatable
         /// </summary>
         [Display(Name = "RepeatableTransaction", ResourceType = typeof (SharedResource))]

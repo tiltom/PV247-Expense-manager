@@ -5,6 +5,9 @@
         public const string White = "#FFFFFF";
         public const string Black = "#000000";
         public const string Transparent = "rgba(0,0,0,0)";
+        public const string Grey = "#727272";
+        public const string Red = "#f1595f";
+
 
         public static readonly string[] ColourValues =
         {

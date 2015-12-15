@@ -11,6 +11,7 @@ using ExpenseManager.Entity.Providers.Factory;
 using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Resources;
+using ExpenseManager.Resources.WalletResources;
 using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.WalletAccessRight;
@@ -95,6 +96,8 @@ namespace ExpenseManager.Web.Controllers
                 walletAccessRight.Permissions = this.GetPermissions();
                 return this.View(walletAccessRight);
             }
+
+            this.AddSuccess(string.Format(WalletAccessRightResource.RightCreated, walletAccessRight.AssignedUserEmail));
             return this.RedirectToAction(SharedConstant.Index);
         }
 
@@ -150,6 +153,9 @@ namespace ExpenseManager.Web.Controllers
                 walletAccessRight.Permissions = this.GetPermissions();
                 return this.View(walletAccessRight);
             }
+
+            var userEmail = await this.GetEmailByUserId(walletAccessRight.AssignedUserId);
+            this.AddSuccess(string.Format(WalletAccessRightResource.RightEdited, userEmail));
             return this.RedirectToAction(SharedConstant.Index);
         }
 
@@ -189,7 +195,12 @@ namespace ExpenseManager.Web.Controllers
                 return this.RedirectToAction(SharedConstant.Index);
             }
 
+            var walletAccessRight = await this._walletAccessRightService.GetWalletAccessRightById(id);
+            var userEmail = await this.GetEmailByUserId(walletAccessRight.UserProfile.Guid);
+
             await this._walletAccessRightService.DeleteWalletAccessRight(id);
+
+            this.AddSuccess(string.Format(WalletAccessRightResource.RightDeleted, userEmail));
             return this.RedirectToAction(SharedConstant.Index);
         }
 
