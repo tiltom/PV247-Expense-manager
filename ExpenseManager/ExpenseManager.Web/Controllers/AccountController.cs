@@ -117,19 +117,14 @@ namespace ExpenseManager.Web.Controllers
         /// </summary>
         /// <returns>View</returns>
         [AllowAnonymous]
-        public async Task<ActionResult> Register(Guid? budgetId, Entity.PermissionEnum? permission)
+        public async Task<ActionResult> Register(string returnUrl)
         {
             RegisterWithPasswordViewModel model = new RegisterWithPasswordViewModel
             {
                 Currencies = await this.GetCurrencies()
             };
 
-            if (permission != null && budgetId != null)
-            {
-                Session["sharedBudgetPermission"] = (Entity.PermissionEnum)permission;
-                Session["sharedBudgetId"] = (Guid)budgetId;
-            }
-            
+            ViewBag.ReturnUrl = returnUrl;
             return this.View(model);
         }
 
@@ -141,7 +136,7 @@ namespace ExpenseManager.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterWithPasswordViewModel model)
+        public async Task<ActionResult> Register(RegisterWithPasswordViewModel model, string returnUrl)
         {
             this.IsCaptchaValid(SharedResource.CaptchaValidationFailed);
             if (!ModelState.IsValid)
@@ -158,10 +153,10 @@ namespace ExpenseManager.Web.Controllers
                 var userRole = await RoleManager.FindByNameAsync("User");
                 await UserManager.AddToRoleAsync(user.Id, userRole.Name);
 
-                if (Session["sharedBudgetId"] == null)
+                if (returnUrl == "")
                     return this.RedirectToAction(SharedConstant.Index, SharedConstant.DashBoard);
                 else
-                    return this.RedirectToAction("ConfirmRequest", "BudgetAccessRight", new { b = Session["sharedBudgetId"], u = user.Profile.Guid,  p = Session["sharedBudgetPermission"] });
+                    return this.RedirectToLocal(returnUrl);
             }
             this.AddErrors(result);
             model.Currencies = await this.GetCurrencies();
