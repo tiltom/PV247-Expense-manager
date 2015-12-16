@@ -274,6 +274,7 @@ namespace ExpenseManager.Web.Controllers
                     {
                         await this._transactionService.ImportFromCsv(id, reader.ReadToEnd());
                     }
+                    this.AddSuccess(TransactionResource.ImportSuccessful);
                     return this.RedirectToAction(SharedConstant.Index);
                 }
             }
@@ -281,8 +282,6 @@ namespace ExpenseManager.Web.Controllers
             {
                 ModelState.AddModelError(TransactionConstant.File, TransactionResource.FileFormatError);
             }
-
-            this.AddSuccess(TransactionResource.ImportSuccessful);
             return this.View();
         }
 

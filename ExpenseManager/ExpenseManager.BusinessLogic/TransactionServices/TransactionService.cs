@@ -233,6 +233,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             TextWriter textWriter = new StringWriter();
             var writer = new CsvWriter(textWriter);
             writer.Configuration.RegisterClassMap<TransactionExportMap>();
+            writer.Configuration.CultureInfo = CultureInfo.GetCultureInfo("sk-SK");
             var options = new TypeConverterOptions
             {
                 Format = TransactionConstant.DateFormat
@@ -251,8 +252,8 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         public async Task ImportFromCsv(Guid userId, string file)
         {
             var reader = new CsvReader(new StringReader(file));
-            reader.Configuration.CultureInfo = CultureInfo.CurrentCulture;
             reader.Configuration.RegisterClassMap<TransactionExportMap>();
+            reader.Configuration.CultureInfo = CultureInfo.GetCultureInfo("sk-SK");
             reader.Configuration.HasHeaderRecord = true;
             while (reader.Read())
             {
@@ -262,7 +263,9 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 var model = new TransactionServiceModel
                 {
                     Amount = reader.GetField<decimal>(SharedResource.Amount),
-                    Date = DateTime.Parse(reader.GetField<string>(SharedResource.Date)),
+                    Date =
+                        DateTime.ParseExact(reader.GetField<string>(SharedResource.Date), TransactionConstant.DateFormat,
+                            CultureInfo.GetCultureInfo("sk-SK")),
                     Description = reader.GetField<string>(SharedResource.Description),
                     WalletId = await this.GetWalletIdByUserId(userId),
                     CurrencyId = (await this.GetCurrencyByCode(currencyCode)).Guid,
@@ -641,7 +644,9 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         {
             public TransactionExportMap()
             {
-                this.Map(model => model.Amount).Name(SharedResource.Amount);
+                this.Map(model => model.Amount)
+                    .Name(SharedResource.Amount)
+                    .TypeConverterOption(CultureInfo.GetCultureInfo("sk-SK"));
                 this.Map(model => model.CurrencyCode).Name(SharedResource.Currency);
                 this.Map(model => model.Date).Name(SharedResource.Date);
                 this.Map(model => model.Description).Name(SharedResource.Description);
