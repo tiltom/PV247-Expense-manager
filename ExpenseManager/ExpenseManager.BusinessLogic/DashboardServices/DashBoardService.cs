@@ -245,7 +245,7 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                         && (!filter.Budgets.Any() || filter.Budgets.Contains(transaction.Budget.Guid))
                         && (!filter.Wallets.Any() || filter.Wallets.Contains(transaction.Wallet.Guid))
                         && (!filter.Categories.Any() || filter.Categories.Contains(transaction.Category.Guid))
-                );
+                ).OrderBy(transaction => transaction.Date);
         }
 
         private async Task<List<Transaction>> LastTransactions(Guid userId)

@@ -162,4 +162,10 @@
   <data name="InvalidLoginAttempt" xml:space="preserve">
     <value>Invalid login attempt</value>
   </data>
+  <data name="UserFirstNameAlphaNumeric" xml:space="preserve">
+    <value>First name can contain just alpha numeric characters.</value>
+  </data>
+  <data name="UserSurnameAlphaNumeric" xml:space="preserve">
+    <value>Surname can contain just alpha numeric characters.</value>
+  </data>
 </root>

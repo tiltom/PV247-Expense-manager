@@ -13,6 +13,7 @@ using ExpenseManager.Entity.Users;
 using ExpenseManager.Entity.Wallets;
 using ExpenseManager.Resources;
 using ExpenseManager.Web.Constants;
+using ExpenseManager.Web.Constants.UserConstants;
 using ExpenseManager.Web.Models.User;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -158,7 +159,11 @@ namespace ExpenseManager.Web.Controllers
                     UserProfile = user.Profile,
                     Wallet = new Wallet
                     {
-                        Name = SharedResource.DefaultWallet,
+                        Name =
+                            UserConstant.FormatWalletName(
+                                model.FirstName,
+                                model.LastName,
+                                SharedResource.DefaultWallet),
                         Currency = currency
                     }
                 }

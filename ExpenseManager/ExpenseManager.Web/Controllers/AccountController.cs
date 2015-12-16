@@ -7,14 +7,12 @@ using ExpenseManager.Resources;
 using ExpenseManager.Resources.AccountResources;
 using ExpenseManager.Web.Constants;
 using ExpenseManager.Web.Constants.LoginConstants;
-using ExpenseManager.Web.Constants.UserConstants;
 using ExpenseManager.Web.Helpers;
 using ExpenseManager.Web.Models.User;
 using Facebook;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using System;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -119,12 +117,12 @@ namespace ExpenseManager.Web.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> Register(string returnUrl)
         {
-            RegisterWithPasswordViewModel model = new RegisterWithPasswordViewModel
+            var model = new RegisterWithPasswordViewModel
             {
                 Currencies = await this.GetCurrencies(),
                 ReturnUrl = returnUrl
             };
-            
+
             return this.View(model);
         }
 
@@ -142,6 +140,7 @@ namespace ExpenseManager.Web.Controllers
             if (!ModelState.IsValid)
             {
                 this.AddError(SharedResource.ModelStateIsNotValid);
+                model.Currencies = await this.GetCurrencies();
                 return this.View(model);
             }
 
@@ -150,13 +149,12 @@ namespace ExpenseManager.Web.Controllers
             if (result.Succeeded)
             {
                 await SignInManager.SignInAsync(user, false, false);
-                var userRole = await RoleManager.FindByNameAsync("User");
+                var userRole = await RoleManager.FindByNameAsync(UserIdentity.UserRole);
                 await UserManager.AddToRoleAsync(user.Id, userRole.Name);
 
-                if (String.IsNullOrWhiteSpace(returnUrl))
+                if (string.IsNullOrWhiteSpace(returnUrl))
                     return this.RedirectToAction(SharedConstant.Index, SharedConstant.DashBoard);
-                else
-                    return this.RedirectToLocal(returnUrl);
+                return this.RedirectToLocal(returnUrl);
             }
             this.AddErrors(result);
             model.Currencies = await this.GetCurrencies();
