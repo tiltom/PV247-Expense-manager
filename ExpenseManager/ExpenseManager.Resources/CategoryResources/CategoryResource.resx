@@ -168,4 +168,7 @@
   <data name="Type" xml:space="preserve">
     <value>Type</value>
   </data>
+  <data name="UserProfileNotProvided" xml:space="preserve">
+    <value>User profile was not provided! If you encounter this problem, please, contact us</value>
+  </data>
 </root>

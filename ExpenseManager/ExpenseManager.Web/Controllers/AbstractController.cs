@@ -64,9 +64,9 @@ namespace ExpenseManager.Web.Controllers
 
 
         /// <summary>
-        ///     returns profile id of currenly logged user
+        ///     Returns profile id of currenly logged user
         /// </summary>
-        /// <returns> logged user profile id</returns>
+        /// <returns> Logged user profile id</returns>
         protected async Task<Guid> CurrentProfileId()
         {
             var userId = HttpContext.User.Identity.GetUserId();

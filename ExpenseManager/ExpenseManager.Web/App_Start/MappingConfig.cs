@@ -108,6 +108,7 @@ namespace ExpenseManager.Web
                 .ForMember(view => view.Name, options => options.MapFrom(entity => entity.Name))
                 .ForMember(view => view.Icon, options => options.MapFrom(entity => entity.IconPath))
                 .ForMember(view => view.Type, options => options.MapFrom(entity => entity.Type))
+                .ForMember(view => view.User, options => options.MapFrom(entity => entity.User))
                 .ForMember(view => view.Description, options => options.MapFrom(entity => entity.Description));
 
             Mapper.CreateMap<CategoryModel, Category>()
@@ -115,6 +116,7 @@ namespace ExpenseManager.Web
                 .ForMember(entity => entity.Name, options => options.MapFrom(view => view.Name))
                 .ForMember(entity => entity.IconPath, options => options.MapFrom(view => view.Icon))
                 .ForMember(entity => entity.Type, options => options.MapFrom(view => view.Type))
+                .ForMember(entity => entity.User, options => options.MapFrom(view => view.User))
                 .ForMember(entity => entity.Description, options => options.MapFrom(view => view.Description));
         }
 

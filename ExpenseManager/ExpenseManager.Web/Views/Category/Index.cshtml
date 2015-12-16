@@ -48,17 +48,20 @@
                                     <span class="glyphicon @category.Icon" data-toggle="tooltip" data-placement="top" title="@category.Name"></span>
                                 </td>
                                 <td>
-                                    <div class="dropdown">
-                                        <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@SharedResource.Action <span class="caret"></span></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                @Html.ActionLink(SharedResource.Edit, "Edit", new {Guid = category.Guid})
-                                            </li>
-                                            <li>
-                                                @Html.ActionLink(SharedResource.Delete, "Delete", new {id = category.Guid})
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    @if (category.EditPossible)
+                                    {
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@SharedResource.Action <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    @Html.ActionLink(SharedResource.Edit, "Edit", new {Guid = category.Guid})
+                                                </li>
+                                                <li>
+                                                    @Html.ActionLink(SharedResource.Delete, "Delete", new {id = category.Guid})
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    }
                                 </td>
                             </tr>
                         }
@@ -95,17 +98,20 @@
                                     <span class="glyphicon @category.Icon" data-toggle="tooltip" data-placement="top" title="@category.Name"></span>
                                 </td>
                                 <td>
-                                    <div class="dropdown">
-                                        <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@SharedResource.Action <span class="caret"></span></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                @Html.ActionLink(SharedResource.Edit, "Edit", new {Guid = category.Guid})
-                                            </li>
-                                            <li>
-                                                @Html.ActionLink(SharedResource.Delete, "Delete", new {id = category.Guid})
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    @if (category.EditPossible)
+                                    {
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@SharedResource.Action <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    @Html.ActionLink(SharedResource.Edit, "Edit", new {Guid = category.Guid})
+                                                </li>
+                                                <li>
+                                                    @Html.ActionLink(SharedResource.Delete, "Delete", new {id = category.Guid})
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    }
                                 </td>
                             </tr>
                         }
@@ -142,17 +148,20 @@
                                     <span class="glyphicon @category.Icon" data-toggle="tooltip" data-placement="top" title="@category.Name"></span>
                                 </td>
                                 <td>
-                                    <div class="dropdown">
-                                        <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@SharedResource.Action <span class="caret"></span></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                @Html.ActionLink(SharedResource.Edit, "Edit", new {Guid = category.Guid})
-                                            </li>
-                                            <li>
-                                                @Html.ActionLink(SharedResource.Delete, "Delete", new {id = category.Guid})
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    @if (category.EditPossible)
+                                    {
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@SharedResource.Action <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    @Html.ActionLink(SharedResource.Edit, "Edit", new {Guid = category.Guid})
+                                                </li>
+                                                <li>
+                                                    @Html.ActionLink(SharedResource.Delete, "Delete", new {id = category.Guid})
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    }
                                 </td>
                             </tr>
                         }

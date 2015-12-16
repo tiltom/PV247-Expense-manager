@@ -21,12 +21,19 @@ namespace ExpenseManager.Database.Contexts
         {
         }
 
+        public DbSet<UserProfile> UserProfiles { get; set; }
+
         public DbSet<Transaction> Transactions { get; set; }
 
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Budget> Budgets { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<RepeatableTransaction> RepeatableTransactions { get; set; }
+
+        IQueryable<UserProfile> IUserProfilesProvider.UserProfiles
+        {
+            get { return UserProfiles; }
+        }
 
         public void AttachTransaction(Transaction transaction)
         {
@@ -54,11 +61,6 @@ namespace ExpenseManager.Database.Contexts
         }
 
         public IQueryable<WalletAccessRight> WalletAccessRights
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public IQueryable<UserProfile> UserProfiles
         {
             get { throw new NotImplementedException(); }
         }
