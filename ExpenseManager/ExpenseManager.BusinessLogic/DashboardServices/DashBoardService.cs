@@ -172,7 +172,7 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                 CategoriesIncomeChart = this.GeneratePieChart(categoriesIncome),
                 MonthSummaryChart = this.GenerateLineChart(monthSummary),
                 YearSummaryChart = this.GenerateLineChart(yearSummary),
-                Transactions = await this.LastTransactions(userId),
+                Transactions = await this.LastTransactions(resultYear),
                 BudgetLimitChart = await this.CreateChartForBudgetLimits(userId, userWallet.Currency)
             };
         }
@@ -248,15 +248,14 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
                 ).OrderBy(transaction => transaction.Date);
         }
 
-        private async Task<List<Transaction>> LastTransactions(Guid userId)
+        private async Task<List<Transaction>> LastTransactions(IQueryable<Transaction> transactions)
         {
-            var lastTransactions =
+            return
                 await
-                    this.GetAccessibleResults(userId)
+                    transactions
                         .OrderByDescending(transaction => transaction.Date)
                         .Take(NumberOfTransactionsOnDashBoard)
                         .ToListAsync();
-            return lastTransactions;
         }
 
 
