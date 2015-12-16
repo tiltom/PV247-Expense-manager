@@ -21,8 +21,8 @@ namespace ExpenseManager.Database.Seeding.Context.SeedingContextMigrations
             context.Database.ExecuteSqlCommand("EXEC sp_MSForEachTable 'ALTER TABLE ? CHECK CONSTRAINT ALL'");
 
             new CurrenciesSeed<SeedingContext>().Seed(context);
-            new CategoriesSeed<SeedingContext>().Seed(context);
             new UsersSeed<SeedingContext>().Seed(context);
+            new CategoriesSeed<SeedingContext>().Seed(context);
             new TransactionsSeed<SeedingContext>().Seed(context);
             new RepeatableTransactionsSeed<SeedingContext>().Seed(context);
             new BudgetsSeed<SeedingContext>().Seed(context);

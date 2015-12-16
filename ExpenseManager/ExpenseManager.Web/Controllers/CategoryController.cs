@@ -32,6 +32,11 @@ namespace ExpenseManager.Web.Controllers
             var categoryShowModels = await
                 categories.ProjectTo<CategoryModel>(categories).OrderBy(category => category.Name).ToListAsync();
 
+            foreach (var category in categoryShowModels)
+            {
+                category.EditPossible = category.Guid == await this.CurrentProfileId();
+            }
+
             return this.View(categoryShowModels);
         }
 
@@ -62,6 +67,7 @@ namespace ExpenseManager.Web.Controllers
             }
 
             var newCategory = Mapper.Map<Category>(category);
+            newCategory.User = await this.CurrentProfile();
 
             try
             {

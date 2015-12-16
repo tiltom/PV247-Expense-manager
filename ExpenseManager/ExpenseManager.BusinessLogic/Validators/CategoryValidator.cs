@@ -16,6 +16,9 @@ namespace ExpenseManager.BusinessLogic.Validators
                 .NotNull()
                 .NotEmpty()
                 .WithLocalizedMessage(() => CategoryResource.DescriptionNotNullOrEmpty);
+            this.RuleFor(category => category.User)
+                .NotNull()
+                .WithLocalizedMessage(() => CategoryResource.UserProfileNotProvided);
         }
     }
 }

@@ -64,9 +64,9 @@ namespace ExpenseManager.Web.Controllers
 
 
         /// <summary>
-        ///     returns profile id of currenly logged user
+        ///     Returns profile id of currenly logged user
         /// </summary>
-        /// <returns> logged user profile id</returns>
+        /// <returns> Logged user profile id</returns>
         protected async Task<Guid> CurrentProfileId()
         {
             var userId = HttpContext.User.Identity.GetUserId();
@@ -75,6 +75,14 @@ namespace ExpenseManager.Web.Controllers
                     UserContext.Users.Where(user => user.Id == userId)
                         .Select(user => user.Profile.Guid)
                         .FirstOrDefaultAsync();
+        }
+
+        protected async Task<UserProfile> CurrentProfile()
+        {
+            var userId = await this.CurrentProfileId();
+            return
+                await
+                    UserContext.UserProfiles.FirstOrDefaultAsync(user => user.Guid == userId);
         }
 
 

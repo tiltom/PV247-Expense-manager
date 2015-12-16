@@ -212,5 +212,14 @@ namespace ExpenseManager.Resources.CategoryResources {
                 return ResourceManager.GetString("Type", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User profile was not provided! If you encounter this problem, please, contact us.
+        /// </summary>
+        public static string UserProfileNotProvided {
+            get {
+                return ResourceManager.GetString("UserProfileNotProvided", resourceCulture);
+            }
+        }
     }
 }

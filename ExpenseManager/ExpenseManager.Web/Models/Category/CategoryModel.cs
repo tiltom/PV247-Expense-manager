@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using ExpenseManager.Entity.Enums;
+using ExpenseManager.Entity.Users;
 using ExpenseManager.Resources.CategoryResources;
 
 namespace ExpenseManager.Web.Models.Category
@@ -39,5 +40,15 @@ namespace ExpenseManager.Web.Models.Category
         [Required]
         [Display(ResourceType = typeof (CategoryResource), Name = "Type")]
         public CategoryType Type { get; set; }
+
+        /// <summary>
+        ///     Creator of this category
+        /// </summary>
+        public UserProfile User { get; set; }
+
+        /// <summary>
+        ///     Indicates if it is possible for user to edit this category
+        /// </summary>
+        public bool EditPossible { get; set; }
     }
 }

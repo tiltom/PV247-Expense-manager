@@ -57,6 +57,17 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         }
 
         /// <summary>
+        /// Returns id of a user that creates the category
+        /// </summary>
+        /// <param name="categoryId">Id of a category</param>
+        /// <returns>User id of the category creator</returns>
+        public async Task<Guid> GetUserIdByCategoryId(Guid categoryId)
+        {
+            var category = await this.GetCategoryByGuid(categoryId);
+            return category.User.Guid;
+        }
+
+        /// <summary>
         ///     Returns specified category by guid
         /// </summary>
         /// <param name="guid">ID that specifies returned category</param>
