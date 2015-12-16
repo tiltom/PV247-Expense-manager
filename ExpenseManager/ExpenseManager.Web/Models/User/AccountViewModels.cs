@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using ExpenseManager.Resources;
+using ExpenseManager.Resources.AccountResources;
 using ExpenseManager.Resources.UsersAdminResources;
 using ExpenseManager.Web.Constants.UserConstants;
 
@@ -28,6 +29,9 @@ namespace ExpenseManager.Web.Models.User
         [Display(Name = "FirstName", ResourceType = typeof (UsersAdminResource))]
         [StringLength(UserConstant.NameMaximumLength, ErrorMessageResourceType = typeof (UsersAdminResource),
             ErrorMessageResourceName = "MinimumLengthErrorMessage", MinimumLength = UserConstant.NameMinimumLength)]
+        [RegularExpression(@"^[\S]*$",
+            ErrorMessageResourceType = typeof (AccountResource),
+            ErrorMessageResourceName = "UserFirstNameAlphaNumeric")]
         public string FirstName { get; set; }
 
         /// <summary>
@@ -37,6 +41,9 @@ namespace ExpenseManager.Web.Models.User
         [Display(Name = "LastName", ResourceType = typeof (UsersAdminResource))]
         [StringLength(UserConstant.NameMaximumLength, ErrorMessageResourceType = typeof (UsersAdminResource),
             ErrorMessageResourceName = "MinimumLengthErrorMessage", MinimumLength = UserConstant.NameMinimumLength)]
+        [RegularExpression(@"^[\S]*$",
+            ErrorMessageResourceType = typeof (AccountResource),
+            ErrorMessageResourceName = "UserSurnameAlphaNumeric")]
         public string LastName { get; set; }
 
         /// <summary>
@@ -93,6 +100,7 @@ namespace ExpenseManager.Web.Models.User
         {
             SelectedRoles = Enumerable.Empty<string>();
         }
+
         /// <summary>
         ///     Password of user
         /// </summary>
@@ -123,7 +131,7 @@ namespace ExpenseManager.Web.Models.User
         public IEnumerable<string> SelectedRoles { get; set; }
 
         /// <summary>
-        /// Url to go to when leaving form.
+        ///     Url to go to when leaving form.
         /// </summary>
         public string ReturnUrl { get; set; }
     }

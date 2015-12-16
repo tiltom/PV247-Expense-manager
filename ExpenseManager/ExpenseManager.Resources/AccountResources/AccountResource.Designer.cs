@@ -194,5 +194,23 @@ namespace ExpenseManager.Resources.AccountResources {
                 return ResourceManager.GetString("UseLocalAccount", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First name can contain just alpha numeric characters..
+        /// </summary>
+        public static string UserFirstNameAlphaNumeric {
+            get {
+                return ResourceManager.GetString("UserFirstNameAlphaNumeric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Surname can contain just alpha numeric characters..
+        /// </summary>
+        public static string UserSurnameAlphaNumeric {
+            get {
+                return ResourceManager.GetString("UserSurnameAlphaNumeric", resourceCulture);
+            }
+        }
     }
 }
