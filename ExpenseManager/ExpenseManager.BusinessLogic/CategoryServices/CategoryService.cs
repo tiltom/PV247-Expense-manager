@@ -6,6 +6,7 @@ using ExpenseManager.BusinessLogic.Validators;
 using ExpenseManager.BusinessLogic.Validators.Extensions;
 using ExpenseManager.Entity.Categories;
 using ExpenseManager.Entity.Providers;
+using ExpenseManager.Entity.Users;
 
 namespace ExpenseManager.BusinessLogic.CategoryServices
 {
@@ -50,14 +51,15 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         /// </summary>
         /// <param name="category">New category</param>
         /// <returns></returns>
-        public async Task CreateCategory(Category category)
+        public async Task CreateCategory(Category category, Guid userId)
         {
+            category.User = await this.GetUserProfileById(userId);
             this.Validate(category);
             await this._db.AddOrUpdateAsync(category);
         }
 
         /// <summary>
-        /// Returns id of a user that creates the category
+        ///     Returns id of a user that creates the category
         /// </summary>
         /// <param name="categoryId">Id of a category</param>
         /// <returns>User id of the category creator</returns>
@@ -81,15 +83,17 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         ///     Edits category and saves it to database
         /// </summary>
         /// <param name="category">Edited category</param>
+        ///  /// <param name="userId">Edited category</param>
         /// <returns></returns>
-        public async Task EditCategory(Category category)
+        public async Task EditCategory(Category category, Guid userId)
         {
+            category.User = await this.GetUserProfileById(userId);
             this.Validate(category);
             var categoryToEdit = await this.GetCategoryByGuid(category.Guid);
             categoryToEdit.Name = category.Name;
             categoryToEdit.Description = category.Description;
             categoryToEdit.IconPath = category.IconPath;
-
+            categoryToEdit.User = category.User;
             await this._db.AddOrUpdateAsync(categoryToEdit);
         }
 
@@ -119,6 +123,16 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         private async Task<Category> GetDefaultCategory()
         {
             return await this._db.Categories.FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        ///     Returns user profile by it's ID
+        /// </summary>
+        /// <param name="id">User profile ID</param>
+        /// <returns>Desired user profile</returns>
+        public async Task<UserProfile> GetUserProfileById(Guid id)
+        {
+            return await this._db.UserProfiles.Where(profile => profile.Guid.Equals(id)).FirstOrDefaultAsync();
         }
 
         #endregion

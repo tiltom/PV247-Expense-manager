@@ -77,14 +77,6 @@ namespace ExpenseManager.Web.Controllers
                         .FirstOrDefaultAsync();
         }
 
-        protected async Task<UserProfile> CurrentProfile()
-        {
-            var userId = await this.CurrentProfileId();
-            return
-                await
-                    UserContext.UserProfiles.FirstOrDefaultAsync(user => user.Guid == userId);
-        }
-
 
         /// <summary>
         ///     Gets the default currency

@@ -34,7 +34,7 @@ namespace ExpenseManager.Web.Controllers
 
             foreach (var category in categoryShowModels)
             {
-                category.EditPossible = category.Guid == await this.CurrentProfileId();
+                category.EditPossible = category.User.Guid == await this.CurrentProfileId();
             }
 
             return this.View(categoryShowModels);
@@ -67,11 +67,9 @@ namespace ExpenseManager.Web.Controllers
             }
 
             var newCategory = Mapper.Map<Category>(category);
-            newCategory.User = await this.CurrentProfile();
-
             try
             {
-                await this._categoryService.CreateCategory(newCategory);
+                await this._categoryService.CreateCategory(newCategory, await this.CurrentProfileId());
             }
             catch (ServiceValidationException exception)
             {
@@ -118,7 +116,7 @@ namespace ExpenseManager.Web.Controllers
 
             try
             {
-                await this._categoryService.EditCategory(editedCategory);
+                await this._categoryService.EditCategory(editedCategory, await this.CurrentProfileId());
             }
             catch (ServiceValidationException exception)
             {
