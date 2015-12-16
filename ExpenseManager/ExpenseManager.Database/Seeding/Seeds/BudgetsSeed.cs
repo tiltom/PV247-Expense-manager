@@ -16,13 +16,29 @@ namespace ExpenseManager.Database.Seeding.Seeds
             {
                 new Budget
                 {
-                    StartDate = new DateTime(2015, 10, 15),
-                    EndDate = new DateTime(2015, 10, 25),
+                    StartDate = DateTime.Now.AddDays(-5),
+                    EndDate = DateTime.Now.AddDays(12),
                     Name = "Spain Holiday",
                     Description = "Budget for holiday in Spain",
-                    Limit = 400,
-                    Transactions = context.Transactions.Where(x => x.Description.Contains("Spain")).ToList(),
-                    AccessRights = context.BudgetAccessRights.ToList()
+                    Limit = 400
+                },
+
+                new Budget
+                {
+                    StartDate = DateTime.Now.AddDays(-100),
+                    EndDate = DateTime.Now.AddDays(200),
+                    Name = "Household",
+                    Description = "This year shared budget for our household",
+                    Limit = 20000
+                },
+
+                new Budget
+                {
+                    StartDate = DateTime.Now.AddDays(-150),
+                    EndDate = DateTime.Now.AddDays(50),
+                    Name = "Hazard",
+                    Description = "Betsiky",
+                    Limit = 10000
                 }
             };
 

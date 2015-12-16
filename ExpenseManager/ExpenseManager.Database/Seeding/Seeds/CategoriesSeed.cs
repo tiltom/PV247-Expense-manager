@@ -21,7 +21,7 @@ namespace ExpenseManager.Database.Seeding.Seeds
                     Name = "Other",
                     Description = "Category for non-classifiable transactions",
                     IconPath = "glyphicon-question-sign",
-                    Type = CategoryType.Expense,
+                    Type = CategoryType.IncomeAndExpense,
                     User = user
                 },
                 new Category
@@ -50,9 +50,33 @@ namespace ExpenseManager.Database.Seeding.Seeds
                 },
                 new Category
                 {
-                    Name = "Bitcoin",
-                    Description = "Category for investments in Bitcoin",
-                    IconPath = "glyphicon-bitcoin",
+                    Name = "Car",
+                    Description = "Car, fuel, maitenance",
+                    IconPath = "glyphicon-road",
+                    Type = CategoryType.Expense,
+                    User = user
+                },
+                new Category
+                {
+                    Name = "Bets",
+                    Description = "My love",
+                    IconPath = "glyphicon-euro",
+                    Type = CategoryType.IncomeAndExpense,
+                    User = user
+                },
+                new Category
+                {
+                    Name = "Household",
+                    Description = "My home",
+                    IconPath = "glyphicon-home",
+                    Type = CategoryType.Expense,
+                    User = user
+                },
+                new Category
+                {
+                    Name = "Drugs",
+                    Description = "Mainly cannabis",
+                    IconPath = "glyphicon-briefcase",
                     Type = CategoryType.IncomeAndExpense,
                     User = user
                 }

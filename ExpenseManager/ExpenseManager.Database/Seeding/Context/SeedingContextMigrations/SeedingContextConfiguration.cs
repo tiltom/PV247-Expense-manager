@@ -23,10 +23,10 @@ namespace ExpenseManager.Database.Seeding.Context.SeedingContextMigrations
             new CurrenciesSeed<SeedingContext>().Seed(context);
             new UsersSeed<SeedingContext>().Seed(context);
             new CategoriesSeed<SeedingContext>().Seed(context);
-            new TransactionsSeed<SeedingContext>().Seed(context);
-            new RepeatableTransactionsSeed<SeedingContext>().Seed(context);
             new BudgetsSeed<SeedingContext>().Seed(context);
             new BudgetAccessRightsSeed<SeedingContext>().Seed(context);
+            new TransactionsSeed<SeedingContext>().Seed(context);
+            new RepeatableTransactionsSeed<SeedingContext>().Seed(context);
         }
     }
 }

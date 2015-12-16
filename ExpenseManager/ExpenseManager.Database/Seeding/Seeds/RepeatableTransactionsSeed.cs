@@ -19,10 +19,10 @@ namespace ExpenseManager.Database.Seeding.Seeds
             {
                 new RepeatableTransaction
                 {
-                    FirstTransaction = firstTransaction,
-                    NextRepeat = 2,
-                    FrequencyType = FrequencyType.Day,
-                    LastOccurrence = new DateTime(2015, 10, 30)
+                    FirstTransaction = context.Transactions.Where(t => t.Description == "Rent").FirstOrDefault(),
+                    NextRepeat = 1,
+                    FrequencyType = FrequencyType.Month,
+                    LastOccurrence = DateTime.Now.AddDays(-40)
                 }
             };
 

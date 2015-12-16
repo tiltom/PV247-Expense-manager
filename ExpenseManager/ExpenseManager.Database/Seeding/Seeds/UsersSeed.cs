@@ -29,20 +29,20 @@ namespace ExpenseManager.Database.Seeding.Seeds
 
         private readonly RegisterUserInfo _readUserInfo = new RegisterUserInfo
         {
-            FirstName = "userread",
-            LastName = "user",
-            Email = "userread@example.com",
-            WalletName = "Read Wallet",
+            FirstName = "Pepik",
+            LastName = "Okurka",
+            Email = "pepik.vokurkacek007@seznam.com",
+            WalletName = "Pepik Wallet",
             RoleName = UserIdentity.UserRole,
             Password = "password1"
         };
 
         private readonly RegisterUserInfo _writeUserInfo = new RegisterUserInfo
         {
-            FirstName = "userWrite",
-            LastName = "user",
-            Email = "userwrite@example.com",
-            WalletName = "Write Wallet",
+            FirstName = "Kunhuta",
+            LastName = "Uherská",
+            Email = "kunhuticka.uhrickohalicska@seznam.cz",
+            WalletName = "Kunhuta Wallet",
             RoleName = UserIdentity.UserRole,
             Password = "password1"
         };
