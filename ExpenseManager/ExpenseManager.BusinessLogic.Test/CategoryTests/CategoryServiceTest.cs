@@ -43,22 +43,6 @@ namespace ExpenseManager.BusinessLogic.Test.CategoryTests
         }
 
         [Test]
-        [ExpectedException(typeof (ServiceValidationException))]
-        public void ValidateCategory_NotSupportedGlyphicon_ThrowException()
-        {
-            var category = new Category
-            {
-                Name = "Test name",
-                Description = "Test description",
-                IconPath = "Not supported",
-                Type = CategoryType.Expense
-            };
-
-            var categoryService = new CategoryService(ProvidersFactory.GetNewTransactionsProviders());
-            categoryService.Validate(category);
-        }
-
-        [Test]
         [ExpectedException(typeof (ArgumentNullException))]
         public void ValidateCategory_NullCategory_ThrowException()
         {

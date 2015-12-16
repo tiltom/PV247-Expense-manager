@@ -21,7 +21,7 @@ namespace ExpenseManager.Web
 
             // Initialize Database
             RegisterContexts.Register();
-            //Database.Database.Initialize();
+        //    Database.Database.Initialize();
 
             // Model type binders
             ModelBinders.Binders.Add(typeof (decimal), new DecimalModelBinder());

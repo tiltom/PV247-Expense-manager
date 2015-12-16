@@ -32,6 +32,11 @@ namespace ExpenseManager.Web.Controllers
             var categoryShowModels = await
                 categories.ProjectTo<CategoryModel>(categories).OrderBy(category => category.Name).ToListAsync();
 
+            foreach (var category in categoryShowModels)
+            {
+                category.EditPossible = category.User.Guid == await this.CurrentProfileId();
+            }
+
             return this.View(categoryShowModels);
         }
 
@@ -62,10 +67,9 @@ namespace ExpenseManager.Web.Controllers
             }
 
             var newCategory = Mapper.Map<Category>(category);
-
             try
             {
-                await this._categoryService.CreateCategory(newCategory);
+                await this._categoryService.CreateCategory(newCategory, await this.CurrentProfileId());
             }
             catch (ServiceValidationException exception)
             {
@@ -112,7 +116,7 @@ namespace ExpenseManager.Web.Controllers
 
             try
             {
-                await this._categoryService.EditCategory(editedCategory);
+                await this._categoryService.EditCategory(editedCategory, await this.CurrentProfileId());
             }
             catch (ServiceValidationException exception)
             {

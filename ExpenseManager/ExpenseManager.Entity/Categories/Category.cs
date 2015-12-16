@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using ExpenseManager.Entity.Enums;
 using ExpenseManager.Entity.Transactions;
+using ExpenseManager.Entity.Users;
 
 namespace ExpenseManager.Entity.Categories
 {
@@ -33,6 +34,11 @@ namespace ExpenseManager.Entity.Categories
         ///     Type of the category
         /// </summary>
         public CategoryType Type { get; set; }
+
+        /// <summary>
+        ///     Creator of this category
+        /// </summary>
+        public UserProfile User { get; set; }
 
         /// <summary>
         ///     Transactions that uses this category
