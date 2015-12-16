@@ -115,6 +115,33 @@ namespace ExpenseManager.Resources.BudgetResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;Email From: {0} &lt;/p&gt;&lt;p&gt; Please come and share a budget with me!:&lt;/p&gt;&lt;p&gt;{1}&lt;/p&gt;.
+        /// </summary>
+        public static string EmailInvitation {
+            get {
+                return ResourceManager.GetString("EmailInvitation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget sharing invitation.
+        /// </summary>
+        public static string EmailSubject {
+            get {
+                return ResourceManager.GetString("EmailSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This link for budget access right confirmation is invalid!.
+        /// </summary>
+        public static string InvalidLink {
+            get {
+                return ResourceManager.GetString("InvalidLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request for {0} was successfully sent. You must now wait until user accepts your budget invitation..
         /// </summary>
         public static string RequestSent {
@@ -156,6 +183,15 @@ namespace ExpenseManager.Resources.BudgetResources {
         public static string SureOfDelete {
             get {
                 return ResourceManager.GetString("SureOfDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You already have this budget access right or there appeared an error when creating new access right..
+        /// </summary>
+        public static string UnsuccessfulBudgetAccessRightAdding {
+            get {
+                return ResourceManager.GetString("UnsuccessfulBudgetAccessRightAdding", resourceCulture);
             }
         }
     }

@@ -20,6 +20,9 @@ using System.Net.Mail;
 using System.Net;
 using ExpenseManager.Entity.Budgets;
 using System.Configuration;
+using ExpenseManager.Web.Constants.LoginConstants;
+using ExpenseManager.Web.Constants.RegistrationConstants;
+using ExpenseManager.Web.Constants.BudgetAccessRightConstants;
 
 namespace ExpenseManager.Web.Controllers
 {
@@ -71,9 +74,10 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         ///     Confirm budgetAccessRight when user guid is known, otherwise redirects user to registration.
         /// </summary>
-        /// <param name="budgetGuid">Budget id</param>
-        /// <param name="userGuid">User id</param>
+        /// <param name="budgetId">Budget id</param>
+        /// <param name="userEmail">User email</param>
         /// <param name="permission">Permission</param>
+        /// <param name="hash">Hash counted from application id, budget id, user email and permission</param>
         /// <returns>Redirect to Index when user was created. To registration otherwise.</returns>
         [HttpGet]
         [AllowAnonymous]
@@ -83,8 +87,8 @@ namespace ExpenseManager.Web.Controllers
             string stringToCheck = getConfirmationString(new CreateBudgetAccessRightModel { BudgetId = budgetId, AssignedUserEmail = userEmail, Permission = permission });
             if (stringToCheck.GetHashCode() != hash)
             {
-                this.AddError(string.Format("Invalid link!"));
-                return this.RedirectToAction(SharedConstant.Index, "DashBoard");
+                this.AddError(string.Format(BudgetAccessRightResource.InvalidLink));
+                return this.RedirectToAction(SharedConstant.Index, SharedConstant.DashBoard);
             }
 
             Guid userId = await GetUserProfileByEmail(userEmail);
@@ -93,23 +97,23 @@ namespace ExpenseManager.Web.Controllers
             if (user != null)
             {
                 if (userId != await CurrentProfileId())
-                    return this.RedirectToAction("Login", "Account", new { ReturnUrl = Request.RawUrl });
+                    return this.RedirectToAction(LoginConstant.Login, SharedConstant.Account, new { ReturnUrl = Request.RawUrl });
 
-                bool exists = await this._budgetAccessRightService.CreateBudgetAccessRight(budgetId, userId, permission);
-                if (!exists)
+                bool added = await this._budgetAccessRightService.CreateBudgetAccessRight(budgetId, userId, permission);
+                if (!added)
                 {
-                    this.AddError("You already have this budget access right!");
+                    this.AddError(BudgetAccessRightResource.UnsuccessfulBudgetAccessRightAdding);
                 }
                 else
                 {
                     Budget budget = await this._budgetService.GetBudgetById(budgetId);
                     this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullCreation, permission, budget.Name));
                 }
-                return this.RedirectToAction(SharedConstant.Index, "DashBoard");
+                return this.RedirectToAction(SharedConstant.Index, SharedConstant.DashBoard);
             }
             else
             {
-                return this.RedirectToAction("Register", "Account", new { ReturnUrl = Request.RawUrl });
+                return this.RedirectToAction(RegisterConstant.Register, SharedConstant.Account, new { ReturnUrl = Request.RawUrl });
             }
         }
 
@@ -150,17 +154,16 @@ namespace ExpenseManager.Web.Controllers
         /// <summary>
         /// Sends email to user with link which can be used to share desired budget.
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">budget access right model with set id, email and permission</param>
         private async Task SendRequest(CreateBudgetAccessRightModel model)
         {
-            var body = "<p>Email From: {0} </p><p> Please come and share a budget with me!:</p><p>{1}</p>";
             var confirmationData = getConfirmationString(model);
-            var callbackUrl = Url.Action("ConfirmRequest", "BudgetAccessRight", 
+            var callbackUrl = Url.Action(BudgetAccessRightConstant.ConfirmRequest, BudgetAccessRightConstant.BudgetAccessRight, 
                 new { budgetId = model.BudgetId, userEmail = model.AssignedUserEmail, permission = model.Permission, hash=confirmationData.GetHashCode() }, protocol: Request.Url.Scheme);
             var message = new MailMessage();
             message.To.Add(new MailAddress(model.AssignedUserEmail));
-            message.Subject = "Budget sharing invitation";
-            message.Body = string.Format(body, User.Identity.Name, callbackUrl.ToString());
+            message.Subject = BudgetAccessRightResource.EmailSubject;
+            message.Body = string.Format(BudgetAccessRightResource.EmailInvitation, User.Identity.Name, callbackUrl.ToString());
             message.IsBodyHtml = true;
 
             using (var smtp = new SmtpClient())
@@ -284,10 +287,15 @@ namespace ExpenseManager.Web.Controllers
                         .ToListAsync();
         }
 
+        /// <summary>
+        /// Prepares string with ApplicationId, budget id, assigned user id and selected permission.
+        /// </summary>
+        /// <param name="model">budget access right model with set id, email and permission</param>
+        /// <returns>string with ApplicationId, budget id, assigned user id and selected permission</returns>
         private string getConfirmationString(CreateBudgetAccessRightModel model)
         {
             return String.Join(
-                Environment.NewLine, // or whatever string you prefer
+                Environment.NewLine,
                 new[] {
                     ConfigurationManager.AppSettings["ApplicationId"],
                     model.BudgetId.ToString(),

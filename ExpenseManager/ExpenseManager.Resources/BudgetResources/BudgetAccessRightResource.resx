@@ -135,6 +135,15 @@
   <data name="EditBudgetAccessRight" xml:space="preserve">
     <value>Edit budget access right</value>
   </data>
+  <data name="EmailInvitation" xml:space="preserve">
+    <value>&lt;p&gt;Email From: {0} &lt;/p&gt;&lt;p&gt; Please come and share a budget with me!:&lt;/p&gt;&lt;p&gt;{1}&lt;/p&gt;</value>
+  </data>
+  <data name="EmailSubject" xml:space="preserve">
+    <value>Budget sharing invitation</value>
+  </data>
+  <data name="InvalidLink" xml:space="preserve">
+    <value>This link for budget access right confirmation is invalid!</value>
+  </data>
   <data name="RequestSent" xml:space="preserve">
     <value>Request for {0} was successfully sent. You must now wait until user accepts your budget invitation.</value>
   </data>
@@ -149,5 +158,8 @@
   </data>
   <data name="SureOfDelete" xml:space="preserve">
     <value>Are you sure you want to delete access right {0} for user {1}?</value>
+  </data>
+  <data name="UnsuccessfulBudgetAccessRightAdding" xml:space="preserve">
+    <value>You already have this budget access right or there appeared an error when creating new access right.</value>
   </data>
 </root>

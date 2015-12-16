@@ -197,8 +197,10 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Binders\DateModelBinder.cs" />
     <Compile Include="Binders\DecimalModelBinder.cs" />
+    <Compile Include="Constants\BudgetAccessRightConstants\BudgetAccessRightConstant.cs" />
     <Compile Include="Constants\BudgetConstants\BudgetConstant.cs" />
     <Compile Include="Constants\LoginConstants\LoginConstant.cs" />
+    <Compile Include="Constants\RegistrationConstants\RegisterConstant.cs" />
     <Compile Include="Constants\SharedConstant.cs" />
     <Compile Include="Constants\TransactionsConstants\TransactionConstant.cs" />
     <Compile Include="Constants\UserConstants\UserConstant.cs" />
