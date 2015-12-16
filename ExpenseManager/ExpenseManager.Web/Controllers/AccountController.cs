@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using CaptchaMvc.HtmlHelpers;
@@ -117,10 +118,19 @@ namespace ExpenseManager.Web.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> Register(string returnUrl)
         {
+            string email = null;
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                var uri = returnUrl.Replace("%40", "@");
+                var emailRegex = new Regex("userEmail=(?<email>.*@.*)&permission");
+                email = emailRegex.Match(uri).Groups["email"].Value;
+            }
             var model = new RegisterWithPasswordViewModel
             {
                 Currencies = await this.GetCurrencies(),
-                ReturnUrl = returnUrl
+                ReturnUrl = returnUrl,
+                Email = email,
+                IsExternal = !string.IsNullOrEmpty(email)
             };
 
             return this.View(model);

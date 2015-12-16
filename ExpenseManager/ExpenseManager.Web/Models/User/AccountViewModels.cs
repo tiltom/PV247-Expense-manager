@@ -134,5 +134,10 @@ namespace ExpenseManager.Web.Models.User
         ///     Url to go to when leaving form.
         /// </summary>
         public string ReturnUrl { get; set; }
+
+        /// <summary>
+        ///     Is registration from external mail
+        /// </summary>
+        public bool IsExternal { get; set; }
     }
 }
