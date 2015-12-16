@@ -29,7 +29,7 @@ namespace ExpenseManager.Web.Models.User
         [Display(Name = "FirstName", ResourceType = typeof (UsersAdminResource))]
         [StringLength(UserConstant.NameMaximumLength, ErrorMessageResourceType = typeof (UsersAdminResource),
             ErrorMessageResourceName = "MinimumLengthErrorMessage", MinimumLength = UserConstant.NameMinimumLength)]
-        [RegularExpression(@"^[a-zA-Z0-9]*$",
+        [RegularExpression(@"^[\S]*$",
             ErrorMessageResourceType = typeof (AccountResource),
             ErrorMessageResourceName = "UserFirstNameAlphaNumeric")]
         public string FirstName { get; set; }
@@ -41,7 +41,7 @@ namespace ExpenseManager.Web.Models.User
         [Display(Name = "LastName", ResourceType = typeof (UsersAdminResource))]
         [StringLength(UserConstant.NameMaximumLength, ErrorMessageResourceType = typeof (UsersAdminResource),
             ErrorMessageResourceName = "MinimumLengthErrorMessage", MinimumLength = UserConstant.NameMinimumLength)]
-        [RegularExpression(@"^[a-zA-Z0-9]*$",
+        [RegularExpression(@"^[\S]*$",
             ErrorMessageResourceType = typeof (AccountResource),
             ErrorMessageResourceName = "UserSurnameAlphaNumeric")]
         public string LastName { get; set; }
