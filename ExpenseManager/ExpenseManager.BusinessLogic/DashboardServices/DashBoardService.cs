@@ -278,6 +278,8 @@ namespace ExpenseManager.BusinessLogic.DashboardServices
             lineChart.ChartConfiguration.ScaleBeginAtZero = false;
             lineChart.ChartConfiguration.Responsive = true;
             lineChart.ChartConfiguration.BezierCurve = false;
+            lineChart.ChartConfiguration.PointHitDetectionRadius = 1;
+
             return lineChart;
         }
 
