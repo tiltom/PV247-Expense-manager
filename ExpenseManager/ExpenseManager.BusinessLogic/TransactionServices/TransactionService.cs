@@ -124,8 +124,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             var repeatableTransactions = await this._transactionsProvider.RepeatableTransactions.ToListAsync();
             foreach (var repeatableTransaction in repeatableTransactions)
             {
-                var expectedNewOccurance = repeatableTransaction.LastOccurrence.AddDays(repeatableTransaction.NextRepeat);
-
+                var expectedNewOccurance = nextOccurance(repeatableTransaction);
                 while (expectedNewOccurance.Subtract(DateTime.Today).Days <= 0)
                 {
                     var transactionToAdd = new Transaction
@@ -143,7 +142,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     repeatableTransaction.LastOccurrence = transactionToAdd.Date;
                     await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
 
-                    expectedNewOccurance = expectedNewOccurance.AddDays(repeatableTransaction.NextRepeat);
+                    expectedNewOccurance = nextOccurance(repeatableTransaction);
                 }
             }
 
@@ -840,6 +839,29 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                 this.FillRepeatableTransaction(transaction, repeatableTransaction);
                 await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
             }
+        }
+
+        private DateTime nextOccurance(RepeatableTransaction repeatableTransaction)
+        {
+            DateTime expectedNewOccurance;
+            switch (repeatableTransaction.FrequencyType)
+            {
+                case FrequencyType.Day:
+                    expectedNewOccurance = repeatableTransaction.LastOccurrence.AddDays(repeatableTransaction.NextRepeat);
+                    break;
+                case FrequencyType.Week:
+                    expectedNewOccurance = repeatableTransaction.LastOccurrence.AddDays(repeatableTransaction.NextRepeat * 7);
+                    break;
+                case FrequencyType.Month:
+                    expectedNewOccurance = repeatableTransaction.LastOccurrence.AddMonths(repeatableTransaction.NextRepeat);
+                    break;
+                case FrequencyType.Year:
+                    expectedNewOccurance = repeatableTransaction.LastOccurrence.AddYears(repeatableTransaction.NextRepeat);
+                    break;
+                default:
+                    throw new ArgumentException("uknown day type");
+            }
+            return expectedNewOccurance;
         }
 
         #endregion
