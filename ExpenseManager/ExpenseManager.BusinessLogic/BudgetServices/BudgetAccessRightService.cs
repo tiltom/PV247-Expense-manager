@@ -87,9 +87,16 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
         /// <param name="budgetId">ID of a budget</param>
         /// <param name="assignedUserId">Assigned user's ID</param>
         /// <param name="permission">Permission for right</param>
-        /// <returns></returns>
-        public async Task CreateBudgetAccessRight(Guid budgetId, Guid assignedUserId, PermissionEnum permission)
+        /// <returns>False if user has already accessright to this budget or when adding failed. True otherwise.</returns>
+        public async Task<bool> CreateBudgetAccessRight(Guid budgetId, Guid assignedUserId, PermissionEnum permission)
         {
+            // create budget access right only if it isn't already present
+            bool budgetAccessRightExists = await _db.BudgetAccessRights.Where(b => b.Budget.Guid == budgetId && b.UserProfile.Guid == assignedUserId).CountAsync() > 0;
+            if (budgetAccessRightExists)
+            {
+                return false;
+            }
+
             // find budget by its Id
             var budget = await this.GetBudgetById(budgetId);
             // finding creator by his ID
@@ -103,9 +110,9 @@ namespace ExpenseManager.BusinessLogic.BudgetServices
             };
 
             this.Validate(budgetAccessRight);
-
+            
             // creating new budget access right
-            await this._db.AddOrUpdateAsync(budgetAccessRight);
+            return await this._db.AddOrUpdateAsync(budgetAccessRight);
         }
 
         /// <summary>

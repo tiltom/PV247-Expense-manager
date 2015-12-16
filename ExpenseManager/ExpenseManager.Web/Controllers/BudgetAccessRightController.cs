@@ -80,7 +80,7 @@ namespace ExpenseManager.Web.Controllers
         public async Task<ActionResult> ConfirmRequest(Guid budgetId, string userEmail, Entity.PermissionEnum permission, int hash)
         {
             // Check if hash is correct
-            string stringToCheck = budgetId + userEmail + permission;
+            string stringToCheck = getConfirmationString(new CreateBudgetAccessRightModel { BudgetId = budgetId, AssignedUserEmail = userEmail, Permission = permission });
             if (stringToCheck.GetHashCode() != hash)
             {
                 this.AddError(string.Format("Invalid link!"));
@@ -92,9 +92,19 @@ namespace ExpenseManager.Web.Controllers
 
             if (user != null)
             {
-                await this._budgetAccessRightService.CreateBudgetAccessRight(budgetId, userId, permission);
-                Budget budget = await this._budgetService.GetBudgetById(budgetId);
-                this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullCreation, permission, budget.Name));
+                if (userId != await CurrentProfileId())
+                    return this.RedirectToAction("Login", "Account", new { ReturnUrl = Request.RawUrl });
+
+                bool exists = await this._budgetAccessRightService.CreateBudgetAccessRight(budgetId, userId, permission);
+                if (!exists)
+                {
+                    this.AddError("You already have this budget access right!");
+                }
+                else
+                {
+                    Budget budget = await this._budgetService.GetBudgetById(budgetId);
+                    this.AddSuccess(string.Format(BudgetAccessRightResource.SuccessfullCreation, permission, budget.Name));
+                }
                 return this.RedirectToAction(SharedConstant.Index, "DashBoard");
             }
             else
@@ -144,9 +154,7 @@ namespace ExpenseManager.Web.Controllers
         private async Task SendRequest(CreateBudgetAccessRightModel model)
         {
             var body = "<p>Email From: {0} </p><p> Please come and share a budget with me!:</p><p>{1}</p>";
-
-            //var callbackUrl = Url.Action("ConfirmRequest", "BudgetAccessRight", new { b = model.BudgetId, u = userId, p = model.Permission }, protocol: Request.Url.Scheme);
-            string confirmationData = model.BudgetId.ToString() + model.AssignedUserEmail + model.Permission.ToString();
+            var confirmationData = getConfirmationString(model);
             var callbackUrl = Url.Action("ConfirmRequest", "BudgetAccessRight", 
                 new { budgetId = model.BudgetId, userEmail = model.AssignedUserEmail, permission = model.Permission, hash=confirmationData.GetHashCode() }, protocol: Request.Url.Scheme);
             var message = new MailMessage();
@@ -274,6 +282,18 @@ namespace ExpenseManager.Web.Controllers
                     userProfiles
                         .Select(user => new SelectListItem { Value = user.Guid.ToString(), Text = user.FirstName })
                         .ToListAsync();
+        }
+
+        private string getConfirmationString(CreateBudgetAccessRightModel model)
+        {
+            return String.Join(
+                Environment.NewLine, // or whatever string you prefer
+                new[] {
+                    ConfigurationManager.AppSettings["ApplicationId"],
+                    model.BudgetId.ToString(),
+                    model.AssignedUserEmail,
+                    model.Permission.ToString(),
+                });
         }
 
         #endregion

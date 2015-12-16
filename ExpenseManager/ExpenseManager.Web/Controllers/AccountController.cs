@@ -153,7 +153,7 @@ namespace ExpenseManager.Web.Controllers
                 var userRole = await RoleManager.FindByNameAsync("User");
                 await UserManager.AddToRoleAsync(user.Id, userRole.Name);
 
-                if (returnUrl == "")
+                if (String.IsNullOrWhiteSpace(returnUrl))
                     return this.RedirectToAction(SharedConstant.Index, SharedConstant.DashBoard);
                 else
                     return this.RedirectToLocal(returnUrl);
