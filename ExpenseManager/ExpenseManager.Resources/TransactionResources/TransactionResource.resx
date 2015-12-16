@@ -244,7 +244,7 @@
     <value>Your transaction was successfully created</value>
   </data>
   <data name="TransactionDeleted" xml:space="preserve">
-    <value>Transaction for was successfully deleted</value>
+    <value>Transaction was successfully deleted</value>
   </data>
   <data name="TransactionEdited" xml:space="preserve">
     <value>Transaction was successfully edited</value>

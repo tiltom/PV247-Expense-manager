@@ -421,7 +421,7 @@ namespace ExpenseManager.Resources.TransactionResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction for was successfully deleted.
+        ///   Looks up a localized string similar to Transaction was successfully deleted.
         /// </summary>
         public static string TransactionDeleted {
             get {

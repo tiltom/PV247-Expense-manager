@@ -2,6 +2,7 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpenseManager.BusinessLogic.ServicesConstants;
 using ExpenseManager.BusinessLogic.Validators;
 using ExpenseManager.BusinessLogic.Validators.Extensions;
 using ExpenseManager.Entity.Categories;
@@ -38,12 +39,21 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         }
 
         /// <summary>
-        ///     Returns all categories from database
+        ///     Returns all categories visible for a specified user
         /// </summary>
-        /// <returns>All categories</returns>
-        public IQueryable GetCategories()
+        /// <param name="userId">Id of a category creator</param>
+        /// <returns>Categories created by user or admin</returns>
+        public IQueryable<Category> GetCategories(Guid userId)
         {
-            return this._db.Categories;
+            return
+                this._db.Categories.Where(
+                    category =>
+                        category.User.Guid.Equals(userId) ||
+                        category.User.Guid.Equals(
+                            this._db.UserProfiles.FirstOrDefault(
+                                profile =>
+                                    profile.FirstName == ValidationConstant.Admin &&
+                                    profile.LastName == ValidationConstant.Admin).Guid));
         }
 
         /// <summary>
@@ -83,7 +93,8 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         ///     Edits category and saves it to database
         /// </summary>
         /// <param name="category">Edited category</param>
-        ///  /// <param name="userId">Edited category</param>
+        /// ///
+        /// <param name="userId">Edited category</param>
         /// <returns></returns>
         public async Task EditCategory(Category category, Guid userId)
         {
@@ -118,13 +129,6 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
             await this._db.DeteleAsync(categoryToDelete);
         }
 
-        #region private
-
-        private async Task<Category> GetDefaultCategory()
-        {
-            return await this._db.Categories.FirstOrDefaultAsync();
-        }
-
         /// <summary>
         ///     Returns user profile by it's ID
         /// </summary>
@@ -133,6 +137,13 @@ namespace ExpenseManager.BusinessLogic.CategoryServices
         public async Task<UserProfile> GetUserProfileById(Guid id)
         {
             return await this._db.UserProfiles.Where(profile => profile.Guid.Equals(id)).FirstOrDefaultAsync();
+        }
+
+        #region private
+
+        private async Task<Category> GetDefaultCategory()
+        {
+            return await this._db.Categories.FirstOrDefaultAsync();
         }
 
         #endregion

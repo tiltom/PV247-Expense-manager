@@ -28,13 +28,14 @@ namespace ExpenseManager.Web.Controllers
         /// <returns>View with model</returns>
         public async Task<ActionResult> Index()
         {
-            var categories = this._categoryService.GetCategories();
+            var currentProfileId = await this.CurrentProfileId();
+            var categories = this._categoryService.GetCategories(currentProfileId);
             var categoryShowModels = await
                 categories.ProjectTo<CategoryModel>(categories).OrderBy(category => category.Name).ToListAsync();
 
             foreach (var category in categoryShowModels)
             {
-                category.EditPossible = category.User.Guid == await this.CurrentProfileId();
+                category.EditPossible = category.User.Guid == currentProfileId;
             }
 
             return this.View(categoryShowModels);
