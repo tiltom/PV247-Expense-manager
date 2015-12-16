@@ -121,5 +121,10 @@ namespace ExpenseManager.Web.Models.User
         ///     List of selected roles for user
         /// </summary>
         public IEnumerable<string> SelectedRoles { get; set; }
+
+        /// <summary>
+        /// Url to go to when leaving form.
+        /// </summary>
+        public string ReturnUrl { get; set; }
     }
 }

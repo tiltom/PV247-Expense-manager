@@ -121,10 +121,10 @@ namespace ExpenseManager.Web.Controllers
         {
             RegisterWithPasswordViewModel model = new RegisterWithPasswordViewModel
             {
-                Currencies = await this.GetCurrencies()
+                Currencies = await this.GetCurrencies(),
+                ReturnUrl = returnUrl
             };
-
-            ViewBag.ReturnUrl = returnUrl;
+            
             return this.View(model);
         }
 
