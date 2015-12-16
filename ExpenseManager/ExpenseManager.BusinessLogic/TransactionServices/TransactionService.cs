@@ -96,6 +96,10 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
         /// <returns></returns>
         public async Task Create(TransactionServiceModel transaction)
         {
+            if (transaction.LastOccurrence == null)
+            {
+                transaction.LastOccurrence = DateTime.MaxValue;
+            }
             this.Validate(transaction);
             //create new Transaction entity and fill it from DTO
             var transactionEntity = await this.FillTransaction(transaction, new Transaction {Guid = new Guid()});
@@ -124,7 +128,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
             var repeatableTransactions = await this._transactionsProvider.RepeatableTransactions.ToListAsync();
             foreach (var repeatableTransaction in repeatableTransactions)
             {
-                var expectedNewOccurance = nextOccurance(repeatableTransaction);
+                var expectedNewOccurance = this.nextOccurance(repeatableTransaction);
                 while (expectedNewOccurance.Subtract(DateTime.Today).Days <= 0)
                 {
                     var transactionToAdd = new Transaction
@@ -142,7 +146,7 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     repeatableTransaction.LastOccurrence = transactionToAdd.Date;
                     await this._transactionsProvider.AddOrUpdateAsync(repeatableTransaction);
 
-                    expectedNewOccurance = nextOccurance(repeatableTransaction);
+                    expectedNewOccurance = this.nextOccurance(repeatableTransaction);
                 }
             }
 
@@ -850,13 +854,16 @@ namespace ExpenseManager.BusinessLogic.TransactionServices
                     expectedNewOccurance = repeatableTransaction.LastOccurrence.AddDays(repeatableTransaction.NextRepeat);
                     break;
                 case FrequencyType.Week:
-                    expectedNewOccurance = repeatableTransaction.LastOccurrence.AddDays(repeatableTransaction.NextRepeat * 7);
+                    expectedNewOccurance =
+                        repeatableTransaction.LastOccurrence.AddDays(repeatableTransaction.NextRepeat*7);
                     break;
                 case FrequencyType.Month:
-                    expectedNewOccurance = repeatableTransaction.LastOccurrence.AddMonths(repeatableTransaction.NextRepeat);
+                    expectedNewOccurance =
+                        repeatableTransaction.LastOccurrence.AddMonths(repeatableTransaction.NextRepeat);
                     break;
                 case FrequencyType.Year:
-                    expectedNewOccurance = repeatableTransaction.LastOccurrence.AddYears(repeatableTransaction.NextRepeat);
+                    expectedNewOccurance =
+                        repeatableTransaction.LastOccurrence.AddYears(repeatableTransaction.NextRepeat);
                     break;
                 default:
                     throw new ArgumentException("uknown day type");
